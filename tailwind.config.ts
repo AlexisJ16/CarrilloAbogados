@@ -18,6 +18,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'merriweather': ['Merriweather', 'serif'],
+				'lato': ['Lato', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,7 +65,11 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Law firm brand colors
+				'law-navy': 'hsl(var(--law-navy))',
+				'law-gold': 'hsl(var(--law-gold))',
+				'law-white': 'hsl(var(--law-white))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
