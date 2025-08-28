@@ -123,7 +123,7 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {practiceAreas.map((area, index) => (
-              <Card key={index} className="practice-card">
+              <Card key={index} className="practice-card group">
                 <CardContent className="p-6">
                   <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors duration-300">
                     <area.icon className="w-6 h-6 text-accent" />

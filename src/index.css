@@ -170,7 +170,7 @@
   .practice-card {
     @apply bg-card border border-border rounded-lg p-6 
            hover:shadow-lg transition-all duration-300
-           hover:border-accent/30 group cursor-pointer;
+           hover:border-accent/30 cursor-pointer;
   }
 
   .team-card {

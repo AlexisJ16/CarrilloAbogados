@@ -147,7 +147,7 @@ const PracticeAreas = () => {
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {practiceAreas.map((area, index) => (
-              <Card key={index} className="practice-card h-full">
+              <Card key={index} className="practice-card group h-full">
                 <CardContent className="p-6 h-full flex flex-col">
                   <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-accent/20 transition-colors duration-300">
                     <area.icon className="w-6 h-6 text-accent" />
