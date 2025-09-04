@@ -1,73 +1,33 @@
-# Welcome to your Lovable project
+# Carrillo Abogados Web
 
-## Project info
+Este repositorio contiene el código fuente del sitio web de la Asociación Carrillo Abogados, construido con [Next.js](https://nextjs.org/).
 
-**URL**: https://lovable.dev/projects/ae511630-1b8f-42ee-8dff-7e61cba892ff
+## Estructura
 
-## How can I edit this code?
+- `app/` – Rutas de la aplicación y API utilizando el directorio `app` de Next.js.
+- `lib/` – Utilidades compartidas como el cliente de Supabase.
+- `database/` – Configuración y migraciones de Supabase.
 
-There are several ways of editing your application.
+## Configuración
 
-**Use Lovable**
+1. Copia `.env.example` a `.env` y completa las variables de entorno de Supabase.
+2. Instala dependencias (requiere acceso a internet):
+   ```sh
+   npm install
+   ```
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/ae511630-1b8f-42ee-8dff-7e61cba892ff) and start prompting.
+## Scripts
 
-Changes made via Lovable will be committed automatically to this repo.
+- `npm run dev` – Ejecuta el servidor de desarrollo.
+- `npm run build` – Crea el build de producción.
+- `npm start` – Inicia el servidor en modo producción.
+- `npm run lint` – Ejecuta ESLint.
 
-**Use your preferred IDE**
+## Blog y SEO
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+El directorio `app/blog` contiene una base para artículos. Cada entrada puede renderizarse de forma estática para mejorar el SEO. Se recomienda añadir metadatos por página y un sitemap automático.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Despliegue
 
-Follow these steps:
+El proyecto puede desplegarse en Vercel u otra plataforma compatible con Node.js. Para entornos con cPanel, genera un build estático (`npm run build`) y sirve los archivos de `.next` a través de Node o un adaptador como `next start`.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/ae511630-1b8f-42ee-8dff-7e61cba892ff) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)

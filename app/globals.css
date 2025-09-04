@@ -1,0 +1,9 @@
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-rgb: 255, 255, 255;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
