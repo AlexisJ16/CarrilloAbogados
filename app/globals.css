@@ -1,9 +1,214 @@
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-rgb: 255, 255, 255;
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&family=Lato:wght@300;400;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Carrillo Abogados Design System - Professional Legal Website */
+
+@layer base {
+  :root {
+    /* Core Brand Colors - HSL Format */
+    --law-navy: 210 89% 14%;        /* Deep Blue #0A2342 */
+    --law-gold: 38 36% 57%;         /* Gold #C0A062 */
+    --law-white: 0 0% 100%;         /* Pure White #FFFFFF */
+    
+    /* Extended Palette */
+    --law-navy-light: 210 89% 25%;  /* Lighter navy for hover states */
+    --law-navy-dark: 210 89% 8%;    /* Darker navy for text */
+    --law-gold-light: 38 36% 70%;   /* Lighter gold for backgrounds */
+    --law-gold-dark: 38 36% 45%;    /* Darker gold for borders */
+    --law-gray-light: 220 13% 96%;  /* Light gray backgrounds */
+    --law-gray: 220 13% 85%;        /* Border gray */
+    --law-gray-dark: 220 13% 45%;   /* Muted text */
+
+    /* Semantic Color System */
+    --background: var(--law-white);
+    --foreground: var(--law-navy-dark);
+
+    --card: var(--law-white);
+    --card-foreground: var(--law-navy-dark);
+
+    --popover: var(--law-white);
+    --popover-foreground: var(--law-navy-dark);
+
+    --primary: var(--law-navy);
+    --primary-foreground: var(--law-white);
+
+    --secondary: var(--law-gray-light);
+    --secondary-foreground: var(--law-navy);
+
+    --muted: var(--law-gray-light);
+    --muted-foreground: var(--law-gray-dark);
+
+    --accent: var(--law-gold);
+    --accent-foreground: var(--law-white);
+
+    --destructive: 0 65% 51%;
+    --destructive-foreground: var(--law-white);
+
+    --border: var(--law-gray);
+    --input: var(--law-gray);
+    --ring: var(--law-gold);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
 }
 
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-lato;
+    font-feature-settings: "liga" on, "kern" on;
+  }
+
+  /* Typography System */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-merriweather font-bold tracking-tight;
+  }
+
+  h1 {
+    @apply text-4xl lg:text-6xl leading-tight;
+  }
+
+  h2 {
+    @apply text-3xl lg:text-4xl leading-tight;
+  }
+
+  h3 {
+    @apply text-2xl lg:text-3xl leading-snug;
+  }
+
+  h4 {
+    @apply text-xl lg:text-2xl leading-snug;
+  }
+
+  p {
+    @apply font-lato leading-relaxed;
+  }
+}
+
+@layer components {
+  /* Professional Button Variants */
+  .btn-hero {
+    @apply bg-accent text-accent-foreground hover:bg-accent/90 
+           font-lato font-semibold px-8 py-4 rounded-lg
+           transition-all duration-300 transform hover:scale-105
+           shadow-lg hover:shadow-xl;
+  }
+
+  .btn-outline-gold {
+    @apply border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground
+           font-lato font-semibold px-6 py-3 rounded-lg
+           transition-all duration-300;
+  }
+
+  .btn-navy {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90
+           font-lato font-semibold px-6 py-3 rounded-lg
+           transition-all duration-300;
+  }
+
+  /* Card Components */
+  .practice-card {
+    @apply bg-card border border-border rounded-lg p-6 
+           hover:shadow-lg transition-all duration-300
+           hover:border-accent/30 cursor-pointer;
+  }
+
+  .team-card {
+    @apply bg-card border border-border rounded-lg overflow-hidden
+           hover:shadow-xl transition-all duration-300
+           hover:transform hover:scale-105;
+  }
+
+  /* Navigation Styles */
+  .nav-link {
+    @apply font-lato font-medium text-foreground/80 hover:text-accent
+           transition-colors duration-300 relative
+           after:content-[''] after:absolute after:w-0 after:h-0.5
+           after:bg-accent after:left-0 after:-bottom-1
+           after:transition-all after:duration-300
+           hover:after:w-full;
+  }
+
+  /* Section Spacing */
+  .section-padding {
+    @apply py-16 lg:py-24;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Gradient Overlays */
+  .hero-overlay {
+    @apply absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/40;
+  }
+
+  .gold-gradient {
+    @apply bg-gradient-to-r from-accent to-accent/80;
+  }
+}
 html, body {
   max-width: 100%;
   overflow-x: hidden;
 }
+
