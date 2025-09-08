@@ -26,3 +26,7 @@ dist-ssr
 # Environment files
 **/.env
 **/.env.local
+
+# Project directories
+frontend/
+backend/
