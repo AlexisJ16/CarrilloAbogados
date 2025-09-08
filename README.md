@@ -1,16 +1,16 @@
 # Carrillo Abogados Web
 
-This repository contains the source code for the Carrillo Abogados website. The project is split into three parts to keep responsibilities separated and make development easier to manage.
+This repository contains the source code for the Carrillo Abogados website. The project is split into three parts to keep responsibilities separated and make development easier to manage. The main web interface is built with **Next.js**, allowing us to serve both pages and API routes from a single application.
 
 ## Structure
 
-- **frontend/** – React + Vite client application.
+- **frontend/** – Next.js application handling UI and API routes.
 - **backend/** – Express server providing API endpoints.
 - **database/** – Supabase configuration and database migrations.
 
 ## Development
 
-### Frontend
+### Next.js app
 
 Install dependencies and start the development server:
 
@@ -24,7 +24,7 @@ Other useful commands:
 - `npm run frontend:build` – build the production bundle.
 - `npm run frontend:lint` – run ESLint on the frontend code.
 
-Copy `frontend/.env.example` to `frontend/.env` and fill in the required values before running the frontend locally.
+Copy `frontend/.env.example` to `frontend/.env` and fill in the required values before running the Next.js app locally.
 
 ### Backend
 
@@ -41,7 +41,7 @@ The `database/` folder contains Supabase configuration. Install the [Supabase CL
 
 ## Deployment
 
-- **Frontend** – Deploy using services like Vercel or Netlify.
+- **Next.js app** – Deploy on platforms like Vercel or Netlify. Pushing to `main` triggers an automatic build and production deployment.
 - **Backend** – Deploy to a Node-friendly platform (e.g., Vercel functions, Render, Railway, or a traditional server).
 - **Database** – Supabase hosts the PostgreSQL database and auth services.
 
