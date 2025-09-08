@@ -29,5 +29,26 @@ El directorio `app/blog` contiene una base para artículos. Cada entrada puede r
 
 ## Despliegue
 
-El proyecto puede desplegarse en Vercel u otra plataforma compatible con Node.js. Para entornos con cPanel, genera un build estático (`npm run build`) y sirve los archivos de `.next` a través de Node o un adaptador como `next start`.
+El proyecto puede desplegarse en Vercel u otra plataforma compatible con Node.js.
+
+### Despliegue en cPanel
+
+1. En cPanel crea una aplicación de Node.js (versión 18 o superior).
+2. Sube el contenido del repositorio o utiliza la integración de Git.
+3. Dentro del directorio de la aplicación ejecuta:
+   ```sh
+   npm install
+   npm run build
+   ```
+4. Configura el comando de inicio como `npm start` (que ejecuta `node server.js`).
+5. Define las variables de entorno `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en la interfaz de cPanel.
+6. Reinicia la aplicación para aplicar los cambios.
+
+### Nota sobre Vercel
+
+Si Vercel está conectado al repositorio intentará desplegar cada push. Revisa los logs de construcción para verificar dependencias y variables de entorno. Puedes desactivar el despliegue automático desde el panel de Vercel si prefieres manejarlo manualmente.
+
+### Desarrollo en Codespaces
+
+GitHub Codespaces permite ejecutar `npm run dev` o cualquier script de `package.json` directamente en el navegador, lo cual es suficiente para probar la aplicación sin un entorno local. También puedes usar editores locales si lo prefieres; ambos son válidos.
 
