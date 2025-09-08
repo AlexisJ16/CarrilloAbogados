@@ -26,5 +26,7 @@ dist-ssr
 # Environment files
 **/.env
 **/.env.local
-.next
-out
+
+# Project directories
+frontend/
+backend/

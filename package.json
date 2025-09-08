@@ -1,24 +1,12 @@
 {
-  "name": "carrilloabogados-web",
-  "version": "0.1.0",
+  "name": "carrilloabogados",
   "private": true,
+  "version": "0.1.0",
+  "workspaces": [],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "NODE_ENV=production node server.js",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "next": "^14.2.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@supabase/supabase-js": "^2.56.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.8.3",
-    "@types/react": "^18.3.23",
-    "@types/node": "^22.16.5",
-    "eslint": "^9.32.0",
-    "eslint-config-next": "^14.2.0"
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "frontend:lint": "npm --prefix frontend run lint",
+    "backend:start": "npm --prefix backend start"
   }
 }
