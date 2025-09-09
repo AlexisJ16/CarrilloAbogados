@@ -4,87 +4,93 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mail, Linkedin, GraduationCap, Award } from "lucide-react";
 
+const omarImage = "https://carrilloabgd.com/Imagenes/doc.jpg";
 const lawyerMaria = "/lawyer-maria.jpg";
 const lawyerCarlos = "/lawyer-carlos.jpg";
 
 export default function OurTeam() {
+  const contactLink =
+    "https://api.whatsapp.com/send?phone=573153344411&text=Hola,%20quiero%20contactarme%20con%20Carrillo%20Abogados";
+
   const teamMembers = [
     {
-      name: "María Carrillo",
-      title: "Socia Fundadora",
-      specialization: "Derecho Corporativo y M&A",
-      image: lawyerMaria,
+      name: "Omar Alberto Carrillo Martínez",
+      title: "Director General",
+      specialization: "Derecho Administrativo y Constitucional",
+      image: omarImage,
       education: [
-        "LLM en Derecho Corporativo, Harvard Law School",
-        "Licenciada en Derecho, Universidad Nacional Autónoma de México"
+        "Abogado del Colegio Mayor de Nuestra Señora del Rosario",
+        "Especialista en Derecho Administrativo del Rosario",
       ],
-      experience: "25 años de experiencia",
+      experience: "Más de 30 años de experiencia",
       achievements: [
-        "Reconocida por Chambers & Partners como Leading Lawyer",
-        "Mejor Abogada del Año 2023 - Revista Legal 500",
-        "Miembro del Consejo Directivo de la Barra Mexicana de Abogados"
+        "Ex Superintendente Delegado para la Propiedad Industrial (SIC)",
+        "Jefe de la Oficina Jurídica del Ministerio de Comunicaciones",
+        "Abogado asistente en el Consejo de Estado",
       ],
-      bio: "María Carrillo es una destacada especialista en derecho corporativo con más de 25 años de experiencia asesorando a empresas multinacionales y fondos de inversión. Ha liderado algunas de las transacciones más importantes del país.",
-      email: "mcarrillo@carrillo-abogados.com",
-      languages: ["Español", "Inglés", "Francés"]
+      bio: "Abogado especializado en derecho administrativo con amplia trayectoria en el sector público y privado.",
+      linkedin:
+        "https://www.linkedin.com/in/omar-alberto-carrillo-martinez-9016b261/?originalSubdomain=co",
+      whatsapp: contactLink,
+      languages: ["Español", "Inglés"],
     },
     {
-      name: "Carlos Mendoza",
-      title: "Socio Senior",
-      specialization: "Litigio Comercial y Arbitraje",
-      image: lawyerCarlos,
-      education: [
-        "Maestría en Arbitraje Internacional, Universidad de Londres",
-        "Licenciado en Derecho, Instituto Tecnológico Autónomo de México"
-      ],
-      experience: "20 años de experiencia",
-      achievements: [
-        "Árbitro certificado por la Cámara de Comercio Internacional",
-        "Top Litigator 2024 - International Law Review",
-        "Profesor invitado en la Universidad Panamericana"
-      ],
-      bio: "Carlos Mendoza es un litigante experimentado especializado en disputas comerciales complejas y arbitraje internacional. Ha representado clientes en más de 200 procedimientos arbitrales.",
-      email: "cmendoza@carrillo-abogados.com",
-      languages: ["Español", "Inglés", "Italiano"]
-    },
-    {
-      name: "Ana Rodríguez",
-      title: "Socia",
-      specialization: "Propiedad Intelectual y Tecnología",
+      name: "María González",
+      title: "Abogada Senior",
+      specialization: "Derecho Corporativo",
       image: lawyerMaria,
       education: [
-        "LLM en Propiedad Intelectual, Stanford University",
-        "Licenciada en Derecho, Universidad Iberoamericana"
+        "LLM en Derecho Corporativo",
+        "Universidad de los Andes",
       ],
       experience: "15 años de experiencia",
       achievements: [
-        "IP Star 2024 - Managing Intellectual Property",
-        "Líder en Innovación Legal - Expansión Magazine",
-        "Miembro del Advisory Board de Tech Law Association"
+        "Asesora de empresas nacionales e internacionales",
+        "Miembro de la Barra de Abogados",
       ],
-      bio: "Ana Rodríguez lidera nuestro departamento de propiedad intelectual, especializada en protección de innovaciones tecnológicas y estrategias de PI para startups y empresas tech.",
-      email: "arodriguez@carrillo-abogados.com",
-      languages: ["Español", "Inglés", "Alemán"]
+      bio: "Especialista en estructuración corporativa y fusiones.",
+      linkedin: "#",
+      whatsapp: contactLink,
+      languages: ["Español", "Inglés"],
     },
     {
-      name: "Roberto Jiménez",
-      title: "Socio",
-      specialization: "Derecho Fiscal y Financiero",
+      name: "Carlos Mendoza",
+      title: "Abogado",
+      specialization: "Litigio Comercial",
       image: lawyerCarlos,
       education: [
-        "Maestría en Derecho Fiscal, Universidad de Nueva York",
-        "Contador Público, Universidad Nacional Autónoma de México"
+        "Maestría en Arbitraje Internacional",
+        "Universidad de Londres",
       ],
-      experience: "18 años de experiencia",
+      experience: "10 años de experiencia",
       achievements: [
-        "Tax Lawyer of the Year 2023 - Mexican Tax Review",
-        "Certificado en Precios de Transferencia por la OCDE",
-        "Autor del libro 'Reforma Fiscal Contemporánea'"
+        "Árbitro certificado por la CCI",
+        "Profesor invitado en universidades",
       ],
-      bio: "Roberto Jiménez combina su formación en derecho y contaduría para ofrecer asesoría fiscal integral, especializándose en reestructuras fiscales y precios de transferencia.",
-      email: "rjimenez@carrillo-abogados.com",
-      languages: ["Español", "Inglés"]
-    }
+      bio: "Litigante enfocado en disputas comerciales complejas.",
+      linkedin: "#",
+      whatsapp: contactLink,
+      languages: ["Español", "Inglés"],
+    },
+    {
+      name: "Ana Rodríguez",
+      title: "Abogada",
+      specialization: "Propiedad Intelectual",
+      image: lawyerMaria,
+      education: [
+        "LLM en Propiedad Intelectual",
+        "Stanford University",
+      ],
+      experience: "8 años de experiencia",
+      achievements: [
+        "IP Star 2024 - Managing IP",
+        "Miembro de asociaciones de tecnología",
+      ],
+      bio: "Lidera estrategias de protección para innovaciones tecnológicas.",
+      linkedin: "#",
+      whatsapp: contactLink,
+      languages: ["Español", "Inglés"],
+    },
   ];
 
   return (
@@ -182,13 +188,35 @@ export default function OurTeam() {
 
                     {/* Contact */}
                     <div className="flex items-center space-x-3 pt-4 border-t border-border">
-                      <Button variant="outline" size="sm" className="flex items-center">
-                        <Mail className="w-4 h-4 mr-2" />
-                        Contactar
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center"
+                      >
+                        <a
+                          href={member.whatsapp}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Mail className="w-4 h-4 mr-2" />
+                          Contactar
+                        </a>
                       </Button>
-                      <Button variant="outline" size="sm" className="flex items-center">
-                        <Linkedin className="w-4 h-4 mr-2" />
-                        LinkedIn
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center"
+                      >
+                        <a
+                          href={member.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Linkedin className="w-4 h-4 mr-2" />
+                          LinkedIn
+                        </a>
                       </Button>
                     </div>
                   </CardContent>
