@@ -18,6 +18,13 @@ Este repositorio contiene el código fuente del sitio web de la Asociación Carr
    npm install
    ```
 
+### Variables de entorno requeridas
+
+El proyecto necesita las siguientes variables para inicializar el cliente de Supabase:
+
+- `NEXT_PUBLIC_SUPABASE_URL`: URL de tu proyecto en Supabase.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: clave anónima pública de Supabase.
+
 ## Scripts
 
 - `npm run dev` – Ejecuta el servidor de desarrollo.
