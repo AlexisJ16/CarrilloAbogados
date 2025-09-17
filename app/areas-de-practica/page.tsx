@@ -67,7 +67,7 @@ export default function PracticeAreas() {
       icon: Users,
       title: "Derecho Laboral",
       description: "Gestión integral de relaciones laborales, desde la contratación hasta la terminación. Prevención y resolución de conflictos laborales.",
-      services: [
+      services: [git
         "Contratos de trabajo",
         "Políticas internas",
         "Juicios laborales",
