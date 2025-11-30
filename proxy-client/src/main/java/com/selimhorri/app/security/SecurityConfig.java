@@ -4,13 +4,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.selimhorri.app.business.user.model.RoleBasedAuthority;
@@ -21,20 +21,14 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig {
 	
 	private final UserDetailsService userDetailsService;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtRequestFilter jwtRequestFilter;
 	
-	/*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Override
-	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(this.userDetailsService)
-			.passwordEncoder(this.passwordEncoder);
-	}
-	
-	@Override
-	protected void configure(final HttpSecurity http) throws Exception {
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.cors(cors -> cors.disable())
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(requests -> requests
@@ -46,26 +40,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 						.requestMatchers("/api/**")
 						.hasAnyRole(RoleBasedAuthority.ROLE_USER.getRole(),
 								RoleBasedAuthority.ROLE_ADMIN.getRole())
-						.antMatchers("/actuator/health/**", "/actuator/info/**")
+						.requestMatchers("/actuator/health/**", "/actuator/info/**")
 						.permitAll()
-						.antMatchers("/actuator/**")
+						.requestMatchers("/actuator/**")
 						.hasAnyRole(RoleBasedAuthority.ROLE_ADMIN.getRole())
-						.anyRequest().authenticated()
-						.and()
-						.headers()
-						.frameOptions()
-						.sameOrigin()
-						.and()
-						.sessionManagement()
-						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-						.and()
-						.addFilterBefore(this.jwtRequestFilter, UsernamePasswordAuthenticationFilter.class));
+						.anyRequest().authenticated())
+				.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(this.jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		return http.build();
 	}
 	
-	/*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Bean
-	@Override
-	public AuthenticationManager authenticationManagerBean() throws Exception {
-		return super.authenticationManagerBean();
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
 	}
 	
 	
