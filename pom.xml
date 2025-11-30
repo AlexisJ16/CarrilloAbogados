@@ -23,6 +23,8 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<spring-cloud.version>2021.0.9</spring-cloud.version>
 		<testcontainers.version>1.19.8</testcontainers.version>
+		<mysql.version>8.4.0</mysql.version>
+		<h2.version>2.2.224</h2.version>
 	</properties>
 	
 	<dependencies>
@@ -97,6 +99,16 @@
 				<version>${testcontainers.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.mysql</groupId>
+				<artifactId>mysql-connector-j</artifactId>
+				<version>${mysql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>${h2.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
