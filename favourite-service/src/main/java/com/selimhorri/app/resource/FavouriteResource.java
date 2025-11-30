@@ -3,8 +3,8 @@ package com.selimhorri.app.resource;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,9 +41,9 @@ public class FavouriteResource {
 	
 	@GetMapping("/{userId}/{productId}/{likeDate}")
 	public ResponseEntity<FavouriteDto> findById(
-			@PathVariable("userId") final String userId, 
-			@PathVariable("productId") final String productId, 
-			@PathVariable("likeDate") final String likeDate) {
+			@PathVariable final String userId, 
+			@PathVariable final String productId, 
+			@PathVariable final String likeDate) {
 		log.info("*** FavouriteDto, resource; fetch favourite by id *");
 		return ResponseEntity.ok(this.favouriteService.findById(
 				new FavouriteId(Integer.parseInt(userId), Integer.parseInt(productId), 
@@ -79,9 +79,9 @@ public class FavouriteResource {
 	
 	@DeleteMapping("/{userId}/{productId}/{likeDate}")
 	public ResponseEntity<Boolean> deleteById(
-			@PathVariable("userId") final String userId, 
-			@PathVariable("productId") final String productId, 
-			@PathVariable("likeDate") final String likeDate) {
+			@PathVariable final String userId, 
+			@PathVariable final String productId, 
+			@PathVariable final String likeDate) {
 		log.info("*** Boolean, resource; delete favourite by id *");
 		this.favouriteService.deleteById(new FavouriteId(Integer.parseInt(userId), Integer.parseInt(productId), 
 						LocalDateTime.parse(likeDate, DateTimeFormatter.ofPattern(AppConstant.LOCAL_DATE_TIME_FORMAT))));

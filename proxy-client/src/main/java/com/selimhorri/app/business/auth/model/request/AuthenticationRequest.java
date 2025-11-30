@@ -1,9 +1,10 @@
 package com.selimhorri.app.business.auth.model.request;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class AuthenticationRequest implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	@NotBlank(message = "*Username must not be empty!**")

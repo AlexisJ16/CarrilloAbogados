@@ -1,7 +1,7 @@
 package com.selimhorri.app.business.auth.controller;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +36,7 @@ public class AuthenticationController {
 	}
 	
 	@GetMapping("/jwt/{jwt}")
-	public ResponseEntity<Boolean> authenticate(@PathVariable("jwt") final String jwt) {
+	public ResponseEntity<Boolean> authenticate(@PathVariable final String jwt) {
 		log.info("**Authentication controller, proceed with the request*\n");
 		return ResponseEntity.ok(this.authenticationService.authenticate(jwt));
 	}

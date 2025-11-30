@@ -1,12 +1,13 @@
 package com.selimhorri.app.domain;
 
+import java.io.Serial;
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 
 import com.selimhorri.app.domain.id.OrderItemId;
 
@@ -25,7 +26,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public final class OrderItem extends AbstractMappedEntity implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	@Id

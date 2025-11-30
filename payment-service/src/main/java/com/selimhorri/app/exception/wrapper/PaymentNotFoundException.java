@@ -1,7 +1,10 @@
 package com.selimhorri.app.exception.wrapper;
 
+import java.io.Serial;
+
 public class PaymentNotFoundException extends RuntimeException {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	public PaymentNotFoundException() {

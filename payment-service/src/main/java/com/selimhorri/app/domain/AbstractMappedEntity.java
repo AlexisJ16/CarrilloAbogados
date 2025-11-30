@@ -1,10 +1,11 @@
 package com.selimhorri.app.domain;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.Instant;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,7 +23,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 abstract public class AbstractMappedEntity implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	@CreatedDate

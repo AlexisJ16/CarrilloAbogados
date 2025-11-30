@@ -1,8 +1,8 @@
 package com.selimhorri.app.business.user.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +24,13 @@ public interface CredentialClientService {
 	
 	@GetMapping("/{credentialId}")
 	ResponseEntity<CredentialDto> findById(
-			@PathVariable("credentialId") 
+			@PathVariable 
 			@NotBlank(message = "*Input must not blank!**") 
 			@Valid final String credentialId);
 	
 	@GetMapping("/username/{username}")
 	ResponseEntity<CredentialDto> findByUsername(
-			@PathVariable("username") 
+			@PathVariable 
 			@NotBlank(message = "*Input must not blank!**") 
 			@Valid final String username);
 	
@@ -48,14 +48,14 @@ public interface CredentialClientService {
 	
 	@PutMapping("/{credentialId}")
 	ResponseEntity<CredentialDto> update(
-			@PathVariable("credentialId") 
+			@PathVariable 
 			@NotBlank(message = "*Input must not blank!**") final String credentialId, 
 			@RequestBody 
 			@NotNull(message = "*Input must not NULL!**") 
 			@Valid final CredentialDto credentialDto);
 	
 	@DeleteMapping("/{credentialId}")
-	ResponseEntity<Boolean> deleteById(@PathVariable("credentialId") @NotBlank(message = "*Input must not blank!**") @Valid final String credentialId);
+	ResponseEntity<Boolean> deleteById(@PathVariable @NotBlank(message = "*Input must not blank!**") @Valid final String credentialId);
 	
 }
 

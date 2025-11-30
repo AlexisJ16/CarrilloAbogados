@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -64,7 +64,7 @@ public class FavouriteServiceImpl implements FavouriteService {
 					return f;
 				})
 				.orElseThrow(() -> new FavouriteNotFoundException(
-						String.format("Favourite with id: [%s] not found!", favouriteId)));
+				"Favourite with id: [%s] not found!".formatted(favouriteId)));
 	}
 	
 	@Override

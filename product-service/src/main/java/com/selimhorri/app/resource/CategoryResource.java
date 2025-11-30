@@ -1,8 +1,8 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ public class CategoryResource {
 	
 	@GetMapping("/{categoryId}")
 	public ResponseEntity<CategoryDto> findById(
-			@PathVariable("categoryId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not be blank") 
 			@Valid final String categoryId) {
 		log.info("*** CategoryDto, resource; fetch category by id *");
@@ -64,7 +64,7 @@ public class CategoryResource {
 	
 	@PutMapping("/{categoryId}")
 	public ResponseEntity<CategoryDto> update(
-			@PathVariable("categoryId")
+			@PathVariable
 			@NotBlank(message = "Input must not be blank")
 			@Valid final String categoryId,
 			@RequestBody 
@@ -75,7 +75,7 @@ public class CategoryResource {
 	}
 	
 	@DeleteMapping("/{categoryId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("categoryId") final String categoryId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String categoryId) {
 		log.info("*** Boolean, resource; delete category by id *");
 		this.categoryService.deleteById(Integer.parseInt(categoryId));
 		return ResponseEntity.ok(true);

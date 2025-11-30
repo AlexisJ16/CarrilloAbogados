@@ -31,9 +31,9 @@ public class FavouriteController {
 	
 	@GetMapping("/{userId}/{productId}/{likeDate}")
 	public ResponseEntity<FavouriteDto> findById(
-			@PathVariable("userId") final String userId, 
-			@PathVariable("productId") final String productId, 
-			@PathVariable("likeDate") final String likeDate) {
+			@PathVariable final String userId, 
+			@PathVariable final String productId, 
+			@PathVariable final String likeDate) {
 		return ResponseEntity.ok(this.favouriteClientService.findById(userId, productId, likeDate).getBody());
 	}
 	
@@ -54,9 +54,9 @@ public class FavouriteController {
 	
 	@DeleteMapping("/{userId}/{productId}/{likeDate}")
 	public ResponseEntity<Boolean> deleteById(
-			@PathVariable("userId") final String userId, 
-			@PathVariable("productId") final String productId, 
-			@PathVariable("likeDate") final String likeDate) {
+			@PathVariable final String userId, 
+			@PathVariable final String productId, 
+			@PathVariable final String likeDate) {
 		this.favouriteClientService.deleteById(userId, productId, likeDate).getBody();
 		return ResponseEntity.ok(true);
 	}

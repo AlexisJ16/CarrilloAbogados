@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 		log.info("*** UserDto, service; fetch user by id *");
 		return this.userRepository.findById(userId)
 				.map(UserMappingHelper::map)
-				.orElseThrow(() -> new UserObjectNotFoundException(String.format("User with id: %d not found", userId)));
+				.orElseThrow(() -> new UserObjectNotFoundException("User with id: %d not found".formatted(userId)));
 	}
 	
 	@Override
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 	public UserDto findByUsername(final String username) {
 		log.info("*** UserDto, service; fetch user with username *");
 		return UserMappingHelper.map(this.userRepository.findByCredentialUsername(username)
-				.orElseThrow(() -> new UserObjectNotFoundException(String.format("User with username: %s not found", username))));
+				.orElseThrow(() -> new UserObjectNotFoundException("User with username: %s not found".formatted(username))));
 	}
 	
 	

@@ -1,8 +1,8 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ public class OrderResource {
 	
 	@GetMapping("/{orderId}")
 	public ResponseEntity<OrderDto> findById(
-			@PathVariable("orderId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not be blank") 
 			@Valid final String orderId) {
 		log.info("*** OrderDto, resource; fetch order by id *");
@@ -64,7 +64,7 @@ public class OrderResource {
 	
 	@PutMapping("/{orderId}")
 	public ResponseEntity<OrderDto> update(
-			@PathVariable("orderId")
+			@PathVariable
 			@NotBlank(message = "Input must not be blank")
 			@Valid final String orderId,
 			@RequestBody 
@@ -75,7 +75,7 @@ public class OrderResource {
 	}
 	
 	@DeleteMapping("/{orderId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("orderId") final String orderId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String orderId) {
 		log.info("*** Boolean, resource; delete order by id *");
 		this.orderService.deleteById(Integer.parseInt(orderId));
 		return ResponseEntity.ok(true);

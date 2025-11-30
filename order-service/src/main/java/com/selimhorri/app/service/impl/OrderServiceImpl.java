@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -39,8 +39,8 @@ public class OrderServiceImpl implements OrderService {
 		log.info("*** OrderDto, service; fetch order by id *");
 		return this.orderRepository.findById(orderId)
 				.map(OrderMappingHelper::map)
-				.orElseThrow(() -> new OrderNotFoundException(String
-						.format("Order with id: %d not found", orderId)));
+				.orElseThrow(() -> new OrderNotFoundException("Order with id: %d not found"
+				.formatted(orderId)));
 	}
 	
 	@Override

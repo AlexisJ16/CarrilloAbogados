@@ -1,5 +1,6 @@
 package com.selimhorri.app.business.user.model.response;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 
@@ -15,7 +16,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class VerificationUserTokenServiceCollectionDtoResponse implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Collection<VerificationTokenDto> collection;
 	

@@ -1,8 +1,8 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ public class ProductResource {
 	
 	@GetMapping("/{productId}")
 	public ResponseEntity<ProductDto> findById(
-			@PathVariable("productId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not be blank!") 
 			@Valid final String productId) {
 		log.info("*** ProductDto, resource; fetch product by id *");
@@ -64,7 +64,7 @@ public class ProductResource {
 	
 	@PutMapping("/{productId}")
 	public ResponseEntity<ProductDto> update(
-			@PathVariable("productId")
+			@PathVariable
 			@NotBlank(message = "Input must not be blank!")
 			@Valid final String productId,
 			@RequestBody 
@@ -75,7 +75,7 @@ public class ProductResource {
 	}
 	
 	@DeleteMapping("/{productId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("productId") final String productId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String productId) {
 		log.info("*** Boolean, resource; delete product by id *");
 		this.productService.deleteById(Integer.parseInt(productId));
 		return ResponseEntity.ok(true);

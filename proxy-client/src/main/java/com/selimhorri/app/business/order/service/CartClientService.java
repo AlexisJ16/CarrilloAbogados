@@ -1,8 +1,8 @@
 package com.selimhorri.app.business.order.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public interface CartClientService {
 	
 	@GetMapping("/{cartId}")
 	public ResponseEntity<CartDto> findById(
-			@PathVariable("cartId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not be blank!") 
 			@Valid final String cartId);
 	
@@ -42,7 +42,7 @@ public interface CartClientService {
 	
 	@PutMapping("/{cartId}")
 	public ResponseEntity<CartDto> update(
-			@PathVariable("cartId")
+			@PathVariable
 			@NotBlank(message = "Input must not be blank!")
 			@Valid final String cartId,
 			@RequestBody 
@@ -50,7 +50,7 @@ public interface CartClientService {
 			@Valid final CartDto cartDto);
 	
 	@DeleteMapping("/{cartId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("cartId") final String cartId);
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String cartId);
 	
 }
 

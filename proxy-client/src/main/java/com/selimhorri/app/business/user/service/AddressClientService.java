@@ -1,8 +1,8 @@
 package com.selimhorri.app.business.user.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public interface AddressClientService {
 	
 	@GetMapping("/{addressId}")
 	ResponseEntity<AddressDto> findById(
-			@PathVariable("addressId") 
+			@PathVariable 
 			@NotBlank(message = "*Input must not blank!**") 
 			@Valid final String addressId);
 	
@@ -42,14 +42,14 @@ public interface AddressClientService {
 	
 	@PutMapping("/{addressId}")
 	ResponseEntity<AddressDto> update(
-			@PathVariable("addressId") 
+			@PathVariable 
 			@NotBlank(message = "*Input must not blank!**") final String addressId, 
 			@RequestBody 
 			@NotNull(message = "*Input must not NULL!**") 
 			@Valid final AddressDto addressDto);
 	
 	@DeleteMapping("/{addressId}")
-	ResponseEntity<Boolean> deleteById(@PathVariable("addressId") @NotBlank(message = "*Input must not blank!**") @Valid final String addressId);
+	ResponseEntity<Boolean> deleteById(@PathVariable @NotBlank(message = "*Input must not blank!**") @Valid final String addressId);
 	
 }
 

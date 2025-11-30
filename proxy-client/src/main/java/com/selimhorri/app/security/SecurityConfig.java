@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtRequestFilter jwtRequestFilter;
 	
-	@Override
+	/*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Override
 	protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(this.userDetailsService)
 			.passwordEncoder(this.passwordEncoder);
@@ -35,34 +35,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
-		http.cors().disable()
-			.csrf().disable()
-			.authorizeRequests()
-				.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-				.antMatchers("/", "index", "**/css/**", "**/js/**").permitAll()
-				.antMatchers("/api/authenticate/**").permitAll()
-				.antMatchers("/api/categories/**").permitAll()
-				.antMatchers("/api/products/**").permitAll()
-				.antMatchers("/api/**")
-					.hasAnyRole(RoleBasedAuthority.ROLE_USER.getRole(), 
-							RoleBasedAuthority.ROLE_ADMIN.getRole())
-				.antMatchers("/actuator/health/**", "/actuator/info/**")
-					.permitAll()
-				.antMatchers("/actuator/**")
-					.hasAnyRole(RoleBasedAuthority.ROLE_ADMIN.getRole())
-				.anyRequest().authenticated()
-			.and()
-			.headers()
-				.frameOptions()
-				.sameOrigin()
-			.and()
-			.sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
-			.addFilterBefore(this.jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		http.cors(cors -> cors.disable())
+				.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(requests -> requests
+						.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+						.requestMatchers("/", "index", "**/css/**", "**/js/**").permitAll()
+						.requestMatchers("/api/authenticate/**").permitAll()
+						.requestMatchers("/api/categories/**").permitAll()
+						.requestMatchers("/api/products/**").permitAll()
+						.requestMatchers("/api/**")
+						.hasAnyRole(RoleBasedAuthority.ROLE_USER.getRole(),
+								RoleBasedAuthority.ROLE_ADMIN.getRole())
+						.antMatchers("/actuator/health/**", "/actuator/info/**")
+						.permitAll()
+						.antMatchers("/actuator/**")
+						.hasAnyRole(RoleBasedAuthority.ROLE_ADMIN.getRole())
+						.anyRequest().authenticated()
+						.and()
+						.headers()
+						.frameOptions()
+						.sameOrigin()
+						.and()
+						.sessionManagement()
+						.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+						.and()
+						.addFilterBefore(this.jwtRequestFilter, UsernamePasswordAuthenticationFilter.class));
 	}
 	
-	@Bean
+	/*~~(Migrate manually based on https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)~~>*/@Bean
 	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();

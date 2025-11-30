@@ -1,5 +1,6 @@
 package com.selimhorri.app.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,7 +18,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class PaymentDto implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	private Integer paymentId;

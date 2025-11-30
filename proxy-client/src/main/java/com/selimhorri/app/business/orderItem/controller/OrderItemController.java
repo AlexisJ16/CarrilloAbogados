@@ -31,8 +31,8 @@ public class OrderItemController {
 	
 	@GetMapping("/{orderId}/{productId}")
 	public ResponseEntity<OrderItemDto> findById(
-			@PathVariable("orderId") final String orderId, 
-			@PathVariable("productId") final String productId) {
+			@PathVariable final String orderId, 
+			@PathVariable final String productId) {
 		return ResponseEntity.ok(this.orderItemClientService.findById(new OrderItemId(Integer.parseInt(productId), 
 				Integer.parseInt(orderId))).getBody());
 	}
@@ -54,8 +54,8 @@ public class OrderItemController {
 	
 	@DeleteMapping("/{orderId}/{productId}")
 	public ResponseEntity<Boolean> deleteById(
-			@PathVariable("orderId") final String orderId, 
-			@PathVariable("productId") final String productId) {
+			@PathVariable final String orderId, 
+			@PathVariable final String productId) {
 		this.orderItemClientService.deleteById(new OrderItemId(Integer.parseInt(orderId), 
 				Integer.parseInt(productId))).getBody();
 		return ResponseEntity.ok(true);

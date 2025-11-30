@@ -29,7 +29,7 @@ public class CategoryController {
 	}
 	
 	@GetMapping("/{categoryId}")
-	public ResponseEntity<CategoryDto> findById(@PathVariable("categoryId") final String categoryId) {
+	public ResponseEntity<CategoryDto> findById(@PathVariable final String categoryId) {
 		return ResponseEntity.ok(this.categoryClientService.findById(categoryId).getBody());
 	}
 	
@@ -44,13 +44,13 @@ public class CategoryController {
 	}
 	
 	@PutMapping("/{categoryId}")
-	public ResponseEntity<CategoryDto> update(@PathVariable("categoryId") final String categoryId, 
+	public ResponseEntity<CategoryDto> update(@PathVariable final String categoryId, 
 			@RequestBody final CategoryDto categoryDto) {
 		return ResponseEntity.ok(this.categoryClientService.update(categoryId, categoryDto).getBody());
 	}
 	
 	@DeleteMapping("/{categoryId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("categoryId") final String categoryId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String categoryId) {
 		return ResponseEntity.ok(this.categoryClientService.deleteById(categoryId).getBody());
 	}
 	

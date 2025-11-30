@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -39,8 +39,8 @@ public class VerificationTokenServiceImpl implements VerificationTokenService {
 		log.info("*** VerificationTokenDto, service; fetch verificationToken by ids *");
 		return this.verificationTokenRepository.findById(verificationTokenId)
 				.map(VerificationTokenMappingHelper::map)
-				.orElseThrow(() -> new VerificationTokenNotFoundException(String
-						.format("#### VerificationToken with id: %d not found! ####", verificationTokenId)));
+				.orElseThrow(() -> new VerificationTokenNotFoundException("#### VerificationToken with id: %d not found! ####"
+				.formatted(verificationTokenId)));
 	}
 	
 	@Override

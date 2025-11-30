@@ -1,5 +1,6 @@
 package com.selimhorri.app.domain.id;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
@@ -10,7 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class OrderItemId implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Integer productId;
 	private Integer orderId;

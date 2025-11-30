@@ -1,7 +1,7 @@
 package com.selimhorri.app.business.orderItem.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +24,8 @@ public interface OrderItemClientService {
 	
 	@GetMapping("/{orderId}/{productId}")
 	ResponseEntity<OrderItemDto> findById(
-			@PathVariable("orderId") final String orderId, 
-			@PathVariable("productId") final String productId);
+			@PathVariable final String orderId, 
+			@PathVariable final String productId);
 	
 	@GetMapping("/find")
 	ResponseEntity<OrderItemDto> findById(
@@ -47,8 +47,8 @@ public interface OrderItemClientService {
 	
 	@DeleteMapping("/{orderId}/{productId}")
 	ResponseEntity<Boolean> deleteById(
-			@PathVariable("orderId") final String orderId, 
-			@PathVariable("productId") final String productId);
+			@PathVariable final String orderId, 
+			@PathVariable final String productId);
 	
 	@DeleteMapping("/delete")
 	ResponseEntity<Boolean> deleteById(

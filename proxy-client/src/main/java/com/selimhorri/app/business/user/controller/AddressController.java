@@ -29,7 +29,7 @@ public class AddressController {
 	}
 	
 	@GetMapping("/{addressId}")
-	public ResponseEntity<AddressDto> findById(@PathVariable("addressId") final String addressId) {
+	public ResponseEntity<AddressDto> findById(@PathVariable final String addressId) {
 		return ResponseEntity.ok(this.addressClientService.findById(addressId).getBody());
 	}
 	
@@ -44,12 +44,12 @@ public class AddressController {
 	}
 	
 	@PutMapping("/{addressId}")
-	public ResponseEntity<AddressDto> update(@PathVariable("addressId") final String addressId, @RequestBody final AddressDto addressDto) {
+	public ResponseEntity<AddressDto> update(@PathVariable final String addressId, @RequestBody final AddressDto addressDto) {
 		return ResponseEntity.ok(this.addressClientService.update(addressDto).getBody());
 	}
 	
 	@DeleteMapping("/{addressId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("addressId") final String addressId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String addressId) {
 		return ResponseEntity.ok(this.addressClientService.deleteById(addressId).getBody());
 	}
 	

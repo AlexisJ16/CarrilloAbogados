@@ -1,8 +1,8 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ public class CartResource {
 	
 	@GetMapping("/{cartId}")
 	public ResponseEntity<CartDto> findById(
-			@PathVariable("cartId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not be blank") 
 			@Valid final String cartId) {
 		log.info("*** CartDto, resource; fetch cart by id *");
@@ -64,7 +64,7 @@ public class CartResource {
 	
 	@PutMapping("/{cartId}")
 	public ResponseEntity<CartDto> update(
-			@PathVariable("cartId")
+			@PathVariable
 			@NotBlank(message = "Input must not be blank")
 			@Valid final String cartId,
 			@RequestBody 
@@ -75,7 +75,7 @@ public class CartResource {
 	}
 	
 	@DeleteMapping("/{cartId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("cartId") final String cartId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String cartId) {
 		log.info("*** Boolean, resource; delete cart by id *");
 		this.cartService.deleteById(Integer.parseInt(cartId));
 		return ResponseEntity.ok(true);
