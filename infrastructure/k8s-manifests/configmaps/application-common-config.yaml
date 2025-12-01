@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-common-config
+  namespace: carrillo-dev
+  labels:
+    component: common
+    project: carrillo-legal-tech
+data:
+  SPRING_PROFILES_ACTIVE: dev
+  JAVA_OPTS: "-Xms256m -Xmx512m -XX:+UseG1GC"
+  TZ: America/Bogota
+  # Observability
+  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: health,info,prometheus,metrics
+  MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED: "true"
+  # Logging
+  LOGGING_LEVEL_ROOT: INFO
+  LOGGING_LEVEL_COM_CARRILLOABOGADOS: DEBUG
+  LOGGING_PATTERN_CONSOLE: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"

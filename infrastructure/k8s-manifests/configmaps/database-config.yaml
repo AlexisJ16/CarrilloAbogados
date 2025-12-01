@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+  namespace: carrillo-dev
+  labels:
+    component: database
+    project: carrillo-legal-tech
+data:
+  POSTGRES_HOST: postgresql.databases.svc.cluster.local
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: carrillo_legal_tech
+  POSTGRES_SCHEMA_CLIENTS: clients
+  POSTGRES_SCHEMA_CASES: cases
+  POSTGRES_SCHEMA_DOCUMENTS: documents
+  POSTGRES_SCHEMA_PAYMENTS: payments
+  POSTGRES_SCHEMA_CALENDAR: calendar
+  POSTGRES_SCHEMA_NOTIFICATIONS: notifications
+  # Connection Pool Settings
+  HIKARI_MAXIMUM_POOL_SIZE: "10"
+  HIKARI_MINIMUM_IDLE: "5"
+  HIKARI_CONNECTION_TIMEOUT: "30000"
+  HIKARI_IDLE_TIMEOUT: "600000"
+  HIKARI_MAX_LIFETIME: "1800000"

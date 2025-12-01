@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  namespace: carrillo-dev
+  labels:
+    app: api-gateway
+    project: carrillo-legal-tech
+data:
+  application.yaml: |
+    spring:
+      application:
+        name: api-gateway
+      cloud:
+        gateway:
+          routes:
+            - id: user-service
+              uri: http://user-service.carrillo-dev.svc.cluster.local:8700
+              predicates:
+                - Path=/api/users/**
+              filters:
+                - StripPrefix=1
+            - id: payment-service
+              uri: http://payment-service.carrillo-dev.svc.cluster.local:8400
+              predicates:
+                - Path=/api/payments/**
+              filters:
+                - StripPrefix=1
+          discovery:
+            locator:
+              enabled: false
+      profiles:
+        active: dev
+    server:
+      port: 8080
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,prometheus,metrics
+      metrics:
+        export:
+          prometheus:
+            enabled: true
+    logging:
+      level:
+        org.springframework.cloud.gateway: DEBUG
+        com.carrilloabogados: INFO

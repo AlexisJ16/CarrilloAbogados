@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: carrillo-staging
+  labels:
+    name: carrillo-staging
+    environment: staging
+    project: carrillo-legal-tech
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: staging-resource-quota
+  namespace: carrillo-staging
+spec:
+  hard:
+    requests.cpu: "6"
+    requests.memory: 6Gi
+    limits.cpu: "12"
+    limits.memory: 12Gi
+    pods: "30"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: staging-limit-range
+  namespace: carrillo-staging
+spec:
+  limits:
+  - max:
+      cpu: "2"
+      memory: 2Gi
+    min:
+      cpu: "100m"
+      memory: 128Mi
+    default:
+      cpu: "750m"
+      memory: 768Mi
+    defaultRequest:
+      cpu: "500m"
+      memory: 512Mi
+    type: Container

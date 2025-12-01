@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nats-config
+  namespace: carrillo-dev
+  labels:
+    component: messaging
+    project: carrillo-legal-tech
+data:
+  NATS_URL: nats://nats.messaging.svc.cluster.local:4222
+  NATS_CLUSTER_ID: carrillo-cluster
+  NATS_CLIENT_ID_PREFIX: carrillo-legal-tech
+  # Event Topics
+  TOPIC_CLIENT_CREATED: carrillo.events.client.created
+  TOPIC_CLIENT_UPDATED: carrillo.events.client.updated
+  TOPIC_CASE_CREATED: carrillo.events.case.created
+  TOPIC_CASE_UPDATED: carrillo.events.case.updated
+  TOPIC_DOCUMENT_UPLOADED: carrillo.events.document.uploaded
+  TOPIC_PAYMENT_PROCESSED: carrillo.events.payment.processed
+  TOPIC_NOTIFICATION_SEND: carrillo.events.notification.send
+  TOPIC_CALENDAR_EVENT: carrillo.events.calendar.event
