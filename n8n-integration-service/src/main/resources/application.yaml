@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: n8n-integration-service
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=${POSTGRES_SCHEMA_N8N:n8n_integration}
+    username: ${POSTGRES_USER:carrillo}
+    password: ${POSTGRES_PASSWORD:CarrilloAbogados2025!}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+      config:
+        enabled: true
+        namespace: carrillo-dev
+        sources:
+          - name: database-config
+          - name: application-common-config
+
+server:
+  port: 8800
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+# n8n specific configuration
+n8n:
+  base-url: ${N8N_BASE_URL:http://n8n.carrillo-dev.svc.cluster.local:5678}
+  api-key: ${N8N_API_KEY:n8n_api_key_placeholder}
+  webhook-path: /webhook/n8n
+  timeout:
+    connect: 5000
+    read: 10000
+
+logging:
+  level:
+    org.springframework.cloud.kubernetes: DEBUG
+    com.carrilloabogados: INFO

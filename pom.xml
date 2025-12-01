@@ -109,13 +109,19 @@
 	</dependencyManagement>
 	
 	<modules>
-		<module>service-discovery</module>
-		<module>cloud-config</module>
 		<module>api-gateway</module>
 		<module>proxy-client</module>
 		<module>user-service</module>
 		<module>order-service</module>
 		<module>payment-service</module>
+		<!-- Nuevos servicios adaptados -->
+		<module>client-service</module>
+		<module>case-service</module>
+		<!-- Phase 7: Nuevos microservicios -->
+		<module>document-service</module>
+		<module>calendar-service</module>
+		<module>notification-service</module>
+		<module>n8n-integration-service</module>
 	</modules>
 	
 	<build>

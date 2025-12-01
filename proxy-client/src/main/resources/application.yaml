@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: proxy-client
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+      config:
+        enabled: true
+        namespace: carrillo-dev
+
+server:
+  port: 8900
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.kubernetes: DEBUG
+    com.selimhorri: INFO

@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: database-client-sa
+  namespace: carrillo-dev
+  labels:
+    component: database-client
+    project: carrillo-legal-tech
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: database-client-role
+  namespace: databases
+  labels:
+    component: database-client
+    project: carrillo-legal-tech
+rules:
+- apiGroups: [""]
+  resources: ["services"]
+  verbs: ["get"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+  resourceNames: ["postgresql-credentials"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: database-client-rolebinding
+  namespace: databases
+  labels:
+    component: database-client
+    project: carrillo-legal-tech
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: database-client-role
+subjects:
+- kind: ServiceAccount
+  name: database-client-sa
+  namespace: carrillo-dev

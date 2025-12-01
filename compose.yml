@@ -1,52 +1,100 @@
 
-version: '3'
+version: '3.8'
+
 services:
-  zipkin-container:
-    image: openzipkin/zipkin
-    ports:
-      - 9411:9411
-  service-discovery-container:
-    image: selimhorri/service-discovery-ecommerce-boot:0.1.0
-    ports:
-      - 8761:8761
+  postgresql:
+    image: postgres:16-alpine
+    container_name: carrillo-postgresql
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-  cloud-config-container:
-    image: selimhorri/cloud-config-ecommerce-boot:0.1.0
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
     ports:
-      - 9296:9296
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-  api-gateway-container:
-    image: selimhorri/api-gateway-ecommerce-boot:0.1.0
-    ports:
-      - 8080:8080
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-  proxy-client-container:
-    image: selimhorri/proxy-client-ecommerce-boot:0.1.0
-    ports:
-      - 8900:8900
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-  order-service-container:
-    image: selimhorri/order-service-ecommerce-boot:0.1.0
-    ports:
-      - 8300:8300
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-  payment-service-container:
-    image: selimhorri/payment-service-ecommerce-boot:0.1.0
-    ports:
-      - 8400:8400
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-  user-service-container:
-    image: selimhorri/user-service-ecommerce-boot:0.1.0
-    ports:
-      - 8700:8700
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - carrillo-network
 
+  nats:
+    image: nats:2.10-alpine
+    container_name: carrillo-nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: ["-js", "-m", "8222"]
+    networks:
+      - carrillo-network
 
+  api-gateway:
+    build: ./api-gateway
+    container_name: carrillo-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+    depends_on:
+      - user-service
+      - payment-service
+    networks:
+      - carrillo-network
 
+  user-service:
+    build: ./user-service
+    container_name: carrillo-user-service
+    ports:
+      - "8700:8700"
+    environment:
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_SCHEMA_CLIENTS: clients
+    depends_on:
+      - postgresql
+    networks:
+      - carrillo-network
+
+  order-service:
+    build: ./order-service
+    container_name: carrillo-order-service
+    ports:
+      - "8300:8300"
+    environment:
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_SCHEMA_CASES: cases
+    depends_on:
+      - postgresql
+      - nats
+    networks:
+      - carrillo-network
+
+  payment-service:
+    build: ./payment-service
+    container_name: carrillo-payment-service
+    ports:
+      - "8400:8400"
+    environment:
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_SCHEMA_PAYMENTS: payments
+    depends_on:
+      - postgresql
+      - nats
+    networks:
+      - carrillo-network
+
+volumes:
+  postgres_data:
+
+networks:
+  carrillo-network:
+    driver: bridge

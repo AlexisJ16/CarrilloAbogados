@@ -1,38 +1,19 @@
 # Carrillo Abogados - Plataforma Legal Tech
 
-## Descripción
-Plataforma cloud-native de gestión legal empresarial construida con microservicios sobre Kubernetes.
+Plataforma cloud-native de gestión legal empresarial para Carrillo Abogados, Cali, Colombia.
 
-## Tecnologías
+## Estado del Proyecto
+
+- **Build Status**: ![Build](https://img.shields.io/badge/build-passing-brightgreen)
+- **Version**: 0.1.0
 - **Java**: 21 LTS
 - **Spring Boot**: 3.3.13
-- **Spring Cloud**: 2023.0.3
 - **Kubernetes**: 1.34.0
-- **Message Queue**: NATS
-- **Database**: PostgreSQL 16
-- **Orchestration**: Helm Charts
 
-## Microservicios Actuales
-
-### Infraestructura
-- `service-discovery`: Eureka Server (migrar a K8s nativo)
-- `cloud-config`: Configuración centralizada (migrar a ConfigMaps)
-- `api-gateway`: Spring Cloud Gateway
-- `proxy-client`: Autenticación y proxy
-
-### Negocio
-- `user-service`: Gestión de usuarios (→ client-service)
-- `order-service`: Gestión de órdenes (→ case-service)
-- `payment-service`: Procesamiento de pagos
-- `document-service`: Gestión de documentos legales (WIP)
-- `calendar-service`: Integración Google Calendar (WIP)
-- `notification-service`: Email/SMS/Push (WIP)
-- `n8n-integration-service`: Workflows y automatizaciones (WIP)
-
-## Desarrollo Local
+## Quick Start
 
 ### Prerrequisitos
-- Java 21
+- JDK 21
 - Maven 3.8+
 - Docker Desktop
 - Minikube
@@ -45,18 +26,29 @@ Plataforma cloud-native de gestión legal empresarial construida con microservic
 
 ### Ejecutar en Minikube
 ```bash
-# Ver guía en docs/operations/local-setup.md
+# Iniciar cluster
+minikube start --kubernetes-version=v1.34.0
+
+# Crear namespaces
+kubectl apply -f infrastructure/k8s-manifests/namespaces/
+
+# Desplegar
+helm install carrillo-dev helm-charts/carrillo-abogados/ -n carrillo-dev
 ```
 
-## Estructura del Proyecto
+## Arquitectura
 
-```
-├── microservices/          # Código de servicios
-├── helm-charts/            # Charts de Kubernetes
-├── infrastructure/         # IaC (Terraform, K8s manifests)
-├── docs/                   # Documentación
-└── scripts/                # Scripts de automatización
-```
+11 microservicios + API Gateway:
+
+- client-service, case-service, payment-service
+- document-service, calendar-service, notification-service
+- n8n-integration-service
+
+Ver [Documentación Completa](docs/architecture/ARCHITECTURE.md)
+
+## Desarrollo
+
+Ver [CLAUDE.md](CLAUDE.md) para contexto completo del proyecto.
 
 ## Licencia
 
