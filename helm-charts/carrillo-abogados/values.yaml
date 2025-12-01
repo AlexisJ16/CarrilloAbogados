@@ -1,0 +1,74 @@
+# Umbrella Chart - Carrillo Abogados Legal Tech Platform
+# Values para todos los microservicios
+
+global:
+  environment: dev
+  domain: carrilloabgd.com
+  registry: carrilloabogados
+  imagePullPolicy: IfNotPresent
+  
+  postgresql:
+    host: postgresql.databases.svc.cluster.local
+    port: 5432
+    database: carrillo_legal_tech
+    
+  nats:
+    url: nats://nats.messaging.svc.cluster.local:4222
+    clusterId: carrillo-cluster
+  
+  monitoring:
+    prometheus:
+      enabled: true
+    grafana:
+      enabled: true
+
+# API Gateway
+api-gateway:
+  enabled: true
+  replicaCount: 2
+  image:
+    tag: "v0.1.0"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  ingress:
+    enabled: true
+    hosts:
+      - host: api.carrilloabgd.com
+        paths:
+          - path: /
+            pathType: Prefix
+
+# User Service (futuro: client-service)
+user-service:
+  enabled: false  # Habilitaremos en próximas fases
+  replicaCount: 2
+
+# Payment Service
+payment-service:
+  enabled: false  # Habilitaremos en próximas fases
+  replicaCount: 2
+
+# Document Service (nuevo)
+document-service:
+  enabled: false  # Habilitaremos cuando implementemos el servicio
+  replicaCount: 2
+
+# Calendar Service (nuevo)
+calendar-service:
+  enabled: false  # Habilitaremos cuando implementemos el servicio
+  replicaCount: 2
+
+# Notification Service (nuevo)
+notification-service:
+  enabled: false  # Habilitaremos cuando implementemos el servicio
+  replicaCount: 2
+
+# N8N Integration Service (nuevo)
+n8n-integration-service:
+  enabled: false  # Habilitaremos cuando implementemos el servicio
+  replicaCount: 1

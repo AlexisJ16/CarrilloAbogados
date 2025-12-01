@@ -1,0 +1,17 @@
+apiVersion: v2
+name: api-gateway
+description: Spring Cloud Gateway para Carrillo Abogados Legal Tech Platform
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - api-gateway
+  - spring-cloud-gateway
+  - kubernetes
+  - legal-tech
+maintainers:
+  - name: Carrillo Abogados Dev Team
+    email: ingenieria@carrilloabgd.com
+sources:
+  - https://github.com/CarrilloAbogados/carrillo-legal-tech
+home: https://plataforma.carrilloabgd.com

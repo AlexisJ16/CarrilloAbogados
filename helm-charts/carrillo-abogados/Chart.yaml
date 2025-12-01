@@ -1,0 +1,23 @@
+apiVersion: v2
+name: carrillo-abogados
+description: Umbrella Helm Chart para Carrillo Abogados Legal Tech Platform
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - legal-tech
+  - microservices
+  - kubernetes
+  - spring-boot
+maintainers:
+  - name: Carrillo Abogados Dev Team
+    email: ingenieria@carrilloabgd.com
+sources:
+  - https://github.com/CarrilloAbogados/carrillo-legal-tech
+home: https://plataforma.carrilloabgd.com
+
+dependencies:
+  - name: api-gateway
+    version: "0.1.0"
+    repository: "file://../api-gateway"
+    condition: api-gateway.enabled
