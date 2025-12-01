@@ -1,5 +1,5 @@
 
-FROM openjdk:11
+FROM eclipse-temurin:21-jdk-alpine
 ARG PROJECT_VERSION=0.1.0
 RUN mkdir -p /home/app
 WORKDIR /home/app
