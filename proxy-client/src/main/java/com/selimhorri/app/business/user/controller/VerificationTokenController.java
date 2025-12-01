@@ -29,7 +29,7 @@ public class VerificationTokenController {
 	}
 	
 	@GetMapping("/{verificationTokenId}")
-	public ResponseEntity<VerificationTokenDto> findById(@PathVariable("verificationTokenId") final String verificationTokenId) {
+	public ResponseEntity<VerificationTokenDto> findById(@PathVariable final String verificationTokenId) {
 		return ResponseEntity.ok(this.verificationTokenClientService.findById(verificationTokenId).getBody());
 	}
 	
@@ -44,12 +44,12 @@ public class VerificationTokenController {
 	}
 	
 	@PutMapping("/{verificationTokenId}")
-	public ResponseEntity<VerificationTokenDto> update(@PathVariable("verificationTokenId") final String verificationTokenId, @RequestBody final VerificationTokenDto verificationTokenDto) {
+	public ResponseEntity<VerificationTokenDto> update(@PathVariable final String verificationTokenId, @RequestBody final VerificationTokenDto verificationTokenDto) {
 		return ResponseEntity.ok(this.verificationTokenClientService.update(verificationTokenDto).getBody());
 	}
 	
 	@DeleteMapping("/{verificationTokenId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("verificationTokenId") final String verificationTokenId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String verificationTokenId) {
 		return ResponseEntity.ok(this.verificationTokenClientService.deleteById(verificationTokenId).getBody());
 	}
 	

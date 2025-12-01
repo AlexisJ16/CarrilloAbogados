@@ -1,5 +1,6 @@
 package com.selimhorri.app.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -17,7 +18,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class UserDto implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	private Integer userId;

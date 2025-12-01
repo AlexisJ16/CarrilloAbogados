@@ -29,12 +29,12 @@ public class CredentialController {
 	}
 	
 	@GetMapping("/{credentialId}")
-	public ResponseEntity<CredentialDto> findById(@PathVariable("credentialId") final String credentialId) {
+	public ResponseEntity<CredentialDto> findById(@PathVariable final String credentialId) {
 		return ResponseEntity.ok(this.credentialClientService.findById(credentialId).getBody());
 	}
 	
 	@GetMapping("/username/{username}")
-	public ResponseEntity<CredentialDto> findByCredentialname(@PathVariable("username") final String username) {
+	public ResponseEntity<CredentialDto> findByCredentialname(@PathVariable final String username) {
 		return ResponseEntity.ok(this.credentialClientService.findByUsername(username).getBody());
 	}
 	
@@ -49,12 +49,12 @@ public class CredentialController {
 	}
 	
 	@PutMapping("/{credentialId}")
-	public ResponseEntity<CredentialDto> update(@PathVariable("credentialId") final String credentialId, @RequestBody final CredentialDto credentialDto) {
+	public ResponseEntity<CredentialDto> update(@PathVariable final String credentialId, @RequestBody final CredentialDto credentialDto) {
 		return ResponseEntity.ok(this.credentialClientService.update(credentialDto).getBody());
 	}
 	
 	@DeleteMapping("/{credentialId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("credentialId") final String credentialId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String credentialId) {
 		return ResponseEntity.ok(this.credentialClientService.deleteById(credentialId).getBody());
 	}
 	

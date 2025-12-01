@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 		log.info("*** ProductDto, service; fetch product by id *");
 		return this.productRepository.findById(productId)
 				.map(ProductMappingHelper::map)
-				.orElseThrow(() -> new ProductNotFoundException(String.format("Product with id: %d not found", productId)));
+				.orElseThrow(() -> new ProductNotFoundException("Product with id: %d not found".formatted(productId)));
 	}
 	
 	@Override

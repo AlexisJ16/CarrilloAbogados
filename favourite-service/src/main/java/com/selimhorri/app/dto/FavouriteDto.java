@@ -1,9 +1,10 @@
 package com.selimhorri.app.dto;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -28,7 +29,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class FavouriteDto implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	@NotNull(message = "Field must not be NULL")

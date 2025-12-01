@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -53,8 +53,8 @@ public class CartServiceImpl implements CartService {
 							.USER_SERVICE_API_URL + "/" + c.getUserDto().getUserId(), UserDto.class));
 					return c;
 				})
-				.orElseThrow(() -> new CartNotFoundException(String
-						.format("Cart with id: %d not found", cartId)));
+				.orElseThrow(() -> new CartNotFoundException("Cart with id: %d not found"
+				.formatted(cartId)));
 	}
 	
 	@Override

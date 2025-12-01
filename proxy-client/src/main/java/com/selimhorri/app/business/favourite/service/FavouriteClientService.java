@@ -1,7 +1,7 @@
 package com.selimhorri.app.business.favourite.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +24,9 @@ public interface FavouriteClientService {
 	
 	@GetMapping("/{userId}/{productId}/{likeDate}")
 	public ResponseEntity<FavouriteDto> findById(
-			@PathVariable("userId") final String userId, 
-			@PathVariable("productId") final String productId, 
-			@PathVariable("likeDate") final String likeDate);
+			@PathVariable final String userId, 
+			@PathVariable final String productId, 
+			@PathVariable final String likeDate);
 	
 	@GetMapping("/find")
 	public ResponseEntity<FavouriteDto> findById(
@@ -48,9 +48,9 @@ public interface FavouriteClientService {
 	
 	@DeleteMapping("/{userId}/{productId}/{likeDate}")
 	public ResponseEntity<Boolean> deleteById(
-			@PathVariable("userId") final String userId, 
-			@PathVariable("productId") final String productId, 
-			@PathVariable("likeDate") final String likeDate);
+			@PathVariable final String userId, 
+			@PathVariable final String productId, 
+			@PathVariable final String likeDate);
 	
 	@DeleteMapping("/delete")
 	public ResponseEntity<Boolean> deleteById(

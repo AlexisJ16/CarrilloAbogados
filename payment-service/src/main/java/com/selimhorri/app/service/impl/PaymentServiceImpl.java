@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -53,7 +53,7 @@ public class PaymentServiceImpl implements PaymentService {
 							.ORDER_SERVICE_API_URL + "/" + p.getOrderDto().getOrderId(), OrderDto.class));
 					return p;
 				})
-				.orElseThrow(() -> new PaymentNotFoundException(String.format("Payment with id: %d not found", paymentId)));
+				.orElseThrow(() -> new PaymentNotFoundException("Payment with id: %d not found".formatted(paymentId)));
 	}
 	
 	@Override

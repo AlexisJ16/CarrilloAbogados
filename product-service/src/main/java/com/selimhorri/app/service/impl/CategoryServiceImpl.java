@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
 		log.info("*** CategoryDto, service; fetch category by id *");
 		return this.categoryRepository.findById(categoryId)
 				.map(CategoryMappingHelper::map)
-				.orElseThrow(() -> new CategoryNotFoundException(String.format("Category with id: %d not found", categoryId)));
+				.orElseThrow(() -> new CategoryNotFoundException("Category with id: %d not found".formatted(categoryId)));
 	}
 	
 	@Override

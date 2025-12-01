@@ -29,12 +29,12 @@ public class UserController {
 	}
 	
 	@GetMapping("/{userId}")
-	public ResponseEntity<UserDto> findById(@PathVariable("userId") final String userId) {
+	public ResponseEntity<UserDto> findById(@PathVariable final String userId) {
 		return ResponseEntity.ok(this.userClientService.findById(userId).getBody());
 	}
 	
 	@GetMapping("/username/{username}")
-	public ResponseEntity<UserDto> findByUsername(@PathVariable("username") final String username) {
+	public ResponseEntity<UserDto> findByUsername(@PathVariable final String username) {
 		return ResponseEntity.ok(this.userClientService.findByUsername(username).getBody());
 	}
 	
@@ -49,12 +49,12 @@ public class UserController {
 	}
 	
 	@PutMapping("/{userId}")
-	public ResponseEntity<UserDto> update(@PathVariable("userId") final String userId, @RequestBody final UserDto userDto) {
+	public ResponseEntity<UserDto> update(@PathVariable final String userId, @RequestBody final UserDto userDto) {
 		return ResponseEntity.ok(this.userClientService.update(userDto).getBody());
 	}
 	
 	@DeleteMapping("/{userId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("userId") final String userId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String userId) {
 		return ResponseEntity.ok(this.userClientService.deleteById(userId).getBody());
 	}
 	

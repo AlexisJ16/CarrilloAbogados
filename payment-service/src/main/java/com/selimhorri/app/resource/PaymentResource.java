@@ -1,8 +1,8 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ public class PaymentResource {
 	
 	@GetMapping("/{paymentId}")
 	public ResponseEntity<PaymentDto> findById(
-			@PathVariable("paymentId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not be blank") 
 			@Valid final String paymentId) {
 		log.info("*** PaymentDto, resource; fetch payment by id *");
@@ -63,7 +63,7 @@ public class PaymentResource {
 	}
 	
 	@DeleteMapping("/{paymentId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("paymentId") final String paymentId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String paymentId) {
 		log.info("*** Boolean, resource; delete payment by id *");
 		this.paymentService.deleteById(Integer.parseInt(paymentId));
 		return ResponseEntity.ok(true);

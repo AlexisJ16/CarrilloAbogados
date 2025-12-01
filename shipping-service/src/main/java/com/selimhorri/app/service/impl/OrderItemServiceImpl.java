@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -59,7 +59,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 							.ORDER_SERVICE_API_URL + "/" + o.getOrderDto().getOrderId(), OrderDto.class));
 					return o;
 				})
-				.orElseThrow(() -> new OrderItemNotFoundException(String.format("OrderItem with id: %s not found", orderItemId)));
+				.orElseThrow(() -> new OrderItemNotFoundException("OrderItem with id: %s not found".formatted(orderItemId)));
 	}
 	
 	@Override

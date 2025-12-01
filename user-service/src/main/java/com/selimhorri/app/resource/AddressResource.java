@@ -1,8 +1,8 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ public class AddressResource {
 	
 	@GetMapping("/{addressId}")
 	public ResponseEntity<AddressDto> findById(
-			@PathVariable("addressId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") 
 			@Valid final String addressId) {
 		log.info("*** AddressDto, resource; fetch address by id *");
@@ -64,7 +64,7 @@ public class AddressResource {
 	
 	@PutMapping("/{addressId}")
 	public ResponseEntity<AddressDto> update(
-			@PathVariable("addressId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") final String addressId, 
 			@RequestBody 
 			@NotNull(message = "Input must not NULL") 
@@ -74,7 +74,7 @@ public class AddressResource {
 	}
 	
 	@DeleteMapping("/{addressId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("addressId") @NotBlank(message = "Input must not blank") @Valid final String addressId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable @NotBlank(message = "Input must not blank") @Valid final String addressId) {
 		log.info("*** Boolean, resource; delete address by id *");
 		this.addressService.deleteById(Integer.parseInt(addressId));
 		return ResponseEntity.ok(true);

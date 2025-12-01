@@ -1,8 +1,8 @@
 package com.selimhorri.app.business.payment.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public interface PaymentClientService {
 	
 	@GetMapping("/{paymentId}")
 	public ResponseEntity<PaymentDto> findById(
-			@PathVariable("paymentId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not be blank!") 
 			@Valid final String paymentId);
 	
@@ -41,7 +41,7 @@ public interface PaymentClientService {
 			@Valid final PaymentDto paymentDto);
 	
 	@DeleteMapping("/{paymentId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("paymentId") final String paymentId);
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String paymentId);
 	
 }
 

@@ -1,8 +1,8 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ public class CredentialResource {
 	
 	@GetMapping("/{credentialId}")
 	public ResponseEntity<CredentialDto> findById(
-			@PathVariable("credentialId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") 
 			@Valid final String credentialId) {
 		log.info("*** CredentialDto, resource; fetch credential by id *");
@@ -64,7 +64,7 @@ public class CredentialResource {
 	
 	@PutMapping("/{credentialId}")
 	public ResponseEntity<CredentialDto> update(
-			@PathVariable("credentialId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") final String credentialId, 
 			@RequestBody 
 			@NotNull(message = "Input must not NULL") 
@@ -75,7 +75,7 @@ public class CredentialResource {
 	
 	@DeleteMapping("/{credentialId}")
 	public ResponseEntity<Boolean> deleteById(
-			@PathVariable("credentialId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") 
 			@Valid final String credentialId) {
 		log.info("*** Boolean, resource; delete credential by id *");
@@ -85,7 +85,7 @@ public class CredentialResource {
 	
 	@GetMapping("/username/{username}")
 	public ResponseEntity<CredentialDto> findByUsername(
-			@PathVariable("username") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") 
 			@Valid final String username) {
 		log.info("*** CredentialDto, resource; update credential with credentialId *");

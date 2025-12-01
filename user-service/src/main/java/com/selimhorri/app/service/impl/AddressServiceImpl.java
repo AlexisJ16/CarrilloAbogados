@@ -3,7 +3,7 @@ package com.selimhorri.app.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,7 @@ public class AddressServiceImpl implements AddressService {
 		log.info("*** AddressDto, service; fetch address by id *");
 		return this.addressRepository.findById(addressId)
 				.map(AddressMappingHelper::map)
-				.orElseThrow(() -> new AddressNotFoundException(String.format("#### Address with id: %d not found! ####", addressId)));
+				.orElseThrow(() -> new AddressNotFoundException("#### Address with id: %d not found! ####".formatted(addressId)));
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package com.selimhorri.app.business.user.model;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private final CredentialDto credential;
 	

@@ -1,8 +1,8 @@
 package com.selimhorri.app.business.product.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public interface ProductClientService {
 	
 	@GetMapping("/{productId}")
 	ResponseEntity<ProductDto> findById(
-			@PathVariable("productId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not be blank!") 
 			@Valid final String productId);
 	
@@ -42,7 +42,7 @@ public interface ProductClientService {
 	
 	@PutMapping("/{productId}")
 	ResponseEntity<ProductDto> update(
-			@PathVariable("productId")
+			@PathVariable
 			@NotBlank(message = "Input must not be blank!")
 			@Valid final String productId,
 			@RequestBody 
@@ -50,7 +50,7 @@ public interface ProductClientService {
 			@Valid final ProductDto productDto);
 	
 	@DeleteMapping("/{productId}")
-	ResponseEntity<Boolean> deleteById(@PathVariable("productId") final String productId);
+	ResponseEntity<Boolean> deleteById(@PathVariable final String productId);
 	
 }
 

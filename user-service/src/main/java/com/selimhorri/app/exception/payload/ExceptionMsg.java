@@ -1,5 +1,6 @@
 package com.selimhorri.app.exception.payload;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 
@@ -21,7 +22,8 @@ import lombok.RequiredArgsConstructor;
 @Data
 @Builder
 public final class ExceptionMsg  implements Serializable {
-	
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	
 	@JsonFormat(shape = Shape.STRING, pattern = AppConstant.ZONED_DATE_TIME_FORMAT)

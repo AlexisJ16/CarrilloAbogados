@@ -9,9 +9,9 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 @Configuration
 public class MapperConfig {
-	
+
 	@Bean
-	public ObjectMapper objectMapperBean() {
+	ObjectMapper objectMapperBean() {
 		return new JsonMapper()
 				.enable(SerializationFeature.INDENT_OUTPUT);
 	}

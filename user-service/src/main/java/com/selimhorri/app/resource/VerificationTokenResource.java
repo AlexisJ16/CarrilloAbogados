@@ -1,8 +1,8 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,7 +37,7 @@ public class VerificationTokenResource {
 	
 	@GetMapping("/{verificationTokenId}")
 	public ResponseEntity<VerificationTokenDto> findById(
-			@PathVariable("verificationTokenId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") 
 			@Valid final String verificationTokenId) {
 		log.info("*** VerificationTokenDto, resource; fetch verificationToken by id *");
@@ -64,7 +64,7 @@ public class VerificationTokenResource {
 	
 	@PutMapping("/{verificationTokenId}")
 	public ResponseEntity<VerificationTokenDto> update(
-			@PathVariable("verificationTokenId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") final String verificationTokenId, 
 			@RequestBody 
 			@NotNull(message = "Input must not NULL") 
@@ -75,7 +75,7 @@ public class VerificationTokenResource {
 	
 	@DeleteMapping("/{verificationTokenId}")
 	public ResponseEntity<Boolean> deleteById(
-			@PathVariable("verificationTokenId") 
+			@PathVariable 
 			@NotBlank(message = "Input must not blank") final String verificationTokenId) {
 		log.info("*** Boolean, resource; delete verificationToken by id *");
 		this.verificationTokenService.deleteById(Integer.parseInt(verificationTokenId));

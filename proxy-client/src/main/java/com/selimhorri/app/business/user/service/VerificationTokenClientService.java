@@ -1,8 +1,8 @@
 package com.selimhorri.app.business.user.service;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.selimhorri.app.business.user.model.VerificationTokenDto;
 import com.selimhorri.app.business.user.model.response.VerificationUserTokenServiceCollectionDtoResponse;
 
-@FeignClient(name = "USER-SERVICE", contextId = "verificationTokenClientService", path = "/user-service/api/verificationTokens", decode404 = true)
+@FeignClient(name = "USER-SERVICE", contextId = "verificationTokenClientService", path = "/user-service/api/verificationTokens")
 public interface VerificationTokenClientService {
 	
 	@GetMapping
@@ -24,7 +24,7 @@ public interface VerificationTokenClientService {
 	
 	@GetMapping("/{verificationTokenId}")
 	ResponseEntity<VerificationTokenDto> findById(
-			@PathVariable("verificationTokenId") 
+			@PathVariable 
 			@NotBlank(message = "*Input must not blank!**") 
 			@Valid final String verificationTokenId);
 	
@@ -42,14 +42,14 @@ public interface VerificationTokenClientService {
 	
 	@PutMapping("/{verificationTokenId}")
 	ResponseEntity<VerificationTokenDto> update(
-			@PathVariable("verificationTokenId") 
+			@PathVariable 
 			@NotBlank(message = "*Input must not blank!**") final String verificationTokenId, 
 			@RequestBody 
 			@NotNull(message = "*Input must not NULL!**") 
 			@Valid final VerificationTokenDto verificationTokenDto);
 	
 	@DeleteMapping("/{verificationTokenId}")
-	ResponseEntity<Boolean> deleteById(@PathVariable("verificationTokenId") @NotBlank(message = "*Input must not blank!**") @Valid final String verificationTokenId);
+	ResponseEntity<Boolean> deleteById(@PathVariable @NotBlank(message = "*Input must not blank!**") @Valid final String verificationTokenId);
 	
 }
 

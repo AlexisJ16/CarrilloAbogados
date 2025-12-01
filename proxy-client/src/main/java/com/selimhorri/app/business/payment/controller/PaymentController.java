@@ -29,7 +29,7 @@ public class PaymentController {
 	}
 	
 	@GetMapping("/{paymentId}")
-	public ResponseEntity<PaymentDto> findById(@PathVariable("paymentId") final String paymentId) {
+	public ResponseEntity<PaymentDto> findById(@PathVariable final String paymentId) {
 		return ResponseEntity.ok(this.paymentClientService.findById(paymentId).getBody());
 	}
 	
@@ -44,7 +44,7 @@ public class PaymentController {
 	}
 	
 	@DeleteMapping("/{paymentId}")
-	public ResponseEntity<Boolean> deleteById(@PathVariable("paymentId") final String paymentId) {
+	public ResponseEntity<Boolean> deleteById(@PathVariable final String paymentId) {
 		return ResponseEntity.ok(this.paymentClientService.deleteById(paymentId).getBody());
 	}
 	

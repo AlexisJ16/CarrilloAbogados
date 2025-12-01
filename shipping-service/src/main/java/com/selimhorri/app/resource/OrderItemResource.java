@@ -1,7 +1,7 @@
 package com.selimhorri.app.resource;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,8 +37,8 @@ public class OrderItemResource {
 	
 	@GetMapping("/{orderId}/{productId}")
 	public ResponseEntity<OrderItemDto> findById(
-			@PathVariable("orderId") final String orderId, 
-			@PathVariable("productId") final String productId) {
+			@PathVariable final String orderId, 
+			@PathVariable final String productId) {
 		log.info("*** OrderItemDto, resource; fetch orderItem by id *");
 		return ResponseEntity.ok(this.orderItemService.findById(
 				new OrderItemId(Integer.parseInt(orderId), Integer.parseInt(productId))));
@@ -73,8 +73,8 @@ public class OrderItemResource {
 	
 	@DeleteMapping("/{orderId}/{productId}")
 	public ResponseEntity<Boolean> deleteById(
-			@PathVariable("orderId") final String orderId, 
-			@PathVariable("productId") final String productId) {
+			@PathVariable final String orderId, 
+			@PathVariable final String productId) {
 		log.info("*** Boolean, resource; delete orderItem by id *");
 		this.orderItemService.deleteById(new OrderItemId(Integer.parseInt(orderId), Integer.parseInt(productId)));
 		return ResponseEntity.ok(true);
