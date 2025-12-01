@@ -22,53 +22,36 @@ global:
     grafana:
       enabled: true
 
-# API Gateway
+# Service enablement flags
 api-gateway:
   enabled: true
-  replicaCount: 2
-  image:
-    tag: "v0.1.0"
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 500m
-      memory: 512Mi
-  ingress:
-    enabled: true
-    hosts:
-      - host: api.carrilloabgd.com
-        paths:
-          - path: /
-            pathType: Prefix
 
-# User Service (futuro: client-service)
+proxy-client:
+  enabled: true
+
 user-service:
-  enabled: false  # Habilitaremos en próximas fases
-  replicaCount: 2
+  enabled: true
 
-# Payment Service
+order-service:
+  enabled: true
+
 payment-service:
-  enabled: false  # Habilitaremos en próximas fases
-  replicaCount: 2
+  enabled: true
 
-# Document Service (nuevo)
+client-service:
+  enabled: true
+
+case-service:
+  enabled: true
+
 document-service:
-  enabled: false  # Habilitaremos cuando implementemos el servicio
-  replicaCount: 2
+  enabled: true
 
-# Calendar Service (nuevo)
 calendar-service:
-  enabled: false  # Habilitaremos cuando implementemos el servicio
-  replicaCount: 2
+  enabled: true
 
-# Notification Service (nuevo)
 notification-service:
-  enabled: false  # Habilitaremos cuando implementemos el servicio
-  replicaCount: 2
+  enabled: true
 
-# N8N Integration Service (nuevo)
 n8n-integration-service:
-  enabled: false  # Habilitaremos cuando implementemos el servicio
-  replicaCount: 1
+  enabled: true

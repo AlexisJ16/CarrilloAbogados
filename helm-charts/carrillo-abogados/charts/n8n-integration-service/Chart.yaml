@@ -1,0 +1,6 @@
+apiVersion: v2
+name: n8n-integration-service
+description: N8N workflow automation integration service
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

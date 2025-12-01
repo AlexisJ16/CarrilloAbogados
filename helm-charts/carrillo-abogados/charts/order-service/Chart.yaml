@@ -1,0 +1,6 @@
+apiVersion: v2
+name: order-service
+description: Order management service for legal case orders
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

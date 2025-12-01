@@ -1,0 +1,6 @@
+apiVersion: v2
+name: proxy-client
+description: Proxy client service for authentication and OAuth2 integration
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: notification-service
+description: Email and SMS notification service
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

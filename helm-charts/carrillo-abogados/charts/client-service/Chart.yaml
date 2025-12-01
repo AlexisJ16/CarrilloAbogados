@@ -1,0 +1,6 @@
+apiVersion: v2
+name: client-service
+description: Client management service for legal clients
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
