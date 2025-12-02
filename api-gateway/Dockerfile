@@ -1,12 +1,6 @@
-
-FROM eclipse-temurin:21-jdk-alpine
-ARG PROJECT_VERSION=0.1.0
-RUN mkdir -p /home/app
-WORKDIR /home/app
-ENV SPRING_PROFILES_ACTIVE dev
-COPY api-gateway/ .
-ADD api-gateway/target/api-gateway-v${PROJECT_VERSION}.jar api-gateway.jar
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+ARG JAR_FILE=target/api-gateway-v0.1.0.jar
+COPY ${JAR_FILE} app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}", "-jar", "api-gateway.jar"]
-
-
+ENTRYPOINT ["java", "-Xms256m", "-Xmx512m", "-jar", "app.jar"]

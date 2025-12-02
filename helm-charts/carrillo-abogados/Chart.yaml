@@ -1,63 +1,14 @@
 apiVersion: v2
 name: carrillo-abogados
-description: Umbrella Helm Chart para Carrillo Abogados Legal Tech Platform
+description: Carrillo Abogados Legal Tech Platform - Complete Microservices Suite
 type: application
 version: 0.1.0
 appVersion: "0.1.0"
 keywords:
   - legal-tech
   - microservices
-  - kubernetes
   - spring-boot
+  - kubernetes
 maintainers:
-  - name: Carrillo Abogados Dev Team
-    email: ingenieria@carrilloabgd.com
-sources:
-  - https://github.com/CarrilloAbogados/carrillo-legal-tech
-home: https://plataforma.carrilloabgd.com
-
-dependencies:
-  - name: api-gateway
-    version: "0.1.0"
-    repository: "file://../api-gateway"
-    condition: api-gateway.enabled
-  - name: proxy-client
-    version: "0.1.0"
-    repository: "file://./charts/proxy-client"
-    condition: proxy-client.enabled
-  - name: user-service
-    version: "0.1.0"
-    repository: "file://./charts/user-service"
-    condition: user-service.enabled
-  - name: order-service
-    version: "0.1.0"
-    repository: "file://./charts/order-service"
-    condition: order-service.enabled
-  - name: payment-service
-    version: "0.1.0"
-    repository: "file://./charts/payment-service"
-    condition: payment-service.enabled
-  - name: client-service
-    version: "0.1.0"
-    repository: "file://./charts/client-service"
-    condition: client-service.enabled
-  - name: case-service
-    version: "0.1.0"
-    repository: "file://./charts/case-service"
-    condition: case-service.enabled
-  - name: document-service
-    version: "0.1.0"
-    repository: "file://./charts/document-service"
-    condition: document-service.enabled
-  - name: calendar-service
-    version: "0.1.0"
-    repository: "file://./charts/calendar-service"
-    condition: calendar-service.enabled
-  - name: notification-service
-    version: "0.1.0"
-    repository: "file://./charts/notification-service"
-    condition: notification-service.enabled
-  - name: n8n-integration-service
-    version: "0.1.0"
-    repository: "file://./charts/n8n-integration-service"
-    condition: n8n-integration-service.enabled
+  - name: Carrillo Abogados DevOps Team
+    email: devops@carrilloabogados.com

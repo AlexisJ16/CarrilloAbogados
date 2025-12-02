@@ -1,57 +1,51 @@
-# Umbrella Chart - Carrillo Abogados Legal Tech Platform
-# Values para todos los microservicios
-
+# Global configuration for all microservices
 global:
-  environment: dev
-  domain: carrilloabgd.com
-  registry: carrilloabogados
+  imageRegistry: ""
   imagePullPolicy: IfNotPresent
-  
-  postgresql:
-    host: postgresql.databases.svc.cluster.local
-    port: 5432
-    database: carrillo_legal_tech
-    
-  nats:
-    url: nats://nats.messaging.svc.cluster.local:4222
-    clusterId: carrillo-cluster
-  
-  monitoring:
-    prometheus:
-      enabled: true
-    grafana:
-      enabled: true
+  storageClass: "standard"
+  environment: development
 
 # Service enablement flags
 api-gateway:
   enabled: true
+  replicaCount: 1
 
 proxy-client:
   enabled: true
+  replicaCount: 1
 
 user-service:
   enabled: true
+  replicaCount: 1
 
 order-service:
   enabled: true
+  replicaCount: 1
 
 payment-service:
   enabled: true
+  replicaCount: 1
 
 client-service:
   enabled: true
+  replicaCount: 1
 
 case-service:
   enabled: true
+  replicaCount: 1
 
 document-service:
   enabled: true
+  replicaCount: 1
 
 calendar-service:
   enabled: true
+  replicaCount: 1
 
 notification-service:
   enabled: true
+  replicaCount: 1
 
 n8n-integration-service:
   enabled: true
+  replicaCount: 1

@@ -1,18 +1,26 @@
-# Patterns to ignore when building packages.
-*.swp
-*.bak
-*.tmp
-*.orig
-*~
-.DS_Store
+# Git files
 .git/
 .gitignore
-.bzr/
-.bzrignore
-.hg/
-.hgignore
-.svn/
-*.tgz
+.gitattributes
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+
+# IDE
 .idea/
-*.tmproj
 .vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.temp
+*.log
+
+# Documentation
+README.md
+NOTES.md
