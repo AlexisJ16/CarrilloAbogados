@@ -245,10 +245,6 @@ show_progress "4. Desplegando infraestructura base..."
 echo -e "${YELLOW}📁 Creando namespaces...${NC}"
 kubectl apply -f infrastructure/k8s-manifests/namespaces/
 
-# Aplicar RBAC
-echo -e "${YELLOW}🔐 Configurando RBAC...${NC}"
-kubectl apply -f infrastructure/k8s-manifests/rbac/ --recursive
-
 # Aplicar ConfigMaps
 echo -e "${YELLOW}⚙️ Aplicando ConfigMaps...${NC}"
 kubectl apply -f infrastructure/k8s-manifests/configmaps/ -n carrillo-dev
