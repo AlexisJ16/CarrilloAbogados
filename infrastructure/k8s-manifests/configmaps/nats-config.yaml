@@ -16,6 +16,5 @@ data:
   TOPIC_CASE_CREATED: carrillo.events.case.created
   TOPIC_CASE_UPDATED: carrillo.events.case.updated
   TOPIC_DOCUMENT_UPLOADED: carrillo.events.document.uploaded
-  TOPIC_PAYMENT_PROCESSED: carrillo.events.payment.processed
   TOPIC_NOTIFICATION_SEND: carrillo.events.notification.send
   TOPIC_CALENDAR_EVENT: carrillo.events.calendar.event

@@ -15,22 +15,52 @@ data:
         gateway:
           routes:
             - id: user-service
-              uri: http://user-service.carrillo-dev.svc.cluster.local:8700
+              uri: http://user-service.carrillo-dev.svc.cluster.local:8100
               predicates:
                 - Path=/api/users/**
               filters:
                 - StripPrefix=1
-            - id: payment-service
-              uri: http://payment-service.carrillo-dev.svc.cluster.local:8400
+            - id: client-service
+              uri: http://client-service.carrillo-dev.svc.cluster.local:8200
               predicates:
-                - Path=/api/payments/**
+                - Path=/api/clients/**
+              filters:
+                - StripPrefix=1
+            - id: case-service
+              uri: http://case-service.carrillo-dev.svc.cluster.local:8300
+              predicates:
+                - Path=/api/cases/**
+              filters:
+                - StripPrefix=1
+            - id: document-service
+              uri: http://document-service.carrillo-dev.svc.cluster.local:8500
+              predicates:
+                - Path=/api/documents/**
+              filters:
+                - StripPrefix=1
+            - id: calendar-service
+              uri: http://calendar-service.carrillo-dev.svc.cluster.local:8600
+              predicates:
+                - Path=/api/calendar/**
+              filters:
+                - StripPrefix=1
+            - id: notification-service
+              uri: http://notification-service.carrillo-dev.svc.cluster.local:8700
+              predicates:
+                - Path=/api/notifications/**
+              filters:
+                - StripPrefix=1
+            - id: n8n-integration-service
+              uri: http://n8n-integration-service.carrillo-dev.svc.cluster.local:8800
+              predicates:
+                - Path=/api/integrations/**
               filters:
                 - StripPrefix=1
           discovery:
             locator:
               enabled: false
       profiles:
-        active: dev
+        active: kubernetes
     server:
       port: 8080
     management:
@@ -44,5 +74,5 @@ data:
             enabled: true
     logging:
       level:
-        org.springframework.cloud.gateway: DEBUG
+        org.springframework.cloud.gateway: INFO
         com.carrilloabogados: INFO

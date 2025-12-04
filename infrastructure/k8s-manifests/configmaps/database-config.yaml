@@ -13,7 +13,6 @@ data:
   POSTGRES_SCHEMA_CLIENTS: clients
   POSTGRES_SCHEMA_CASES: cases
   POSTGRES_SCHEMA_DOCUMENTS: documents
-  POSTGRES_SCHEMA_PAYMENTS: payments
   POSTGRES_SCHEMA_CALENDAR: calendar
   POSTGRES_SCHEMA_NOTIFICATIONS: notifications
   # Connection Pool Settings

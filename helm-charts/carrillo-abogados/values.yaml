@@ -10,19 +10,7 @@ api-gateway:
   enabled: true
   replicaCount: 1
 
-proxy-client:
-  enabled: true
-  replicaCount: 1
-
 user-service:
-  enabled: true
-  replicaCount: 1
-
-order-service:
-  enabled: true
-  replicaCount: 1
-
-payment-service:
   enabled: true
   replicaCount: 1
 

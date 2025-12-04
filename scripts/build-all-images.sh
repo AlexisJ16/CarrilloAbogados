@@ -8,15 +8,12 @@ VERSION="0.1.0"
 services=(
     "api-gateway"
     "user-service"
-    "case-service"
     "client-service"
+    "case-service"
     "document-service"
     "calendar-service"
     "notification-service"
-    "payment-service"
-    "order-service"
     "n8n-integration-service"
-    "proxy-client"
 )
 
 echo "🏗️  Iniciando construcción de imágenes Docker en Minikube..."

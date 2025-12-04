@@ -21,10 +21,7 @@ PROJECT_VERSION="0.1.0"
 # Lista de microservicios
 MICROSERVICES=(
     "api-gateway"
-    "proxy-client"
     "user-service"
-    "order-service"
-    "payment-service"
     "client-service"
     "case-service"
     "document-service"

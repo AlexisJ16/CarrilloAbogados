@@ -11,8 +11,8 @@ serviceAccount:
 
 service:
   type: ClusterIP
-  port: 8700
-  targetPort: 8700
+  port: 8200
+  targetPort: 8200
 
 resources:
   limits:
@@ -25,8 +25,8 @@ resources:
 livenessProbe:
   httpGet:
     path: /actuator/health/liveness
-    port: 8700
-  initialDelaySeconds: 60
+    port: 8200
+  initialDelaySeconds: 90
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 3
@@ -34,8 +34,8 @@ livenessProbe:
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
-    port: 8700
-  initialDelaySeconds: 30
+    port: 8200
+  initialDelaySeconds: 60
   periodSeconds: 5
   timeoutSeconds: 3
   failureThreshold: 3
