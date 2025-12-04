@@ -8,12 +8,18 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: false
+        default_schema: ${POSTGRES_SCHEMA_CLIENTS:public}
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    schemas: ${POSTGRES_SCHEMA_CLIENTS:public}
   cloud:
     kubernetes:
       discovery:
@@ -26,7 +32,7 @@ spring:
           - name: application-common-config
 
 server:
-  port: 8700
+  port: 8100
 
 management:
   endpoints:
