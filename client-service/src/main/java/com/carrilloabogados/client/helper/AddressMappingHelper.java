@@ -1,9 +1,9 @@
-package com.selimhorri.app.helper;
+package com.carrilloabogados.client.helper;
 
-import com.selimhorri.app.domain.Address;
-import com.selimhorri.app.domain.User;
-import com.selimhorri.app.dto.AddressDto;
-import com.selimhorri.app.dto.UserDto;
+import com.carrilloabogados.client.domain.Address;
+import com.carrilloabogados.client.domain.User;
+import com.carrilloabogados.client.dto.AddressDto;
+import com.carrilloabogados.client.dto.UserDto;
 
 public interface AddressMappingHelper {
 	

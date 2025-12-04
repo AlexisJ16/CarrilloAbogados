@@ -1,4 +1,4 @@
-package com.selimhorri.app.service.impl;
+package com.carrilloabogados.client.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,11 +7,11 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.selimhorri.app.dto.AddressDto;
-import com.selimhorri.app.exception.wrapper.AddressNotFoundException;
-import com.selimhorri.app.helper.AddressMappingHelper;
-import com.selimhorri.app.repository.AddressRepository;
-import com.selimhorri.app.service.AddressService;
+import com.carrilloabogados.client.dto.AddressDto;
+import com.carrilloabogados.client.exception.wrapper.AddressNotFoundException;
+import com.carrilloabogados.client.helper.AddressMappingHelper;
+import com.carrilloabogados.client.repository.AddressRepository;
+import com.carrilloabogados.client.service.AddressService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

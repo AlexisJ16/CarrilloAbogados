@@ -1,4 +1,4 @@
-package com.selimhorri.app.domain;
+package com.carrilloabogados.client.domain;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,7 +18,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
-import com.selimhorri.app.constant.AppConstant;
+import com.carrilloabogados.client.constant.AppConstant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

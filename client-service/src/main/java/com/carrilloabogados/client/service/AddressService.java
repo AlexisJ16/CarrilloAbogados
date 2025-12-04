@@ -1,8 +1,8 @@
-package com.selimhorri.app.service;
+package com.carrilloabogados.client.service;
 
 import java.util.List;
 
-import com.selimhorri.app.dto.AddressDto;
+import com.carrilloabogados.client.dto.AddressDto;
 
 public interface AddressService {
 	

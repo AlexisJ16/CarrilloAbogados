@@ -1,4 +1,4 @@
-package com.selimhorri.app.exception;
+package com.carrilloabogados.client.exception;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.selimhorri.app.exception.payload.ExceptionMsg;
-import com.selimhorri.app.exception.wrapper.AddressNotFoundException;
-import com.selimhorri.app.exception.wrapper.CredentialNotFoundException;
-import com.selimhorri.app.exception.wrapper.UserObjectNotFoundException;
-import com.selimhorri.app.exception.wrapper.VerificationTokenNotFoundException;
+import com.carrilloabogados.client.exception.payload.ExceptionMsg;
+import com.carrilloabogados.client.exception.wrapper.AddressNotFoundException;
+import com.carrilloabogados.client.exception.wrapper.CredentialNotFoundException;
+import com.carrilloabogados.client.exception.wrapper.UserObjectNotFoundException;
+import com.carrilloabogados.client.exception.wrapper.VerificationTokenNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

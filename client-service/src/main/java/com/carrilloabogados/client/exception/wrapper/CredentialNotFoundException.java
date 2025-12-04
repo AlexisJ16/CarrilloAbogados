@@ -1,4 +1,4 @@
-package com.selimhorri.app.exception.wrapper;
+package com.carrilloabogados.client.exception.wrapper;
 
 import java.io.Serial;
 

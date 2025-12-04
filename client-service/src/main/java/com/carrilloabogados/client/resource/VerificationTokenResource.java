@@ -1,4 +1,4 @@
-package com.selimhorri.app.resource;
+package com.carrilloabogados.client.resource;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.selimhorri.app.dto.VerificationTokenDto;
-import com.selimhorri.app.dto.response.collection.DtoCollectionResponse;
-import com.selimhorri.app.service.VerificationTokenService;
+import com.carrilloabogados.client.dto.VerificationTokenDto;
+import com.carrilloabogados.client.dto.response.collection.DtoCollectionResponse;
+import com.carrilloabogados.client.service.VerificationTokenService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

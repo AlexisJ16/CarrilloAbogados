@@ -1,4 +1,4 @@
-package com.selimhorri.app.service.impl;
+package com.carrilloabogados.client.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,11 +7,11 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.selimhorri.app.dto.VerificationTokenDto;
-import com.selimhorri.app.exception.wrapper.VerificationTokenNotFoundException;
-import com.selimhorri.app.helper.VerificationTokenMappingHelper;
-import com.selimhorri.app.repository.VerificationTokenRepository;
-import com.selimhorri.app.service.VerificationTokenService;
+import com.carrilloabogados.client.dto.VerificationTokenDto;
+import com.carrilloabogados.client.exception.wrapper.VerificationTokenNotFoundException;
+import com.carrilloabogados.client.helper.VerificationTokenMappingHelper;
+import com.carrilloabogados.client.repository.VerificationTokenRepository;
+import com.carrilloabogados.client.service.VerificationTokenService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

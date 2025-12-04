@@ -1,4 +1,4 @@
-package com.selimhorri.app.domain;
+package com.carrilloabogados.client.domain;
 
 import java.io.Serial;
 import java.io.Serializable;

@@ -1,4 +1,4 @@
-package com.selimhorri.app.exception.payload;
+package com.carrilloabogados.client.exception.payload;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.selimhorri.app.constant.AppConstant;
+import com.carrilloabogados.client.constant.AppConstant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

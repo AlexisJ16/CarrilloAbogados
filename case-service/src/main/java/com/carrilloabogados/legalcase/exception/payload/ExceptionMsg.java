@@ -1,4 +1,4 @@
-package com.selimhorri.app.exception.payload;
+package com.carrilloabogados.legalcase.exception.payload;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-import com.selimhorri.app.constant.AppConstant;
+import com.carrilloabogados.legalcase.constant.AppConstant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

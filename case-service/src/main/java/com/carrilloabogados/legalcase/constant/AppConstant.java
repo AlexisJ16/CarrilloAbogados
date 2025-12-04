@@ -1,4 +1,4 @@
-package com.selimhorri.app.constant;
+package com.carrilloabogados.legalcase.constant;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

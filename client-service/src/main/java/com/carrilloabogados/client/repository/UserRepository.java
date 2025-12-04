@@ -1,10 +1,10 @@
-package com.selimhorri.app.repository;
+package com.carrilloabogados.client.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.selimhorri.app.domain.User;
+import com.carrilloabogados.client.domain.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 	
