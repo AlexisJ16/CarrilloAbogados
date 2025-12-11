@@ -33,34 +33,38 @@ spring:
               - PATCH
               - OPTIONS
       routes:
-      - id: ORDER-SERVICE
-        uri: lb://ORDER-SERVICE
-        predicates:
-        - Path=/order-service/**
-      - id: PAYMENT-SERVICE
-        uri: lb://PAYMENT-SERVICE
-        predicates:
-        - Path=/payment-service/**
-      - id: PRODUCT-SERVICE
-        uri: lb://PRODUCT-SERVICE
-        predicates:
-        - Path=/product-service/**
-      - id: SHIPPING-SERVICE
-        uri: lb://SHIPPING-SERVICE
-        predicates:
-        - Path=/shipping-service/**
       - id: USER-SERVICE
         uri: lb://USER-SERVICE
         predicates:
         - Path=/user-service/**
-      - id: FAVOURITE-SERVICE
-        uri: lb://FAVOURITE-SERVICE
+      - id: CLIENT-SERVICE
+        uri: lb://CLIENT-SERVICE
         predicates:
-        - Path=/favourite-service/**
-      - id: PROXY-CLIENT
-        uri: lb://PROXY-CLIENT
+        - Path=/client-service/**
+      - id: CASE-SERVICE
+        uri: lb://CASE-SERVICE
         predicates:
-        - Path=/app/**
+        - Path=/case-service/**
+      - id: PAYMENT-SERVICE
+        uri: lb://PAYMENT-SERVICE
+        predicates:
+        - Path=/payment-service/**
+      - id: DOCUMENT-SERVICE
+        uri: lb://DOCUMENT-SERVICE
+        predicates:
+        - Path=/document-service/**
+      - id: CALENDAR-SERVICE
+        uri: lb://CALENDAR-SERVICE
+        predicates:
+        - Path=/calendar-service/**
+      - id: NOTIFICATION-SERVICE
+        uri: lb://NOTIFICATION-SERVICE
+        predicates:
+        - Path=/notification-service/**
+      - id: N8N-INTEGRATION-SERVICE
+        uri: lb://N8N-INTEGRATION-SERVICE
+        predicates:
+        - Path=/n8n-integration-service/**
 
 resilience4j:
   circuitbreaker:

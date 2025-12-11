@@ -1,59 +1,81 @@
-# Arquitectura Carrillo Abogados Legal Tech Platform
+# Arquitectura - Carrillo Abogados Legal Tech Platform
 
-## Microservicios
+## Visión General
 
-### Core Legal (8 servicios)
+Plataforma cloud-native de gestión legal empresarial construida con microservicios sobre Kubernetes.
 
-1. **api-gateway** (Puerto 8080)
-   - Punto de entrada único
-   - Enrutamiento a microservicios
-   - Sin autenticación (desarrollo)
+## Stack Tecnológico
 
-2. **user-service** (Puerto 8100)
-   - Gestión de abogados y empleados
-   - Roles y permisos
-   - Schema: public (usuarios compartidos)
+- Java 21 LTS
+- Spring Boot 3.3.13
+- Spring Cloud Kubernetes 3.1.3
+- PostgreSQL 16
+- NATS 2.10
+- Kubernetes 1.34.0
+- Helm 3.19.2
 
-3. **client-service** (Puerto 8200)
-   - Gestión de clientes/personas
-   - Información contacto
-   - Schema: clients
+## Arquitectura de Microservicios
 
-4. **case-service** (Puerto 8300)
-   - Gestión de casos legales
-   - Estado de procesos
-   - Schema: cases
+### Infraestructura
+- **api-gateway**: Spring Cloud Gateway, enrutamiento, OAuth2
+- **proxy-client**: Autenticación y proxy reverso
 
-5. **document-service** (Puerto 8500)
-   - Almacenamiento documentos legales
-   - Versionado
-   - Schema: documents
+### Servicios de Negocio
+- **client-service**: Gestión de clientes (port 8700)
+- **case-service**: Gestión de casos legales (port 8300)
+- **payment-service**: Procesamiento de pagos (port 8400)
+- **document-service**: Gestión de documentos legales (port 8500)
+- **calendar-service**: Integración Google Calendar (port 8600)
+- **notification-service**: Email/SMS/Push (port 8700)
+- **n8n-integration-service**: Workflows y automatizaciones (port 8800)
 
-6. **calendar-service** (Puerto 8600)
-   - Audiencias y plazos
-   - Recordatorios
-   - Schema: calendar
+### Servicios Legacy (Migración)
+- **user-service**: Migrado a client-service
+- **order-service**: Migrado a case-service
 
-7. **notification-service** (Puerto 8700)
-   - Notificaciones email/SMS
-   - Alertas de plazos
-   - Schema: notifications
+## Comunicación
 
-8. **n8n-integration-service** (Puerto 8800)
-   - Webhooks para n8n
-   - Automatizaciones CRM
-   - Schema: public
+### Sincrónica
+- HTTP/REST entre servicios vía API Gateway
+- Service Discovery: Kubernetes DNS nativo
 
-## Infraestructura
+### Asincrónica
+- NATS para eventos y mensajería
+- Topics: carrillo.events.*
 
-- **Base de datos**: PostgreSQL (compartida, schemas separados)
-- **Mensajería**: NATS (eventos asíncronos)
-- **Orquestación**: Kubernetes/Minikube (dev) → GKE (prod)
-- **Observabilidad**: Prometheus + Grafana
+## Base de Datos
 
-## Decisiones Arquitectónicas
+PostgreSQL compartida con schemas separados:
+- clients
+- cases
+- documents
+- payments
+- calendar
+- notifications
 
-- Base de datos compartida con schemas por servicio (pragmático para MVP)
-- NATS para eventos asíncronos (casos, documentos, notificaciones)
-- Autenticación simple (JWT futuro, sin OAuth2 por ahora)
-- 1 réplica en desarrollo, auto-scaling deshabilitado
+## Seguridad
+
+- RBAC: Roles y permisos por servicio
+- Network Policies: Segmentación de tráfico
+- OAuth2: Google Workspace integration
+- Secrets: Kubernetes Secrets nativos
+
+## Observabilidad
+
+- Metrics: Prometheus + Grafana
+- Logging: Loki
+- Tracing: Micrometer
+- Health checks: Spring Actuator
+
+## Despliegue
+
+### Ambientes
+- **dev**: Minikube local
+- **staging**: GKE (e2-micro)
+- **prod**: GKE Autopilot
+
+### CI/CD
+- GitHub Actions
+- Helm Charts
+- Rolling updates
+- Canary deployments (futuro)

@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.carrilloabogados.legalcase.exception.payload.ExceptionMsg;
-import com.carrilloabogados.legalcase.exception.wrapper.CartNotFoundException;
-import com.carrilloabogados.legalcase.exception.wrapper.OrderNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +40,6 @@ public class ApiExceptionHandler {
 	}
 	
 	@ExceptionHandler(value = {
-		CartNotFoundException.class,
-		OrderNotFoundException.class,
 		IllegalStateException.class,
 	})
 	public <T extends RuntimeException> ResponseEntity<ExceptionMsg> handleApiRequestException(final T e) {

@@ -27,9 +27,6 @@ public class UserDto implements Serializable {
 	private String email;
 	private String phone;
 	
-	@JsonProperty("cart")
-	@JsonInclude(Include.NON_NULL)
-	private CartDto cartDto;
 	
 }
 

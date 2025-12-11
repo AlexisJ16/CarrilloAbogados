@@ -1,10 +1,10 @@
 spring:
   application:
-    name: user-service
+    name: payment-service
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?currentSchema=${POSTGRES_SCHEMA_CLIENTS}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=${POSTGRES_SCHEMA_PAYMENTS:payments}
+    username: ${POSTGRES_USER:carrillo}
+    password: ${POSTGRES_PASSWORD:CarrilloAbogados2025!}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -14,12 +14,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-        default_schema: ${POSTGRES_SCHEMA_CLIENTS:public}
+        default_schema: ${POSTGRES_SCHEMA_PAYMENTS:payments}
   
   flyway:
     enabled: true
     baseline-on-migrate: true
-    schemas: ${POSTGRES_SCHEMA_CLIENTS:public}
+    schemas: ${POSTGRES_SCHEMA_PAYMENTS:payments}
   cloud:
     kubernetes:
       discovery:
@@ -32,7 +32,7 @@ spring:
           - name: application-common-config
 
 server:
-  port: 8100
+  port: 8750
 
 management:
   endpoints:

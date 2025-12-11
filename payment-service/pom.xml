@@ -9,9 +9,9 @@
 		<artifactId>carrillo-legal-tech</artifactId>
 		<version>0.1.0</version>
 	</parent>
-	<artifactId>document-service</artifactId>
-	<name>document-service</name>
-	<description>Document Management Service - Carrillo Abogados</description>
+	<artifactId>payment-service</artifactId>
+	<name>payment-service</name>
+	<description>Payment Service - Government Entities Payment Management</description>
 	<packaging>jar</packaging>
 	
 	<properties>
