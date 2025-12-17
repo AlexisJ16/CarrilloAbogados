@@ -14,15 +14,11 @@ Plataforma cloud-native de gestión legal empresarial construida con microservic
 
 - [Descripción](#-descripción)
 - [Arquitectura](#-arquitectura)
-- [Stack Tecnológico](#-stack-tecnológico)
 - [Prerrequisitos](#-prerrequisitos)
-- [Guía de Instalación Rápida](#-guía-de-instalación-rápida)
-- [Guía de Deployment Completo (WSL2)](#-guía-de-deployment-completo-wsl2)
-- [Validación del Deployment](#-validación-del-deployment)
+- [Guía de Uso](#-guía-de-uso)
 - [Comandos Útiles](#-comandos-útiles)
 - [Troubleshooting](#-troubleshooting)
 - [Documentación](#-documentación)
-- [Licencia](#-licencia)
 
 ---
 
@@ -80,727 +76,288 @@ Plataforma cloud-native de gestión legal empresarial construida con microservic
 
 ### Microservicios
 
-| Servicio | Puerto | Descripción | Estado |
-|----------|--------|-------------|--------|
-| api-gateway | 8080 | Spring Cloud Gateway + OAuth2 | ✅ Activo |
-| client-service | 8200 | Gestión de clientes | ✅ Activo |
-| case-service | 8300 | Gestión de casos legales | ✅ Activo |
-| payment-service | 8400 | Pagos gubernamentales | ✅ Activo |
-| document-service | 8500 | Documentos legales | ⚙️ Skeleton |
-| calendar-service | 8600 | Google Calendar | ⚙️ Skeleton |
-| notification-service | 8700 | Email/SMS | ⚙️ Skeleton |
-| n8n-integration-service | 8800 | Workflows N8N | ⚙️ Skeleton |
+| Servicio | Puerto | Descripción |
+|----------|--------|-------------|
+| api-gateway | 8080 | Spring Cloud Gateway + OAuth2 |
+| client-service | 8200 | Gestión de clientes |
+| case-service | 8300 | Gestión de casos legales |
+| payment-service | 8400 | Pagos gubernamentales |
+| document-service | 8500 | Documentos legales |
+| calendar-service | 8600 | Google Calendar |
+| notification-service | 8700 | Email/SMS |
+| n8n-integration-service | 8800 | Workflows N8N |
 
----
+### Stack Tecnológico
 
-## 🛠️ Stack Tecnológico
-
-| Componente | Versión | Propósito |
-|------------|---------|-----------|
-| Java | 21 LTS | Runtime |
-| Spring Boot | 3.3.13 | Framework |
-| Spring Cloud | 2023.0.6 | Microservices |
-| Spring Cloud Kubernetes | 3.1.3 | Service Discovery |
-| PostgreSQL | 16.2 | Base de datos |
-| NATS | 2.10.22 | Messaging |
-| Kubernetes | 1.34.0 | Orquestación |
-| Helm | 3.19.2 | Package Manager |
-| Minikube | 1.37.0 | Local K8s |
+| Componente | Versión |
+|------------|---------|
+| Java | 21 LTS |
+| Spring Boot | 3.3.13 |
+| Spring Cloud | 2023.0.6 |
+| Spring Cloud Kubernetes | 3.1.3 |
+| PostgreSQL | 16.2 |
+| NATS | 2.10.22 |
+| Kubernetes | 1.34.0 |
+| Helm | 3.19.2 |
+| Minikube | 1.37.0 |
 
 ---
 
 ## 📋 Prerrequisitos
 
-### Opción A: Windows con WSL2 (Recomendado)
+### Windows con WSL2 (Recomendado)
+
+Todos los comandos se ejecutan **dentro de WSL2**. Desde PowerShell:
 
 ```powershell
-# Verificar WSL2
-wsl --version
-
-# Debe mostrar: WSL version 2.x.x
-```
-
-### Herramientas Requeridas (en WSL2/Linux)
-
-| Herramienta | Versión Mínima | Verificación |
-|-------------|----------------|--------------|
-| Java JDK | 21 | `java -version` |
-| Maven | 3.8+ | `mvn --version` |
-| Docker | 24+ | `docker --version` |
-| kubectl | 1.31+ | `kubectl version --client` |
-| Minikube | 1.32+ | `minikube version` |
-| Helm | 3.14+ | `helm version` |
-
-### Instalación de Herramientas (Ubuntu/WSL2)
-
-```bash
-# Java 21
-sudo apt update
-sudo apt install openjdk-21-jdk -y
-echo 'export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64' >> ~/.bashrc
-source ~/.bashrc
-
-# Docker
-curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker $USER
-newgrp docker
-
-# kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
-# Minikube
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-
-# Helm
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-```
-
----
-
-## ⚡ Guía de Instalación Rápida
-
-Para usuarios con todas las herramientas instaladas:
-
-### Desde Windows (PowerShell)
-
-```powershell
-# 1. Entrar a WSL2
-wsl
-
-# El resto de comandos se ejecutan dentro de WSL2
-```
-
-### Dentro de WSL2
-
-```bash
-# 2. Navegar al proyecto
-cd "/mnt/c/Carrillo Abogados/Repositorios GitHub/CarrilloAbogados"
-
-# 3. Dar permisos a scripts
-chmod +x scripts/*.sh
-
-# 4. Deployment automático (todo en uno)
-./scripts/wsl-deploy.sh
-
-# 5. Acceder a la aplicación (en otra terminal WSL)
-kubectl port-forward svc/api-gateway 8080:8080 -n carrillo-dev
-# Abrir: http://localhost:8080
-```
-
-> ⚠️ **Importante**: Los comandos de Kubernetes deben ejecutarse dentro de una sesión WSL2 persistente, no desde PowerShell directo.
-
----
-
-## 🚀 Guía de Deployment Completo (WSL2)
-
-Esta guía paso a paso te llevará desde cero hasta tener la plataforma corriendo localmente.
-
-### Paso 1: Acceder a WSL2
-
-```powershell
-# Desde PowerShell de Windows
 wsl
 ```
 
-### Paso 2: Navegar al Proyecto
+### Herramientas Requeridas
+
+| Herramienta | Versión Mínima | Instalación (Ubuntu/WSL2) |
+|-------------|----------------|---------------------------|
+| Java JDK | 21 | `sudo apt install openjdk-21-jdk` |
+| Maven | 3.8+ | `sudo apt install maven` |
+| Docker | 24+ | `curl -fsSL https://get.docker.com \| sh` |
+| kubectl | 1.31+ | Ver [docs](https://kubernetes.io/docs/tasks/tools/) |
+| Minikube | 1.32+ | Ver [docs](https://minikube.sigs.k8s.io/docs/start/) |
+| Helm | 3.14+ | Ver [docs](https://helm.sh/docs/intro/install/) |
+
+---
+
+## 🚀 Guía de Uso
+
+### Flujo de Trabajo
+
+El proyecto incluye 5 scripts que cubren todo el ciclo de desarrollo:
+
+```
+┌─────────┐     ┌──────────┐     ┌────────────┐     ┌────────┐
+│  CHECK  │ ──► │  DEPLOY  │ ──► │  VALIDATE  │ ──► │  TEST  │
+└─────────┘     └──────────┘     └────────────┘     └────────┘
+                                                         │
+                      ┌─────────┐                        │
+                      │  RESET  │ ◄──────────────────────┘
+                      └─────────┘       (cuando sea necesario)
+```
+
+### Paso 1: Acceder al Proyecto
 
 ```bash
-# El proyecto de Windows está montado en /mnt/c/
+# Desde PowerShell, entrar a WSL2
+wsl
+
+# Navegar al proyecto
 cd "/mnt/c/Carrillo Abogados/Repositorios GitHub/CarrilloAbogados"
 
-# Verificar que estás en el directorio correcto
-ls -la
-# Debe mostrar: pom.xml, CLAUDE.md, api-gateway/, etc.
-```
-
-### Paso 3: Verificar Prerrequisitos
-
-```bash
-# Ejecutar script de verificación
+# Dar permisos de ejecución (solo primera vez)
 chmod +x scripts/*.sh
-./scripts/check-env.sh
 ```
 
-Salida esperada:
-```
-✓ Java 21
-✓ Docker 29.x.x
-✓ kubectl v1.34.x
-✓ Minikube v1.37.x
-✓ Helm v3.19.x
-✓ Maven 3.8.x
-```
-
-### Paso 4: Iniciar Docker
+### Paso 2: Verificar Prerrequisitos
 
 ```bash
-# Verificar que Docker está corriendo
-docker ps
-
-# Si hay error, iniciar Docker daemon
-sudo service docker start
-
-# Verificar nuevamente
-docker info
+./scripts/check.sh
 ```
 
-### Paso 5: Iniciar Minikube
+Verifica que todas las herramientas necesarias estén instaladas correctamente.
+
+**Salida esperada:**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🔧 Carrillo Abogados - Verificación de Prerrequisitos
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[1/6] Java
+  ✓ Java 21 instalado
+
+[2/6] Maven
+  ✓ Maven 3.8.x instalado
+
+...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ Verificación exitosa: 7/7 verificaciones pasaron
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Paso 3: Desplegar la Aplicación
 
 ```bash
-# Iniciar cluster con recursos suficientes
-minikube start \
-    --kubernetes-version=v1.34.0 \
-    --driver=docker \
-    --cpus=4 \
-    --memory=7168 \
-    --disk-size=30g \
-    --addons=ingress,metrics-server,dashboard
-
-# Verificar estado
-minikube status
+./scripts/deploy.sh
 ```
 
-Salida esperada:
-```
-minikube
-type: Control Plane
-host: Running
-kubelet: Running
-apiserver: Running
-kubeconfig: Configured
-```
+Realiza el deployment completo en 7 pasos:
+1. Iniciar Docker daemon
+2. Iniciar cluster Minikube
+3. Crear namespaces (carrillo-dev, databases, messaging)
+4. Desplegar PostgreSQL
+5. Desplegar NATS
+6. Compilar y construir imágenes Docker
+7. Desplegar con Helm
 
-### Paso 6: Configurar Docker de Minikube
+**Tiempo estimado:** 10-15 minutos (primera vez)
+
+### Paso 4: Validar el Deployment
 
 ```bash
-# Conectar al Docker daemon de Minikube
-eval $(minikube docker-env)
-
-# Verificar conexión
-docker ps
-# Debe mostrar containers de Kubernetes
+./scripts/validate.sh
 ```
 
-### Paso 7: Crear Namespaces
+Verifica que todos los componentes estén corriendo:
+- Cluster Minikube
+- Namespaces
+- PostgreSQL
+- NATS
+- Todos los microservicios
+
+Opcionalmente, esperar a que los pods estén ready:
 
 ```bash
-# Aplicar namespaces
-kubectl apply -f infrastructure/k8s-manifests/namespaces/
-
-# Verificar
-kubectl get namespaces
+./scripts/validate.sh --wait
 ```
 
-Debe mostrar: `carrillo-dev`, `databases`, `messaging`
-
-### Paso 8: Desplegar PostgreSQL
+### Paso 5: Ejecutar Tests
 
 ```bash
-# Agregar repositorio Bitnami
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-
-# Instalar PostgreSQL
-helm install postgresql bitnami/postgresql \
-    --namespace databases \
-    --set auth.username=carrillo \
-    --set auth.password=CarrilloAbogados2025! \
-    --set auth.database=carrillo_legal_tech \
-    --set primary.persistence.size=8Gi \
-    --set primary.resources.requests.memory=512Mi \
-    --set primary.resources.requests.cpu=250m
-
-# Esperar a que esté ready (2-3 minutos)
-kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=postgresql -n databases --timeout=300s
-
-# Verificar
-kubectl get pods -n databases
+./scripts/test.sh
 ```
 
-### Paso 9: Desplegar NATS
+Ejecuta tests funcionales:
+- Health checks de todos los servicios via API Gateway
+- Conectividad a PostgreSQL
+- Sistema de mensajería NATS
+
+### Paso 6: Acceder a la Aplicación
+
+Después de un deployment exitoso:
 
 ```bash
-# Agregar repositorio NATS
-helm repo add nats https://nats-io.github.io/k8s/helm/charts/
-helm repo update
-
-# Instalar NATS
-helm install nats nats/nats \
-    --namespace messaging \
-    --set nats.jetstream.enabled=true \
-    --set nats.jetstream.memStorage.enabled=true \
-    --set nats.jetstream.memStorage.size=1Gi \
-    --set replicaCount=1
-
-# Esperar a que esté ready
-kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=nats -n messaging --timeout=120s
-
-# Verificar
-kubectl get pods -n messaging
+# Port-forward al API Gateway
+kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev
 ```
 
-### Paso 10: Compilar el Proyecto
+Abrir en el navegador: **http://localhost:8080**
+
+### Limpiar el Entorno
+
+Cuando necesites empezar de cero:
 
 ```bash
-# Configurar JAVA_HOME si no está configurado
-export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
-
-# Compilar todos los módulos (en paralelo)
-./mvnw clean package -DskipTests -T 1C
+./scripts/reset.sh
 ```
 
-Salida esperada:
-```
-[INFO] BUILD SUCCESS
-[INFO] Total time: X min
-```
+⚠️ **Advertencia**: Este script elimina completamente:
+- Cluster Minikube
+- Imágenes Docker del proyecto
+- Directorios `target/` de Maven
 
-### Paso 11: Construir Imágenes Docker
+---
 
-```bash
-# Asegurarse de estar conectado al Docker de Minikube
-eval $(minikube docker-env)
+## 💻 Comandos Útiles
 
-# Construir imágenes para cada microservicio
-for service in api-gateway client-service case-service payment-service document-service calendar-service notification-service n8n-integration-service user-service; do
-    if [ -d "$service" ]; then
-        echo "Building $service..."
-        docker build -t carrillo/$service:latest -f $service/Dockerfile $service/
-    fi
-done
-
-# Verificar imágenes creadas
-docker images | grep carrillo
-```
-
-### Paso 12: Desplegar con Helm
-
-```bash
-# Desplegar todos los microservicios
-helm install carrillo-dev helm-charts/carrillo-abogados/ --namespace carrillo-dev
-
-# Ver estado del deployment
-helm status carrillo-dev -n carrillo-dev
-
-# Esperar a que los pods estén ready (3-5 minutos)
-kubectl get pods -n carrillo-dev -w
-```
-
-### Paso 13: Verificar Deployment
+### Kubernetes
 
 ```bash
 # Ver todos los pods
-kubectl get pods -A | grep -E "(carrillo-dev|databases|messaging)"
+kubectl get pods -n carrillo-dev
 
-# Ver servicios
-kubectl get svc -n carrillo-dev
+# Ver logs de un servicio
+kubectl logs -f deployment/carrillo-dev-api-gateway -n carrillo-dev
+
+# Describir un pod con problemas
+kubectl describe pod <pod-name> -n carrillo-dev
+
+# Escalar un servicio
+kubectl scale deployment/carrillo-dev-api-gateway --replicas=3 -n carrillo-dev
 ```
 
-Salida esperada:
-```
-NAMESPACE      NAME                        READY   STATUS
-carrillo-dev   api-gateway-xxx             1/1     Running
-carrillo-dev   client-service-xxx          1/1     Running
-carrillo-dev   case-service-xxx            1/1     Running
-databases      postgresql-0                1/1     Running
-messaging      nats-0                      1/1     Running
-```
-
-### Paso 14: Acceder a la Aplicación
-
-```bash
-# Opción 1: Port-forward (recomendado)
-kubectl port-forward svc/api-gateway 8080:8080 -n carrillo-dev
-
-# En otra terminal, probar la conexión
-curl http://localhost:8080/actuator/health
-```
-
-```bash
-# Opción 2: Minikube tunnel (para acceso externo)
-minikube tunnel
-```
-
-### Paso 15: Acceder al Dashboard
-
-```bash
-# Abrir dashboard de Kubernetes
-minikube dashboard
-```
-
----
-
-## ✅ Validación del Deployment
-
-Una vez desplegado el proyecto, es fundamental validar que todos los servicios estén funcionando correctamente.
-
-### Script de Validación Automática
-
-El proyecto incluye un script completo para validar el deployment:
-
-```bash
-# Validación básica
-./scripts/validate-deployment.sh
-
-# Validación con espera (espera que los pods estén ready)
-./scripts/validate-deployment.sh --wait
-
-# Validación detallada
-./scripts/validate-deployment.sh --wait --verbose
-```
-
-#### ¿Qué valida el script?
-
-| Verificación | Descripción |
-|--------------|-------------|
-| 🖥️ Minikube | Cluster Kubernetes corriendo |
-| 📦 Namespaces | carrillo-dev, databases, messaging |
-| 🐘 PostgreSQL | Pod running, acepta conexiones |
-| 📬 NATS | Servidor de mensajería operativo |
-| 🚀 Microservicios | 8 servicios desplegados y ready |
-| 🔗 API Gateway | Servicio accesible y respondiendo |
-| ⚙️ ConfigMaps | Configuración aplicada |
-| 📊 Recursos | Métricas y eventos del cluster |
-
-#### Ejemplo de salida exitosa:
-
-```
-🔍 Carrillo Abogados - Validación de Deployment
-=================================================
-
-▶ 1. Validando Minikube...
-  ✅ Minikube está ejecutándose
-
-▶ 2. Validando namespaces...
-  ✅ Namespace 'carrillo-dev' existe
-  ✅ Namespace 'databases' existe
-  ✅ Namespace 'messaging' existe
-
-▶ 3. Validando PostgreSQL...
-  ✅ PostgreSQL pod existe (postgresql-0)
-  ✅ PostgreSQL pod está Running
-  ✅ PostgreSQL acepta conexiones
-
-▶ 4. Validando NATS...
-  ✅ NATS pod existe (nats-0)
-  ✅ NATS pod está Running
-
-▶ 5. Validando microservicios...
-  ✅ api-gateway Running y Ready (1/1 replicas)
-  ✅ client-service Running y Ready (1/1 replicas)
-  ✅ case-service Running y Ready (1/1 replicas)
-  ... (más servicios)
-
-════════════════════════════════════════════════════════════════
-  📊 RESUMEN DE VALIDACIÓN
-════════════════════════════════════════════════════════════════
-
-  Total de verificaciones: 25
-  ✅ Pasadas: 25
-  ❌ Fallidas: 0
-  ⚠️  Advertencias: 0
-
-  Porcentaje de éxito: 100%
-
-🎉 ¡VALIDACIÓN EXITOSA! Todos los componentes están funcionando.
-```
-
----
-
-## 🧪 Pruebas Funcionales
-
-Después de validar el deployment, ejecute las pruebas funcionales para verificar la operatividad de los servicios:
-
-```bash
-# Ejecutar pruebas funcionales completas
-./scripts/test-services.sh
-
-# Con puerto personalizado
-./scripts/test-services.sh --port 9090
-
-# Si ya tiene port-forward activo
-./scripts/test-services.sh --skip-port-forward
-```
-
-#### ¿Qué prueba el script?
-
-| Prueba | Descripción |
-|--------|-------------|
-| 🏥 Health Checks | Endpoints /actuator/health de cada servicio |
-| 🔀 Gateway Routes | Rutas configuradas en API Gateway |
-| 🗄️ Base de Datos | Conectividad y schemas de PostgreSQL |
-| 📬 NATS | Publicación/suscripción de mensajes |
-| 🔗 Conectividad | DNS interno entre servicios |
-| 🚪 API Endpoints | Endpoints principales de cada servicio |
-
-#### Ejemplo de salida:
-
-```
-🧪 PRUEBAS FUNCIONALES - CARRILLO ABOGADOS
-════════════════════════════════════════════════════════════════
-
-▶ 1. Configurando acceso al API Gateway
-  Servicio encontrado: carrillo-dev-api-gateway
-  ✅ Port-forward configurado en localhost:8080
-  ✓ API Gateway respondiendo
-
-▶ 2. Health Checks - API Gateway
-  ✅ Health endpoint principal (HTTP 200)
-  ✅ Liveness probe (HTTP 200)
-  ✅ Readiness probe (HTTP 200)
-
-▶ 3. Health Checks - Microservicios (via Gateway)
-  ✅ client-service health check (HTTP 200)
-  ✅ case-service health check (HTTP 200)
-  ✅ user-service health check (HTTP 200)
-
-▶ 6. Pruebas de Base de Datos
-  ✅ PostgreSQL acepta conexiones
-  ✅ Base de datos carrillo_legal_tech accesible
-
-▶ 7. Pruebas de NATS (Messaging)
-  ✅ NATS servidor está ready
-  ✅ NATS pub/sub funcionando
-
-════════════════════════════════════════════════════════════════
-  📊 RESUMEN DE PRUEBAS FUNCIONALES
-════════════════════════════════════════════════════════════════
-
-  Total de pruebas: 20
-  ✅ Pasadas: 18
-  ❌ Fallidas: 0
-  ⏭️  Omitidas: 2
-
-  Porcentaje de éxito: 100% (de pruebas ejecutadas)
-
-🎉 ¡TODAS LAS PRUEBAS PASARON!
-```
-
----
-
-## 🔍 Verificación Manual
-
-Si prefiere verificar manualmente:
-
-### Verificar Health de Servicios
-
-```bash
-# API Gateway
-curl http://localhost:8080/actuator/health
-
-# Client Service (a través del Gateway)
-curl http://localhost:8080/client-service/actuator/health
-
-# Case Service
-curl http://localhost:8080/case-service/actuator/health
-```
-
-### Verificar Base de Datos
+### Base de Datos
 
 ```bash
 # Conectar a PostgreSQL
 kubectl exec -it postgresql-0 -n databases -- psql -U carrillo -d carrillo_legal_tech
 
-# Dentro de psql:
-\dn                    # Listar schemas
-\dt                    # Listar tablas
-\q                     # Salir
+# Ver schemas
+\dn
+
+# Cambiar a un schema
+SET search_path TO clients;
+\dt
 ```
 
-### Verificar Logs
+### Minikube
 
 ```bash
-# Logs del API Gateway
-kubectl logs -f deployment/carrillo-dev-api-gateway -n carrillo-dev
-
-# Logs de un servicio específico
-kubectl logs -f deployment/carrillo-dev-client-service -n carrillo-dev
-```
-
-### Verificar Rutas del Gateway
-
-```bash
-curl http://localhost:8080/actuator/gateway/routes
-```
-
----
-
-## 📝 Comandos Útiles
-
-### Gestión del Cluster
-
-```bash
-# Estado de Minikube
+# Estado del cluster
 minikube status
 
-# Pausar/Reanudar (ahorra recursos)
-minikube pause
-minikube unpause
+# Dashboard de Kubernetes
+minikube dashboard
 
-# Detener cluster
-minikube stop
-
-# Eliminar cluster (reset completo)
-minikube delete
+# SSH al nodo
+minikube ssh
 ```
 
-### Gestión de Pods
+### Maven
 
 ```bash
-# Ver pods en tiempo real
-kubectl get pods -n carrillo-dev -w
+# Compilar todo (paralelo)
+./mvnw clean package -DskipTests -T 1C
 
-# Describir pod (debugging)
-kubectl describe pod <pod-name> -n carrillo-dev
+# Compilar un servicio específico
+./mvnw -pl client-service clean package -DskipTests
 
-# Logs con tail
-kubectl logs -f --tail=100 deployment/api-gateway -n carrillo-dev
-
-# Ejecutar comando en pod
-kubectl exec -it <pod-name> -n carrillo-dev -- /bin/sh
-```
-
-### Gestión de Helm
-
-```bash
-# Ver releases instalados
-helm list -n carrillo-dev
-
-# Actualizar deployment
-helm upgrade carrillo-dev helm-charts/carrillo-abogados/ -n carrillo-dev
-
-# Desinstalar
-helm uninstall carrillo-dev -n carrillo-dev
-```
-
-### Acceso a Base de Datos
-
-```bash
-# Port-forward a PostgreSQL
-kubectl port-forward svc/postgresql 5432:5432 -n databases
-
-# Desde otra terminal, conectar con cliente local
-psql -h localhost -U carrillo -d carrillo_legal_tech
+# Ejecutar tests
+./mvnw test
 ```
 
 ---
 
 ## 🔧 Troubleshooting
 
-### Error: "Cannot connect to Docker daemon"
+### Pod en CrashLoopBackOff
 
 ```bash
-# Iniciar Docker
-sudo service docker start
-
-# Verificar que usuario está en grupo docker
-groups
-# Si no aparece 'docker':
-sudo usermod -aG docker $USER
-newgrp docker
-```
-
-### Error: "ImagePullBackOff"
-
-```bash
-# Verificar que estás usando Docker de Minikube
-eval $(minikube docker-env)
-
-# Reconstruir imagen
-docker build -t carrillo/<service>:latest -f <service>/Dockerfile <service>/
-
-# Reiniciar pod
-kubectl delete pod <pod-name> -n carrillo-dev
-```
-
-### Error: "CrashLoopBackOff"
-
-```bash
-# Ver logs del pod
+# Ver logs del pod que falla
 kubectl logs <pod-name> -n carrillo-dev --previous
 
-# Causas comunes:
-# 1. Database no disponible
-# 2. ConfigMap/Secret faltante
-# 3. Puerto ya en uso
-```
-
-### Error: "Insufficient memory"
-
-```bash
-# Detener Minikube
-minikube stop
-
-# Reiniciar con más memoria
-minikube start --memory=8192
-```
-
-### Error: "Connection refused" al hacer port-forward
-
-```bash
-# Verificar que el servicio existe
-kubectl get svc -n carrillo-dev
-
-# Verificar que el pod está Running
-kubectl get pods -n carrillo-dev
-
-# Verificar logs del pod
-kubectl logs deployment/carrillo-dev-api-gateway -n carrillo-dev
-```
-
-### Pods en "ContainerCreating" por mucho tiempo
-
-```bash
-# Ver eventos del pod
+# Describir el pod
 kubectl describe pod <pod-name> -n carrillo-dev
-
-# Causas comunes:
-# 1. Imagen no encontrada (verificar eval $(minikube docker-env))
-# 2. ConfigMap/Secret no existe
-# 3. PVC pendiente de binding
-
-# Solución: reconstruir imágenes
-eval $(minikube docker-env)
-./scripts/build-all-images.sh
 ```
 
-### Validación falla en "microservicios no ready"
+**Causas comunes:**
+- Base de datos no disponible → Verificar PostgreSQL
+- Configuración incorrecta → Verificar ConfigMaps/Secrets
+- Falta de recursos → Aumentar memoria de Minikube
+
+### Docker no responde
 
 ```bash
-# Usar modo wait para esperar
-./scripts/validate-deployment.sh --wait --verbose
+# Iniciar Docker daemon
+sudo service docker start
 
-# Verificar estado detallado de cada deployment
-kubectl get deployments -n carrillo-dev -o wide
-
-# Ver por qué un deployment no está ready
-kubectl describe deployment carrillo-dev-api-gateway -n carrillo-dev
+# Verificar
+docker info
 ```
 
-### Pruebas funcionales fallan en health checks
+### Minikube con problemas
 
 ```bash
-# Verificar que port-forward está activo
-kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev &
-
-# Probar conectividad básica
-curl -v http://localhost:8080/actuator/health
-
-# Si falla, verificar logs
-kubectl logs -f deployment/carrillo-dev-api-gateway -n carrillo-dev
-```
-
-### Reset Completo
-
-```bash
-# Eliminar todo y empezar desde cero
-./scripts/nuke-environment.sh
-
-# O manualmente:
+# Reiniciar completamente
 minikube delete
-docker system prune -a
+minikube start --kubernetes-version=v1.34.0 --driver=docker --cpus=4 --memory=7168
+```
+
+### Puerto 8080 ocupado
+
+```bash
+# Encontrar proceso
+lsof -i :8080
+
+# Matar proceso
+kill -9 <PID>
 ```
 
 ---
@@ -809,28 +366,13 @@ docker system prune -a
 
 | Documento | Descripción |
 |-----------|-------------|
-| [docs/README.md](docs/README.md) | Índice maestro de documentación |
-| [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) | Arquitectura del sistema |
-| [docs/operations/OPERATIONS.md](docs/operations/OPERATIONS.md) | Guía de operaciones |
-| [CLAUDE.md](CLAUDE.md) | Contexto para Claude Code |
-| [PROYECTO_ESTADO.md](PROYECTO_ESTADO.md) | Estado actual del proyecto |
+| [CLAUDE.md](CLAUDE.md) | Contexto completo para AI assistants |
+| [docs/architecture/](docs/architecture/) | Arquitectura y ADRs |
+| [docs/operations/](docs/operations/) | Guías de operaciones |
+| [docs/api/](docs/api/) | Documentación de APIs |
 
 ---
 
-## 👥 Equipo
+## 📜 Licencia
 
-- **Desarrollador**: Alexis
-- **Cliente**: Carrillo Abogados, Cali, Colombia
-- **Contacto técnico**: ingenieria@carrilloabgd.com
-
----
-
-## 📄 Licencia
-
-Propietario © 2024-2025 Carrillo Abogados. Todos los derechos reservados.
-
----
-
-<p align="center">
-  <sub>Built with ❤️ using Spring Boot, Kubernetes, and Cloud-Native technologies</sub>
-</p>
+Código propietario - Carrillo Abogados © 2025

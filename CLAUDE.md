@@ -178,13 +178,28 @@ cd client-service && ../mvnw clean package -DskipTests
 
 ### Desarrollo Local con Minikube
 
-#### Setup inicial completo
+#### Scripts del Proyecto (5 scripts profesionales)
 ```bash
-# Usar script automatizado para setup completo desde cero
-./scripts/deploy-complete.sh
+./scripts/check.sh      # Verificar prerrequisitos
+./scripts/deploy.sh     # Despliegue completo
+./scripts/validate.sh   # Validar deployment
+./scripts/test.sh       # Tests funcionales
+./scripts/reset.sh      # Limpiar entorno
+```
 
-# O setup smart diario (detecta estado y recupera lo necesario)
-./scripts/dev-up.sh
+#### Workflow típico
+```bash
+# 1. Verificar herramientas
+./scripts/check.sh
+
+# 2. Desplegar todo
+./scripts/deploy.sh
+
+# 3. Validar
+./scripts/validate.sh --wait
+
+# 4. Probar
+./scripts/test.sh
 ```
 
 #### Comandos Minikube básicos
@@ -266,25 +281,24 @@ docker images --format "{{.Repository}}:{{.Tag}}" | grep "carrillo/" | xargs doc
 
 ### Scripts de Utilidad
 ```bash
-# Validar deployment completo
-./scripts/validate-deployment.sh
-
-# Limpiar entorno completamente
-./scripts/nuke-environment.sh
-
-# Verificar entorno y herramientas
-./scripts/check-env.sh
+# Flujo completo de desarrollo
+./scripts/check.sh       # Verificar prerrequisitos
+./scripts/deploy.sh      # Despliegue completo
+./scripts/validate.sh    # Validar deployment
+./scripts/test.sh        # Tests funcionales
+./scripts/reset.sh       # Limpiar entorno
 ```
 
 ## FLUJO DE TRABAJO RECOMENDADO
 
 ### Día típico de desarrollo
-1. `./scripts/dev-up.sh` - Setup inteligente del entorno
-2. `kubectl port-forward svc/api-gateway 8080:8080 -n carrillo-dev` - Acceso al gateway
-3. Desarrollar en un microservicio específico
-4. `./mvnw -pl client-service clean package -DskipTests` - Build rápido
-5. Rebuild imagen Docker si es necesario
-6. `helm upgrade carrillo-dev helm-charts/carrillo-abogados/ -n carrillo-dev` - Deploy
+1. `./scripts/check.sh` - Verificar herramientas
+2. `./scripts/deploy.sh` - Desplegar todo (si no está corriendo)
+3. `./scripts/validate.sh --wait` - Validar que todo esté listo
+4. `kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev` - Acceso al gateway
+5. Desarrollar en un microservicio específico
+6. `./mvnw -pl client-service clean package -DskipTests` - Build rápido
+7. Rebuild imagen Docker y redeploy si es necesario
 
 ### Debugging common issues
 ```bash
@@ -310,7 +324,8 @@ El proyecto tiene configuración de GitHub Actions para:
 
 Para simular CI localmente:
 ```bash
-./scripts/deploy-complete.sh  # Full pipeline simulation
+./scripts/deploy.sh  # Full deployment
+./scripts/test.sh    # Run all tests
 ```
 
 ## ARQUITECTURA CRÍTICA PARA DESARROLLO
