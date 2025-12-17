@@ -43,13 +43,19 @@ eval $(minikube docker-env)
 echo -e "${GREEN}✅ Docker configurado${NC}"
 
 # 4. Crear namespaces
-echo -e "\n${YELLOW}[4/8] Creando namespaces...${NC}"
+echo -e "\n${YELLOW}[4/9] Creando namespaces...${NC}"
 kubectl apply -f infrastructure/k8s-manifests/namespaces/
 kubectl get namespaces | grep -E "(carrillo|databases|messaging)"
 echo -e "${GREEN}✅ Namespaces creados${NC}"
 
+# 4b. Aplicar ConfigMaps y Secrets
+echo -e "\n${YELLOW}[4b/9] Aplicando ConfigMaps y Secrets...${NC}"
+kubectl apply -f k8s-manifests/configmaps/ || true
+kubectl apply -f k8s-manifests/secrets/ || true
+echo -e "${GREEN}✅ ConfigMaps y Secrets aplicados${NC}"
+
 # 5. Desplegar PostgreSQL
-echo -e "\n${YELLOW}[5/8] Desplegando PostgreSQL...${NC}"
+echo -e "\n${YELLOW}[5/9] Desplegando PostgreSQL...${NC}"
 if kubectl get pods -n databases 2>/dev/null | grep -q postgresql; then
     echo -e "${GREEN}✅ PostgreSQL ya existe${NC}"
 else
@@ -68,7 +74,7 @@ else
 fi
 
 # 6. Desplegar NATS
-echo -e "\n${YELLOW}[6/8] Desplegando NATS...${NC}"
+echo -e "\n${YELLOW}[6/9] Desplegando NATS...${NC}"
 if kubectl get pods -n messaging 2>/dev/null | grep -q nats; then
     echo -e "${GREEN}✅ NATS ya existe${NC}"
 else
@@ -85,23 +91,24 @@ else
 fi
 
 # 7. Compilar y construir
-echo -e "\n${YELLOW}[7/8] Compilando proyecto...${NC}"
+echo -e "\n${YELLOW}[7/9] Compilando proyecto...${NC}"
 export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
 ./mvnw clean package -DskipTests -T 1C
 
-echo -e "\n${YELLOW}Construyendo imágenes Docker...${NC}"
-for service in api-gateway client-service case-service payment-service document-service calendar-service notification-service n8n-integration-service user-service; do
+echo -e "\n${YELLOW}[8/9] Construyendo imágenes Docker...${NC}"
+# Nota: Solo construir servicios con charts de Helm existentes
+for service in api-gateway client-service case-service document-service calendar-service notification-service n8n-integration-service user-service; do
     if [ -d "$service" ] && [ -f "$service/Dockerfile" ]; then
         echo "Building $service..."
-        docker build -t carrillo/$service:latest -f $service/Dockerfile $service/ || {
+        docker build -t carrilloabogados/$service:v0.2.0 -f $service/Dockerfile $service/ || {
             echo -e "${RED}Error building $service, continuando...${NC}"
         }
     fi
 done
 echo -e "${GREEN}✅ Imágenes construidas${NC}"
 
-# 8. Desplegar con Helm
-echo -e "\n${YELLOW}[8/8] Desplegando microservicios...${NC}"
+# 9. Desplegar con Helm
+echo -e "\n${YELLOW}[9/9] Desplegando microservicios...${NC}"
 if helm list -n carrillo-dev | grep -q carrillo-dev; then
     helm upgrade carrillo-dev helm-charts/carrillo-abogados/ -n carrillo-dev
 else

@@ -48,10 +48,14 @@ spec:
           value: {{ .value | quote }}
         {{- end }}
         envFrom:
+        {{- if .Values.configMapRef }}
         - configMapRef:
             name: {{ .Values.configMapRef.name }}
+        {{- end }}
+        {{- if .Values.secretRef }}
         - secretRef:
             name: {{ .Values.secretRef.name }}
+        {{- end }}
         resources:
           {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
