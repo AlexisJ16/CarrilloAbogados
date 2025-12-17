@@ -1,200 +1,210 @@
-# 📊 ESTADO ACTUAL DEL PROYECTO - Carrillo Abogados Legal Tech
+# 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Fecha**: 30 de Noviembre 2024, 11:30 PM  
-**Rama**: `dev`  
-**Último Commit**: `27fb35b`  
-**Status**: ✅ FASES 1, 2 y 3 COMPLETADAS EXITOSAMENTE
-
----
-
-## 🏆 FASES COMPLETADAS
-
-### ✅ FASE 1: LIMPIEZA Y ORGANIZACIÓN
-**Commit**: `93f73ad` → `de8ddf3`
-
-**Logros**:
-- ✅ Eliminado servicios innecesarios: `product-service`, `favourite-service`, `shipping-service`
-- ✅ Actualizado pom.xml padre (7 módulos → 7 módulos activos)
-- ✅ Creada estructura cloud-native completa
-- ✅ Creado skeleton para 4 nuevos microservicios legales
-- ✅ Transformado README de e-commerce → legal tech
-- ✅ Build SUCCESS en 11.354s
-
-**Servicios Activos**:
-- `service-discovery` (Eureka)
-- `cloud-config` (Config Server)
-- `api-gateway` (Spring Cloud Gateway)
-- `proxy-client` (Auth & Proxy)
-- `user-service` (Usuarios)
-- `order-service` (Órdenes → Cases)
-- `payment-service` (Pagos)
-
-**Servicios en Desarrollo**:
-- `document-service` (Gestión documentos legales)
-- `calendar-service` (Google Calendar)
-- `notification-service` (Email/SMS/Push)
-- `n8n-integration-service` (Workflows)
-
-### ✅ FASE 2: NAMESPACES Y CONFIGURACIÓN K8S
-**Commit**: `2c33c39`
-
-**Logros**:
-- ✅ 3 Namespaces con ResourceQuotas (dev, staging, prod)
-- ✅ 4 ConfigMaps (api-gateway, database, NATS, common)
-- ✅ 3 Secret templates (PostgreSQL, OAuth2, Google APIs)
-- ✅ .gitignore para proteger secrets reales
-- ✅ Documentación completa de uso
-
-### ✅ FASE 3: HELM CHARTS BASE
-**Commit**: `27fb35b`
-
-**Logros**:
-- ✅ Helm Chart completo para api-gateway (8 templates)
-- ✅ Umbrella Chart carrillo-abogados
-- ✅ HPA configurado (2-10 replicas)
-- ✅ Security contexts (non-root, user 1000)
-- ✅ Health checks (liveness/readiness)
-- ✅ Ingress con TLS automático
-- ✅ Documentación de despliegue
+**Última Actualización**: 18 de Diciembre, 2024  
+**Estado General**: ✅ BUILD SUCCESS | 🔄 En Desarrollo Activo  
+**Rama Actual**: `dev`
 
 ---
 
-## 📁 ESTRUCTURA ACTUAL DEL PROYECTO
+## 🎯 RESUMEN EJECUTIVO
+
+Plataforma cloud-native de gestión legal empresarial con 10 microservicios Spring Boot sobre Kubernetes.
+
+### Propósito Dual
+1. **Académico**: Proyecto final curso Plataformas II (entrega 1 diciembre 2025)
+2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
+
+### Hitos Clave
+| Hito | Fecha | Estado |
+|------|-------|--------|
+| MVP Académico | 1 Dic 2025 | 📋 Planificado |
+| MVP Empresarial | 18 Mar 2026 | 📋 Planificado |
+
+---
+
+## ✅ ESTADO ACTUAL (Diciembre 2024)
+
+### Build Status
+```
+✅ BUILD SUCCESS - 10/10 módulos compilados y tests pasando
+```
+
+### Stack Tecnológico
+| Componente | Versión | Estado |
+|------------|---------|--------|
+| Java | 21 LTS | ✅ Estable |
+| Spring Boot | 3.3.13 | ✅ LTS Estable |
+| Spring Cloud | 2023.0.6 | ✅ Compatible |
+| springdoc-openapi | 2.6.0 | ✅ Compatible |
+| Spring Cloud Kubernetes | 3.1.3 | ✅ Activo |
+| PostgreSQL | 16.2 | ✅ Configurado |
+| NATS | 2.10.22 | ✅ Dev/Staging |
+| Kubernetes | 1.34.0 | ✅ Minikube |
+| Helm | 3.19.2 | ✅ Configurado |
+
+### Microservicios
+| Servicio | Puerto | Estado | Descripción |
+|----------|--------|--------|-------------|
+| api-gateway | 8080 | ✅ Activo | Spring Cloud Gateway + OAuth2 |
+| client-service | 8200 | ✅ Activo | Gestión de clientes |
+| case-service | 8300 | ✅ Activo | Casos legales |
+| payment-service | 8400 | ✅ Activo | Pagos gubernamentales |
+| document-service | 8500 | ⚙️ Skeleton | Documentos legales |
+| calendar-service | 8600 | ⚙️ Skeleton | Google Calendar |
+| notification-service | 8700 | ⚙️ Skeleton | Email/SMS |
+| n8n-integration-service | 8800 | ⚙️ Skeleton | Workflows N8N |
+| user-service | 8100 | ⚠️ Legacy | Migrar a client-service |
+
+**Leyenda**: ✅ Activo | ⚙️ Skeleton | ⚠️ Legacy/Deprecado
+
+---
+
+## 📁 ESTRUCTURA DEL REPOSITORIO
 
 ```
 CarrilloAbogados/
-├── 📁 microservices/ (Código Java 21 + Spring Boot 3.3.13)
+├── 📦 Microservicios (10)
 │   ├── api-gateway/
-│   ├── cloud-config/
-│   ├── proxy-client/
-│   ├── service-discovery/
-│   ├── user-service/
-│   ├── order-service/
+│   ├── client-service/
+│   ├── case-service/
 │   ├── payment-service/
-│   ├── document-service/ (skeleton)
-│   ├── calendar-service/ (skeleton)
-│   ├── notification-service/ (skeleton)
-│   └── n8n-integration-service/ (skeleton)
-├── 📁 infrastructure/
-│   ├── k8s-manifests/
-│   │   ├── namespaces/ (3 archivos)
-│   │   ├── configmaps/ (4 archivos)
-│   │   ├── secrets/ (3 templates + .gitignore)
-│   │   └── README.md
-│   └── terraform/ (directorios creados)
-├── 📁 helm-charts/
-│   ├── api-gateway/ (Chart completo)
-│   ├── carrillo-abogados/ (Umbrella chart)
-│   └── README.md
-├── 📁 docs/ (architecture, api, operations)
-├── 📁 monitoring/ (prometheus, grafana, loki)
-└── 📁 scripts/ (install-tools.sh, start-minikube.sh)
+│   ├── document-service/
+│   ├── calendar-service/
+│   ├── notification-service/
+│   ├── n8n-integration-service/
+│   └── user-service/
+│
+├── 🚀 Infraestructura
+│   ├── helm-charts/carrillo-abogados/
+│   ├── infrastructure/k8s-manifests/
+│   ├── monitoring/
+│   └── scripts/
+│
+├── 📚 Documentación
+│   └── docs/
+│       ├── ai-context/      # Instrucciones IAs
+│       ├── architecture/    # Decisiones arquitectura
+│       ├── api/             # APIs (pendiente)
+│       ├── development/     # Guías desarrollo
+│       ├── operations/      # Operaciones
+│       ├── security/        # Seguridad (pendiente)
+│       └── tracking/        # Trazabilidad proyecto
+│
+└── 📄 Archivos Raíz
+    ├── CLAUDE.md            # Contexto Claude Code
+    ├── PROYECTO_ESTADO.md   # Este archivo
+    ├── README.md            # README principal
+    └── pom.xml              # Maven parent POM
 ```
 
 ---
 
-## ⚙️ CONFIGURACIÓN TECNOLÓGICA
+## 🚀 FASES COMPLETADAS
 
-### Stack Principal
-- **Java**: 21 LTS
-- **Spring Boot**: 3.3.13
-- **Spring Cloud**: 2023.0.6
-- **Maven**: Multi-módulo
-- **Kubernetes**: 1.34.0
-- **Helm**: Charts v2
+### ✅ FASE 1: Arquitectura Base
+- Microservicios estructurados con Spring Boot 3.3.x
+- Maven multi-módulo configurado
+- Kubernetes manifests preparados
+- Helm charts umbrella
 
-### Infraestructura
-- **Container Registry**: `carrilloabogados/*`
-- **Kubernetes**: Minikube (dev) → GKE (prod)
-- **Message Queue**: NATS
-- **Database**: PostgreSQL 16
-- **Monitoring**: Prometheus + Grafana
-- **TLS**: cert-manager + Let's Encrypt
+### ✅ FASE 2: Cloud-Native Refactoring
+- Eliminado Eureka → Kubernetes Service Discovery
+- Eliminado Config Server → Kubernetes ConfigMaps
+- Adoptado Spring Cloud Kubernetes 3.1.3
 
-### Seguridad
-- **Non-root containers** (user 1000)
-- **Resource limits** configurados
-- **Secret templates** (sin valores reales en Git)
-- **OAuth2 + JWT** para autenticación
-- **Google Workspace** integration ready
+### ✅ FASE 3: Estabilización de Versiones
+- Resueltas incompatibilidades de Spring Cloud
+- springdoc-openapi ajustado a 2.6.0
+- Build success en todos los módulos
+
+### ✅ FASE 4: Limpieza y Organización
+- Eliminados 42 workflows legacy de GitHub Actions
+- Eliminados archivos obsoletos de ecommerce original
+- Documentación reorganizada en estructura clara
 
 ---
 
-## 🚀 PRÓXIMAS FASES PLANIFICADAS
+## 🔄 FASES EN PROGRESO
 
-### FASE 4: RBAC Y NETWORK POLICIES
-- [ ] ServiceAccounts con permisos específicos
-- [ ] Roles y RoleBindings por servicio
-- [ ] Network Policies para aislamiento
-- [ ] Pod Security Standards
+### 🔄 FASE 5: Documentación Completa
+- [x] Estructura de documentación reorganizada
+- [x] Contexto para IAs configurado
+- [ ] Documentación de APIs (Swagger/OpenAPI)
+- [ ] Guías de desarrollo
+- [ ] Documentación de seguridad
 
-### FASE 5: DOCKER IMAGES Y CI/CD
-- [ ] Dockerfiles para cada microservicio
-- [ ] GitHub Actions para CI/CD
-- [ ] Docker Registry setup
-- [ ] Automated testing pipelines
-
-### FASE 6: IMPLEMENTACIÓN MICROSERVICIOS LEGALES
-- [ ] document-service implementation
-- [ ] calendar-service implementation  
-- [ ] notification-service implementation
-- [ ] n8n-integration-service implementation
+### 📋 FASE 6: Deployment Local (Próximo)
+- [ ] Minikube completamente configurado
+- [ ] PostgreSQL + NATS desplegados
+- [ ] Todos los servicios corriendo localmente
+- [ ] Port-forward y testing E2E
 
 ---
 
-## 📋 COMANDOS ESENCIALES PARA CONTINUACIÓN
+## 📋 PRÓXIMAS FASES PLANIFICADAS
 
-### Build y Test
+### FASE 7: Implementación Lógica de Negocio
+- [ ] document-service: Almacenamiento seguro
+- [ ] calendar-service: Google Calendar API
+- [ ] notification-service: Gmail API
+- [ ] n8n-integration-service: Eventos NATS
+
+### FASE 8: Integraciones Externas
+- [ ] Google Workspace APIs
+- [ ] N8N Pro workflows
+- [ ] OAuth2 con @carrilloabgd.com
+
+### FASE 9: Testing y Validación
+- [ ] Tests de integración
+- [ ] Tests E2E
+- [ ] Performance testing
+
+### FASE 10: Deployment Producción
+- [ ] GKE Autopilot
+- [ ] Cloud SQL
+- [ ] CI/CD completo
+
+---
+
+## 🔧 COMANDOS ESENCIALES
+
+### Build
 ```bash
-./mvnw clean verify -T 1C  # ✅ FUNCIONA
+./mvnw clean verify -T 1C          # Build completo
+./mvnw clean package -DskipTests   # Build rápido
 ```
 
-### Despliegue Local (cuando esté listo)
+### Desarrollo Local
 ```bash
-# 1. Aplicar namespaces
-kubectl apply -f infrastructure/k8s-manifests/namespaces/
+./scripts/dev-up.sh                # Setup inteligente
+kubectl port-forward svc/api-gateway 8080:8080 -n carrillo-dev
+```
 
-# 2. Aplicar ConfigMaps
-kubectl apply -f infrastructure/k8s-manifests/configmaps/
-
-# 3. Crear secrets (desde templates)
-# Editar infrastructure/k8s-manifests/secrets/*-secret.yaml
-
-# 4. Instalar con Helm
-helm install carrillo-dev helm-charts/carrillo-abogados/ \
-  --namespace carrillo-dev
+### Base de Datos
+```bash
+kubectl exec -it postgresql-0 -n databases -- psql -U carrillo -d carrillo_legal_tech
 ```
 
 ---
 
-## 🔄 ESTADO DE LA RAMA
+## 📈 MÉTRICAS
 
-- **Rama actual**: `dev`
-- **Commits ahead**: 0 (todo pusheado)
-- **Working tree**: clean
-- **Build status**: ✅ SUCCESS
-- **Last push**: ✅ Exitoso a origin/dev
-
----
-
-## 📞 PRÓXIMA SESIÓN (2:00 AM)
-
-**Para retomar el desarrollo:**
-
-1. **Verificar estado**:
-   ```bash
-   git status
-   git log --oneline -5
-   ./mvnw clean verify -T 1C
-   ```
-
-2. **Continuar con FASE 4**: RBAC y Network Policies
-
-3. **Objetivo**: Completar la infraestructura de seguridad de Kubernetes
-
-**¡El proyecto está en excelente estado para continuar el desarrollo!** 🚀
+| Métrica | Valor |
+|---------|-------|
+| Módulos Maven | 10 |
+| Tests unitarios | ✅ Pasando |
+| Workflows activos | 19 |
+| Cobertura docs | ~40% |
 
 ---
 
-*Generado automáticamente por Claude Code*  
-*Estado guardado: 2024-11-30 23:30 PM*
+## 📞 CONTACTO
+
+- **Desarrollador**: Alexis
+- **Cliente**: Carrillo Abogados, Cali, Colombia
+- **Admin técnico**: ingenieria@carrilloabgd.com
+
+---
+
+*Actualizado automáticamente durante sesión de trabajo*  
+*Próxima revisión planificada: Antes de deployment*
