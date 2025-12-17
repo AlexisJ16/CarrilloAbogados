@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>com.carrilloabogados</groupId>
 		<artifactId>carrillo-legal-tech</artifactId>
-		<version>0.1.0</version>
+		<version>0.2.0</version>
 	</parent>
 	<artifactId>n8n-integration-service</artifactId>
 	<name>n8n-integration-service</name>
