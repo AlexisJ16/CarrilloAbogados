@@ -1,9 +1,9 @@
-package com.selimhorri.app.helper;
+package com.carrilloabogados.client.helper;
 
-import com.selimhorri.app.domain.Credential;
-import com.selimhorri.app.domain.VerificationToken;
-import com.selimhorri.app.dto.CredentialDto;
-import com.selimhorri.app.dto.VerificationTokenDto;
+import com.carrilloabogados.client.domain.Credential;
+import com.carrilloabogados.client.domain.VerificationToken;
+import com.carrilloabogados.client.dto.CredentialDto;
+import com.carrilloabogados.client.dto.VerificationTokenDto;
 
 public interface VerificationTokenMappingHelper {
 	

@@ -1,9 +1,9 @@
-package com.selimhorri.app.helper;
+package com.carrilloabogados.client.helper;
 
-import com.selimhorri.app.domain.Credential;
-import com.selimhorri.app.domain.User;
-import com.selimhorri.app.dto.CredentialDto;
-import com.selimhorri.app.dto.UserDto;
+import com.carrilloabogados.client.domain.Credential;
+import com.carrilloabogados.client.domain.User;
+import com.carrilloabogados.client.dto.CredentialDto;
+import com.carrilloabogados.client.dto.UserDto;
 
 public interface CredentialMappingHelper {
 	

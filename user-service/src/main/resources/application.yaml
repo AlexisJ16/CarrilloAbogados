@@ -52,4 +52,4 @@ management:
 logging:
   level:
     org.springframework.cloud.kubernetes: DEBUG
-    com.selimhorri: INFO
+    com.carrilloabogados: INFO

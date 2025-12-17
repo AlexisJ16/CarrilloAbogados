@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: payment-service
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=${POSTGRES_SCHEMA_PAYMENTS:payments}
+    username: ${POSTGRES_USER:carrillo}
+    password: ${POSTGRES_PASSWORD:CarrilloAbogados2025!}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_schema: ${POSTGRES_SCHEMA_PAYMENTS:payments}
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    schemas: ${POSTGRES_SCHEMA_PAYMENTS:payments}
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: true
+      config:
+        enabled: true
+        namespace: carrillo-dev
+        sources:
+          - name: database-config
+          - name: application-common-config
+
+server:
+  port: 8750
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.kubernetes: DEBUG
+    com.carrilloabogados: INFO

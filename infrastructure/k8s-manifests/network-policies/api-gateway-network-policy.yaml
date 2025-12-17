@@ -35,14 +35,56 @@ spec:
           app: user-service
     ports:
     - protocol: TCP
+      port: 8100
+  - to:
+    - podSelector:
+        matchLabels:
+          app: client-service
+    ports:
+    - protocol: TCP
       port: 8700
+  - to:
+    - podSelector:
+        matchLabels:
+          app: case-service
+    ports:
+    - protocol: TCP
+      port: 8600
   - to:
     - podSelector:
         matchLabels:
           app: payment-service
     ports:
     - protocol: TCP
-      port: 8400
+      port: 8750
+  - to:
+    - podSelector:
+        matchLabels:
+          app: document-service
+    ports:
+    - protocol: TCP
+      port: 8500
+  - to:
+    - podSelector:
+        matchLabels:
+          app: calendar-service
+    ports:
+    - protocol: TCP
+      port: 8900
+  - to:
+    - podSelector:
+        matchLabels:
+          app: notification-service
+    ports:
+    - protocol: TCP
+      port: 9000
+  - to:
+    - podSelector:
+        matchLabels:
+          app: n8n-integration-service
+    ports:
+    - protocol: TCP
+      port: 9100
   - to:
     - namespaceSelector:
         matchLabels:

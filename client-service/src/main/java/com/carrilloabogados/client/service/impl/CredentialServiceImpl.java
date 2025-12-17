@@ -1,4 +1,4 @@
-package com.selimhorri.app.service.impl;
+package com.carrilloabogados.client.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,12 +7,12 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.selimhorri.app.dto.CredentialDto;
-import com.selimhorri.app.exception.wrapper.CredentialNotFoundException;
-import com.selimhorri.app.exception.wrapper.UserObjectNotFoundException;
-import com.selimhorri.app.helper.CredentialMappingHelper;
-import com.selimhorri.app.repository.CredentialRepository;
-import com.selimhorri.app.service.CredentialService;
+import com.carrilloabogados.client.dto.CredentialDto;
+import com.carrilloabogados.client.exception.wrapper.CredentialNotFoundException;
+import com.carrilloabogados.client.exception.wrapper.UserObjectNotFoundException;
+import com.carrilloabogados.client.helper.CredentialMappingHelper;
+import com.carrilloabogados.client.repository.CredentialRepository;
+import com.carrilloabogados.client.service.CredentialService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -10,11 +10,11 @@
 		<version>3.3.13</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.selimhorri</groupId>
-	<artifactId>ecommerce-microservice-backend</artifactId>
+	<groupId>com.carrilloabogados</groupId>
+	<artifactId>carrillo-legal-tech</artifactId>
 	<version>0.1.0</version>
-	<name>ecommerce-microservice-backend</name>
-	<description>Ecommerce backend implemented in Spring Boot and Spring Cloud!</description>
+	<name>carrillo-legal-tech</name>
+	<description>Legal Tech Platform for Carrillo Abogados Law Firm</description>
 	<packaging>pom</packaging>
 	
 	<properties>
@@ -108,6 +108,7 @@
 		<module>client-service</module>
 		<module>case-service</module>
 		<!-- Phase 7: Nuevos microservicios -->
+		<module>payment-service</module>
 		<module>document-service</module>
 		<module>calendar-service</module>
 		<module>notification-service</module>

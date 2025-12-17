@@ -1,4 +1,4 @@
-package com.selimhorri.app.dto;
+package com.carrilloabogados.legalcase.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -27,9 +27,6 @@ public class UserDto implements Serializable {
 	private String email;
 	private String phone;
 	
-	@JsonProperty("cart")
-	@JsonInclude(Include.NON_NULL)
-	private CartDto cartDto;
 	
 }
 

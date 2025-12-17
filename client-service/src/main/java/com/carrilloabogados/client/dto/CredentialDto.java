@@ -1,4 +1,4 @@
-package com.selimhorri.app.dto;
+package com.carrilloabogados.client.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -7,7 +7,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.selimhorri.app.domain.RoleBasedAuthority;
+import com.carrilloabogados.client.domain.RoleBasedAuthority;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

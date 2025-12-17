@@ -1,8 +1,8 @@
-package com.selimhorri.app.repository;
+package com.carrilloabogados.client.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.selimhorri.app.domain.VerificationToken;
+import com.carrilloabogados.client.domain.VerificationToken;
 
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Integer> {
 	

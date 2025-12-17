@@ -1,4 +1,4 @@
-package com.selimhorri.app.service.impl;
+package com.carrilloabogados.client.service.impl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,11 +7,11 @@ import jakarta.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.selimhorri.app.dto.UserDto;
-import com.selimhorri.app.exception.wrapper.UserObjectNotFoundException;
-import com.selimhorri.app.helper.UserMappingHelper;
-import com.selimhorri.app.repository.UserRepository;
-import com.selimhorri.app.service.UserService;
+import com.carrilloabogados.client.dto.UserDto;
+import com.carrilloabogados.client.exception.wrapper.UserObjectNotFoundException;
+import com.carrilloabogados.client.helper.UserMappingHelper;
+import com.carrilloabogados.client.repository.UserRepository;
+import com.carrilloabogados.client.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
-package com.selimhorri.app.service;
+package com.carrilloabogados.client.service;
 
 import java.util.List;
 
-import com.selimhorri.app.dto.UserDto;
+import com.carrilloabogados.client.dto.UserDto;
 
 public interface UserService {
 	

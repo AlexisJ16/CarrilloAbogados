@@ -1,4 +1,4 @@
-package com.selimhorri.app.config.mapper;
+package com.carrilloabogados.legalcase.config.mapper;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

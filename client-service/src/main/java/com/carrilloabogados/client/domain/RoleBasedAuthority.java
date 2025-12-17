@@ -1,4 +1,4 @@
-package com.selimhorri.app.domain;
+package com.carrilloabogados.client.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

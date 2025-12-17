@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=${POSTGRES_SCHEMA_NOTIFICATIONS:notifications}
     username: ${POSTGRES_USER:carrillo}
-    password: ${POSTGRES_PASSWORD:CarrilloAbogados2025!}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -24,7 +24,7 @@ spring:
     host: ${SMTP_HOST:smtp.gmail.com}
     port: ${SMTP_PORT:587}
     username: ${SMTP_USERNAME:notifications@carrilloabogados.com}
-    password: ${SMTP_PASSWORD:NotificationPassword123!}
+    password: ${SMTP_PASSWORD}
     properties:
       mail:
         smtp:

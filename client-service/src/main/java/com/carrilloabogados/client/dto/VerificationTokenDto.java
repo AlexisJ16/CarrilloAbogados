@@ -1,4 +1,4 @@
-package com.selimhorri.app.dto;
+package com.carrilloabogados.client.dto;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.selimhorri.app.constant.AppConstant;
+import com.carrilloabogados.client.constant.AppConstant;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

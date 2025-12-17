@@ -1,4 +1,4 @@
-package com.selimhorri.app.dto.response.collection;
+package com.carrilloabogados.client.dto.response.collection;
 
 import java.util.Collection;
 

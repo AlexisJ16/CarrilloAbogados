@@ -1,4 +1,4 @@
-package com.selimhorri.app.dto;
+package com.carrilloabogados.client.dto;
 
 import java.io.Serial;
 import java.io.Serializable;

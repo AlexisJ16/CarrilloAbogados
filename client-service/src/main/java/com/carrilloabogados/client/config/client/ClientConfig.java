@@ -1,4 +1,4 @@
-package com.selimhorri.app.config.client;
+package com.carrilloabogados.client.config.client;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
