@@ -1,7 +1,7 @@
 
 server:
   servlet:
-    context-path: /order-service
+    context-path: /case-service
 
 spring:
   zipkin:
@@ -9,7 +9,7 @@ spring:
   config:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
   application:
-    name: ORDER-SERVICE
+    name: CASE-SERVICE
   profiles:
     active:
     - dev
@@ -17,7 +17,7 @@ spring:
 resilience4j:
   circuitbreaker:
     instances:
-      orderService:
+      caseService:
         register-health-indicator: true
         event-consumer-buffer-size: 10
         automatic-transition-from-open-to-half-open-enabled: true

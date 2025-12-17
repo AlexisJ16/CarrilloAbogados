@@ -11,7 +11,7 @@ api-gateway:
   replicaCount: 1
 
 user-service:
-  enabled: true
+  enabled: false  # Legacy - migrado a client-service
   replicaCount: 1
 
 client-service:
