@@ -434,6 +434,156 @@ minikube dashboard
 
 ## ✅ Validación del Deployment
 
+Una vez desplegado el proyecto, es fundamental validar que todos los servicios estén funcionando correctamente.
+
+### Script de Validación Automática
+
+El proyecto incluye un script completo para validar el deployment:
+
+```bash
+# Validación básica
+./scripts/validate-deployment.sh
+
+# Validación con espera (espera que los pods estén ready)
+./scripts/validate-deployment.sh --wait
+
+# Validación detallada
+./scripts/validate-deployment.sh --wait --verbose
+```
+
+#### ¿Qué valida el script?
+
+| Verificación | Descripción |
+|--------------|-------------|
+| 🖥️ Minikube | Cluster Kubernetes corriendo |
+| 📦 Namespaces | carrillo-dev, databases, messaging |
+| 🐘 PostgreSQL | Pod running, acepta conexiones |
+| 📬 NATS | Servidor de mensajería operativo |
+| 🚀 Microservicios | 8 servicios desplegados y ready |
+| 🔗 API Gateway | Servicio accesible y respondiendo |
+| ⚙️ ConfigMaps | Configuración aplicada |
+| 📊 Recursos | Métricas y eventos del cluster |
+
+#### Ejemplo de salida exitosa:
+
+```
+🔍 Carrillo Abogados - Validación de Deployment
+=================================================
+
+▶ 1. Validando Minikube...
+  ✅ Minikube está ejecutándose
+
+▶ 2. Validando namespaces...
+  ✅ Namespace 'carrillo-dev' existe
+  ✅ Namespace 'databases' existe
+  ✅ Namespace 'messaging' existe
+
+▶ 3. Validando PostgreSQL...
+  ✅ PostgreSQL pod existe (postgresql-0)
+  ✅ PostgreSQL pod está Running
+  ✅ PostgreSQL acepta conexiones
+
+▶ 4. Validando NATS...
+  ✅ NATS pod existe (nats-0)
+  ✅ NATS pod está Running
+
+▶ 5. Validando microservicios...
+  ✅ api-gateway Running y Ready (1/1 replicas)
+  ✅ client-service Running y Ready (1/1 replicas)
+  ✅ case-service Running y Ready (1/1 replicas)
+  ... (más servicios)
+
+════════════════════════════════════════════════════════════════
+  📊 RESUMEN DE VALIDACIÓN
+════════════════════════════════════════════════════════════════
+
+  Total de verificaciones: 25
+  ✅ Pasadas: 25
+  ❌ Fallidas: 0
+  ⚠️  Advertencias: 0
+
+  Porcentaje de éxito: 100%
+
+🎉 ¡VALIDACIÓN EXITOSA! Todos los componentes están funcionando.
+```
+
+---
+
+## 🧪 Pruebas Funcionales
+
+Después de validar el deployment, ejecute las pruebas funcionales para verificar la operatividad de los servicios:
+
+```bash
+# Ejecutar pruebas funcionales completas
+./scripts/test-services.sh
+
+# Con puerto personalizado
+./scripts/test-services.sh --port 9090
+
+# Si ya tiene port-forward activo
+./scripts/test-services.sh --skip-port-forward
+```
+
+#### ¿Qué prueba el script?
+
+| Prueba | Descripción |
+|--------|-------------|
+| 🏥 Health Checks | Endpoints /actuator/health de cada servicio |
+| 🔀 Gateway Routes | Rutas configuradas en API Gateway |
+| 🗄️ Base de Datos | Conectividad y schemas de PostgreSQL |
+| 📬 NATS | Publicación/suscripción de mensajes |
+| 🔗 Conectividad | DNS interno entre servicios |
+| 🚪 API Endpoints | Endpoints principales de cada servicio |
+
+#### Ejemplo de salida:
+
+```
+🧪 PRUEBAS FUNCIONALES - CARRILLO ABOGADOS
+════════════════════════════════════════════════════════════════
+
+▶ 1. Configurando acceso al API Gateway
+  Servicio encontrado: carrillo-dev-api-gateway
+  ✅ Port-forward configurado en localhost:8080
+  ✓ API Gateway respondiendo
+
+▶ 2. Health Checks - API Gateway
+  ✅ Health endpoint principal (HTTP 200)
+  ✅ Liveness probe (HTTP 200)
+  ✅ Readiness probe (HTTP 200)
+
+▶ 3. Health Checks - Microservicios (via Gateway)
+  ✅ client-service health check (HTTP 200)
+  ✅ case-service health check (HTTP 200)
+  ✅ user-service health check (HTTP 200)
+
+▶ 6. Pruebas de Base de Datos
+  ✅ PostgreSQL acepta conexiones
+  ✅ Base de datos carrillo_legal_tech accesible
+
+▶ 7. Pruebas de NATS (Messaging)
+  ✅ NATS servidor está ready
+  ✅ NATS pub/sub funcionando
+
+════════════════════════════════════════════════════════════════
+  📊 RESUMEN DE PRUEBAS FUNCIONALES
+════════════════════════════════════════════════════════════════
+
+  Total de pruebas: 20
+  ✅ Pasadas: 18
+  ❌ Fallidas: 0
+  ⏭️  Omitidas: 2
+
+  Porcentaje de éxito: 100% (de pruebas ejecutadas)
+
+🎉 ¡TODAS LAS PRUEBAS PASARON!
+```
+
+---
+
+## 🔍 Verificación Manual
+
+Si prefiere verificar manualmente:
+
 ### Verificar Health de Servicios
 
 ```bash
@@ -463,10 +613,10 @@ kubectl exec -it postgresql-0 -n databases -- psql -U carrillo -d carrillo_legal
 
 ```bash
 # Logs del API Gateway
-kubectl logs -f deployment/api-gateway -n carrillo-dev
+kubectl logs -f deployment/carrillo-dev-api-gateway -n carrillo-dev
 
 # Logs de un servicio específico
-kubectl logs -f deployment/client-service -n carrillo-dev
+kubectl logs -f deployment/carrillo-dev-client-service -n carrillo-dev
 ```
 
 ### Verificar Rutas del Gateway
@@ -597,7 +747,49 @@ kubectl get svc -n carrillo-dev
 kubectl get pods -n carrillo-dev
 
 # Verificar logs del pod
-kubectl logs deployment/api-gateway -n carrillo-dev
+kubectl logs deployment/carrillo-dev-api-gateway -n carrillo-dev
+```
+
+### Pods en "ContainerCreating" por mucho tiempo
+
+```bash
+# Ver eventos del pod
+kubectl describe pod <pod-name> -n carrillo-dev
+
+# Causas comunes:
+# 1. Imagen no encontrada (verificar eval $(minikube docker-env))
+# 2. ConfigMap/Secret no existe
+# 3. PVC pendiente de binding
+
+# Solución: reconstruir imágenes
+eval $(minikube docker-env)
+./scripts/build-all-images.sh
+```
+
+### Validación falla en "microservicios no ready"
+
+```bash
+# Usar modo wait para esperar
+./scripts/validate-deployment.sh --wait --verbose
+
+# Verificar estado detallado de cada deployment
+kubectl get deployments -n carrillo-dev -o wide
+
+# Ver por qué un deployment no está ready
+kubectl describe deployment carrillo-dev-api-gateway -n carrillo-dev
+```
+
+### Pruebas funcionales fallan en health checks
+
+```bash
+# Verificar que port-forward está activo
+kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev &
+
+# Probar conectividad básica
+curl -v http://localhost:8080/actuator/health
+
+# Si falla, verificar logs
+kubectl logs -f deployment/carrillo-dev-api-gateway -n carrillo-dev
 ```
 
 ### Reset Completo
