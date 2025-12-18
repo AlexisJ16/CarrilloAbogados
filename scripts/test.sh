@@ -65,36 +65,45 @@ fi
 # ============================================================================
 echo -e "${BLUE}[2/4] Health Checks (Actuator)${NC}"
 
-SERVICES=(
-    "api-gateway:8080"
-    "client-service:8200"
-    "case-service:8300"
-    "document-service:8500"
-    "calendar-service:8600"
-    "notification-service:8700"
-    "n8n-integration-service:8800"
-)
+# API Gateway directamente
+check_health() {
+    local name="$1"
+    local url="$2"
+    local response
+    
+    response=$(curl -s -o /dev/null -w "%{http_code}" "$url" --connect-timeout 5 2>/dev/null || echo "000")
+    
+    if [ "$response" = "200" ]; then
+        pass "$name (HTTP $response)"
+        return 0
+    elif [ "$response" = "503" ]; then
+        fail "$name (HTTP $response - servicio degradado)"
+        return 1
+    elif [ "$response" = "000" ]; then
+        fail "$name (Sin respuesta - timeout)"
+        return 1
+    else
+        fail "$name (HTTP $response)"
+        return 1
+    fi
+}
 
-for svc_port in "${SERVICES[@]}"; do
-    SVC=${svc_port%%:*}
-    
-    # Intentar acceder al health check del servicio a través del gateway
-    if [ "$SVC" = "api-gateway" ]; then
-        URL="http://localhost:$GATEWAY_PORT/actuator/health"
-    else
-        URL="http://localhost:$GATEWAY_PORT/$SVC/actuator/health"
-    fi
-    
-    RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" "$URL" 2>/dev/null || echo "000")
-    
-    if [ "$RESPONSE" = "200" ]; then
-        pass "$SVC (HTTP $RESPONSE)"
-    elif [ "$RESPONSE" = "503" ]; then
-        fail "$SVC (HTTP $RESPONSE - servicio degradado)"
-    else
-        fail "$SVC (HTTP $RESPONSE)"
-    fi
-done
+# API Gateway (directo, sin context-path)
+check_health "api-gateway" "http://localhost:$GATEWAY_PORT/actuator/health"
+
+# Servicios CON context-path (client-service, case-service)
+# El gateway enruta /client-service/** → lb://CLIENT-SERVICE
+# El servicio tiene context-path=/client-service, entonces /client-service/actuator/health
+check_health "client-service" "http://localhost:$GATEWAY_PORT/client-service/actuator/health"
+check_health "case-service" "http://localhost:$GATEWAY_PORT/case-service/actuator/health"
+
+# Servicios SIN context-path (document, calendar, notification, n8n)
+# El gateway enruta /document-service/** → lb://DOCUMENT-SERVICE
+# El servicio NO tiene context-path, entonces debe ser /document-service/actuator/health
+check_health "document-service" "http://localhost:$GATEWAY_PORT/document-service/actuator/health"
+check_health "calendar-service" "http://localhost:$GATEWAY_PORT/calendar-service/actuator/health"
+check_health "notification-service" "http://localhost:$GATEWAY_PORT/notification-service/actuator/health"
+check_health "n8n-integration-service" "http://localhost:$GATEWAY_PORT/n8n-integration-service/actuator/health"
 
 # ============================================================================
 # 3. DATABASE CONNECTIVITY
