@@ -147,7 +147,61 @@ natsTemplate.publish("carrillo.events.client.created", clientDto);
 ```
 Topic pattern: `carrillo.events.<domain>.<action>`
 
+## ⚠️ CRITICAL: Windows + WSL Development Environment
+
+### Environment Configuration
+- **Host OS**: Windows 11
+- **WSL Distribution**: Ubuntu-24.04 (default)
+- **Minikube**: Runs inside WSL with Docker driver
+- **kubectl**: Installed in WSL, NOT in Windows native
+
+### How to Execute Commands from PowerShell
+
+**ALL Kubernetes/Minikube/Helm commands MUST be executed through WSL:**
+
+```powershell
+# ✅ CORRECT - Use wsl bash -c "command"
+wsl bash -c "kubectl get pods -n carrillo-dev"
+wsl bash -c "minikube status"
+wsl bash -c "helm list -n carrillo-dev"
+wsl bash -c "./scripts/deploy.sh"
+
+# ❌ WRONG - Do NOT run kubectl directly in PowerShell
+kubectl get pods  # This fails - Windows kubectl has no config for Minikube
+```
+
+### Restarting WSL (Fixes Most Stability Issues)
+```powershell
+# Run as Administrator in PowerShell:
+wsl --shutdown
+
+# Wait 10 seconds, then:
+wsl bash -c "minikube start"
+wsl bash -c "kubectl get pods -A"
+```
+
+### Available WSL Distributions
+```powershell
+wsl --list  # Shows: Ubuntu-24.04 (Default), docker-desktop
+```
+
+### Port Forwarding (Access Services from Windows)
+```powershell
+# Start port-forward in background
+wsl bash -c "kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev &"
+
+# Then access from Windows browser: http://localhost:8080
+```
+
 ## Troubleshooting
+
+### Minikube Keeps Stopping
+This is usually a cgroups issue in WSL. Solution:
+```powershell
+wsl --shutdown
+# Wait 10 seconds
+wsl bash -c "minikube start"
+```
 
 ### Pod CrashLoopBackOff
 ```bash
@@ -167,9 +221,10 @@ Common causes: Database schema missing, incorrect service name in Gateway
 - Check Java version: `java -version` (must be 21)
 
 ### Full Environment Reset
-```bash
-./scripts/nuke-environment.sh  # Deletes Minikube cluster
-./scripts/deploy-complete.sh  # Fresh deployment from scratch
+```powershell
+wsl --shutdown
+wsl bash -c "minikube delete && minikube start"
+wsl bash -c "./scripts/deploy.sh"
 ```
 
 ## Tech Stack Reference
@@ -189,6 +244,7 @@ Common causes: Database schema missing, incorrect service name in Gateway
 - Database rationale: [docs/architecture/ADR-005-database-strategy.md](../docs/architecture/ADR-005-database-strategy.md)
 - Operations guide: [docs/operations/OPERATIONS.md](../docs/operations/OPERATIONS.md)
 - Full context: [CLAUDE.md](../CLAUDE.md) (comprehensive developer reference)
+- Project status: [PROYECTO_ESTADO.md](../PROYECTO_ESTADO.md) (current state)
 
 ## Git Workflow
 
@@ -197,3 +253,12 @@ Common causes: Database schema missing, incorrect service name in Gateway
 - `dev`: Active development (current working branch)
 
 Always create feature branches from `dev`, not `main`.
+
+## Recent Fixes Applied (Dec 18, 2025)
+
+1. **PostgreSQL DATEDIFF query** - Changed to PostgreSQL syntax in LegalCaseRepository
+2. **Health probes** - Added context-path prefix (/case-service/, /client-service/)
+3. **RBAC** - Created service-discovery-role for Kubernetes service discovery
+4. **Schemas** - Created 7 PostgreSQL schemas for all services
+5. **compose.yml** - Completely rewritten for legal tech (removed e-commerce legacy)
+6. **test.sh** - Improved with context-path aware health checks

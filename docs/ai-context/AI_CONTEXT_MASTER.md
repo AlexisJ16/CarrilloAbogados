@@ -1,7 +1,38 @@
 # 🤖 AI Context Master - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 18 de Diciembre, 2024  
+**Última Actualización**: 18 de Diciembre, 2025  
 **Propósito**: Documento maestro de contexto para todas las IAs que trabajan en el proyecto
+
+---
+
+## ⚠️ CRÍTICO: Entorno Windows + WSL
+
+### Configuración del Entorno
+- **Host OS**: Windows 11
+- **WSL Distribution**: Ubuntu-24.04 (default)
+- **Minikube**: Runs inside WSL with Docker driver
+- **kubectl/helm**: Installed in WSL, NOT in Windows native
+
+### Cómo Ejecutar Comandos
+
+**TODOS los comandos de Kubernetes/Minikube/Helm DEBEN ejecutarse a través de WSL:**
+
+```powershell
+# ✅ CORRECTO - Usar wsl bash -c "comando"
+wsl bash -c "kubectl get pods -n carrillo-dev"
+wsl bash -c "minikube status"
+wsl bash -c "helm list -n carrillo-dev"
+
+# ❌ INCORRECTO - NO ejecutar kubectl directamente
+kubectl get pods  # Esto falla - Windows kubectl no tiene config de Minikube
+```
+
+### Reiniciar WSL (Soluciona Problemas de Estabilidad)
+```powershell
+wsl --shutdown
+# Esperar 10 segundos, luego:
+wsl bash -c "minikube start"
+```
 
 ---
 
@@ -10,7 +41,7 @@
 ### Información General
 - **Nombre**: Carrillo Abogados Legal Tech Platform
 - **Tipo**: Plataforma cloud-native de gestión legal empresarial
-- **Arquitectura**: 10 microservicios Spring Boot sobre Kubernetes
+- **Arquitectura**: 7 microservicios Spring Boot sobre Kubernetes
 - **Propósito Dual**:
   1. **Académico**: Proyecto final curso Plataformas II (entrega 1 diciembre 2025)
   2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
@@ -25,7 +56,7 @@
 
 ## 🛠️ STACK TECNOLÓGICO ACTUAL
 
-### Versiones Estables (Diciembre 2024)
+### Versiones Estables (Diciembre 2025)
 | Tecnología | Versión | Notas |
 |------------|---------|-------|
 | Java | 21 LTS | Requerido |
@@ -36,17 +67,21 @@
 | PostgreSQL | 16.2 | Bitnami Helm chart |
 | NATS | 2.10.22 | Dev/Staging messaging |
 
-### Microservicios Activos (10)
-1. `api-gateway` - Spring Cloud Gateway + OAuth2 (puerto 8080)
-2. `client-service` - Gestión de clientes (puerto 8200)
-3. `case-service` - Gestión de casos legales (puerto 8300)
-4. `payment-service` - Pagos gubernamentales (puerto 8400)
-5. `document-service` - Documentos legales (puerto 8500)
-6. `calendar-service` - Google Calendar API (puerto 8600)
-7. `notification-service` - Email/SMS vía Gmail (puerto 8700)
-8. `n8n-integration-service` - Workflows N8N (puerto 8800)
-9. `user-service` - Legacy, migrar a client-service (puerto 8100)
-10. ~~`order-service`~~ - Eliminado, migrado a case-service
+### Microservicios Activos (7)
+| Servicio | Puerto | Context-Path | Estado |
+|----------|--------|--------------|--------|
+| api-gateway | 8080 | / | ✅ Activo |
+| client-service | 8200 | /client-service | ✅ Activo |
+| case-service | 8300 | /case-service | ✅ Activo |
+| payment-service | 8400 | / | ✅ Activo |
+| document-service | 8500 | / | ⚙️ Skeleton |
+| calendar-service | 8600 | / | ⚙️ Skeleton |
+| notification-service | 8700 | / | ⚙️ Skeleton |
+| n8n-integration-service | 8800 | / | ⚙️ Skeleton |
+
+### Servicios Eliminados
+- ~~user-service~~ - Migrado a client-service (disabled in Helm)
+- ~~order-service~~ - Nunca existió, era template e-commerce
 
 ---
 

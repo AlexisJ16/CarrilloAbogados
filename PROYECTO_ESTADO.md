@@ -1,14 +1,14 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 18 de Diciembre, 2024  
-**Estado General**: ✅ BUILD SUCCESS | 🔄 En Desarrollo Activo  
+**Última Actualización**: 18 de Diciembre, 2025  
+**Estado General**: ✅ BUILD SUCCESS | 🔧 Infraestructura Corregida | ⏸️ Pendiente Reinicio WSL  
 **Rama Actual**: `dev`
 
 ---
 
 ## 🎯 RESUMEN EJECUTIVO
 
-Plataforma cloud-native de gestión legal empresarial con 10 microservicios Spring Boot sobre Kubernetes.
+Plataforma cloud-native de gestión legal empresarial con **7 microservicios activos** Spring Boot sobre Kubernetes. Proyecto migrado desde plantilla e-commerce a plataforma legal.
 
 ### Propósito Dual
 1. **Académico**: Proyecto final curso Plataformas II (entrega 1 diciembre 2025)
@@ -22,11 +22,23 @@ Plataforma cloud-native de gestión legal empresarial con 10 microservicios Spri
 
 ---
 
-## ✅ ESTADO ACTUAL (Diciembre 2024)
+## ✅ ESTADO ACTUAL (18 Diciembre 2025)
+
+### Última Sesión de Trabajo
+Se corrigieron múltiples problemas de deployment:
+- ✅ **7 schemas PostgreSQL** creados (clients, cases, documents, payments, calendar, notifications, users)
+- ✅ **Query DATEDIFF** corregido para PostgreSQL (era sintaxis SQL Server)
+- ✅ **RBAC Kubernetes** configurado para service discovery
+- ✅ **Health probes** actualizados con context-path correcto
+- ✅ **compose.yml** reescrito completamente (eliminado legacy e-commerce)
+- ✅ **Network policies** actualizadas
+- ✅ **test.sh** mejorado con context-path support
+- ⏸️ **Minikube** inestable por problemas de cgroups en WSL (requiere reinicio)
 
 ### Build Status
 ```
-✅ BUILD SUCCESS - 10/10 módulos compilados y tests pasando
+✅ BUILD SUCCESS - 8/8 módulos compilados
+✅ 7/7 pods Running (antes de caída de Minikube)
 ```
 
 ### Stack Tecnológico
@@ -42,18 +54,23 @@ Plataforma cloud-native de gestión legal empresarial con 10 microservicios Spri
 | Kubernetes | 1.34.0 | ✅ Minikube |
 | Helm | 3.19.2 | ✅ Configurado |
 
-### Microservicios
-| Servicio | Puerto | Estado | Descripción |
-|----------|--------|--------|-------------|
-| api-gateway | 8080 | ✅ Activo | Spring Cloud Gateway + OAuth2 |
-| client-service | 8200 | ✅ Activo | Gestión de clientes |
-| case-service | 8300 | ✅ Activo | Casos legales |
-| payment-service | 8400 | ✅ Activo | Pagos gubernamentales |
-| document-service | 8500 | ⚙️ Skeleton | Documentos legales |
-| calendar-service | 8600 | ⚙️ Skeleton | Google Calendar |
-| notification-service | 8700 | ⚙️ Skeleton | Email/SMS |
-| n8n-integration-service | 8800 | ⚙️ Skeleton | Workflows N8N |
-| user-service | 8100 | ⚠️ Legacy | Migrar a client-service |
+### Microservicios (7 Activos)
+| Servicio | Puerto | Context-Path | Estado | Descripción |
+|----------|--------|--------------|--------|-------------|
+| api-gateway | 8080 | / | ✅ Activo | Spring Cloud Gateway + OAuth2 |
+| client-service | 8200 | /client-service | ✅ Activo | Gestión de clientes legales |
+| case-service | 8300 | /case-service | ✅ Activo | Casos legales |
+| payment-service | 8400 | /payment-service | ✅ Activo | Pagos gubernamentales |
+| document-service | 8500 | / | ⚙️ Skeleton | Documentos legales |
+| calendar-service | 8600 | / | ⚙️ Skeleton | Google Calendar |
+| notification-service | 8700 | / | ⚙️ Skeleton | Email/SMS |
+| n8n-integration-service | 8800 | / | ⚙️ Skeleton | Workflows N8N |
+
+### Servicios Eliminados/Deprecados
+| Servicio | Razón | Migrado a |
+|----------|-------|-----------|
+| user-service | Legacy e-commerce | client-service |
+| order-service | Legacy e-commerce | case-service |
 
 **Leyenda**: ✅ Activo | ⚙️ Skeleton | ⚠️ Legacy/Deprecado
 
@@ -63,16 +80,15 @@ Plataforma cloud-native de gestión legal empresarial con 10 microservicios Spri
 
 ```
 CarrilloAbogados/
-├── 📦 Microservicios (10)
-│   ├── api-gateway/
-│   ├── client-service/
-│   ├── case-service/
-│   ├── payment-service/
-│   ├── document-service/
-│   ├── calendar-service/
-│   ├── notification-service/
-│   ├── n8n-integration-service/
-│   └── user-service/
+├── 📦 Microservicios (7 activos)
+│   ├── api-gateway/           # Spring Cloud Gateway + OAuth2
+│   ├── client-service/        # Gestión de clientes legales
+│   ├── case-service/          # Casos legales  
+│   ├── payment-service/       # Pagos gubernamentales
+│   ├── document-service/      # Documentos legales (skeleton)
+│   ├── calendar-service/      # Google Calendar (skeleton)
+│   ├── notification-service/  # Email/SMS (skeleton)
+│   └── n8n-integration-service/ # Workflows N8N (skeleton)
 │
 ├── 🚀 Infraestructura
 │   ├── helm-charts/carrillo-abogados/
@@ -94,8 +110,59 @@ CarrilloAbogados/
     ├── CLAUDE.md            # Contexto Claude Code
     ├── PROYECTO_ESTADO.md   # Este archivo
     ├── README.md            # README principal
+    ├── compose.yml          # Docker Compose para dev local
     └── pom.xml              # Maven parent POM
 ```
+
+---
+
+## 🔧 CORRECCIONES APLICADAS (Sesión 18 Dic 2025)
+
+### 1. Query DATEDIFF → PostgreSQL
+**Archivo**: `case-service/src/main/java/.../LegalCaseRepository.java`
+```java
+// ANTES (SQL Server syntax - NO funciona en PostgreSQL):
+WHERE DATEDIFF(day, lc.startDate, CURRENT_DATE) > lc.estimatedDurationDays
+
+// DESPUÉS (PostgreSQL syntax):
+WHERE (CURRENT_DATE - lc.startDate) > lc.estimatedDurationDays
+```
+
+### 2. Health Probes con Context-Path
+**Archivos**: `helm-charts/.../case-service/values.yaml`, `client-service/values.yaml`
+```yaml
+# Servicios CON context-path necesitan:
+livenessProbe:
+  path: /case-service/actuator/health/liveness
+readinessProbe:
+  path: /case-service/actuator/health/readiness
+```
+
+### 3. RBAC para Service Discovery
+**Aplicado**: Role y RoleBinding en namespace `carrillo-dev`
+```yaml
+# Permisos: endpoints, services, pods, configmaps, secrets (get, list, watch)
+```
+
+### 4. Schemas PostgreSQL Creados
+```sql
+CREATE SCHEMA IF NOT EXISTS clients;
+CREATE SCHEMA IF NOT EXISTS cases;
+CREATE SCHEMA IF NOT EXISTS documents;
+CREATE SCHEMA IF NOT EXISTS payments;
+CREATE SCHEMA IF NOT EXISTS calendar;
+CREATE SCHEMA IF NOT EXISTS notifications;
+CREATE SCHEMA IF NOT EXISTS users;
+```
+
+### 5. compose.yml Reescrito
+- Eliminadas referencias a order-service, user-service
+- Añadidos 7 microservicios actuales con healthchecks
+- Configuración de red y volúmenes correcta
+
+### 6. Network Policies Actualizadas
+- Puertos 8200-8800 para todos los servicios
+- Lista de servicios actualizada
 
 ---
 
@@ -117,37 +184,38 @@ CarrilloAbogados/
 - springdoc-openapi ajustado a 2.6.0
 - Build success en todos los módulos
 
-### ✅ FASE 4: Limpieza y Organización
-- Eliminados 42 workflows legacy de GitHub Actions
-- Eliminados archivos obsoletos de ecommerce original
-- Documentación reorganizada en estructura clara
+### ✅ FASE 4: Limpieza Legacy E-Commerce
+- Eliminado user-service del deployment
+- Eliminado order-service (nunca existió, era template)
+- compose.yml reescrito para legal tech
+- Network policies actualizadas
+
+### ✅ FASE 5: Correcciones de Deployment
+- Schemas PostgreSQL creados
+- Query DATEDIFF corregida para PostgreSQL
+- RBAC configurado para service discovery
+- Health probes con context-path correcto
+- 7/7 pods Running verificados
 
 ---
 
 ## 🔄 FASES EN PROGRESO
 
-### 🔄 FASE 5: Documentación Completa
-- [x] Estructura de documentación reorganizada
-- [x] Contexto para IAs configurado
-- [ ] Documentación de APIs (Swagger/OpenAPI)
-- [ ] Guías de desarrollo
-- [ ] Documentación de seguridad
+### 🔄 FASE 6: Estabilidad de Infraestructura
+- [ ] Resolver inestabilidad de Minikube/WSL (reinicio pendiente)
+- [ ] Validación final del deployment
+- [ ] Scripts de test funcionando
 
-### 📋 FASE 6: Deployment Local (Próximo)
-- [ ] Minikube completamente configurado
-- [ ] PostgreSQL + NATS desplegados
-- [ ] Todos los servicios corriendo localmente
-- [ ] Port-forward y testing E2E
+### 📋 FASE 7: Implementación Lógica de Negocio (Próximo)
+- [ ] client-service: Entidades Client (no User de e-commerce)
+- [ ] case-service: Lógica de casos legales
+- [ ] document-service: Almacenamiento seguro
+- [ ] calendar-service: Google Calendar API
+- [ ] notification-service: Gmail API
 
 ---
 
 ## 📋 PRÓXIMAS FASES PLANIFICADAS
-
-### FASE 7: Implementación Lógica de Negocio
-- [ ] document-service: Almacenamiento seguro
-- [ ] calendar-service: Google Calendar API
-- [ ] notification-service: Gmail API
-- [ ] n8n-integration-service: Eventos NATS
 
 ### FASE 8: Integraciones Externas
 - [ ] Google Workspace APIs
@@ -166,23 +234,80 @@ CarrilloAbogados/
 
 ---
 
+## 🖥️ ENTORNO DE DESARROLLO (Windows + WSL)
+
+### Configuración Actual
+- **SO Host**: Windows 11
+- **WSL**: Ubuntu-24.04 (default)
+- **Minikube**: Driver Docker dentro de WSL
+- **kubectl**: Instalado en WSL, NO en Windows nativo
+
+### ⚠️ CRÍTICO: Cómo Ejecutar Comandos
+
+Desde **PowerShell en Windows**, TODOS los comandos de Kubernetes deben ejecutarse así:
+
+```powershell
+# ✅ CORRECTO - Usar wsl bash -c "comando"
+wsl bash -c "kubectl get pods -n carrillo-dev"
+wsl bash -c "minikube status"
+wsl bash -c "helm list -n carrillo-dev"
+
+# ❌ INCORRECTO - NO ejecutar kubectl directo en PowerShell
+kubectl get pods  # Esto falla porque kubectl de Windows no tiene config
+```
+
+### Reinicio de WSL (Solución a Problemas de Estabilidad)
+```powershell
+# Desde PowerShell como Admin:
+wsl --shutdown
+
+# Esperar 10 segundos, luego:
+wsl bash -c "minikube start"
+wsl bash -c "kubectl get pods -A"
+```
+
+### Scripts del Proyecto
+```powershell
+# Ejecutar scripts desde PowerShell:
+wsl bash -c "./scripts/check.sh"
+wsl bash -c "./scripts/deploy.sh"
+wsl bash -c "./scripts/validate.sh"
+wsl bash -c "./scripts/test.sh"
+```
+
+---
+
 ## 🔧 COMANDOS ESENCIALES
 
-### Build
+### Build (desde cualquier terminal)
 ```bash
 ./mvnw clean verify -T 1C          # Build completo
 ./mvnw clean package -DskipTests   # Build rápido
 ```
 
-### Desarrollo Local
+### Desarrollo Local (ejecutar con wsl bash -c desde PowerShell)
 ```bash
-./scripts/dev-up.sh                # Setup inteligente
-kubectl port-forward svc/api-gateway 8080:8080 -n carrillo-dev
+minikube start
+kubectl get pods -n carrillo-dev
+kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev
 ```
 
 ### Base de Datos
 ```bash
 kubectl exec -it postgresql-0 -n databases -- psql -U carrillo -d carrillo_legal_tech
+```
+
+### Reconstruir Imagen Docker (después de cambios en código)
+```bash
+# 1. Build JAR
+./mvnw -pl case-service clean package -DskipTests
+
+# 2. Build imagen en Minikube
+eval $(minikube docker-env)
+minikube image build -t carrilloabogados/case-service:v0.2.0 ./case-service
+
+# 3. Restart pod para usar nueva imagen
+kubectl rollout restart deployment/carrillo-dev-case-service -n carrillo-dev
 ```
 
 ---

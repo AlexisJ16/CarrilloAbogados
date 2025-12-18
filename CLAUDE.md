@@ -4,6 +4,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
+**Última Actualización**: 18 de Diciembre, 2025
+
+## ⚠️ CRÍTICO: ENTORNO WINDOWS + WSL
+
+### Configuración del Entorno
+- **Host OS**: Windows 11
+- **WSL**: Ubuntu-24.04 (distribución por defecto)
+- **Minikube**: Ejecuta dentro de WSL con driver Docker
+- **kubectl/helm**: Instalados en WSL, NO en Windows nativo
+
+### Cómo Ejecutar Comandos desde PowerShell
+
+**TODOS los comandos de Kubernetes/Minikube/Helm DEBEN ejecutarse a través de WSL:**
+
+```powershell
+# ✅ CORRECTO - Usar wsl bash -c "comando"
+wsl bash -c "kubectl get pods -n carrillo-dev"
+wsl bash -c "minikube status"
+wsl bash -c "helm list -n carrillo-dev"
+wsl bash -c "./scripts/deploy.sh"
+
+# ❌ INCORRECTO - NO ejecutar kubectl directamente en PowerShell
+kubectl get pods  # Esto falla - kubectl de Windows no tiene config de Minikube
+```
+
+### Reiniciar WSL (Soluciona Problemas de Estabilidad)
+```powershell
+# Ejecutar como Administrador en PowerShell:
+wsl --shutdown
+
+# Esperar 10 segundos, luego:
+wsl bash -c "minikube start"
+wsl bash -c "kubectl get pods -A"
+```
+
 ## CONTEXTO DEL PROYECTO
 
 ### Propósito Dual
@@ -36,24 +71,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - OAuth2 (cada abogado usa su cuenta @carrilloabgd.com)
 - Trazabilidad legal crítica
 
-## MICROSERVICIOS FINALES (11)
+## MICROSERVICIOS ACTUALES (7 Activos)
 
-### Infraestructura (2)
+### Infraestructura (1)
 1. api-gateway - Spring Cloud Gateway + OAuth2
-2. proxy-client - Autenticación y proxy
 
 ### Negocio Core (7)
-3. client-service - Gestión de clientes (adaptado de user-service)
-4. case-service - Gestión de casos (adaptado de order-service)
-5. payment-service - Pagos a entidades gubernamentales
-6. document-service - Almacenamiento seguro documentos legales
-7. calendar-service - Google Calendar API integration
-8. notification-service - Email/SMS via Gmail API
-9. n8n-integration-service - Bridge con N8N Pro para workflows
+2. client-service - Gestión de clientes legales (puerto 8200, context-path: /client-service)
+3. case-service - Gestión de casos legales (puerto 8300, context-path: /case-service)
+4. payment-service - Pagos a entidades gubernamentales (puerto 8400)
+5. document-service - Almacenamiento seguro documentos legales (puerto 8500)
+6. calendar-service - Google Calendar API integration (puerto 8600)
+7. notification-service - Email/SMS via Gmail API (puerto 8700)
+8. n8n-integration-service - Bridge con N8N Pro para workflows (puerto 8800)
 
-### Legacy (2 - mantener temporalmente)
-10. user-service - Migrar a client-service
-11. order-service - Migrar a case-service
+### Eliminados/Deprecados
+- ~~user-service~~ - Migrado a client-service (deshabilitado en Helm)
+- ~~order-service~~ - Nunca existió, era template e-commerce
 
 ## STACK TECNOLÓGICO
 
@@ -70,7 +104,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Databases
 - PostgreSQL 16.2 (Bitnami chart 15.5.38)
-- Schemas: clients, cases, documents, payments, calendar, notifications
+- Schemas creados: clients, cases, documents, payments, calendar, notifications, users
 
 ### Messaging
 - Dev/Staging: NATS 2.10.22
@@ -80,6 +114,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Prometheus + Grafana
 - Loki (logging)
 - Micrometer (tracing)
+
+## CORRECCIONES RECIENTES (18 Dic 2025)
+
+1. **Query DATEDIFF**: Cambiado a sintaxis PostgreSQL en LegalCaseRepository
+2. **Health probes**: Añadido context-path prefix (/case-service/, /client-service/)
+3. **RBAC**: Creado service-discovery-role para Kubernetes
+4. **Schemas**: Creados 7 schemas PostgreSQL para todos los servicios
+5. **compose.yml**: Reescrito completamente para legal tech
+6. **test.sh**: Mejorado con context-path aware health checks
 
 ## ESTRUCTURA DEL REPOSITORIO
 
