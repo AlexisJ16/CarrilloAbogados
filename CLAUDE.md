@@ -115,14 +115,21 @@ wsl bash -c "kubectl get pods -A"
 - Loki (logging)
 - Micrometer (tracing)
 
-## CORRECCIONES RECIENTES (18 Dic 2025)
+## CORRECCIONES RECIENTES (18 Dic 2025 - Sesión Docker Compose)
 
-1. **Query DATEDIFF**: Cambiado a sintaxis PostgreSQL en LegalCaseRepository
-2. **Health probes**: Añadido context-path prefix (/case-service/, /client-service/)
-3. **RBAC**: Creado service-discovery-role para Kubernetes
-4. **Schemas**: Creados 7 schemas PostgreSQL para todos los servicios
-5. **compose.yml**: Reescrito completamente para legal tech
-6. **test.sh**: Mejorado con context-path aware health checks
+### Docker Compose Funcionando ✅
+1. **Puerto payment-service**: Corregido 8750 → 8400 en application.yaml
+2. **Hibernate DDL**: Cambiado `validate` → `update` en todos los servicios
+3. **Flyway deshabilitado**: Incompatible con PostgreSQL 16.11
+4. **Health checks Dockerfiles**: Añadido context-path y start-period 60s
+5. **Variables PostgreSQL**: Añadidas para n8n-integration-service en compose.yml
+6. **Mail health indicator**: Deshabilitado en notification-service
+7. **API Gateway profile local**: Creado application-local.yml con rutas directas y StripPrefix
+
+### Estado Actual
+- 10/10 contenedores HEALTHY
+- API Gateway routing correctamente a todos los servicios
+- Todos los endpoints `/actuator/health` respondiendo UP
 
 ## ESTRUCTURA DEL REPOSITORIO
 

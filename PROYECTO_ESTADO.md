@@ -1,102 +1,90 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 19 de Diciembre, 2025  
-**Estado General**: ✅ AUDITORÍA COMPLETADA | 🧹 Proyecto Depurado | 📦 Listo para Docker Desktop  
+**Última Actualización**: 18 de Diciembre, 2025 - 20:30 COT  
+**Estado General**: ✅ **DOCKER COMPOSE FUNCIONANDO** | 10/10 Contenedores Healthy | API Gateway Routing OK  
 **Rama Actual**: `dev`
 
 ---
 
 ## 🎯 RESUMEN EJECUTIVO
 
-Plataforma cloud-native de gestión legal empresarial con **8 microservicios** (7 activos + 1 legacy) Spring Boot sobre Kubernetes. Proyecto migrado desde plantilla e-commerce a plataforma legal.
+Plataforma cloud-native de gestión legal empresarial con **8 microservicios** Spring Boot sobre Docker/Kubernetes. Proyecto migrado exitosamente desde plantilla e-commerce a plataforma legal.
 
 ### Propósito Dual
-1. **Académico**: Proyecto final curso Plataformas II (entrega 1 diciembre 2025)
+1. **Académico**: Proyecto final curso Plataformas II
 2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
 
 ### Hitos Clave
 | Hito | Fecha | Estado |
 |------|-------|--------|
-| MVP Académico | 1 Dic 2025 | 📋 Planificado |
+| Docker Compose Local | 18 Dic 2025 | ✅ COMPLETADO |
 | MVP Empresarial | 18 Mar 2026 | 📋 Planificado |
 
 ---
 
-## ✅ ESTADO ACTUAL (19 Diciembre 2025)
+## ✅ ESTADO ACTUAL (18 Diciembre 2025 - 20:30)
 
-### Última Sesión de Trabajo - AUDITORÍA COMPLETA
-Se realizó auditoría integral del proyecto:
+### 🎉 LOGRO: Todos los Servicios Funcionando en Docker Compose
 
-#### FASE 1: Dockerfiles ✅
-- Corregido puerto payment-service (8750 → 8400)
-- Añadido usuario no-root, timezone Colombia, health checks
-- 5 Dockerfiles actualizados con mejores prácticas
-
-#### FASE 2: pom.xml ✅
-- Sincronizado testcontainers.version=1.20.4 en todos los servicios
-- Corregida descripción de api-gateway
-
-#### FASE 3: application.yml ✅
-- Verificados puertos correctos (8200-8800)
-- Nombres de servicios en mayúsculas confirmados
-
-#### FASE 4: compose.yml ✅
-- Configuración verificada y correcta
-
-#### FASE 5: Helm Charts ✅
-- Creado subchart payment-service (faltaba)
-- Actualizado values.yaml con payment-service
-
-#### FASE 6: Scripts ✅
-- Añadido payment-service a deploy.sh y test.sh
-
-#### FASE 7: Cleanup ✅
-- Limpiadas constantes legacy e-commerce de AppConstant.java
-- Actualizadas referencias a servicios legales
-
-#### FASE 8: K8s Decision ✅
-- Documentado en ADR-006: Docker Desktop Kubernetes recomendado
-- Minikube/Kind inestables por problemas cgroups en WSL2
-
-### Build Status
 ```
-✅ BUILD SUCCESS - 9/9 módulos compilados (incluyendo user-service legacy)
-✅ 8/8 Dockerfiles con mejores prácticas
-✅ 8/8 Helm Charts configurados
+✅ 10/10 contenedores HEALTHY
+✅ 8/8 microservicios respondiendo a health checks
+✅ API Gateway routing a todos los servicios
+✅ PostgreSQL y NATS operativos
 ```
 
-### Stack Tecnológico
-| Componente | Versión | Estado |
-|------------|---------|--------|
-| Java | 21 LTS | ✅ Estable |
-| Spring Boot | 3.3.13 | ✅ LTS Estable |
-| Spring Cloud | 2023.0.6 | ✅ Compatible |
-| springdoc-openapi | 2.6.0 | ✅ Compatible |
-| Spring Cloud Kubernetes | 3.1.3 | ✅ Activo |
-| PostgreSQL | 16.2 | ✅ Configurado |
-| NATS | 2.10.22 | ✅ Dev/Staging |
-| Kubernetes | 1.34.0 | ✅ Minikube |
-| Helm | 3.19.2 | ✅ Configurado |
+### Estado de Contenedores
+| Contenedor | Puerto | Estado | Health |
+|------------|--------|--------|--------|
+| carrillo-api-gateway | 8080 | ✅ Up | healthy |
+| carrillo-client-service | 8200 | ✅ Up | healthy |
+| carrillo-case-service | 8300 | ✅ Up | healthy |
+| carrillo-payment-service | 8400 | ✅ Up | healthy |
+| carrillo-document-service | 8500 | ✅ Up | healthy |
+| carrillo-calendar-service | 8600 | ✅ Up | healthy |
+| carrillo-notification-service | 8700 | ✅ Up | healthy |
+| carrillo-n8n-integration-service | 8800 | ✅ Up | healthy |
+| carrillo-postgresql | 5432 | ✅ Up | healthy |
+| carrillo-nats | 4222/8222 | ✅ Up | healthy |
 
-### Microservicios (7 Activos)
-| Servicio | Puerto | Context-Path | Estado | Descripción |
-|----------|--------|--------------|--------|-------------|
-| api-gateway | 8080 | / | ✅ Activo | Spring Cloud Gateway + OAuth2 |
-| client-service | 8200 | /client-service | ✅ Activo | Gestión de clientes legales |
-| case-service | 8300 | /case-service | ✅ Activo | Casos legales |
-| payment-service | 8400 | /payment-service | ✅ Activo | Pagos gubernamentales |
-| document-service | 8500 | / | ⚙️ Skeleton | Documentos legales |
-| calendar-service | 8600 | / | ⚙️ Skeleton | Google Calendar |
-| notification-service | 8700 | / | ⚙️ Skeleton | Email/SMS |
-| n8n-integration-service | 8800 | / | ⚙️ Skeleton | Workflows N8N |
+---
 
-### Servicios Eliminados/Deprecados
-| Servicio | Razón | Migrado a |
-|----------|-------|-----------|
-| user-service | Legacy e-commerce | client-service |
-| order-service | Legacy e-commerce | case-service |
+## 🔧 CORRECCIONES APLICADAS (Sesión 18 Dic 2025)
 
-**Leyenda**: ✅ Activo | ⚙️ Skeleton | ⚠️ Legacy/Deprecado
+### 1. Puerto payment-service
+- **Archivo**: `payment-service/src/main/resources/application.yaml`
+- **Cambio**: `server.port: 8750` → `server.port: 8400`
+
+### 2. Hibernate DDL Strategy
+- **Archivos**: `client-service`, `case-service`, `notification-service`, `n8n-integration-service`
+- **Cambio**: `ddl-auto: validate` → `ddl-auto: update`
+- **Razón**: Las tablas no existían y Flyway no puede migrar (incompatible con PG 16)
+
+### 3. Flyway Deshabilitado Temporalmente
+- **Archivos**: Todos los servicios con PostgreSQL
+- **Cambio**: `flyway.enabled: true` → `flyway.enabled: false`
+- **Razón**: Flyway 10.10.0 incompatible con PostgreSQL 16.11
+- **Acción futura**: Actualizar Flyway o añadir `flyway-database-postgresql` dependency
+
+### 4. Health Check Paths en Dockerfiles
+- **Archivo**: `client-service/Dockerfile`
+- **Cambio**: `/actuator/health` → `/client-service/actuator/health`
+- **start-period**: 5s → 60s (servicios Spring Boot tardan ~20-45s en arrancar)
+
+### 5. Variables PostgreSQL en compose.yml
+- **Servicio**: `n8n-integration-service`
+- **Añadido**: `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
+
+### 6. Notification Service Health Indicator
+- **Archivo**: `notification-service/src/main/resources/application.yaml`
+- **Añadido**: `management.health.mail.enabled: false`
+- **Razón**: Mail health check fallaba sin credenciales configuradas
+
+### 7. API Gateway Profile Local
+- **Archivo NUEVO**: `api-gateway/src/main/resources/application-local.yml`
+- **Propósito**: Rutas directas para Docker Compose (sin Kubernetes service discovery)
+- **Cambio**: `lb://SERVICE-NAME` → `http://service-name:PORT`
+- **Filtro**: `StripPrefix=1` para servicios sin context-path
 
 ---
 
@@ -104,10 +92,10 @@ Se realizó auditoría integral del proyecto:
 
 ```
 CarrilloAbogados/
-├── 📦 Microservicios (7 activos)
+├── 📦 Microservicios (8 activos)
 │   ├── api-gateway/           # Spring Cloud Gateway + OAuth2
 │   ├── client-service/        # Gestión de clientes legales
-│   ├── case-service/          # Casos legales  
+│   ├── case-service/          # Casos legales
 │   ├── payment-service/       # Pagos gubernamentales
 │   ├── document-service/      # Documentos legales (skeleton)
 │   ├── calendar-service/      # Google Calendar (skeleton)
@@ -116,234 +104,94 @@ CarrilloAbogados/
 │
 ├── 🚀 Infraestructura
 │   ├── helm-charts/carrillo-abogados/
-│   ├── infrastructure/k8s-manifests/
-│   ├── monitoring/
-│   └── scripts/
+│   ├── k8s-manifests/
+│   └── compose.yml           # ✅ FUNCIONANDO
 │
 ├── 📚 Documentación
-│   └── docs/
-│       ├── ai-context/      # Instrucciones IAs
-│       ├── architecture/    # Decisiones arquitectura
-│       ├── api/             # APIs (pendiente)
-│       ├── development/     # Guías desarrollo
-│       ├── operations/      # Operaciones
-│       ├── security/        # Seguridad (pendiente)
-│       └── tracking/        # Trazabilidad proyecto
+│   ├── CLAUDE.md             # Contexto para Claude AI
+│   ├── PROYECTO_ESTADO.md    # Este archivo
+│   ├── COPILOT_PROMPT.md     # Prompt para nuevos chats
+│   └── docs/                 # Documentación técnica
 │
-└── 📄 Archivos Raíz
-    ├── CLAUDE.md            # Contexto Claude Code
-    ├── PROYECTO_ESTADO.md   # Este archivo
-    ├── README.md            # README principal
-    ├── compose.yml          # Docker Compose para dev local
-    └── pom.xml              # Maven parent POM
+└── 🔧 Scripts
+    ├── check.sh, deploy.sh, validate.sh, test.sh, reset.sh
 ```
 
 ---
 
-## 🔧 CORRECCIONES APLICADAS (Sesión 18 Dic 2025)
+## 🖥️ COMANDOS DE DESARROLLO
 
-### 1. Query DATEDIFF → PostgreSQL
-**Archivo**: `case-service/src/main/java/.../LegalCaseRepository.java`
-```java
-// ANTES (SQL Server syntax - NO funciona en PostgreSQL):
-WHERE DATEDIFF(day, lc.startDate, CURRENT_DATE) > lc.estimatedDurationDays
-
-// DESPUÉS (PostgreSQL syntax):
-WHERE (CURRENT_DATE - lc.startDate) > lc.estimatedDurationDays
-```
-
-### 2. Health Probes con Context-Path
-**Archivos**: `helm-charts/.../case-service/values.yaml`, `client-service/values.yaml`
-```yaml
-# Servicios CON context-path necesitan:
-livenessProbe:
-  path: /case-service/actuator/health/liveness
-readinessProbe:
-  path: /case-service/actuator/health/readiness
-```
-
-### 3. RBAC para Service Discovery
-**Aplicado**: Role y RoleBinding en namespace `carrillo-dev`
-```yaml
-# Permisos: endpoints, services, pods, configmaps, secrets (get, list, watch)
-```
-
-### 4. Schemas PostgreSQL Creados
-```sql
-CREATE SCHEMA IF NOT EXISTS clients;
-CREATE SCHEMA IF NOT EXISTS cases;
-CREATE SCHEMA IF NOT EXISTS documents;
-CREATE SCHEMA IF NOT EXISTS payments;
-CREATE SCHEMA IF NOT EXISTS calendar;
-CREATE SCHEMA IF NOT EXISTS notifications;
-CREATE SCHEMA IF NOT EXISTS users;
-```
-
-### 5. compose.yml Reescrito
-- Eliminadas referencias a order-service, user-service
-- Añadidos 7 microservicios actuales con healthchecks
-- Configuración de red y volúmenes correcta
-
-### 6. Network Policies Actualizadas
-- Puertos 8200-8800 para todos los servicios
-- Lista de servicios actualizada
-
----
-
-## 🚀 FASES COMPLETADAS
-
-### ✅ FASE 1: Arquitectura Base
-- Microservicios estructurados con Spring Boot 3.3.x
-- Maven multi-módulo configurado
-- Kubernetes manifests preparados
-- Helm charts umbrella
-
-### ✅ FASE 2: Cloud-Native Refactoring
-- Eliminado Eureka → Kubernetes Service Discovery
-- Eliminado Config Server → Kubernetes ConfigMaps
-- Adoptado Spring Cloud Kubernetes 3.1.3
-
-### ✅ FASE 3: Estabilización de Versiones
-- Resueltas incompatibilidades de Spring Cloud
-- springdoc-openapi ajustado a 2.6.0
-- Build success en todos los módulos
-
-### ✅ FASE 4: Limpieza Legacy E-Commerce
-- Eliminado user-service del deployment
-- Eliminado order-service (nunca existió, era template)
-- compose.yml reescrito para legal tech
-- Network policies actualizadas
-
-### ✅ FASE 5: Correcciones de Deployment
-- Schemas PostgreSQL creados
-- Query DATEDIFF corregida para PostgreSQL
-- RBAC configurado para service discovery
-- Health probes con context-path correcto
-- 7/7 pods Running verificados
-
----
-
-## 🔄 FASES EN PROGRESO
-
-### 🔄 FASE 6: Estabilidad de Infraestructura
-- [ ] Resolver inestabilidad de Minikube/WSL (reinicio pendiente)
-- [ ] Validación final del deployment
-- [ ] Scripts de test funcionando
-
-### 📋 FASE 7: Implementación Lógica de Negocio (Próximo)
-- [ ] client-service: Entidades Client (no User de e-commerce)
-- [ ] case-service: Lógica de casos legales
-- [ ] document-service: Almacenamiento seguro
-- [ ] calendar-service: Google Calendar API
-- [ ] notification-service: Gmail API
-
----
-
-## 📋 PRÓXIMAS FASES PLANIFICADAS
-
-### FASE 8: Integraciones Externas
-- [ ] Google Workspace APIs
-- [ ] N8N Pro workflows
-- [ ] OAuth2 con @carrilloabgd.com
-
-### FASE 9: Testing y Validación
-- [ ] Tests de integración
-- [ ] Tests E2E
-- [ ] Performance testing
-
-### FASE 10: Deployment Producción
-- [ ] GKE Autopilot
-- [ ] Cloud SQL
-- [ ] CI/CD completo
-
----
-
-## 🖥️ ENTORNO DE DESARROLLO (Windows + WSL)
-
-### Configuración Actual
-- **SO Host**: Windows 11
-- **WSL**: Ubuntu-24.04 (default)
-- **Minikube**: Driver Docker dentro de WSL
-- **kubectl**: Instalado en WSL, NO en Windows nativo
-
-### ⚠️ CRÍTICO: Cómo Ejecutar Comandos
-
-Desde **PowerShell en Windows**, TODOS los comandos de Kubernetes deben ejecutarse así:
-
+### Docker Compose (Desarrollo Local)
 ```powershell
-# ✅ CORRECTO - Usar wsl bash -c "comando"
-wsl bash -c "kubectl get pods -n carrillo-dev"
-wsl bash -c "minikube status"
-wsl bash -c "helm list -n carrillo-dev"
+# Levantar todo
+docker-compose up -d
 
-# ❌ INCORRECTO - NO ejecutar kubectl directo en PowerShell
-kubectl get pods  # Esto falla porque kubectl de Windows no tiene config
+# Ver estado
+docker-compose ps
+
+# Ver logs de un servicio
+docker logs carrillo-client-service --tail 50
+
+# Reconstruir un servicio específico
+docker-compose up -d --build client-service
+
+# Detener todo
+docker-compose down
 ```
 
-### Reinicio de WSL (Solución a Problemas de Estabilidad)
+### Probar Servicios
 ```powershell
-# Desde PowerShell como Admin:
-wsl --shutdown
+# Directo (sin Gateway)
+Invoke-RestMethod http://localhost:8200/client-service/actuator/health
+Invoke-RestMethod http://localhost:8400/actuator/health
 
-# Esperar 10 segundos, luego:
-wsl bash -c "minikube start"
-wsl bash -c "kubectl get pods -A"
+# Via API Gateway
+Invoke-RestMethod http://localhost:8080/client-service/actuator/health
+Invoke-RestMethod http://localhost:8080/payment-service/actuator/health
 ```
 
-### Scripts del Proyecto
+### Build Maven
 ```powershell
-# Ejecutar scripts desde PowerShell:
-wsl bash -c "./scripts/check.sh"
-wsl bash -c "./scripts/deploy.sh"
-wsl bash -c "./scripts/validate.sh"
-wsl bash -c "./scripts/test.sh"
+# Build completo
+.\mvnw clean package -DskipTests -T 1C
+
+# Build servicio específico
+.\mvnw package -DskipTests -pl client-service
 ```
 
 ---
 
-## 🔧 COMANDOS ESENCIALES
+## 🚀 PRÓXIMOS PASOS
 
-### Build (desde cualquier terminal)
-```bash
-./mvnw clean verify -T 1C          # Build completo
-./mvnw clean package -DskipTests   # Build rápido
-```
+### Inmediatos
+1. [ ] Implementar entidades de dominio en client-service
+2. [ ] Implementar entidades de dominio en case-service
+3. [ ] Crear endpoints REST básicos
+4. [ ] Configurar Swagger/OpenAPI
 
-### Desarrollo Local (ejecutar con wsl bash -c desde PowerShell)
-```bash
-minikube start
-kubectl get pods -n carrillo-dev
-kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev
-```
+### Corto Plazo
+5. [ ] Integrar Google Workspace APIs (Calendar, Gmail)
+6. [ ] Configurar OAuth2 con @carrilloabgd.com
+7. [ ] Implementar document-service con storage
 
-### Base de Datos
-```bash
-kubectl exec -it postgresql-0 -n databases -- psql -U carrillo -d carrillo_legal_tech
-```
-
-### Reconstruir Imagen Docker (después de cambios en código)
-```bash
-# 1. Build JAR
-./mvnw -pl case-service clean package -DskipTests
-
-# 2. Build imagen en Minikube
-eval $(minikube docker-env)
-minikube image build -t carrilloabogados/case-service:v0.2.0 ./case-service
-
-# 3. Restart pod para usar nueva imagen
-kubectl rollout restart deployment/carrillo-dev-case-service -n carrillo-dev
-```
+### Mediano Plazo
+8. [ ] Desplegar a GKE Staging
+9. [ ] Configurar CI/CD con GitHub Actions
+10. [ ] Integrar N8N Pro workflows
 
 ---
 
-## 📈 MÉTRICAS
+## ⚠️ ISSUES CONOCIDOS
 
-| Métrica | Valor |
-|---------|-------|
-| Módulos Maven | 10 |
-| Tests unitarios | ✅ Pasando |
-| Workflows activos | 19 |
-| Cobertura docs | ~40% |
+### Flyway + PostgreSQL 16
+- **Problema**: Flyway 10.10.0 no soporta PostgreSQL 16
+- **Workaround**: Flyway deshabilitado, usando `ddl-auto: update`
+- **Solución**: Añadir dependency `flyway-database-postgresql` o actualizar Flyway
+
+### compose.yml Warning
+- **Problema**: `attribute 'version' is obsolete`
+- **Impacto**: Solo warning, no afecta funcionamiento
+- **Solución**: Remover línea `version: '3.8'` del compose.yml
 
 ---
 
@@ -355,5 +203,4 @@ kubectl rollout restart deployment/carrillo-dev-case-service -n carrillo-dev
 
 ---
 
-*Actualizado automáticamente durante sesión de trabajo*  
-*Próxima revisión planificada: Antes de deployment*
+*Última actualización: 18 de Diciembre 2025, 20:30 COT*
