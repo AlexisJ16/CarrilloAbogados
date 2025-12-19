@@ -1,0 +1,47 @@
+# Configuration for Docker Compose local development
+# Overrides lb:// URIs with direct container hostnames
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        # Servicios CON context-path (no necesitan StripPrefix)
+        - id: CLIENT-SERVICE
+          uri: http://client-service:8200
+          predicates:
+            - Path=/client-service/**
+        - id: CASE-SERVICE
+          uri: http://case-service:8300
+          predicates:
+            - Path=/case-service/**
+        # Servicios SIN context-path (necesitan StripPrefix)
+        - id: PAYMENT-SERVICE
+          uri: http://payment-service:8400
+          predicates:
+            - Path=/payment-service/**
+          filters:
+            - StripPrefix=1
+        - id: DOCUMENT-SERVICE
+          uri: http://document-service:8500
+          predicates:
+            - Path=/document-service/**
+          filters:
+            - StripPrefix=1
+        - id: CALENDAR-SERVICE
+          uri: http://calendar-service:8600
+          predicates:
+            - Path=/calendar-service/**
+          filters:
+            - StripPrefix=1
+        - id: NOTIFICATION-SERVICE
+          uri: http://notification-service:8700
+          predicates:
+            - Path=/notification-service/**
+          filters:
+            - StripPrefix=1
+        - id: N8N-INTEGRATION-SERVICE
+          uri: http://n8n-integration-service:8800
+          predicates:
+            - Path=/n8n-integration-service/**
+          filters:
+            - StripPrefix=1

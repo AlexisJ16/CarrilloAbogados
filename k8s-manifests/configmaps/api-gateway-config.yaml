@@ -1,0 +1,35 @@
+# ConfigMap específico para API Gateway
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  namespace: carrillo-dev
+  labels:
+    app.kubernetes.io/name: api-gateway
+    app.kubernetes.io/part-of: carrillo-abogados
+data:
+  # Perfil de Spring
+  SPRING_PROFILES_ACTIVE: "k8s"
+  
+  # Configuración de timezone
+  TZ: "America/Bogota"
+  
+  # Configuración de Gateway
+  SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_ENABLED: "false"
+  
+  # Rutas de servicios (usando Kubernetes DNS)
+  USER_SERVICE_URL: "http://user-service:8100"
+  CLIENT_SERVICE_URL: "http://client-service:8200"
+  CASE_SERVICE_URL: "http://case-service:8300"
+  PAYMENT_SERVICE_URL: "http://payment-service:8400"
+  DOCUMENT_SERVICE_URL: "http://document-service:8500"
+  CALENDAR_SERVICE_URL: "http://calendar-service:8600"
+  NOTIFICATION_SERVICE_URL: "http://notification-service:8700"
+  N8N_INTEGRATION_SERVICE_URL: "http://n8n-integration-service:8800"
+  
+  # CORS
+  CLIENT_HOST: "http://localhost:4200"
+  
+  # Logging
+  LOGGING_LEVEL_ROOT: "INFO"
+  LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_GATEWAY: "DEBUG"

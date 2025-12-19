@@ -12,9 +12,9 @@
 	</parent>
 	<groupId>com.carrilloabogados</groupId>
 	<artifactId>carrillo-legal-tech</artifactId>
-	<version>0.1.0</version>
+	<version>0.2.0</version>
 	<name>carrillo-legal-tech</name>
-	<description>Legal Tech Platform for Carrillo Abogados Law Firm</description>
+	<description>Legal Tech Platform for Carrillo Abogados Law Firm - Spring Boot 3.3 LTS</description>
 	<packaging>pom</packaging>
 	
 	<properties>
@@ -22,7 +22,8 @@
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
 		<spring-cloud.version>2023.0.6</spring-cloud.version>
-		<testcontainers.version>1.19.8</testcontainers.version>
+		<testcontainers.version>1.20.4</testcontainers.version>
+		<springdoc.version>2.6.0</springdoc.version>
 	</properties>
 	
 	<dependencies>
@@ -64,11 +65,12 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
+			<!-- Jackson managed by Spring Boot BOM -->
 		</dependency>
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.6.0</version>
+			<version>${springdoc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

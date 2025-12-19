@@ -1,0 +1,28 @@
+# ConfigMap común para todos los microservicios
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-common-config
+  namespace: carrillo-dev
+  labels:
+    app.kubernetes.io/part-of: carrillo-abogados
+data:
+  # Perfil de Spring
+  SPRING_PROFILES_ACTIVE: "k8s"
+  
+  # Configuración de timezone
+  TZ: "America/Bogota"
+  
+  # Configuración de logging
+  LOGGING_LEVEL_ROOT: "INFO"
+  LOGGING_LEVEL_COM_CARRILLOABOGADOS: "DEBUG"
+  
+  # Configuración de Kubernetes
+  SPRING_CLOUD_KUBERNETES_ENABLED: "true"
+  SPRING_CLOUD_KUBERNETES_DISCOVERY_ENABLED: "true"
+  
+  # Configuración de NATS
+  NATS_URL: "nats://nats.messaging.svc.cluster.local:4222"
+  
+  # Configuración de JVM
+  JAVA_OPTS: "-Xms256m -Xmx512m -XX:+UseG1GC -XX:+UseContainerSupport"

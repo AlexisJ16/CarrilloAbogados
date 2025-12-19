@@ -11,9 +11,13 @@ spec:
     - key: app
       operator: In
       values:
-      - user-service
+      - client-service
+      - case-service
       - payment-service
-      - order-service
+      - document-service
+      - calendar-service
+      - notification-service
+      - n8n-integration-service
   policyTypes:
   - Ingress
   - Egress
@@ -24,18 +28,38 @@ spec:
           app.kubernetes.io/name: api-gateway
     ports:
     - protocol: TCP
-      port: 8700
+      port: 8200  # client-service
     - protocol: TCP
-      port: 8400
+      port: 8300  # case-service
+    - protocol: TCP
+      port: 8400  # payment-service
+    - protocol: TCP
+      port: 8500  # document-service
+    - protocol: TCP
+      port: 8600  # calendar-service
+    - protocol: TCP
+      port: 8700  # notification-service
+    - protocol: TCP
+      port: 8800  # n8n-integration-service
   - from:
     - podSelector:
         matchLabels:
           app: prometheus
     ports:
     - protocol: TCP
-      port: 8700
+      port: 8200
+    - protocol: TCP
+      port: 8300
     - protocol: TCP
       port: 8400
+    - protocol: TCP
+      port: 8500
+    - protocol: TCP
+      port: 8600
+    - protocol: TCP
+      port: 8700
+    - protocol: TCP
+      port: 8800
   egress:
   - to:
     - namespaceSelector:

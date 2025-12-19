@@ -12,18 +12,18 @@ ENV TZ=America/Bogota
 WORKDIR /app
 
 # Copiar JAR con permisos correctos
-ARG JAR_FILE=target/payment-service-v0.1.0.jar
+ARG JAR_FILE=target/payment-service-v0.2.0.jar
 COPY --chown=appuser:appgroup ${JAR_FILE} app.jar
 
 # Cambiar a usuario no-root
 USER appuser
 
-# Configurar health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8750/actuator/health || exit 1
+# Configurar health check (puerto correcto: 8400)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8400/actuator/health || exit 1
 
-# Exponer puerto
-EXPOSE 8750
+# Exponer puerto correcto
+EXPOSE 8400
 
 # Configurar JVM para contenedor con mejores configuraciones
 ENTRYPOINT ["java", "-Xms256m", "-Xmx512m", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]

@@ -1,511 +1,378 @@
-# Carrillo Abogados Legal Tech Platform
-## Reporte Técnico - Informe de Arquitectura y DevOps
+# 🏛️ Carrillo Abogados - Legal Tech Platform
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/AlexisJ16/CarrilloAbogados)
+[![Java](https://img.shields.io/badge/Java-21%20LTS-orange)](https://openjdk.org/projects/jdk/21/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.13-green)](https://spring.io/projects/spring-boot)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.34.0-blue)](https://kubernetes.io/)
+[![License](https://img.shields.io/badge/License-Proprietary-red)](LICENSE)
+
+Plataforma cloud-native de gestión legal empresarial construida con microservicios Spring Boot sobre Kubernetes.
 
 ---
 
-## Documento de Referencia
+## 📋 Tabla de Contenidos
 
-**Título del Proyecto**: Plataforma Cloud-Native de Gestión Legal Empresarial  
-**Organización**: Carrillo Abogados, Cali, Colombia  
-**Versión del Reporte**: 1.0.0
-**Estado del Proyecto**: Fase 3 Completada - Desarrollo Activo
-
-**Versiones Técnicas**:
-- **Java Runtime**: 21 LTS
-- **Spring Boot**: 3.3.13
-- **Spring Cloud**: 2023.0.6
-- **Kubernetes**: 1.34.0
-- **Helm**: 3.19.2
-- **PostgreSQL**: 16
-- **NATS**: 2.10
+- [Descripción](#-descripción)
+- [Arquitectura](#-arquitectura)
+- [Prerrequisitos](#-prerrequisitos)
+- [Guía de Uso](#-guía-de-uso)
+- [Comandos Útiles](#-comandos-útiles)
+- [Troubleshooting](#-troubleshooting)
+- [Documentación](#-documentación)
 
 ---
 
-## 1. Visión y Objetivos del Proyecto
+## 📖 Descripción
 
-### 1.1 Visión Estratégica
+**Carrillo Abogados Legal Tech** es una plataforma integral de gestión legal diseñada para bufetes de abogados. Permite gestionar:
 
-Carrillo Abogados Legal Tech es una plataforma empresarial diseñada para digitalizar y optimizar los procesos de gestión legal en despachos de abogados. La plataforma implementa una arquitectura cloud-native basada en microservicios, permitiendo escalabilidad, resiliencia y mantenibilidad a través de orquestación en Kubernetes.
+- 👥 **Clientes** - Registro y seguimiento de clientes
+- 📁 **Casos legales** - Gestión completa de expedientes
+- 💰 **Pagos** - Procesamiento de pagos gubernamentales
+- 📄 **Documentos** - Almacenamiento seguro de documentos legales
+- 📅 **Calendario** - Integración con Google Calendar
+- 🔔 **Notificaciones** - Email/SMS vía Gmail API
+- ⚡ **Workflows** - Automatización con N8N Pro
 
-### 1.2 Objetivos Arquitectónicos
-
-- **Escalabilidad Horizontal**: Permitir crecimiento de infraestructura sin rediseño
-- **Resiliencia**: Tolerancia a fallos mediante aislamiento de servicios
-- **Agilidad Operacional**: Despliegues independientes y rápidos
-- **Observabilidad**: Visibilidad completa del sistema en tiempo real
-- **Seguridad por Diseño**: Implementación de principios Zero Trust
-- **Automatización**: Reducción de intervención manual en operaciones
-
-### 1.3 Beneficios Esperados
-
-- Reducción de downtime mediante arquitectura distribuida
-- Mejor rendimiento operacional con autoescalado
-- Facilidad de mantenimiento y evolución del código
-- Conformidad con estándares de seguridad y gobernanza
+### Propósito Dual
+1. **Académico**: Proyecto final curso Plataformas II (Universidad)
+2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
 
 ---
 
-## 2. Arquitectura Cloud-Native
-
-### 2.1 Principios Arquitectónicos
-
-La plataforma se fundamenta en los siguientes principios:
-
-1. **Microservicios Independientes**: Cada componente es autónomo y puede escalarse individualmente
-2. **Contenedorización**: Todos los servicios ejecutan en contenedores Docker
-3. **Orquestación Kubernetes**: Gestión automática del ciclo de vida de contenedores
-4. **Configuración Externalizada**: Separación de configuración del código mediante ConfigMaps y Secrets
-5. **Comunicación Asincrónica**: NATS como bus de eventos para desacoplamiento
-6. **API-First**: Interfacies REST estandarizadas entre servicios
-
-### 2.2 Modelo de Capas
+## 🏗️ Arquitectura
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   Capa Presentación                  │
-│                  (Cliente Web/Mobile)                 │
-└──────────────┬──────────────────────────────────────┘
-               │
-┌──────────────▼──────────────────────────────────────┐
-│              API Gateway (Spring Cloud Gateway)      │
-│         - Enrutamiento de peticiones                 │
-│         - Autenticación OAuth2                       │
-│         - Rate Limiting y Circuit Breaking           │
-└──────────────┬──────────────────────────────────────┘
-               │
-┌──────────────▼──────────────────────────────────────┐
-│          Capa de Microservicios (Kubernetes)         │
-│   ┌─────────────┐ ┌─────────────┐ ┌──────────────┐ │
-│   │   Client    │ │    Case     │ │   Payment    │ │
-│   │  Service    │ │   Service   │ │   Service    │ │
-│   └─────────────┘ └─────────────┘ └──────────────┘ │
-│   ┌─────────────┐ ┌─────────────┐ ┌──────────────┐ │
-│   │  Document   │ │  Calendar   │ │ Notification │ │
-│   │  Service    │ │   Service   │ │   Service    │ │
-│   └─────────────┘ └─────────────┘ └──────────────┘ │
-│   ┌──────────────────────────────────────────────┐ │
-│   │      N8N Integration Service (Workflows)    │ │
-│   └──────────────────────────────────────────────┘ │
-└──────────────┬──────────────────────────────────────┘
-               │
-       ┌───────┴───────┬──────────────┐
-       │               │              │
-┌──────▼─────┐ ┌──────▼──────┐ ┌────▼─────────┐
-│ PostgreSQL  │ │   NATS      │ │  Kubernetes  │
-│ (Database)  │ │ (Messaging) │ │ (Secrets)    │
-└─────────────┘ └─────────────┘ └──────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                         KUBERNETES CLUSTER                       │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐                                                 │
+│  │ API Gateway │ ◄── OAuth2 + Spring Cloud Gateway               │
+│  │   :8080     │                                                 │
+│  └──────┬──────┘                                                 │
+│         │                                                        │
+│  ┌──────┴──────┬───────────────┬───────────────┐                │
+│  ▼             ▼               ▼               ▼                │
+│ ┌────────┐ ┌────────┐ ┌────────────┐ ┌─────────────┐            │
+│ │client  │ │case    │ │payment     │ │document     │            │
+│ │service │ │service │ │service     │ │service      │            │
+│ │:8200   │ │:8300   │ │:8400       │ │:8500        │            │
+│ └────────┘ └────────┘ └────────────┘ └─────────────┘            │
+│                                                                  │
+│ ┌────────────┐ ┌─────────────────┐ ┌───────────────────┐        │
+│ │calendar    │ │notification     │ │n8n-integration    │        │
+│ │service     │ │service          │ │service            │        │
+│ │:8600       │ │:8700            │ │:8800              │        │
+│ └────────────┘ └─────────────────┘ └───────────────────┘        │
+│                                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│  ┌─────────────┐              ┌──────────────┐                  │
+│  │ PostgreSQL  │              │     NATS     │                  │
+│  │   :5432     │              │    :4222     │                  │
+│  │ (databases) │              │ (messaging)  │                  │
+│  └─────────────┘              └──────────────┘                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.3 Patrón de Comunicación
+### Microservicios
 
-**Comunicación Sincrónica**:
-- HTTP/REST entre servicios a través del API Gateway
-- Service Discovery: Kubernetes DNS nativo (`<servicio>.<namespace>.svc.cluster.local`)
-- Resilencia: Circuit Breaker con Resilience4J
+| Servicio | Puerto | Descripción |
+|----------|--------|-------------|
+| api-gateway | 8080 | Spring Cloud Gateway + OAuth2 |
+| client-service | 8200 | Gestión de clientes |
+| case-service | 8300 | Gestión de casos legales |
+| payment-service | 8400 | Pagos gubernamentales |
+| document-service | 8500 | Documentos legales |
+| calendar-service | 8600 | Google Calendar |
+| notification-service | 8700 | Email/SMS |
+| n8n-integration-service | 8800 | Workflows N8N |
 
-**Comunicación Asincrónica**:
-- Event Streaming mediante NATS
-- Tópicos: `carrillo.events.*`
-- Garantía de entrega: At-least-once semantics
-- Topología: Fan-out con múltiples suscriptores
+### Stack Tecnológico
 
----
-
-## 3. Arquitectura de Microservicios
-
-### 3.1 Servicios de Infraestructura
-
-#### 3.1.1 API Gateway
-- **Propósito**: Punto de entrada único para todas las peticiones cliente
-- **Tecnología**: Spring Cloud Gateway 4.1.5
-- **Funcionalidades**:
-  - Enrutamiento inteligente basado en rutas HTTP
-  - Autenticación OAuth2 con Google Workspace
-  - Rate Limiting por cliente
-  - Circuit Breaker para tolerancia a fallos
-  - Transformación de headers y body
-- **Puerto**: 8080
-- **Réplicas**: 2 (HA)
-
-#### 3.1.2 Proxy Client
-- **Propósito**: Proxy inverso y autenticación centralizada
-- **Funcionalidades**:
-  - Proxy de peticiones autenticadas
-  - Gestión de sesiones
-  - Validación de permisos preliminar
-- **Puerto**: 8900
-- **Réplicas**: 2 (HA)
-
-### 3.2 Servicios de Negocio - Dominio Legal
-
-#### 3.2.1 Client Service
-**Responsabilidad**: Gestión integral del ciclo de vida de clientes  
-**Port**: 8700  
-**Entidades Principales**:
-- Cliente (razón social, tipo de cliente, datos de contacto)
-- Contactos asociados
-- Documentos de identificación
-- Historial de interacciones
-
-#### 3.2.2 Case Service
-**Responsabilidad**: Orquestación de casos legales y su ciclo de vida  
-**Port**: 8300  
-
-#### 3.2.3 Payment Service
-**Responsabilidad**: Procesamiento y seguimiento de pagos  
-**Port**: 8400  
-
-#### 3.2.4 Document Service
-**Responsabilidad**: Gestión y versionado de documentos legales  
-**Port**: 8500  
-
-#### 3.2.5 Calendar Service
-**Responsabilidad**: Integración con Google Calendar para eventos legales  
-**Port**: 8600  
-
-#### 3.2.6 Notification Service
-**Responsabilidad**: Entrega multicanal de notificaciones  
-**Port**: 8700  
-
-#### 3.2.7 N8N Integration Service
-**Responsabilidad**: Orquestación de workflows y automatizaciones  
-**Port**: 8800  
+| Componente | Versión |
+|------------|---------|
+| Java | 21 LTS |
+| Spring Boot | 3.3.13 |
+| Spring Cloud | 2023.0.6 |
+| Spring Cloud Kubernetes | 3.1.3 |
+| PostgreSQL | 16.2 |
+| NATS | 2.10.22 |
+| Kubernetes | 1.34.0 |
+| Helm | 3.19.2 |
+| Minikube | 1.37.0 |
 
 ---
 
-## 4. Modelo de Datos
+## 📋 Prerrequisitos
 
-**Paradigma**: PostgreSQL 16 compartida con schemas separados por dominio
+### Windows con WSL2 (Recomendado)
 
-**Schemas**:
-- clients: Datos de clientes
-- cases: Gestión de casos legales
-- documents: Metadatos de documentos
-- payments: Transacciones de pago
-- calendar: Eventos y fechas clave
-- notifications: Historial de notificaciones
-- audit: Log de cambios auditados
+Todos los comandos se ejecutan **dentro de WSL2**. Desde PowerShell:
 
----
-
-## 5. Stack Tecnológico
-
-- **Backend**: Spring Boot 3.3.13, Spring Cloud 2023.0.6
-- **Database**: PostgreSQL 16
-- **Messaging**: NATS 2.10
-- **Container**: Docker + Docker Compose
-- **Orchestration**: Kubernetes 1.34.0 + Helm 3.19.2
-- **Observability**: Prometheus + Grafana + Loki + Micrometer
-- **Security**: OAuth2, JWT, TLS 1.3, RBAC, Network Policies
-
----
-
-## 6. Infraestructura en Kubernetes
-
-### 6.1 Namespaces
-
-Se implementan 3 namespaces aislados:
-- `carrillo-dev`: Ambiente de desarrollo (4 CPU, 8Gi RAM)
-- `carrillo-staging`: Ambiente staging (8 CPU, 16Gi RAM)
-- `carrillo-prod`: Ambiente producción (16 CPU, 32Gi RAM)
-
-### 6.2 Estructura de Manifiestos
-
-```
-infrastructure/k8s-manifests/
-├── namespaces/
-├── configmaps/
-├── secrets/
-├── rbac/
-└── network-policies/
+```powershell
+wsl
 ```
 
-### 6.3 Helm Charts
+### Herramientas Requeridas
 
-Despliegue con Helm chart principal `carrillo-abogados` con valores diferenciados por ambiente.
-
----
-
-## 7. Prácticas DevOps Implementadas
-
-### 7.1 CI/CD Pipeline
-
-**GitHub Actions**:
-- Build automático en push a main/develop
-- Tests unitarios e integración
-- Scan de seguridad (Trivy + SonarQube)
-- Build de imágenes Docker
-- Deploy automático en staging
-
-### 7.2 Observabilidad
-
-**Métricas (Prometheus + Grafana)**:
-- JVM metrics, HTTP requests, Kubernetes stats
-- Dashboards: System Overview, App Metrics, Microservices Health
-
-**Logging (Loki)**:
-- Centralización en formato JSON
-- Búsqueda eficiente con Grafana
-
-**Tracing (Micrometer)**:
-- Rastreo distribuido de requests
-- Análisis de latencia
-
-### 7.3 Seguridad
-
-- OAuth2 con Google Workspace
-- JWT para autenticación de servicios
-- RBAC: ADMIN, LAWYER, CASE_MANAGER, CLIENT_VIEW_ONLY
-- Network Policies con Default Deny
-- TLS 1.3 en comunicación externa
-- Secrets encriptados en Kubernetes
-
-### 7.4 Automatización
-
-Scripts de operación:
-- `check-env.sh`: Validar versiones
-- `dev-up.sh`: Iniciar entorno local
-- `start-minikube.sh`: Setup Minikube
-- `deploy-complete.sh`: Despliegue completo
-- `validate-deployment.sh`: Validar estado
-
-### 7.5 Disaster Recovery
-
-- PostgreSQL: Backups diarios, retención 30 días
-- K8s State: Snapshots con Helm values
-- RTO: 5-30 min, RPO: 1 hora - variable según componente
+| Herramienta | Versión Mínima | Instalación (Ubuntu/WSL2) |
+|-------------|----------------|---------------------------|
+| Java JDK | 21 | `sudo apt install openjdk-21-jdk` |
+| Maven | 3.8+ | `sudo apt install maven` |
+| Docker | 24+ | `curl -fsSL https://get.docker.com \| sh` |
+| kubectl | 1.31+ | Ver [docs](https://kubernetes.io/docs/tasks/tools/) |
+| Minikube | 1.32+ | Ver [docs](https://minikube.sigs.k8s.io/docs/start/) |
+| Helm | 3.14+ | Ver [docs](https://helm.sh/docs/intro/install/) |
 
 ---
 
-## 8. Decisiones Arquitectónicas (ADR)
+## 🚀 Guía de Uso
 
-**ADR-001**: PostgreSQL compartida con schemas separados (vs BD por servicio)
-- Simplicidad operacional para equipo pequeño
-- ACID garantizado
-- Acoplamiento de datos mitigado en futuro
+### Flujo de Trabajo
 
-**ADR-002**: Kubernetes + GKE (vs Serverless)
-- Control total de infraestructura
-- Escalabilidad predecible
-- Cumplimiento normativo
-
-**ADR-003**: Comunicación híbrida (REST + NATS)
-- REST para operaciones críticas
-- NATS para eventos y notificaciones
-
-**ADR-004**: S3-compatible para documentos (MinIO dev, GCS prod)
-- Escalabilidad y versionado nativo
-
----
-
-## 9. Estado Actual
-
-### 9.1 Fases Completadas
-
-**✅ Fase 1**: Transformación e-commerce → legal tech
-- Eliminados: product-service, favourite-service, shipping-service
-- Creados: document, calendar, notification, n8n-integration
-- Build exitoso
-
-**✅ Fase 2**: Infraestructura Kubernetes
-- 3 Namespaces con ResourceQuotas
-- ConfigMaps + Secrets templates
-- Network Policies + RBAC
-
-**✅ Fase 3**: Helm Charts Base
-- Chart principal con valores multi-ambiente
-- Templates: Deployment, Service, Ingress, HPA
-
-### 9.2 Estado por Componente
-
-| Componente | Estado | Progreso | Notas |
-|-----------|--------|----------|--------|
-| API Gateway | ✅ Activo | 100% | Enrutamiento, OAuth2 |
-| Client Service | ✅ Activo | 100% | CRUD completo |
-| Case Service | ✅ Activo | 90% | Core funcional |
-| Payment Service | ✅ Activo | 85% | PCI-DSS pendiente |
-| Document Service | ⚙️ Dev | 50% | OCR/búsqueda pending |
-| Calendar Service | ⚙️ Dev | 40% | Integración en desarrollo |
-| Notification Service | ⚙️ Dev | 35% | Multi-channel setup |
-| N8N Integration | ⚙️ Dev | 25% | Containerizada |
-| Monitoring | ⚙️ Dev | 60% | Prometheus + Grafana OK |
-| CI/CD | 🔧 Setup | 50% | GH Actions OK, deployment pending |
-| Database | ✅ Ready | 100% | PostgreSQL 16 |
-
-### 9.3 Métricas de Calidad
+El proyecto incluye 5 scripts que cubren todo el ciclo de desarrollo:
 
 ```
-Code Coverage: 65%
-Build Time: ~11 segundos (Maven paralelo)
-Test Execution: ~45 segundos
-Technical Debt: Moderado
+┌─────────┐     ┌──────────┐     ┌────────────┐     ┌────────┐
+│  CHECK  │ ──► │  DEPLOY  │ ──► │  VALIDATE  │ ──► │  TEST  │
+└─────────┘     └──────────┘     └────────────┘     └────────┘
+                                                         │
+                      ┌─────────┐                        │
+                      │  RESET  │ ◄──────────────────────┘
+                      └─────────┘       (cuando sea necesario)
 ```
 
----
-
-## 10. Fases Futuras
-
-**Fase 4**: Análisis y OCR de Documentos (2-3 semanas)
-- Google Cloud Vision API
-- Full-text search
-- Clasificación automática
-
-**Fase 5**: Automatización Avanzada N8N (4-6 semanas)
-- Auto-generación de documentos
-- E-sign integration
-- Reportes automáticos
-
-**Fase 6**: Seguridad Avanzada (7-9 semanas)
-- PCI-DSS certification
-- GDPR compliance
-- Penetration testing
-
-**Fase 7**: Escalabilidad y Performance (10-12 semanas)
-- Redis caching
-- Query optimization
-- Canary deployments
-
-**Fase 8**: Multi-región y HA Global
-- Multi-region GCP
-- Database replication
-- Global load balancing
-
----
-
-## 11. Guía de Inicio Rápido
-
-### Desarrollo Local
+### Paso 1: Acceder al Proyecto
 
 ```bash
-git clone https://github.com/AlexisJ16/CarrilloAbogados.git
-./scripts/check-env.sh
-./scripts/install-tools.sh
-./mvnw clean verify -T 1C
-./scripts/dev-up.sh
-curl http://localhost:8080/health
+# Desde PowerShell, entrar a WSL2
+wsl
+
+# Navegar al proyecto
+cd "/mnt/c/Carrillo Abogados/Repositorios GitHub/CarrilloAbogados"
+
+# Dar permisos de ejecución (solo primera vez)
+chmod +x scripts/*.sh
+```
+
+### Paso 2: Verificar Prerrequisitos
+
+```bash
+./scripts/check.sh
+```
+
+Verifica que todas las herramientas necesarias estén instaladas correctamente.
+
+**Salida esperada:**
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🔧 Carrillo Abogados - Verificación de Prerrequisitos
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[1/6] Java
+  ✓ Java 21 instalado
+
+[2/6] Maven
+  ✓ Maven 3.8.x instalado
+
+...
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ Verificación exitosa: 7/7 verificaciones pasaron
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Paso 3: Desplegar la Aplicación
+
+```bash
+./scripts/deploy.sh
+```
+
+Realiza el deployment completo en 7 pasos:
+1. Iniciar Docker daemon
+2. Iniciar cluster Minikube
+3. Crear namespaces (carrillo-dev, databases, messaging)
+4. Desplegar PostgreSQL
+5. Desplegar NATS
+6. Compilar y construir imágenes Docker
+7. Desplegar con Helm
+
+**Tiempo estimado:** 10-15 minutos (primera vez)
+
+### Paso 4: Validar el Deployment
+
+```bash
+./scripts/validate.sh
+```
+
+Verifica que todos los componentes estén corriendo:
+- Cluster Minikube
+- Namespaces
+- PostgreSQL
+- NATS
+- Todos los microservicios
+
+Opcionalmente, esperar a que los pods estén ready:
+
+```bash
+./scripts/validate.sh --wait
+```
+
+### Paso 5: Ejecutar Tests
+
+```bash
+./scripts/test.sh
+```
+
+Ejecuta tests funcionales:
+- Health checks de todos los servicios via API Gateway
+- Conectividad a PostgreSQL
+- Sistema de mensajería NATS
+
+### Paso 6: Acceder a la Aplicación
+
+Después de un deployment exitoso:
+
+```bash
+# Port-forward al API Gateway
+kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev
+```
+
+Abrir en el navegador: **http://localhost:8080**
+
+### Limpiar el Entorno
+
+Cuando necesites empezar de cero:
+
+```bash
+./scripts/reset.sh
+```
+
+⚠️ **Advertencia**: Este script elimina completamente:
+- Cluster Minikube
+- Imágenes Docker del proyecto
+- Directorios `target/` de Maven
+
+---
+
+## 💻 Comandos Útiles
+
+### Kubernetes
+
+```bash
+# Ver todos los pods
+kubectl get pods -n carrillo-dev
+
+# Ver logs de un servicio
+kubectl logs -f deployment/carrillo-dev-api-gateway -n carrillo-dev
+
+# Describir un pod con problemas
+kubectl describe pod <pod-name> -n carrillo-dev
+
+# Escalar un servicio
+kubectl scale deployment/carrillo-dev-api-gateway --replicas=3 -n carrillo-dev
+```
+
+### Base de Datos
+
+```bash
+# Conectar a PostgreSQL
+kubectl exec -it postgresql-0 -n databases -- psql -U carrillo -d carrillo_legal_tech
+
+# Ver schemas
+\dn
+
+# Cambiar a un schema
+SET search_path TO clients;
+\dt
 ```
 
 ### Minikube
 
 ```bash
-./scripts/start-minikube.sh
-kubectl cluster-info
-kubectl apply -f infrastructure/k8s-manifests/namespaces/
-./scripts/deploy-complete.sh
-kubectl get pods -n carrillo-dev
+# Estado del cluster
+minikube status
+
+# Dashboard de Kubernetes
+minikube dashboard
+
+# SSH al nodo
+minikube ssh
 ```
 
-### CI/CD
+### Maven
 
-- Push a `main` → Build + Test + Deploy staging
-- Push a `develop` → Build + Test
-- PR → Build + Test + Quality gates
+```bash
+# Compilar todo (paralelo)
+./mvnw clean package -DskipTests -T 1C
+
+# Compilar un servicio específico
+./mvnw -pl client-service clean package -DskipTests
+
+# Ejecutar tests
+./mvnw test
+```
 
 ---
 
-## 12. Referencias
+## 🔧 Troubleshooting
 
-**Documentación Interna**:
-- `docs/architecture/ARCHITECTURE.md`: Arquitectura detallada
-- `docs/OPS_README.md`: Guía operacional
-- `CLAUDE.md`: Context completo
-- `PROYECTO_ESTADO.md`: Status y fases
+### Pod en CrashLoopBackOff
 
-**Recursos Externos**:
-- [Spring Boot 3.3](https://spring.io/projects/spring-boot)
-- [Kubernetes](https://kubernetes.io/)
-- [Helm](https://helm.sh/)
-- [PostgreSQL 16](https://www.postgresql.org/docs/16/)
-- [NATS](https://docs.nats.io/)
+```bash
+# Ver logs del pod que falla
+kubectl logs <pod-name> -n carrillo-dev --previous
+
+# Describir el pod
+kubectl describe pod <pod-name> -n carrillo-dev
+```
+
+**Causas comunes:**
+- Base de datos no disponible → Verificar PostgreSQL
+- Configuración incorrecta → Verificar ConfigMaps/Secrets
+- Falta de recursos → Aumentar memoria de Minikube
+
+### Docker no responde
+
+```bash
+# Iniciar Docker daemon
+sudo service docker start
+
+# Verificar
+docker info
+```
+
+### Minikube con problemas
+
+```bash
+# Reiniciar completamente
+minikube delete
+minikube start --kubernetes-version=v1.34.0 --driver=docker --cpus=4 --memory=7168
+```
+
+### Puerto 8080 ocupado
+
+```bash
+# Encontrar proceso
+lsof -i :8080
+
+# Matar proceso
+kill -9 <PID>
+```
 
 ---
 
-## 13. Apéndices
+## 📚 Documentación
 
-### Tabla de Versiones
-
-```
-Java: 21 LTS
-Spring Boot: 3.3.13
-Spring Cloud: 2023.0.6
-Kubernetes: 1.34.0
-Helm: 3.19.2
-PostgreSQL: 16
-NATS: 2.10
-Prometheus: 2.48+
-Grafana: 10.2+
-Docker: 24.0+
-Maven: 3.8+
-```
-
-### Puertos de Servicios
-
-```
-8080: API Gateway
-8300: Case Service
-8400: Payment Service
-8500: Document Service
-8600: Calendar Service
-8700: Client/Notification Service
-8800: N8N Integration
-8900: Proxy Client
-5432: PostgreSQL
-4222: NATS
-9090: Prometheus
-3000: Grafana
-```
-
-### Checklist Despliegue Producción
-
-- [ ] Tests pasando
-- [ ] Code coverage > 70%
-- [ ] Security scan sin críticas
-- [ ] Load testing exitoso
-- [ ] Backup plan documentado
-- [ ] Monitoring y alertas
-- [ ] Disaster recovery verificado
-- [ ] Compliance check completo
+| Documento | Descripción |
+|-----------|-------------|
+| [CLAUDE.md](CLAUDE.md) | Contexto completo para AI assistants |
+| [docs/architecture/](docs/architecture/) | Arquitectura y ADRs |
+| [docs/operations/](docs/operations/) | Guías de operaciones |
+| [docs/api/](docs/api/) | Documentación de APIs |
 
 ---
 
-## 14. Conclusiones
+## 📜 Licencia
 
-### 14.1 Resumen Ejecutivo
-
-Carrillo Abogados Legal Tech Platform es una arquitectura cloud-native moderna que proporciona:
-1. **Escalabilidad**: Crecimiento automático según demanda
-2. **Resiliencia**: Tolerancia a fallos
-3. **Agilidad**: Despliegues independientes
-4. **Observabilidad**: Visibilidad completa
-5. **Seguridad**: Múltiples capas de protección
-
-### 14.2 Próximos Pasos
-
-**Corto Plazo** (2 semanas):
-- Fase 4 (Document Service OCR)
-- PCI-DSS compliance
-- Load testing
-
-**Mediano Plazo** (2 meses):
-- Fase 5 (N8N Workflows)
-- Fase 6 (Seguridad Avanzada)
-- Auditoría externa
-
-**Largo Plazo** (6 meses):
-- Fase 7 (Escalabilidad)
-- Fase 8 (Multi-región)
-- ISO 27001, SOC 2
-
-### 14.3 Métricas de Éxito
-
-| Métrica | Meta | Estado |
-|---------|------|--------|
-| Uptime | 99.95% | En progreso |
-| Latencia P99 | < 500ms | En desarrollo |
-| Code Coverage | > 70% | 65% |
-| Deployment Freq | Daily | Weekly |
-| Lead Time Changes | < 1d | 3d |
-
----
-
-*Este documento es un registro vivo que se actualiza continuamente con los cambios en la arquitectura y operaciones.*
+Código propietario - Carrillo Abogados © 2025

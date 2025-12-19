@@ -1,7 +1,11 @@
+# Carrillo Abogados Legal Tech Platform
+# Docker Compose para desarrollo local
+# Para Kubernetes, usar Helm charts en ./helm-charts/carrillo-abogados/
 
 version: '3.8'
 
 services:
+  # ===== INFRAESTRUCTURA =====
   postgresql:
     image: postgres:16-alpine
     container_name: carrillo-postgresql
@@ -13,6 +17,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-schemas.sql:/docker-entrypoint-initdb.d/init-schemas.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carrillo -d carrillo_legal_tech"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - carrillo-network
 
@@ -23,9 +33,15 @@ services:
       - "4222:4222"
       - "8222:8222"
     command: ["-js", "-m", "8222"]
+    healthcheck:
+      test: ["CMD", "nats-server", "--help"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - carrillo-network
 
+  # ===== GATEWAY =====
   api-gateway:
     build: ./api-gateway
     container_name: carrillo-api-gateway
@@ -34,43 +50,49 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: local
     depends_on:
-      - user-service
-      - payment-service
+      postgresql:
+        condition: service_healthy
     networks:
       - carrillo-network
 
-  user-service:
-    build: ./user-service
-    container_name: carrillo-user-service
+  # ===== SERVICIOS DE NEGOCIO =====
+  client-service:
+    build: ./client-service
+    container_name: carrillo-client-service
     ports:
-      - "8700:8700"
+      - "8200:8200"
     environment:
+      SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
       POSTGRES_DB: carrillo_legal_tech
       POSTGRES_USER: carrillo
       POSTGRES_PASSWORD: CarrilloAbogados2025!
-      POSTGRES_SCHEMA_CLIENTS: clients
+      POSTGRES_SCHEMA: clients
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_healthy
     networks:
       - carrillo-network
 
-  order-service:
-    build: ./order-service
-    container_name: carrillo-order-service
+  case-service:
+    build: ./case-service
+    container_name: carrillo-case-service
     ports:
       - "8300:8300"
     environment:
+      SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
       POSTGRES_DB: carrillo_legal_tech
       POSTGRES_USER: carrillo
       POSTGRES_PASSWORD: CarrilloAbogados2025!
-      POSTGRES_SCHEMA_CASES: cases
+      POSTGRES_SCHEMA: cases
     depends_on:
-      - postgresql
-      - nats
+      postgresql:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
     networks:
       - carrillo-network
 
@@ -80,15 +102,98 @@ services:
     ports:
       - "8400:8400"
     environment:
+      SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
       POSTGRES_DB: carrillo_legal_tech
       POSTGRES_USER: carrillo
       POSTGRES_PASSWORD: CarrilloAbogados2025!
-      POSTGRES_SCHEMA_PAYMENTS: payments
+      POSTGRES_SCHEMA: payments
     depends_on:
-      - postgresql
-      - nats
+      postgresql:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    networks:
+      - carrillo-network
+
+  document-service:
+    build: ./document-service
+    container_name: carrillo-document-service
+    ports:
+      - "8500:8500"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_SCHEMA: documents
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    networks:
+      - carrillo-network
+
+  calendar-service:
+    build: ./calendar-service
+    container_name: carrillo-calendar-service
+    ports:
+      - "8600:8600"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_SCHEMA: calendar
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    networks:
+      - carrillo-network
+
+  notification-service:
+    build: ./notification-service
+    container_name: carrillo-notification-service
+    ports:
+      - "8700:8700"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_SCHEMA_NOTIFICATIONS: notifications
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    networks:
+      - carrillo-network
+
+  n8n-integration-service:
+    build: ./n8n-integration-service
+    container_name: carrillo-n8n-integration-service
+    ports:
+      - "8800:8800"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      NATS_URL: nats://nats:4222
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
     networks:
       - carrillo-network
 

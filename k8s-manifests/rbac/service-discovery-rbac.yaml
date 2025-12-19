@@ -1,0 +1,44 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: service-discovery-role
+  namespace: carrillo-dev
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints", "services", "pods", "configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: service-discovery-binding
+  namespace: carrillo-dev
+subjects:
+  - kind: ServiceAccount
+    name: api-gateway-sa
+    namespace: carrillo-dev
+  - kind: ServiceAccount
+    name: client-service-sa
+    namespace: carrillo-dev
+  - kind: ServiceAccount
+    name: case-service-sa
+    namespace: carrillo-dev
+  - kind: ServiceAccount
+    name: document-service-sa
+    namespace: carrillo-dev
+  - kind: ServiceAccount
+    name: calendar-service-sa
+    namespace: carrillo-dev
+  - kind: ServiceAccount
+    name: notification-service-sa
+    namespace: carrillo-dev
+  - kind: ServiceAccount
+    name: n8n-integration-service-sa
+    namespace: carrillo-dev
+roleRef:
+  kind: Role
+  name: service-discovery-role
+  apiGroup: rbac.authorization.k8s.io

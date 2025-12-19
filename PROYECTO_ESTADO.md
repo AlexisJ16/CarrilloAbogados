@@ -1,200 +1,206 @@
-# 📊 ESTADO ACTUAL DEL PROYECTO - Carrillo Abogados Legal Tech
+# 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Fecha**: 30 de Noviembre 2024, 11:30 PM  
-**Rama**: `dev`  
-**Último Commit**: `27fb35b`  
-**Status**: ✅ FASES 1, 2 y 3 COMPLETADAS EXITOSAMENTE
-
----
-
-## 🏆 FASES COMPLETADAS
-
-### ✅ FASE 1: LIMPIEZA Y ORGANIZACIÓN
-**Commit**: `93f73ad` → `de8ddf3`
-
-**Logros**:
-- ✅ Eliminado servicios innecesarios: `product-service`, `favourite-service`, `shipping-service`
-- ✅ Actualizado pom.xml padre (7 módulos → 7 módulos activos)
-- ✅ Creada estructura cloud-native completa
-- ✅ Creado skeleton para 4 nuevos microservicios legales
-- ✅ Transformado README de e-commerce → legal tech
-- ✅ Build SUCCESS en 11.354s
-
-**Servicios Activos**:
-- `service-discovery` (Eureka)
-- `cloud-config` (Config Server)
-- `api-gateway` (Spring Cloud Gateway)
-- `proxy-client` (Auth & Proxy)
-- `user-service` (Usuarios)
-- `order-service` (Órdenes → Cases)
-- `payment-service` (Pagos)
-
-**Servicios en Desarrollo**:
-- `document-service` (Gestión documentos legales)
-- `calendar-service` (Google Calendar)
-- `notification-service` (Email/SMS/Push)
-- `n8n-integration-service` (Workflows)
-
-### ✅ FASE 2: NAMESPACES Y CONFIGURACIÓN K8S
-**Commit**: `2c33c39`
-
-**Logros**:
-- ✅ 3 Namespaces con ResourceQuotas (dev, staging, prod)
-- ✅ 4 ConfigMaps (api-gateway, database, NATS, common)
-- ✅ 3 Secret templates (PostgreSQL, OAuth2, Google APIs)
-- ✅ .gitignore para proteger secrets reales
-- ✅ Documentación completa de uso
-
-### ✅ FASE 3: HELM CHARTS BASE
-**Commit**: `27fb35b`
-
-**Logros**:
-- ✅ Helm Chart completo para api-gateway (8 templates)
-- ✅ Umbrella Chart carrillo-abogados
-- ✅ HPA configurado (2-10 replicas)
-- ✅ Security contexts (non-root, user 1000)
-- ✅ Health checks (liveness/readiness)
-- ✅ Ingress con TLS automático
-- ✅ Documentación de despliegue
+**Última Actualización**: 18 de Diciembre, 2025 - 20:30 COT  
+**Estado General**: ✅ **DOCKER COMPOSE FUNCIONANDO** | 10/10 Contenedores Healthy | API Gateway Routing OK  
+**Rama Actual**: `dev`
 
 ---
 
-## 📁 ESTRUCTURA ACTUAL DEL PROYECTO
+## 🎯 RESUMEN EJECUTIVO
+
+Plataforma cloud-native de gestión legal empresarial con **8 microservicios** Spring Boot sobre Docker/Kubernetes. Proyecto migrado exitosamente desde plantilla e-commerce a plataforma legal.
+
+### Propósito Dual
+1. **Académico**: Proyecto final curso Plataformas II
+2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
+
+### Hitos Clave
+| Hito | Fecha | Estado |
+|------|-------|--------|
+| Docker Compose Local | 18 Dic 2025 | ✅ COMPLETADO |
+| MVP Empresarial | 18 Mar 2026 | 📋 Planificado |
+
+---
+
+## ✅ ESTADO ACTUAL (18 Diciembre 2025 - 20:30)
+
+### 🎉 LOGRO: Todos los Servicios Funcionando en Docker Compose
+
+```
+✅ 10/10 contenedores HEALTHY
+✅ 8/8 microservicios respondiendo a health checks
+✅ API Gateway routing a todos los servicios
+✅ PostgreSQL y NATS operativos
+```
+
+### Estado de Contenedores
+| Contenedor | Puerto | Estado | Health |
+|------------|--------|--------|--------|
+| carrillo-api-gateway | 8080 | ✅ Up | healthy |
+| carrillo-client-service | 8200 | ✅ Up | healthy |
+| carrillo-case-service | 8300 | ✅ Up | healthy |
+| carrillo-payment-service | 8400 | ✅ Up | healthy |
+| carrillo-document-service | 8500 | ✅ Up | healthy |
+| carrillo-calendar-service | 8600 | ✅ Up | healthy |
+| carrillo-notification-service | 8700 | ✅ Up | healthy |
+| carrillo-n8n-integration-service | 8800 | ✅ Up | healthy |
+| carrillo-postgresql | 5432 | ✅ Up | healthy |
+| carrillo-nats | 4222/8222 | ✅ Up | healthy |
+
+---
+
+## 🔧 CORRECCIONES APLICADAS (Sesión 18 Dic 2025)
+
+### 1. Puerto payment-service
+- **Archivo**: `payment-service/src/main/resources/application.yaml`
+- **Cambio**: `server.port: 8750` → `server.port: 8400`
+
+### 2. Hibernate DDL Strategy
+- **Archivos**: `client-service`, `case-service`, `notification-service`, `n8n-integration-service`
+- **Cambio**: `ddl-auto: validate` → `ddl-auto: update`
+- **Razón**: Las tablas no existían y Flyway no puede migrar (incompatible con PG 16)
+
+### 3. Flyway Deshabilitado Temporalmente
+- **Archivos**: Todos los servicios con PostgreSQL
+- **Cambio**: `flyway.enabled: true` → `flyway.enabled: false`
+- **Razón**: Flyway 10.10.0 incompatible con PostgreSQL 16.11
+- **Acción futura**: Actualizar Flyway o añadir `flyway-database-postgresql` dependency
+
+### 4. Health Check Paths en Dockerfiles
+- **Archivo**: `client-service/Dockerfile`
+- **Cambio**: `/actuator/health` → `/client-service/actuator/health`
+- **start-period**: 5s → 60s (servicios Spring Boot tardan ~20-45s en arrancar)
+
+### 5. Variables PostgreSQL en compose.yml
+- **Servicio**: `n8n-integration-service`
+- **Añadido**: `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
+
+### 6. Notification Service Health Indicator
+- **Archivo**: `notification-service/src/main/resources/application.yaml`
+- **Añadido**: `management.health.mail.enabled: false`
+- **Razón**: Mail health check fallaba sin credenciales configuradas
+
+### 7. API Gateway Profile Local
+- **Archivo NUEVO**: `api-gateway/src/main/resources/application-local.yml`
+- **Propósito**: Rutas directas para Docker Compose (sin Kubernetes service discovery)
+- **Cambio**: `lb://SERVICE-NAME` → `http://service-name:PORT`
+- **Filtro**: `StripPrefix=1` para servicios sin context-path
+
+---
+
+## 📁 ESTRUCTURA DEL REPOSITORIO
 
 ```
 CarrilloAbogados/
-├── 📁 microservices/ (Código Java 21 + Spring Boot 3.3.13)
-│   ├── api-gateway/
-│   ├── cloud-config/
-│   ├── proxy-client/
-│   ├── service-discovery/
-│   ├── user-service/
-│   ├── order-service/
-│   ├── payment-service/
-│   ├── document-service/ (skeleton)
-│   ├── calendar-service/ (skeleton)
-│   ├── notification-service/ (skeleton)
-│   └── n8n-integration-service/ (skeleton)
-├── 📁 infrastructure/
+├── 📦 Microservicios (8 activos)
+│   ├── api-gateway/           # Spring Cloud Gateway + OAuth2
+│   ├── client-service/        # Gestión de clientes legales
+│   ├── case-service/          # Casos legales
+│   ├── payment-service/       # Pagos gubernamentales
+│   ├── document-service/      # Documentos legales (skeleton)
+│   ├── calendar-service/      # Google Calendar (skeleton)
+│   ├── notification-service/  # Email/SMS (skeleton)
+│   └── n8n-integration-service/ # Workflows N8N (skeleton)
+│
+├── 🚀 Infraestructura
+│   ├── helm-charts/carrillo-abogados/
 │   ├── k8s-manifests/
-│   │   ├── namespaces/ (3 archivos)
-│   │   ├── configmaps/ (4 archivos)
-│   │   ├── secrets/ (3 templates + .gitignore)
-│   │   └── README.md
-│   └── terraform/ (directorios creados)
-├── 📁 helm-charts/
-│   ├── api-gateway/ (Chart completo)
-│   ├── carrillo-abogados/ (Umbrella chart)
-│   └── README.md
-├── 📁 docs/ (architecture, api, operations)
-├── 📁 monitoring/ (prometheus, grafana, loki)
-└── 📁 scripts/ (install-tools.sh, start-minikube.sh)
+│   └── compose.yml           # ✅ FUNCIONANDO
+│
+├── 📚 Documentación
+│   ├── CLAUDE.md             # Contexto para Claude AI
+│   ├── PROYECTO_ESTADO.md    # Este archivo
+│   ├── COPILOT_PROMPT.md     # Prompt para nuevos chats
+│   └── docs/                 # Documentación técnica
+│
+└── 🔧 Scripts
+    ├── check.sh, deploy.sh, validate.sh, test.sh, reset.sh
 ```
 
 ---
 
-## ⚙️ CONFIGURACIÓN TECNOLÓGICA
+## 🖥️ COMANDOS DE DESARROLLO
 
-### Stack Principal
-- **Java**: 21 LTS
-- **Spring Boot**: 3.3.13
-- **Spring Cloud**: 2023.0.6
-- **Maven**: Multi-módulo
-- **Kubernetes**: 1.34.0
-- **Helm**: Charts v2
+### Docker Compose (Desarrollo Local)
+```powershell
+# Levantar todo
+docker-compose up -d
 
-### Infraestructura
-- **Container Registry**: `carrilloabogados/*`
-- **Kubernetes**: Minikube (dev) → GKE (prod)
-- **Message Queue**: NATS
-- **Database**: PostgreSQL 16
-- **Monitoring**: Prometheus + Grafana
-- **TLS**: cert-manager + Let's Encrypt
+# Ver estado
+docker-compose ps
 
-### Seguridad
-- **Non-root containers** (user 1000)
-- **Resource limits** configurados
-- **Secret templates** (sin valores reales en Git)
-- **OAuth2 + JWT** para autenticación
-- **Google Workspace** integration ready
+# Ver logs de un servicio
+docker logs carrillo-client-service --tail 50
 
----
+# Reconstruir un servicio específico
+docker-compose up -d --build client-service
 
-## 🚀 PRÓXIMAS FASES PLANIFICADAS
-
-### FASE 4: RBAC Y NETWORK POLICIES
-- [ ] ServiceAccounts con permisos específicos
-- [ ] Roles y RoleBindings por servicio
-- [ ] Network Policies para aislamiento
-- [ ] Pod Security Standards
-
-### FASE 5: DOCKER IMAGES Y CI/CD
-- [ ] Dockerfiles para cada microservicio
-- [ ] GitHub Actions para CI/CD
-- [ ] Docker Registry setup
-- [ ] Automated testing pipelines
-
-### FASE 6: IMPLEMENTACIÓN MICROSERVICIOS LEGALES
-- [ ] document-service implementation
-- [ ] calendar-service implementation  
-- [ ] notification-service implementation
-- [ ] n8n-integration-service implementation
-
----
-
-## 📋 COMANDOS ESENCIALES PARA CONTINUACIÓN
-
-### Build y Test
-```bash
-./mvnw clean verify -T 1C  # ✅ FUNCIONA
+# Detener todo
+docker-compose down
 ```
 
-### Despliegue Local (cuando esté listo)
-```bash
-# 1. Aplicar namespaces
-kubectl apply -f infrastructure/k8s-manifests/namespaces/
+### Probar Servicios
+```powershell
+# Directo (sin Gateway)
+Invoke-RestMethod http://localhost:8200/client-service/actuator/health
+Invoke-RestMethod http://localhost:8400/actuator/health
 
-# 2. Aplicar ConfigMaps
-kubectl apply -f infrastructure/k8s-manifests/configmaps/
+# Via API Gateway
+Invoke-RestMethod http://localhost:8080/client-service/actuator/health
+Invoke-RestMethod http://localhost:8080/payment-service/actuator/health
+```
 
-# 3. Crear secrets (desde templates)
-# Editar infrastructure/k8s-manifests/secrets/*-secret.yaml
+### Build Maven
+```powershell
+# Build completo
+.\mvnw clean package -DskipTests -T 1C
 
-# 4. Instalar con Helm
-helm install carrillo-dev helm-charts/carrillo-abogados/ \
-  --namespace carrillo-dev
+# Build servicio específico
+.\mvnw package -DskipTests -pl client-service
 ```
 
 ---
 
-## 🔄 ESTADO DE LA RAMA
+## 🚀 PRÓXIMOS PASOS
 
-- **Rama actual**: `dev`
-- **Commits ahead**: 0 (todo pusheado)
-- **Working tree**: clean
-- **Build status**: ✅ SUCCESS
-- **Last push**: ✅ Exitoso a origin/dev
+### Inmediatos
+1. [ ] Implementar entidades de dominio en client-service
+2. [ ] Implementar entidades de dominio en case-service
+3. [ ] Crear endpoints REST básicos
+4. [ ] Configurar Swagger/OpenAPI
 
----
+### Corto Plazo
+5. [ ] Integrar Google Workspace APIs (Calendar, Gmail)
+6. [ ] Configurar OAuth2 con @carrilloabgd.com
+7. [ ] Implementar document-service con storage
 
-## 📞 PRÓXIMA SESIÓN (2:00 AM)
-
-**Para retomar el desarrollo:**
-
-1. **Verificar estado**:
-   ```bash
-   git status
-   git log --oneline -5
-   ./mvnw clean verify -T 1C
-   ```
-
-2. **Continuar con FASE 4**: RBAC y Network Policies
-
-3. **Objetivo**: Completar la infraestructura de seguridad de Kubernetes
-
-**¡El proyecto está en excelente estado para continuar el desarrollo!** 🚀
+### Mediano Plazo
+8. [ ] Desplegar a GKE Staging
+9. [ ] Configurar CI/CD con GitHub Actions
+10. [ ] Integrar N8N Pro workflows
 
 ---
 
-*Generado automáticamente por Claude Code*  
-*Estado guardado: 2024-11-30 23:30 PM*
+## ⚠️ ISSUES CONOCIDOS
+
+### Flyway + PostgreSQL 16
+- **Problema**: Flyway 10.10.0 no soporta PostgreSQL 16
+- **Workaround**: Flyway deshabilitado, usando `ddl-auto: update`
+- **Solución**: Añadir dependency `flyway-database-postgresql` o actualizar Flyway
+
+### compose.yml Warning
+- **Problema**: `attribute 'version' is obsolete`
+- **Impacto**: Solo warning, no afecta funcionamiento
+- **Solución**: Remover línea `version: '3.8'` del compose.yml
+
+---
+
+## 📞 CONTACTO
+
+- **Desarrollador**: Alexis
+- **Cliente**: Carrillo Abogados, Cali, Colombia
+- **Admin técnico**: ingenieria@carrilloabgd.com
+
+---
+
+*Última actualización: 18 de Diciembre 2025, 20:30 COT*
