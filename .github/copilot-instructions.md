@@ -262,3 +262,48 @@ Always create feature branches from `dev`, not `main`.
 4. **Schemas** - Created 7 PostgreSQL schemas for all services
 5. **compose.yml** - Completely rewritten for legal tech (removed e-commerce legacy)
 6. **test.sh** - Improved with context-path aware health checks
+
+## Marketing Automation Integration (Dec 19, 2025)
+
+### n8n Cloud Integration
+The platform integrates with n8n Cloud for marketing automation through 3 MEGA-WORKFLOWS:
+
+| MEGA-WORKFLOW | Purpose | Workflows | Nodes |
+|---------------|---------|-----------|-------|
+| MW#1: Captura | Lead → Client (<1 min response) | 7 | 108 |
+| MW#2: Retención | Client → Recompra (Flywheel) | 5 | 72 |
+| MW#3: SEO | Traffic → Lead (Content Factory) | 5 | 60 |
+
+### n8n-integration-service Key Endpoints
+
+**Webhooks to expose (n8n → Platform):**
+- `POST /webhook/lead-scored` - Receive lead score from n8n
+- `POST /webhook/lead-hot` - Notify lawyer of hot lead (≥70 pts)
+- `POST /webhook/upsell-detected` - Create upsell opportunity
+
+**Events to emit (Platform → n8n via NATS):**
+- `lead.capturado` → MW#1 SUB-A (scoring)
+- `cita.agendada` → MW#1 SUB-F (confirmation)
+- `caso.cerrado` → MW#2 (follow-up)
+- `cliente.inactivo` → MW#2 (reactivation)
+
+### Lead Scoring (calculated by n8n)
+```
+Base: 30 pts
++ Service "marca"/"litigio": +20 pts
++ Message > 50 chars: +10 pts
++ Has phone: +10 pts
++ Has company: +10 pts
++ Corporate email: +10 pts
++ C-Level role: +20 pts
+────────────────────────────
+HOT:  ≥70 pts → Immediate notification
+WARM: 40-69 pts → AI nurturing
+COLD: <40 pts → Generic response
+```
+
+### Business Documentation
+- [MODELO_NEGOCIO.md](../docs/business/MODELO_NEGOCIO.md) - Business context & metrics
+- [REQUERIMIENTOS.md](../docs/business/REQUERIMIENTOS.md) - 76 functional + 23 non-functional requirements
+- [ESTRATEGIA_AUTOMATIZACION.md](../docs/business/ESTRATEGIA_AUTOMATIZACION.md) - n8n integration strategy
+- [ARQUITECTURA_FUNCIONAL.md](../docs/business/ARQUITECTURA_FUNCIONAL.md) - Microservice mapping

@@ -1,189 +1,189 @@
-# 🔄 PROMPT DE CONTINUACIÓN - Carrillo Abogados Legal Tech Platform
+# 🚀 PROMPT DE CONTINUACIÓN - Desarrollo de Microservicios
 
-**Fecha de Creación**: 18 de Diciembre, 2025  
-**Propósito**: Proporcionar contexto completo para continuar el desarrollo en un nuevo chat de GitHub Copilot
-
----
-
-## 📋 INSTRUCCIÓN INICIAL
-
-Hola, soy Alexis y estoy continuando el desarrollo del proyecto **Carrillo Abogados Legal Tech Platform**. Este es un nuevo chat porque el anterior se saturó por la cantidad de contexto.
-
-Por favor, lee los siguientes archivos para entender el proyecto completo:
-
-1. **`CLAUDE.md`** - Contexto completo del desarrollador y ambiente WSL
-2. **`PROYECTO_ESTADO.md`** - Estado actual del proyecto (última actualización)
-3. **`.github/copilot-instructions.md`** - Instrucciones de arquitectura y convenciones
-4. **`docs/architecture/ARCHITECTURE.md`** - Arquitectura del sistema
-5. **`compose.yml`** - Docker Compose para desarrollo local (¡FUNCIONANDO!)
+**Fecha**: 19 de Diciembre, 2025  
+**Rama**: `dev`  
+**Último Commit**: `b7557b0` - docs: integrate marketing automation strategy with n8n workflows
 
 ---
 
-## 🎯 ESTADO ACTUAL DEL PROYECTO
+## CONTEXTO PARA EL NUEVO CHAT
 
-### ✅ LOGRO ALCANZADO (18 Dic 2025)
-
-**Docker Compose funcionando al 100%:**
-- 10/10 contenedores HEALTHY
-- 8 microservicios Spring Boot respondiendo
-- API Gateway routing correctamente a todos los servicios
-- PostgreSQL y NATS operativos
-
-### Contenedores Activos
-
-| Servicio | Puerto | Health |
-|----------|--------|--------|
-| api-gateway | 8080 | ✅ healthy |
-| client-service | 8200 | ✅ healthy |
-| case-service | 8300 | ✅ healthy |
-| payment-service | 8400 | ✅ healthy |
-| document-service | 8500 | ✅ healthy |
-| calendar-service | 8600 | ✅ healthy |
-| notification-service | 8700 | ✅ healthy |
-| n8n-integration-service | 8800 | ✅ healthy |
-| postgresql | 5432 | ✅ healthy |
-| nats | 4222 | ✅ healthy |
+Copia y pega este bloque en un nuevo chat de GitHub Copilot:
 
 ---
 
-## 🛠️ STACK TECNOLÓGICO
+### 📋 PROMPT:
 
-| Componente | Versión |
-|------------|---------|
+```
+Soy Alexis, desarrollador del proyecto Carrillo Abogados Legal Tech Platform.
+
+## ESTADO ACTUAL DEL PROYECTO
+
+Plataforma cloud-native de gestión legal con 8 microservicios Spring Boot sobre Docker/Kubernetes para el bufete Carrillo ABGD SAS de Cali, Colombia.
+
+### Microservicios y Estado de Implementación
+
+| Servicio | Puerto | Estado | Descripción |
+|----------|--------|--------|-------------|
+| api-gateway | 8080 | ✅ 95% | Spring Cloud Gateway + OAuth2 |
+| client-service | 8200 | ✅ 90% | CRUD clientes, falta Lead entity |
+| case-service | 8300 | ✅ 95% | CRUD casos legales completo |
+| payment-service | 8400 | ⏳ 5% | Solo skeleton |
+| document-service | 8500 | ⏳ 5% | Solo skeleton |
+| calendar-service | 8600 | ⏳ 5% | Solo skeleton |
+| notification-service | 8700 | ⏳ 5% | Solo skeleton |
+| n8n-integration-service | 8800 | ⏳ 15% | Bridge NATS↔n8n pendiente |
+
+### Docker Compose: ✅ 10/10 contenedores HEALTHY
+
+### Documentación Completada
+
+La documentación de negocio está en `docs/business/`:
+- MODELO_NEGOCIO.md - Contexto del bufete, 5 áreas de práctica, métricas marketing
+- REQUERIMIENTOS.md - 76 RF + 23 RNF (incluyendo 12 RF-N8N nuevos)
+- ESTRATEGIA_AUTOMATIZACION.md - Integración con n8n Cloud (3 MEGA-WORKFLOWS)
+- ARQUITECTURA_FUNCIONAL.md - Mapeo microservicio → función de negocio
+- ROLES_USUARIOS.md - 4 roles: Admin, Abogado, Cliente, Visitante
+- CASOS_USO.md - Flujos detallados por actor
+
+### Integración n8n (Marketing Automation)
+
+El sistema se integra con n8n Cloud para automatizar marketing:
+- MW#1: Captura (Lead → Cliente en < 1 min) - 7 workflows, 108 nodos - 28% implementado
+- MW#2: Retención (Flywheel) - 5 workflows, 72 nodos - Q2 2026
+- MW#3: SEO (Content Factory) - 5 workflows, 60 nodos - Q2-Q3 2026
+
+La documentación detallada de los workflows está en `docs/business/Analizar_Ya/`:
+- 00_ARQUITECTURA_GENERAL.md
+- 01_MEGA_WORKFLOW_1_CAPTURA.md
+- 02_MEGA_WORKFLOW_2_RETENCION.md
+- 03_MEGA_WORKFLOW_3_SEO.md
+
+### Métricas Objetivo
+
+| Métrica | Actual | Objetivo |
+|---------|--------|----------|
+| Leads/mes | 20 | 300+ |
+| Tiempo respuesta | 4-24h | < 1 min |
+| Conversión | ~5% | 15%+ |
+| Clientes nuevos/año | ~15 | 100+ |
+
+## SIGUIENTE FASE: DESARROLLO DE FUNCIONALIDADES
+
+Necesito implementar las funcionalidades core de los microservicios. Las prioridades son:
+
+### PRIORIDAD 1 - Lead Capture (client-service + n8n-integration-service)
+1. Crear entidad `Lead` en client-service con campos para scoring
+2. Endpoint `POST /leads` para captura desde formulario web
+3. Emitir evento `lead.capturado` a NATS
+4. n8n-integration-service: escuchar NATS y enviar a webhook n8n
+5. Webhook `POST /webhook/lead-scored` para recibir score de n8n
+
+Campos del Lead (según ESTRATEGIA_AUTOMATIZACION.md):
+- nombre, email, telefono, empresa, cargo
+- servicio (área de interés: TRADEMARK_LAW, etc.)
+- mensaje (texto libre)
+- leadScore (0-100, calculado por n8n)
+- leadCategory (HOT ≥70, WARM 40-69, COLD <40)
+- leadStatus (NUEVO, NURTURING, MQL, SQL, CONVERTIDO, CHURNED)
+- emailsSent, emailsOpened, emailsClicked
+- lastEngagement, source
+
+### PRIORIDAD 2 - Calendar + Booking (calendar-service)
+1. Entidad `CalendarEvent` con tipos: HEARING, DEADLINE, MEETING, APPOINTMENT
+2. Integración Google Calendar API (OAuth2)
+3. Sistema de booking online para citas
+4. Integración con Calendly (webhook)
+
+### PRIORIDAD 3 - Notificaciones (notification-service)
+1. Entidad `Notification` con estados y canales
+2. Templates de email configurables
+3. Integración Gmail API para envío
+4. Escuchar eventos NATS para auto-envío
+
+### Convenciones del Proyecto
+
+- Java 21 + Spring Boot 3.3.13
+- Package: `com.carrilloabogados.<service>`
+- Estructura: controller/, service/, repository/, model/, dto/, config/
+- PostgreSQL con schemas separados por servicio (schema `clients` para client-service)
+- NATS para eventos: `carrillo.events.<domain>.<action>`
+- Context-path por servicio: `/<service-name>/`
+- Flyway deshabilitado, usar `ddl-auto: update`
+
+## MI PREGUNTA
+
+¿Por dónde empezamos? Sugiero iniciar con la entidad Lead en client-service ya que es crítica para el MW#1 de captura de leads. ¿Puedes ayudarme a implementar:
+1. La entidad Lead con todos los campos necesarios para scoring
+2. El DTO LeadRequest/LeadResponse y el endpoint POST /leads  
+3. El servicio y repositorio correspondientes
+4. La emisión del evento a NATS cuando se capture un lead
+
+Lee los archivos CLAUDE.md y docs/business/ESTRATEGIA_AUTOMATIZACION.md para el contexto completo.
+```
+
+---
+
+## ARCHIVOS CLAVE PARA LEER AL INICIAR
+
+El agente debe leer estos archivos para contexto:
+
+1. `CLAUDE.md` - Contexto técnico completo
+2. `.github/copilot-instructions.md` - Instrucciones de desarrollo
+3. `docs/business/ESTRATEGIA_AUTOMATIZACION.md` - Integración n8n
+4. `docs/business/ARQUITECTURA_FUNCIONAL.md` - Funciones por microservicio
+5. `docs/business/REQUERIMIENTOS.md` - RF-CLI, RF-N8N
+6. `client-service/src/main/java/com/carrilloabogados/clientservice/model/` - Modelos existentes
+7. `client-service/src/main/resources/application.yaml` - Configuración actual
+
+---
+
+## DECISIONES TÉCNICAS YA TOMADAS
+
+| Decisión | Valor |
+|----------|-------|
+| Base de datos | PostgreSQL 16 con schemas separados |
+| Messaging | NATS (dev/staging), Google Pub/Sub (prod) |
+| OAuth2 | Google Workspace (@carrilloabgd.com) |
+| Contenedores | Docker Compose local, Kubernetes prod |
+| Flyway | Deshabilitado temporalmente (usar `ddl-auto: update`) |
+| Service Discovery | Kubernetes DNS nativo |
 | Java | 21 LTS |
 | Spring Boot | 3.3.13 |
-| Spring Cloud | 2023.0.6 |
-| Spring Cloud Kubernetes | 3.1.3 |
-| PostgreSQL | 16.11 |
-| NATS | 2.10 |
-| Docker Desktop | Windows |
 
 ---
 
-## 📁 ESTRUCTURA DE MICROSERVICIOS
+## PRÓXIMOS COMMITS ESPERADOS
 
-```
-CarrilloAbogados/
-├── api-gateway/           # Spring Cloud Gateway + OAuth2 (puerto 8080)
-├── client-service/        # Gestión de clientes legales (8200, context-path: /client-service)
-├── case-service/          # Casos legales (8300, context-path: /case-service)
-├── payment-service/       # Pagos gubernamentales (8400, sin context-path)
-├── document-service/      # Documentos legales - SKELETON (8500)
-├── calendar-service/      # Google Calendar - SKELETON (8600)
-├── notification-service/  # Email/SMS - SKELETON (8700)
-└── n8n-integration-service/ # Workflows N8N - SKELETON (8800)
-```
+1. `feat(client-service): add Lead entity with scoring fields`
+2. `feat(client-service): add lead capture endpoint POST /leads`
+3. `feat(client-service): emit lead.capturado event to NATS`
+4. `feat(n8n-integration): add NATS listener and n8n webhook bridge`
+5. `feat(n8n-integration): add /webhook/lead-scored endpoint`
+6. `feat(calendar-service): add CalendarEvent entity and Google Calendar integration`
+7. `feat(notification-service): add Notification entity and Gmail API integration`
 
 ---
 
-## ⚠️ ISSUES CONOCIDOS
+## COMANDOS ÚTILES
 
-### 1. Flyway + PostgreSQL 16
-- **Estado**: Flyway deshabilitado temporalmente
-- **Problema**: Flyway 10.10.0 incompatible con PostgreSQL 16.11
-- **Workaround actual**: `flyway.enabled: false` + `ddl-auto: update`
-- **Solución pendiente**: Añadir `flyway-database-postgresql` dependency
-
-### 2. Servicios Skeleton
-- `document-service`, `calendar-service`, `notification-service`, `n8n-integration-service`
-- Solo tienen la clase Application y configuración básica
-- Necesitan implementación de lógica de negocio
-
----
-
-## 🚀 PRÓXIMOS PASOS SUGERIDOS
-
-### Opción A: Implementar Lógica de Negocio
-1. Diseñar entidades de dominio para client-service
-2. Implementar endpoints CRUD para clientes
-3. Diseñar entidades para case-service
-4. Implementar endpoints para casos legales
-
-### Opción B: Integrar Google Workspace
-1. Configurar Google Cloud Console
-2. Habilitar Calendar API y Gmail API
-3. Implementar OAuth2 con @carrilloabgd.com
-4. Crear servicios de integración
-
-### Opción C: Preparar Kubernetes
-1. Verificar Helm charts
-2. Desplegar en Docker Desktop Kubernetes
-3. Configurar ingress y network policies
-
----
-
-## 💻 COMANDOS ÚTILES
-
-### Docker Compose
 ```powershell
-# Levantar todo
+# Levantar ambiente local
 docker-compose up -d
 
-# Ver estado
-docker-compose ps
+# Ver logs de un servicio
+docker logs carrillo-client-service --tail 50 -f
 
-# Logs de un servicio
-docker logs carrillo-client-service --tail 50
+# Probar endpoint via Gateway
+Invoke-RestMethod http://localhost:8080/client-service/actuator/health
 
-# Reconstruir servicio
+# Build de un servicio
+.\mvnw package -DskipTests -pl client-service
+
+# Reconstruir y reiniciar servicio
 docker-compose up -d --build client-service
 ```
 
-### Probar Servicios
-```powershell
-# Via API Gateway (recomendado)
-Invoke-RestMethod http://localhost:8080/client-service/actuator/health
-Invoke-RestMethod http://localhost:8080/case-service/actuator/health
-Invoke-RestMethod http://localhost:8080/payment-service/actuator/health
-
-# Directo (debug)
-Invoke-RestMethod http://localhost:8200/client-service/actuator/health
-```
-
-### Build Maven
-```powershell
-# Build completo
-.\mvnw clean package -DskipTests -T 1C
-
-# Build específico
-.\mvnw package -DskipTests -pl client-service
-```
-
 ---
 
-## 🔧 CONFIGURACIÓN IMPORTANTE
-
-### Base de Datos (Docker Compose)
-```yaml
-POSTGRES_HOST: postgresql
-POSTGRES_PORT: 5432
-POSTGRES_DB: carrillo_legal_tech
-POSTGRES_USER: carrillo
-POSTGRES_PASSWORD: CarrilloAbogados2025!
-```
-
-### Schemas PostgreSQL
-- `clients` - client-service
-- `cases` - case-service
-- `payments` - payment-service
-- `documents` - document-service
-- `calendar` - calendar-service
-- `notifications` - notification-service
-- `public` - n8n-integration-service
-
----
-
-## 📝 INSTRUCCIÓN PARA EL NUEVO CHAT
-
-Por favor:
-
-1. Lee los archivos de documentación mencionados arriba
-2. Verifica que Docker Compose siga funcionando (`docker-compose ps`)
-3. Pregúntame qué tarea específica quiero abordar de los "Próximos Pasos"
-4. Si hay algún error, diagnostícalo antes de continuar
-
-**Nota sobre el entorno**: Estoy en Windows 11 con Docker Desktop. El proyecto tiene configuración para WSL pero actualmente usamos Docker Desktop directamente.
-
----
-
-*Archivo creado para facilitar la continuidad entre sesiones de GitHub Copilot Chat*
+*Generado automáticamente el 19 de Diciembre, 2025*
