@@ -1,189 +1,224 @@
-# 🚀 PROMPT DE CONTINUACIÓN - Desarrollo de Microservicios
+# 🚀 COPILOT PROMPT - Carrillo Abogados Legal Tech Platform
 
 **Fecha**: 19 de Diciembre, 2025  
-**Rama**: `dev`  
-**Último Commit**: `b7557b0` - docs: integrate marketing automation strategy with n8n workflows
+**Versión**: 3.0 (Actualizado después de FASE 1 completa)  
+**Propósito**: Documento de transición para nuevo chat con contexto completo
 
 ---
 
-## CONTEXTO PARA EL NUEVO CHAT
+## 📋 INSTRUCCIONES PARA EL NUEVO CHAT
 
-Copia y pega este bloque en un nuevo chat de GitHub Copilot:
+### Cómo usar este documento
+
+Copia y pega el siguiente bloque como primer mensaje en un nuevo chat de GitHub Copilot:
 
 ---
 
-### 📋 PROMPT:
+## 🎯 PROMPT DE INICIO
 
 ```
-Soy Alexis, desarrollador del proyecto Carrillo Abogados Legal Tech Platform.
+Soy Alexis, desarrollador del proyecto Carrillo Abogados Legal Tech Platform. Este es un proyecto de microservicios Spring Boot para un bufete de abogados en Colombia.
 
-## ESTADO ACTUAL DEL PROYECTO
+## CONTEXTO DEL PROYECTO
 
-Plataforma cloud-native de gestión legal con 8 microservicios Spring Boot sobre Docker/Kubernetes para el bufete Carrillo ABGD SAS de Cali, Colombia.
+### Estado Actual (19 Dic 2025)
+- **FASE 1 COMPLETADA**: client-service al 100% con 66 tests de seguridad
+- **CI/CD**: GitHub Actions configurado (ci-cd-pipeline.yml + pr-validation.yml)
+- **Docker Compose**: 10 contenedores funcionando (8 microservicios + PostgreSQL + NATS)
+- **Último commit**: 43cd864 (Security tests for client-service)
 
-### Microservicios y Estado de Implementación
+### Arquitectura
+- 8 microservicios Spring Boot 3.3.13 + Java 21
+- PostgreSQL 16 con schemas separados por servicio
+- NATS 2.10 para mensajería asíncrona
+- Kubernetes (Minikube local, GKE para producción)
+- Spring Cloud Kubernetes (NO Eureka, NO Config Server)
 
-| Servicio | Puerto | Estado | Descripción |
-|----------|--------|--------|-------------|
-| api-gateway | 8080 | ✅ 95% | Spring Cloud Gateway + OAuth2 |
-| client-service | 8200 | ✅ 90% | CRUD clientes, falta Lead entity |
-| case-service | 8300 | ✅ 95% | CRUD casos legales completo |
-| payment-service | 8400 | ⏳ 5% | Solo skeleton |
-| document-service | 8500 | ⏳ 5% | Solo skeleton |
-| calendar-service | 8600 | ⏳ 5% | Solo skeleton |
-| notification-service | 8700 | ⏳ 5% | Solo skeleton |
-| n8n-integration-service | 8800 | ⏳ 15% | Bridge NATS↔n8n pendiente |
+### Microservicios y Estado
+| Servicio | Puerto | Estado |
+|----------|--------|--------|
+| api-gateway | 8080 | ✅ 100% |
+| client-service | 8200 | ✅ 100% (66 tests) |
+| case-service | 8300 | ✅ 95% |
+| payment-service | 8400 | 🔄 15% |
+| document-service | 8500 | 🔄 15% |
+| calendar-service | 8600 | 🔄 15% |
+| notification-service | 8700 | 🔄 15% |
+| n8n-integration-service | 8800 | 🔄 20% |
 
-### Docker Compose: ✅ 10/10 contenedores HEALTHY
+### Entorno de Desarrollo
+- **OS**: Windows 11 con WSL2 (Ubuntu-24.04)
+- **Minikube**: Corre DENTRO de WSL (usar `wsl bash -c "kubectl ..."`)
+- **Docker**: Desktop con integración WSL
+- **IDE**: VS Code con extensiones Java/Spring configuradas
 
-### Documentación Completada
+### Archivos de Contexto Importantes
+1. `.github/copilot-instructions.md` - Instrucciones detalladas para Copilot
+2. `CLAUDE.md` - Contexto técnico completo
+3. `PROYECTO_ESTADO.md` - Estado actual del proyecto
+4. `docs/business/` - Documentación de negocio
 
-La documentación de negocio está en `docs/business/`:
-- MODELO_NEGOCIO.md - Contexto del bufete, 5 áreas de práctica, métricas marketing
-- REQUERIMIENTOS.md - 76 RF + 23 RNF (incluyendo 12 RF-N8N nuevos)
-- ESTRATEGIA_AUTOMATIZACION.md - Integración con n8n Cloud (3 MEGA-WORKFLOWS)
-- ARQUITECTURA_FUNCIONAL.md - Mapeo microservicio → función de negocio
-- ROLES_USUARIOS.md - 4 roles: Admin, Abogado, Cliente, Visitante
-- CASOS_USO.md - Flujos detallados por actor
+### Propósito Dual
+1. **Académico**: Proyecto final Plataformas II (evaluación basada en K8s, CI/CD, etc.)
+2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
 
-### Integración n8n (Marketing Automation)
+### Fechas Clave
+- **MVP Empresarial**: 27 Marzo 2026
+- **Entrega Académica**: Por definir
 
-El sistema se integra con n8n Cloud para automatizar marketing:
-- MW#1: Captura (Lead → Cliente en < 1 min) - 7 workflows, 108 nodos - 28% implementado
-- MW#2: Retención (Flywheel) - 5 workflows, 72 nodos - Q2 2026
-- MW#3: SEO (Content Factory) - 5 workflows, 60 nodos - Q2-Q3 2026
+---
 
-La documentación detallada de los workflows está en `docs/business/Analizar_Ya/`:
-- 00_ARQUITECTURA_GENERAL.md
-- 01_MEGA_WORKFLOW_1_CAPTURA.md
-- 02_MEGA_WORKFLOW_2_RETENCION.md
-- 03_MEGA_WORKFLOW_3_SEO.md
+Por favor:
+1. Lee los archivos `.github/copilot-instructions.md`, `CLAUDE.md`, y `PROYECTO_ESTADO.md` para contexto completo
+2. Usa el comando `wsl bash -c "..."` para ejecutar comandos de Kubernetes/Minikube
+3. Mantén el patrón de desarrollo establecido (tests de seguridad, eventos NATS, etc.)
 
-### Métricas Objetivo
-
-| Métrica | Actual | Objetivo |
-|---------|--------|----------|
-| Leads/mes | 20 | 300+ |
-| Tiempo respuesta | 4-24h | < 1 min |
-| Conversión | ~5% | 15%+ |
-| Clientes nuevos/año | ~15 | 100+ |
-
-## SIGUIENTE FASE: DESARROLLO DE FUNCIONALIDADES
-
-Necesito implementar las funcionalidades core de los microservicios. Las prioridades son:
-
-### PRIORIDAD 1 - Lead Capture (client-service + n8n-integration-service)
-1. Crear entidad `Lead` en client-service con campos para scoring
-2. Endpoint `POST /leads` para captura desde formulario web
-3. Emitir evento `lead.capturado` a NATS
-4. n8n-integration-service: escuchar NATS y enviar a webhook n8n
-5. Webhook `POST /webhook/lead-scored` para recibir score de n8n
-
-Campos del Lead (según ESTRATEGIA_AUTOMATIZACION.md):
-- nombre, email, telefono, empresa, cargo
-- servicio (área de interés: TRADEMARK_LAW, etc.)
-- mensaje (texto libre)
-- leadScore (0-100, calculado por n8n)
-- leadCategory (HOT ≥70, WARM 40-69, COLD <40)
-- leadStatus (NUEVO, NURTURING, MQL, SQL, CONVERTIDO, CHURNED)
-- emailsSent, emailsOpened, emailsClicked
-- lastEngagement, source
-
-### PRIORIDAD 2 - Calendar + Booking (calendar-service)
-1. Entidad `CalendarEvent` con tipos: HEARING, DEADLINE, MEETING, APPOINTMENT
-2. Integración Google Calendar API (OAuth2)
-3. Sistema de booking online para citas
-4. Integración con Calendly (webhook)
-
-### PRIORIDAD 3 - Notificaciones (notification-service)
-1. Entidad `Notification` con estados y canales
-2. Templates de email configurables
-3. Integración Gmail API para envío
-4. Escuchar eventos NATS para auto-envío
-
-### Convenciones del Proyecto
-
-- Java 21 + Spring Boot 3.3.13
-- Package: `com.carrilloabogados.<service>`
-- Estructura: controller/, service/, repository/, model/, dto/, config/
-- PostgreSQL con schemas separados por servicio (schema `clients` para client-service)
-- NATS para eventos: `carrillo.events.<domain>.<action>`
-- Context-path por servicio: `/<service-name>/`
-- Flyway deshabilitado, usar `ddl-auto: update`
-
-## MI PREGUNTA
-
-¿Por dónde empezamos? Sugiero iniciar con la entidad Lead en client-service ya que es crítica para el MW#1 de captura de leads. ¿Puedes ayudarme a implementar:
-1. La entidad Lead con todos los campos necesarios para scoring
-2. El DTO LeadRequest/LeadResponse y el endpoint POST /leads  
-3. El servicio y repositorio correspondientes
-4. La emisión del evento a NATS cuando se capture un lead
-
-Lee los archivos CLAUDE.md y docs/business/ESTRATEGIA_AUTOMATIZACION.md para el contexto completo.
+¿Qué tarea te gustaría que abordemos?
 ```
 
 ---
 
-## ARCHIVOS CLAVE PARA LEER AL INICIAR
+## 📊 ESTADO DETALLADO DEL PROYECTO
 
-El agente debe leer estos archivos para contexto:
+### Commits Recientes
+```
+43cd864 feat(security): add comprehensive security tests for client-service lead API
+c331aab ci: modernize CI/CD pipeline + VSCode workspace config
+155e11e feat(client-service): Lead API completa con NATS events y frontend structure
+161d190 docs: update AI context files and continuation prompt
+b7557b0 docs: integrate marketing automation strategy with n8n workflows
+b048fce docs: Add complete business documentation
+f29944a feat(case-service): Complete implementation of case-service microservice
+```
 
-1. `CLAUDE.md` - Contexto técnico completo
-2. `.github/copilot-instructions.md` - Instrucciones de desarrollo
-3. `docs/business/ESTRATEGIA_AUTOMATIZACION.md` - Integración n8n
-4. `docs/business/ARQUITECTURA_FUNCIONAL.md` - Funciones por microservicio
-5. `docs/business/REQUERIMIENTOS.md` - RF-CLI, RF-N8N
-6. `client-service/src/main/java/com/carrilloabogados/clientservice/model/` - Modelos existentes
-7. `client-service/src/main/resources/application.yaml` - Configuración actual
+### Tests de Seguridad Implementados (66 total)
+
+**InputValidationSecurityTest (34 tests):**
+- SQL Injection: 11 tests
+- XSS Prevention: 13 tests
+- Path Traversal: 4 tests
+- Request Validation: 4 tests
+- Field Length: 2 tests
+
+**BeanValidationTest (32 tests):**
+- Email: 14 tests
+- Nombre: 3 tests
+- Teléfono: 5 tests
+- Servicio: 6 tests
+- Mensaje: 2 tests
+- Complete: 2 tests
+
+### Configuración VSCode (`.vscode/`)
+- `tasks.json`: 10 tareas rápidas
+- `launch.json`: 8 configuraciones de debug
+- `api-tests.http`: Tests REST Client
+- `extensions.json`: Extensiones recomendadas
+
+### GitHub Actions (`.github/workflows/`)
+- `ci-cd-pipeline.yml`: Build, test, Docker, deploy
+- `pr-validation.yml`: Validación rápida de PRs
 
 ---
 
-## DECISIONES TÉCNICAS YA TOMADAS
+## 🎯 PRÓXIMOS PASOS RECOMENDADOS
 
-| Decisión | Valor |
-|----------|-------|
-| Base de datos | PostgreSQL 16 con schemas separados |
-| Messaging | NATS (dev/staging), Google Pub/Sub (prod) |
-| OAuth2 | Google Workspace (@carrilloabgd.com) |
-| Contenedores | Docker Compose local, Kubernetes prod |
-| Flyway | Deshabilitado temporalmente (usar `ddl-auto: update`) |
-| Service Discovery | Kubernetes DNS nativo |
-| Java | 21 LTS |
-| Spring Boot | 3.3.13 |
+### Opción A: Completar Security Tests en case-service
+Replicar el patrón de tests de seguridad de client-service:
+1. Crear `application-test.yml` con H2 y schema
+2. Crear `InputValidationSecurityTest.java`
+3. Crear `BeanValidationTest.java`
+4. Validar que todos los tests pasen
+
+### Opción B: Implementar calendar-service
+Prioridad alta para la integración con Google Calendar:
+1. Configurar Google Calendar API
+2. Implementar booking system
+3. Agregar eventos NATS para citas
+
+### Opción C: Deploy a GKE Staging
+Preparar el ambiente de staging:
+1. Configurar cluster GKE con créditos gratuitos
+2. Aplicar Helm charts
+3. Configurar secrets de producción
+4. Probar CI/CD pipeline completo
+
+### Opción D: Implementar OAuth2
+Seguridad para el API Gateway:
+1. Configurar Google Workspace OAuth
+2. Integrar con api-gateway
+3. Implementar RBAC
 
 ---
 
-## PRÓXIMOS COMMITS ESPERADOS
+## ⚠️ LECCIONES APRENDIDAS (Importante)
 
-1. `feat(client-service): add Lead entity with scoring fields`
-2. `feat(client-service): add lead capture endpoint POST /leads`
-3. `feat(client-service): emit lead.capturado event to NATS`
-4. `feat(n8n-integration): add NATS listener and n8n webhook bridge`
-5. `feat(n8n-integration): add /webhook/lead-scored endpoint`
-6. `feat(calendar-service): add CalendarEvent entity and Google Calendar integration`
-7. `feat(notification-service): add Notification entity and Gmail API integration`
+### Errores Comunes y Soluciones
 
----
+| Error | Solución |
+|-------|----------|
+| Schema "CLIENTS" no encontrado (H2) | `INIT=CREATE SCHEMA IF NOT EXISTS clients` en URL |
+| StatusAggregator NoSuchBean | `resilience4j.circuitbreaker.enabled: false` en tests |
+| UUID IllegalArgumentException | Try-catch para aceptar excepción como validación correcta |
+| Email sin TLD aceptado | `@Email` de Jakarta acepta `user@domain` (RFC 5321) |
 
-## COMANDOS ÚTILES
+### Configuración Test Profile Esencial
+```yaml
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS clients
+  jpa:
+    properties:
+      hibernate:
+        default_schema: clients
+resilience4j:
+  circuitbreaker:
+    enabled: false
+```
 
+### Comandos Críticos Windows + WSL
 ```powershell
-# Levantar ambiente local
+# Kubernetes/Minikube (SIEMPRE a través de WSL)
+wsl bash -c "kubectl get pods -n carrillo-dev"
+wsl bash -c "minikube status"
+
+# Maven
+.\mvnw clean package -DskipTests -T 1C
+.\mvnw test -pl client-service "-Dtest=InputValidationSecurityTest" "-Dspring.profiles.active=test"
+
+# Docker
 docker-compose up -d
-
-# Ver logs de un servicio
-docker logs carrillo-client-service --tail 50 -f
-
-# Probar endpoint via Gateway
-Invoke-RestMethod http://localhost:8080/client-service/actuator/health
-
-# Build de un servicio
-.\mvnw package -DskipTests -pl client-service
-
-# Reconstruir y reiniciar servicio
-docker-compose up -d --build client-service
+docker logs carrillo-client-service
 ```
 
 ---
 
-*Generado automáticamente el 19 de Diciembre, 2025*
+## 📁 ARCHIVOS DE CONTEXTO
+
+El agente debe leer estos archivos para tener contexto completo:
+
+1. **`.github/copilot-instructions.md`** - Instrucciones detalladas del proyecto
+2. **`CLAUDE.md`** - Contexto técnico completo para AI
+3. **`PROYECTO_ESTADO.md`** - Estado actual del desarrollo
+4. **`docs/business/REQUERIMIENTOS.md`** - 76 requerimientos funcionales + 23 no funcionales
+5. **`docs/business/ARQUITECTURA_FUNCIONAL.md`** - Mapeo microservicios a funciones
+6. **`docs/business/ESTRATEGIA_AUTOMATIZACION.md`** - Integración con n8n
+
+---
+
+## 🔧 STACK TECNOLÓGICO
+
+| Componente | Tecnología | Versión |
+|------------|------------|---------|
+| Backend | Spring Boot | 3.3.13 |
+| Java | OpenJDK | 21 LTS |
+| Spring Cloud | Kubernetes | 3.1.3 |
+| Database | PostgreSQL | 16.2 |
+| Messaging | NATS | 2.10.22 |
+| Container | Docker | 24.x |
+| Orchestration | Kubernetes | 1.34.0 |
+| CI/CD | GitHub Actions | - |
+| Local K8s | Minikube | 1.33.x |
+
+---
+
+*Documento de transición - 19 de Diciembre 2025*
