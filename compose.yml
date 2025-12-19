@@ -69,8 +69,14 @@ services:
       POSTGRES_USER: carrillo
       POSTGRES_PASSWORD: CarrilloAbogados2025!
       POSTGRES_SCHEMA: clients
+      POSTGRES_SCHEMA_CLIENTS: clients
+      # NATS Configuration
+      NATS_ENABLED: "true"
+      NATS_SERVER: nats://nats:4222
     depends_on:
       postgresql:
+        condition: service_healthy
+      nats:
         condition: service_healthy
     networks:
       - carrillo-network
