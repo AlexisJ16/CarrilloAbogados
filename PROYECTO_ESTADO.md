@@ -1,14 +1,20 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 18 de Diciembre, 2025 - 20:30 COT  
-**Estado General**: ✅ **DOCKER COMPOSE FUNCIONANDO** | 10/10 Contenedores Healthy | API Gateway Routing OK  
+**Última Actualización**: 19 de Diciembre, 2025 - 10:00 COT  
+**Estado General**: ✅ **DOCUMENTACIÓN DE NEGOCIO COMPLETADA** | Microservicios Core 90%+  
 **Rama Actual**: `dev`
 
 ---
 
 ## 🎯 RESUMEN EJECUTIVO
 
-Plataforma cloud-native de gestión legal empresarial con **8 microservicios** Spring Boot sobre Docker/Kubernetes. Proyecto migrado exitosamente desde plantilla e-commerce a plataforma legal.
+Plataforma cloud-native de gestión legal empresarial con **8 microservicios** Spring Boot sobre Docker/Kubernetes para el bufete **Carrillo ABGD SAS** de Cali, Colombia.
+
+### Sobre el Bufete
+- **Fundación**: Abril 2001 (23+ años de trayectoria)
+- **Equipo**: 7 abogados + 2 administrativos
+- **Especialización**: 5 áreas de práctica legal (Administrativo, Competencia, Corporativo, Telecomunicaciones, Marcas)
+- **Ubicación**: Torre de Cali, Piso 21, Oficina 2102A
 
 ### Propósito Dual
 1. **Académico**: Proyecto final curso Plataformas II
@@ -18,7 +24,8 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 | Hito | Fecha | Estado |
 |------|-------|--------|
 | Docker Compose Local | 18 Dic 2025 | ✅ COMPLETADO |
-| MVP Empresarial | 18 Mar 2026 | 📋 Planificado |
+| Documentación de Negocio | 19 Dic 2025 | ✅ COMPLETADO |
+| MVP Empresarial | 27 Mar 2026 | 📋 Planificado |
 
 ---
 
@@ -49,7 +56,42 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 
 ---
 
-## 🔧 CORRECCIONES APLICADAS (Sesión 18 Dic 2025)
+## � DOCUMENTACIÓN DE NEGOCIO (19 Dic 2025)
+
+### ✅ Documentos Creados
+
+| Documento | Propósito | Estado |
+|-----------|-----------|--------|
+| [MODELO_NEGOCIO.md](docs/business/MODELO_NEGOCIO.md) | Contexto del bufete, áreas de práctica, visión del portal | ✅ |
+| [REQUERIMIENTOS.md](docs/business/REQUERIMIENTOS.md) | Requerimientos funcionales y no funcionales | ✅ |
+| [ROLES_USUARIOS.md](docs/business/ROLES_USUARIOS.md) | Definición de roles: Admin, Abogado, Cliente, Visitante | ✅ |
+| [CASOS_USO.md](docs/business/CASOS_USO.md) | Flujos detallados por actor | ✅ |
+| [ARQUITECTURA_FUNCIONAL.md](docs/business/ARQUITECTURA_FUNCIONAL.md) | Mapeo microservicio → función de negocio | ✅ |
+
+### 📋 Resumen de Requerimientos
+
+- **RF-PUB**: 10 requerimientos del portal público
+- **RF-INT**: 6 requerimientos de interacción
+- **RF-CLI**: 8 requerimientos de gestión de clientes
+- **RF-CAS**: 10 requerimientos de gestión de casos
+- **RF-DOC**: 8 requerimientos de documentos
+- **RF-CAL**: 8 requerimientos de calendario
+- **RF-PAY**: 7 requerimientos de pagos
+- **RF-NOT**: 7 requerimientos de notificaciones
+- **RNF**: 23 requerimientos no funcionales (seguridad, rendimiento, escalabilidad)
+
+### 🎭 Roles Definidos
+
+| Rol | Cantidad | Acceso |
+|-----|----------|--------|
+| **Administrador** | 2 (Alexis + Marketing) | Acceso total |
+| **Abogado** | 7 | Sus casos y clientes |
+| **Cliente** | N (clientes del bufete) | Sus propios casos |
+| **Visitante** | Público | Portal público |
+
+---
+
+## �🔧 CORRECCIONES APLICADAS (Sesión 18 Dic 2025)
 
 ### 1. Puerto payment-service
 - **Archivo**: `payment-service/src/main/resources/application.yaml`
