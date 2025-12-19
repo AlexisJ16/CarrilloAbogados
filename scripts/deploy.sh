@@ -26,6 +26,7 @@ SERVICES=(
     "api-gateway"
     "client-service"
     "case-service"
+    "payment-service"
     "document-service"
     "calendar-service"
     "notification-service"

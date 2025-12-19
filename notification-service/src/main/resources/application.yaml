@@ -8,7 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
@@ -17,7 +17,7 @@ spring:
         default_schema: ${POSTGRES_SCHEMA_NOTIFICATIONS:notifications}
   
   flyway:
-    enabled: true
+    enabled: false
     baseline-on-migrate: true
     schemas: ${POSTGRES_SCHEMA_NOTIFICATIONS:notifications}
   mail:
@@ -59,6 +59,8 @@ management:
       enabled: true
     readinessState:
       enabled: true
+    mail:
+      enabled: false
 
 logging:
   level:

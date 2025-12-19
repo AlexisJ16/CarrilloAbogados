@@ -1,14 +1,14 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 18 de Diciembre, 2025  
-**Estado General**: ✅ BUILD SUCCESS | 🔧 Infraestructura Corregida | ⏸️ Pendiente Reinicio WSL  
+**Última Actualización**: 19 de Diciembre, 2025  
+**Estado General**: ✅ AUDITORÍA COMPLETADA | 🧹 Proyecto Depurado | 📦 Listo para Docker Desktop  
 **Rama Actual**: `dev`
 
 ---
 
 ## 🎯 RESUMEN EJECUTIVO
 
-Plataforma cloud-native de gestión legal empresarial con **7 microservicios activos** Spring Boot sobre Kubernetes. Proyecto migrado desde plantilla e-commerce a plataforma legal.
+Plataforma cloud-native de gestión legal empresarial con **8 microservicios** (7 activos + 1 legacy) Spring Boot sobre Kubernetes. Proyecto migrado desde plantilla e-commerce a plataforma legal.
 
 ### Propósito Dual
 1. **Académico**: Proyecto final curso Plataformas II (entrega 1 diciembre 2025)
@@ -22,23 +22,47 @@ Plataforma cloud-native de gestión legal empresarial con **7 microservicios act
 
 ---
 
-## ✅ ESTADO ACTUAL (18 Diciembre 2025)
+## ✅ ESTADO ACTUAL (19 Diciembre 2025)
 
-### Última Sesión de Trabajo
-Se corrigieron múltiples problemas de deployment:
-- ✅ **7 schemas PostgreSQL** creados (clients, cases, documents, payments, calendar, notifications, users)
-- ✅ **Query DATEDIFF** corregido para PostgreSQL (era sintaxis SQL Server)
-- ✅ **RBAC Kubernetes** configurado para service discovery
-- ✅ **Health probes** actualizados con context-path correcto
-- ✅ **compose.yml** reescrito completamente (eliminado legacy e-commerce)
-- ✅ **Network policies** actualizadas
-- ✅ **test.sh** mejorado con context-path support
-- ⏸️ **Minikube** inestable por problemas de cgroups en WSL (requiere reinicio)
+### Última Sesión de Trabajo - AUDITORÍA COMPLETA
+Se realizó auditoría integral del proyecto:
+
+#### FASE 1: Dockerfiles ✅
+- Corregido puerto payment-service (8750 → 8400)
+- Añadido usuario no-root, timezone Colombia, health checks
+- 5 Dockerfiles actualizados con mejores prácticas
+
+#### FASE 2: pom.xml ✅
+- Sincronizado testcontainers.version=1.20.4 en todos los servicios
+- Corregida descripción de api-gateway
+
+#### FASE 3: application.yml ✅
+- Verificados puertos correctos (8200-8800)
+- Nombres de servicios en mayúsculas confirmados
+
+#### FASE 4: compose.yml ✅
+- Configuración verificada y correcta
+
+#### FASE 5: Helm Charts ✅
+- Creado subchart payment-service (faltaba)
+- Actualizado values.yaml con payment-service
+
+#### FASE 6: Scripts ✅
+- Añadido payment-service a deploy.sh y test.sh
+
+#### FASE 7: Cleanup ✅
+- Limpiadas constantes legacy e-commerce de AppConstant.java
+- Actualizadas referencias a servicios legales
+
+#### FASE 8: K8s Decision ✅
+- Documentado en ADR-006: Docker Desktop Kubernetes recomendado
+- Minikube/Kind inestables por problemas cgroups en WSL2
 
 ### Build Status
 ```
-✅ BUILD SUCCESS - 8/8 módulos compilados
-✅ 7/7 pods Running (antes de caída de Minikube)
+✅ BUILD SUCCESS - 9/9 módulos compilados (incluyendo user-service legacy)
+✅ 8/8 Dockerfiles con mejores prácticas
+✅ 8/8 Helm Charts configurados
 ```
 
 ### Stack Tecnológico

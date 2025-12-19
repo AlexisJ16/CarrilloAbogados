@@ -167,7 +167,7 @@ services:
       POSTGRES_DB: carrillo_legal_tech
       POSTGRES_USER: carrillo
       POSTGRES_PASSWORD: CarrilloAbogados2025!
-      POSTGRES_SCHEMA: notifications
+      POSTGRES_SCHEMA_NOTIFICATIONS: notifications
     depends_on:
       postgresql:
         condition: service_healthy
@@ -183,8 +183,15 @@ services:
       - "8800:8800"
     environment:
       SPRING_PROFILES_ACTIVE: local
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: carrillo_legal_tech
+      POSTGRES_USER: carrillo
+      POSTGRES_PASSWORD: CarrilloAbogados2025!
       NATS_URL: nats://nats:4222
     depends_on:
+      postgresql:
+        condition: service_healthy
       nats:
         condition: service_healthy
     networks:

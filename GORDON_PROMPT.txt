@@ -1,0 +1,168 @@
+# Prompt para Gordon - Carrillo Abogados Legal Tech Platform
+
+## Contexto del Proyecto
+
+Plataforma cloud-native de gestión legal empresarial con **7 microservicios Spring Boot** sobre Kubernetes.
+
+**Propósito**: Sistema real para bufete de 5 abogados en Cali, Colombia + proyecto académico.
+
+---
+
+## Archivos Clave de Documentación
+
+Lee estos archivos para entender el proyecto completo:
+
+1. `CLAUDE.md` - Contexto completo del desarrollador
+2. `PROYECTO_ESTADO.md` - Estado actual del proyecto
+3. `.github/copilot-instructions.md` - Instrucciones de arquitectura
+4. `docs/architecture/ARCHITECTURE.md` - Arquitectura del sistema
+5. `docs/architecture/ADR-005-database-strategy.md` - Estrategia de base de datos
+6. `compose.yml` - Docker Compose para desarrollo local
+7. `pom.xml` - Maven parent POM con todas las dependencias
+
+---
+
+## Stack Tecnológico
+
+- Java 21 LTS
+- Spring Boot 3.3.13
+- Spring Cloud 2023.0.6
+- Spring Cloud Kubernetes 3.1.3
+- PostgreSQL 16
+- NATS 2.10 (mensajería)
+- Kubernetes 1.34.0
+
+---
+
+## Microservicios (7 Activos)
+
+| Servicio | Puerto | Context-Path | Descripción |
+|----------|--------|--------------|-------------|
+| api-gateway | 8080 | / | Spring Cloud Gateway + OAuth2 |
+| client-service | 8200 | /client-service | Gestión de clientes legales |
+| case-service | 8300 | /case-service | Casos legales |
+| payment-service | 8400 | /payment-service | Pagos gubernamentales |
+| document-service | 8500 | / | Documentos legales (skeleton) |
+| calendar-service | 8600 | / | Google Calendar (skeleton) |
+| notification-service | 8700 | / | Email/SMS (skeleton) |
+| n8n-integration-service | 8800 | / | Workflows N8N (skeleton) |
+
+**Nota**: user-service está deprecado (deshabilitado en Helm).
+
+---
+
+## Base de Datos
+
+PostgreSQL compartida con schemas separados:
+- `clients`, `cases`, `documents`, `payments`, `calendar`, `notifications`, `users`
+
+Credenciales dev:
+- Usuario: `carrillo`
+- Password: `carrillo123`
+- Database: `carrillo_legal_tech`
+
+---
+
+## Estructura del Repositorio
+
+```
+CarrilloAbogados/
+├── api-gateway/          # Spring Cloud Gateway
+├── client-service/       # Gestión de clientes
+├── case-service/         # Casos legales
+├── payment-service/      # Pagos
+├── document-service/     # Documentos (skeleton)
+├── calendar-service/     # Calendar (skeleton)
+├── notification-service/ # Notificaciones (skeleton)
+├── n8n-integration-service/ # N8N (skeleton)
+├── helm-charts/carrillo-abogados/  # Helm umbrella chart
+├── k8s-manifests/        # Kubernetes manifests
+├── scripts/              # Scripts de deployment
+├── compose.yml           # Docker Compose
+└── pom.xml               # Maven parent
+```
+
+---
+
+## Tareas Requeridas
+
+### 1. Análisis y Diagnóstico
+- Revisar el `compose.yml` y validar configuración
+- Verificar todos los `Dockerfile` de cada microservicio
+- Analizar dependencias en `pom.xml` de cada servicio
+- Identificar errores de compilación o configuración
+
+### 2. Build de Imágenes Docker
+- Construir imágenes Docker para los 8 servicios (7 + api-gateway)
+- Aplicar mejores prácticas (multi-stage builds, JDK 21, layer caching)
+- Naming: `carrilloabogados/<service-name>:v0.2.0`
+
+### 3. Corrección de Errores
+- Revisar y corregir cualquier error en el código fuente
+- Validar health checks en cada servicio (`/actuator/health`)
+- Asegurar que los context-path estén correctos
+
+### 4. Docker Compose
+- Validar y optimizar `compose.yml`
+- Asegurar que PostgreSQL, NATS y todos los servicios levanten correctamente
+- Configurar healthchecks y dependencias entre servicios
+
+### 5. Despliegue Local
+- Levantar toda la infraestructura con `docker compose up`
+- Verificar que todos los servicios estén healthy
+- Probar endpoints básicos de health
+
+### 6. Kubernetes (Opcional)
+- Si Docker Desktop tiene Kubernetes habilitado, desplegar con Helm
+- El chart está en `helm-charts/carrillo-abogados/`
+
+---
+
+## Comandos Útiles
+
+```bash
+# Build de todos los servicios
+./mvnw clean package -DskipTests -T 1C
+
+# Docker Compose
+docker compose up -d
+docker compose logs -f
+docker compose ps
+
+# Verificar health
+curl http://localhost:8080/actuator/health
+curl http://localhost:8200/client-service/actuator/health
+curl http://localhost:8300/case-service/actuator/health
+```
+
+---
+
+## Pregunta Adicional
+
+Por favor, recomiéndame:
+
+1. **Extensiones de Docker Desktop** útiles para este proyecto de microservicios
+2. **Herramientas del Docker Hub** (imágenes oficiales, utilities) que mejorarían el desarrollo
+3. **MCP Toolkits** disponibles en Docker Desktop que podrían ayudar
+4. **Mejores prácticas** específicas para este stack (Spring Boot + PostgreSQL + Kubernetes)
+5. **Plataformas de observabilidad** (Prometheus, Grafana, Loki) que debería integrar
+
+---
+
+## Resultado Esperado
+
+1. Todos los servicios compilando correctamente
+2. Imágenes Docker construidas y funcionando
+3. `docker compose up` levantando toda la infraestructura
+4. Endpoints de health respondiendo correctamente
+5. Lista de recomendaciones de herramientas y extensiones
+
+---
+
+## Notas Importantes
+
+- El proyecto usa Maven Wrapper (`./mvnw`)
+- Java 21 es requerido
+- Los servicios "skeleton" (document, calendar, notification, n8n) tienen código mínimo
+- El api-gateway enruta todo el tráfico
+- PostgreSQL usa schemas separados por servicio, no bases de datos separadas

@@ -97,9 +97,10 @@ check_health "api-gateway" "http://localhost:$GATEWAY_PORT/actuator/health"
 check_health "client-service" "http://localhost:$GATEWAY_PORT/client-service/actuator/health"
 check_health "case-service" "http://localhost:$GATEWAY_PORT/case-service/actuator/health"
 
-# Servicios SIN context-path (document, calendar, notification, n8n)
-# El gateway enruta /document-service/** → lb://DOCUMENT-SERVICE
-# El servicio NO tiene context-path, entonces debe ser /document-service/actuator/health
+# Servicios SIN context-path (payment, document, calendar, notification, n8n)
+# El gateway enruta /payment-service/** → lb://PAYMENT-SERVICE
+# El servicio NO tiene context-path, entonces debe ser /payment-service/actuator/health
+check_health "payment-service" "http://localhost:$GATEWAY_PORT/payment-service/actuator/health"
 check_health "document-service" "http://localhost:$GATEWAY_PORT/document-service/actuator/health"
 check_health "calendar-service" "http://localhost:$GATEWAY_PORT/calendar-service/actuator/health"
 check_health "notification-service" "http://localhost:$GATEWAY_PORT/notification-service/actuator/health"
