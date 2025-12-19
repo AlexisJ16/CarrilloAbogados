@@ -1,0 +1,53 @@
+{
+  "recommendations": [
+    // ================== JAVA & SPRING ==================
+    "vscjava.vscode-java-pack",           // Extension Pack for Java (incluye debug, maven, etc.)
+    "vmware.vscode-boot-dev-pack",        // Spring Boot Extension Pack
+    "vmware.vscode-spring-boot",          // Spring Boot Tools
+    "vscjava.vscode-spring-initializr",   // Spring Initializr
+    "vscjava.vscode-spring-boot-dashboard", // Spring Boot Dashboard
+    "vscjava.vscode-gradle",              // Gradle for Java
+    "vscjava.vscode-maven",               // Maven for Java
+    "redhat.java",                        // Language Support for Java
+    "vscjava.vscode-java-debug",          // Debugger for Java
+    "vscjava.vscode-java-test",           // Test Runner for Java
+    
+    // ================== DOCKER & KUBERNETES ==================
+    "ms-azuretools.vscode-docker",        // Docker
+    "ms-kubernetes-tools.vscode-kubernetes-tools", // Kubernetes
+    "ms-vscode-remote.remote-containers", // Dev Containers
+    
+    // ================== GIT & GITHUB ==================
+    "eamodio.gitlens",                    // GitLens - Git supercharged
+    "github.vscode-github-actions",       // GitHub Actions
+    "github.vscode-pull-request-github",  // GitHub Pull Requests
+    "github.copilot",                     // GitHub Copilot
+    "github.copilot-chat",                // GitHub Copilot Chat
+    
+    // ================== API & REST ==================
+    "humao.rest-client",                  // REST Client
+    
+    // ================== CONFIG & DATA ==================
+    "redhat.vscode-yaml",                 // YAML
+    "redhat.vscode-xml",                  // XML
+    "hashicorp.terraform",                // Terraform
+    
+    // ================== CODE QUALITY ==================
+    "esbenp.prettier-vscode",             // Prettier - Code formatter
+    "davidanson.vscode-markdownlint",     // Markdown linting
+    
+    // ================== REMOTE DEVELOPMENT ==================
+    "ms-vscode-remote.vscode-remote-extensionpack", // Remote Development
+    "ms-vscode-remote.remote-wsl",        // WSL
+    "ms-vscode-remote.remote-ssh",        // Remote - SSH
+    
+    // ================== UTILITY ==================
+    "formulahendry.code-runner",          // Code Runner
+    "ms-vscode.powershell"                // PowerShell
+  ],
+  "unwantedRecommendations": [
+    "google.geminicodeassist",            // Conflicto con Copilot
+    "tabnine.tabnine-vscode",             // Conflicto con Copilot
+    "anthropic.claude-code"               // Conflicto con Copilot
+  ]
+}

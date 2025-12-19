@@ -1,0 +1,101 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🚀 Build All (Quick)",
+      "type": "shell",
+      "command": ".\\mvnw clean package -DskipTests -T 1C",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "✅ Build + Tests",
+      "type": "shell",
+      "command": ".\\mvnw clean verify -T 1C",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🧪 Run Tests (client-service)",
+      "type": "shell",
+      "command": ".\\mvnw test -pl client-service",
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🐳 Docker Compose Up",
+      "type": "shell",
+      "command": "docker-compose up -d",
+      "group": "none",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "🛑 Docker Compose Down",
+      "type": "shell",
+      "command": "docker-compose down",
+      "group": "none",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "📋 Docker Compose Logs",
+      "type": "shell",
+      "command": "docker-compose logs -f",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "isBackground": true
+    },
+    {
+      "label": "🔨 Build client-service",
+      "type": "shell",
+      "command": ".\\mvnw package -DskipTests -pl client-service",
+      "group": "build",
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🔨 Build case-service",
+      "type": "shell",
+      "command": ".\\mvnw package -DskipTests -pl case-service",
+      "group": "build",
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "☸️ Minikube Start (WSL)",
+      "type": "shell",
+      "command": "wsl bash -c 'minikube start'",
+      "group": "none",
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
+      "label": "☸️ Kubectl Get Pods (WSL)",
+      "type": "shell",
+      "command": "wsl bash -c 'kubectl get pods -n carrillo-dev'",
+      "group": "none",
+      "presentation": {
+        "reveal": "always"
+      }
+    }
+  ]
+}
