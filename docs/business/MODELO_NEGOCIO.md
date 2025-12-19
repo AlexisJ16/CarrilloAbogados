@@ -188,6 +188,72 @@ El **Portal Web Carrillo ABGD** será la plataforma digital integral que:
 
 ---
 
+## 📈 ESTRATEGIA DE MARKETING DIGITAL
+
+### Modelo Flywheel + Inbound
+
+El portal web es el **hub central** de una estrategia de marketing digital basada en **Flywheel** (ciclo virtuoso) e **Inbound Marketing**:
+
+```
+┌───────────────────────────────────────────────────────────────────────────┐
+│                        MODELO FLYWHEEL                                    │
+├───────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│              ┌─────────────┐                                             │
+│              │   ATRAER    │  ← Contenido SEO, Blog, LinkedIn             │
+│              │  (Strangers)│                                             │
+│              └──────┬──────┘                                             │
+│                     │                                                     │
+│                     ▼                                                     │
+│  ┌───────────┐     ┌─────────────┐     ┌───────────┐                    │
+│  │  DELEITAR │◄────│   CLIENTE   │────►│  CAPTURAR │                    │
+│  │(Promoters)│     │   EN CENTRO │     │  (Leads)  │                    │
+│  └───────────┘     └─────────────┘     └─────┬─────┘                    │
+│        ▲                                      │                          │
+│        │                                      ▼                          │
+│        │           ┌─────────────┐                                       │
+│        └───────────│  CONVERTIR  │                                       │
+│                    │ (Customers) │                                       │
+│                    └─────────────┘                                       │
+│                                                                           │
+└───────────────────────────────────────────────────────────────────────────┘
+```
+
+### Métricas Objetivo
+
+| Métrica | Actual (Manual) | Objetivo (Automatizado) | Incremento |
+|---------|----------------:|------------------------:|------------|
+| Leads/mes | 20 | 300+ | **15x** |
+| Tiempo primera respuesta | 4-24 horas | < 1 minuto | **1440x más rápido** |
+| Tasa conversión lead→cliente | ~5% | 15%+ | **3x** |
+| Clientes nuevos/año | ~15 | 100+ | **6.7x** |
+| Ingresos proyectados/año | No medido | $350M+ COP | Objetivo inicial |
+| Horas semanales gestión leads | 20+ | 5 | **4x menos** |
+
+### Mercado Objetivo
+
+| Criterio | Valor |
+|----------|-------|
+| **Segmento primario** | PyMEs tecnológicas en Colombia |
+| **Tamaño mercado** | 1,678 empresas objetivo |
+| **Ticket promedio** | $3.5M - $7M COP |
+| **Canal principal** | Google Search (SEO) |
+| **Diferenciador clave** | Dr. Omar Carrillo - 15 años experiencia en SIC |
+
+### Automatización n8n
+
+La plataforma web se integra con **n8n Cloud** para automatizar:
+
+| Mega-Workflow | Propósito | Impacto |
+|---------------|-----------|---------|
+| **MW#1: Captura** | Lead → Cliente en < 1 minuto | Respuesta inmediata IA |
+| **MW#2: Retención** | Cliente → Recompra (Flywheel) | +30% retención |
+| **MW#3: SEO** | Tráfico → Lead (Content Factory) | +200% tráfico orgánico |
+
+**Ver documentación completa:** [ESTRATEGIA_AUTOMATIZACION.md](./ESTRATEGIA_AUTOMATIZACION.md)
+
+---
+
 ## 🏢 ESTRUCTURA ORGANIZACIONAL
 
 ### Equipo del Bufete

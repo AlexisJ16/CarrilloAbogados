@@ -128,14 +128,24 @@ Estos requerimientos definen las funcionalidades visibles para visitantes anóni
 | **RF-NOT-006** | Preferencias | Usuario configura qué notificaciones recibir | SHOULD |
 | **RF-NOT-007** | Log de Envíos | Historial de notificaciones enviadas | MUST |
 
-### RF-N8N: Automatizaciones
+### RF-N8N: Automatizaciones e Integración n8n
 
 | ID | Requerimiento | Descripción | Prioridad |
 |----|---------------|-------------|-----------|
-| **RF-N8N-001** | Workflows | Definición de flujos de automatización | SHOULD |
-| **RF-N8N-002** | Triggers | Eventos que disparan automatizaciones | SHOULD |
-| **RF-N8N-003** | Integraciones | Conectores a servicios externos | SHOULD |
-| **RF-N8N-004** | Logs | Registro de ejecución de workflows | SHOULD |
+| **RF-N8N-001** | Bridge NATS-Webhooks | Escuchar eventos NATS y reenviar a webhooks n8n | MUST |
+| **RF-N8N-002** | Lead Capture | Emitir evento `lead.capturado` al recibir formulario | MUST |
+| **RF-N8N-003** | Lead Scoring Callback | Recibir score calculado por n8n y actualizar en BD | MUST |
+| **RF-N8N-004** | Hot Lead Alert | Notificar abogado cuando n8n detecta lead HOT (≥70 pts) | MUST |
+| **RF-N8N-005** | Respuesta < 1 min | Garantizar tiempo de respuesta a leads < 60 segundos | MUST |
+| **RF-N8N-006** | Calendly Integration | Emitir/recibir eventos de citas agendadas | SHOULD |
+| **RF-N8N-007** | Email Tracking | Recibir eventos de apertura/click de Mailersend | SHOULD |
+| **RF-N8N-008** | Cliente Inactivo | Detectar y notificar clientes sin actividad 30+ días | SHOULD |
+| **RF-N8N-009** | Caso Cerrado | Emitir evento para trigger de follow-up satisfacción | SHOULD |
+| **RF-N8N-010** | Firestore Sync | Sincronizar leads entre Firestore (n8n) y PostgreSQL | SHOULD |
+| **RF-N8N-011** | Blog Publish | Recibir contenido aprobado de MW#3 y publicar | COULD |
+| **RF-N8N-012** | Logs de Ejecución | Registrar todas las ejecuciones de workflows | SHOULD |
+
+**Ver arquitectura completa:** [ESTRATEGIA_AUTOMATIZACION.md](./ESTRATEGIA_AUTOMATIZACION.md)
 
 ---
 
@@ -223,10 +233,18 @@ Estos requerimientos definen las funcionalidades visibles para visitantes anóni
 
 | RF-ID | Implementa | Estado |
 |-------|------------|--------|
-| RF-N8N-001 | ⏳ Bridge N8N | 5% |
-| RF-N8N-002 | ⏳ Event triggers | Pendiente |
-| RF-N8N-003 | ⏳ Webhooks | Pendiente |
-| RF-N8N-004 | ⏳ Logs | Pendiente |
+| RF-N8N-001 | ⏳ Bridge NATS-Webhooks | 15% |
+| RF-N8N-002 | ⏳ Lead Capture Event | 5% |
+| RF-N8N-003 | ⏳ Lead Scoring Callback | Pendiente |
+| RF-N8N-004 | ⏳ Hot Lead Alert | Pendiente |
+| RF-N8N-005 | ⏳ Response < 1 min | Pendiente |
+| RF-N8N-006 | ⏳ Calendly Integration | Pendiente |
+| RF-N8N-007 | ⏳ Email Tracking | Pendiente |
+| RF-N8N-008 | ⏳ Cliente Inactivo | Pendiente |
+| RF-N8N-009 | ⏳ Caso Cerrado Event | Pendiente |
+| RF-N8N-010 | ⏳ Firestore Sync | Pendiente |
+| RF-N8N-011 | ⏳ Blog Publish | Futuro |
+| RF-N8N-012 | ⏳ Logs Ejecución | 5% |
 
 ---
 

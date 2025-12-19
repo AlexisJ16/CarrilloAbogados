@@ -1,7 +1,7 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 19 de Diciembre, 2025 - 10:00 COT  
-**Estado General**: ✅ **DOCUMENTACIÓN DE NEGOCIO COMPLETADA** | Microservicios Core 90%+  
+**Última Actualización**: 19 de Diciembre, 2025 - 21:00 COT  
+**Estado General**: ✅ **DOCUMENTACIÓN COMPLETA** | Microservicios Core 90%+  
 **Rama Actual**: `dev`
 
 ---
@@ -15,16 +15,27 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 - **Equipo**: 7 abogados + 2 administrativos
 - **Especialización**: 5 áreas de práctica legal (Administrativo, Competencia, Corporativo, Telecomunicaciones, Marcas)
 - **Ubicación**: Torre de Cali, Piso 21, Oficina 2102A
+- **Diferenciador**: Dr. Omar Carrillo - 15 años experiencia en SIC
 
 ### Propósito Dual
 1. **Académico**: Proyecto final curso Plataformas II
 2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
+
+### Métricas Objetivo
+
+| Métrica | Actual | Objetivo | Incremento |
+|---------|-------:|--------:|------------|
+| Leads/mes | 20 | 300+ | 15x |
+| Respuesta a leads | 4-24h | < 1 min | 1440x |
+| Conversión | ~5% | 15%+ | 3x |
+| Clientes nuevos/año | ~15 | 100+ | 6.7x |
 
 ### Hitos Clave
 | Hito | Fecha | Estado |
 |------|-------|--------|
 | Docker Compose Local | 18 Dic 2025 | ✅ COMPLETADO |
 | Documentación de Negocio | 19 Dic 2025 | ✅ COMPLETADO |
+| Integración n8n Documentada | 19 Dic 2025 | ✅ COMPLETADO |
 | MVP Empresarial | 27 Mar 2026 | 📋 Planificado |
 
 ---
@@ -56,19 +67,29 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 
 ---
 
-## � DOCUMENTACIÓN DE NEGOCIO (19 Dic 2025)
+## 📚 DOCUMENTACIÓN DE NEGOCIO (19 Dic 2025)
 
-### ✅ Documentos Creados
+### ✅ Documentos Creados/Actualizados
 
 | Documento | Propósito | Estado |
 |-----------|-----------|--------|
-| [MODELO_NEGOCIO.md](docs/business/MODELO_NEGOCIO.md) | Contexto del bufete, áreas de práctica, visión del portal | ✅ |
-| [REQUERIMIENTOS.md](docs/business/REQUERIMIENTOS.md) | Requerimientos funcionales y no funcionales | ✅ |
+| [MODELO_NEGOCIO.md](docs/business/MODELO_NEGOCIO.md) | Contexto del bufete, áreas de práctica, visión + **métricas marketing** | ✅ Actualizado |
+| [REQUERIMIENTOS.md](docs/business/REQUERIMIENTOS.md) | Requerimientos funcionales (76) y no funcionales (23) | ✅ Actualizado |
 | [ROLES_USUARIOS.md](docs/business/ROLES_USUARIOS.md) | Definición de roles: Admin, Abogado, Cliente, Visitante | ✅ |
 | [CASOS_USO.md](docs/business/CASOS_USO.md) | Flujos detallados por actor | ✅ |
-| [ARQUITECTURA_FUNCIONAL.md](docs/business/ARQUITECTURA_FUNCIONAL.md) | Mapeo microservicio → función de negocio | ✅ |
+| [ARQUITECTURA_FUNCIONAL.md](docs/business/ARQUITECTURA_FUNCIONAL.md) | Mapeo microservicio → función + **n8n integration** | ✅ Actualizado |
+| [ESTRATEGIA_AUTOMATIZACION.md](docs/business/ESTRATEGIA_AUTOMATIZACION.md) | **NUEVO**: Integración plataforma ↔ n8n | ✅ Creado |
 
-### 📋 Resumen de Requerimientos
+### 📋 Documentación Marketing (Analizar_Ya/)
+
+| Documento | Contenido |
+|-----------|-----------|
+| `00_ARQUITECTURA_GENERAL.md` | Visión completa del ecosistema de automatización |
+| `01_MEGA_WORKFLOW_1_CAPTURA.md` | Lead capture (7 sub-workflows, 108 nodos) |
+| `02_MEGA_WORKFLOW_2_RETENCION.md` | Client retention (5 sub-workflows, 72 nodos) |
+| `03_MEGA_WORKFLOW_3_SEO.md` | SEO content factory (5 sub-workflows, 60 nodos) |
+
+### 📊 Resumen de Requerimientos (Actualizado)
 
 - **RF-PUB**: 10 requerimientos del portal público
 - **RF-INT**: 6 requerimientos de interacción
@@ -78,7 +99,8 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 - **RF-CAL**: 8 requerimientos de calendario
 - **RF-PAY**: 7 requerimientos de pagos
 - **RF-NOT**: 7 requerimientos de notificaciones
-- **RNF**: 23 requerimientos no funcionales (seguridad, rendimiento, escalabilidad)
+- **RF-N8N**: 12 requerimientos de automatización (**NUEVO**)
+- **RNF**: 23 requerimientos no funcionales
 
 ### 🎭 Roles Definidos
 

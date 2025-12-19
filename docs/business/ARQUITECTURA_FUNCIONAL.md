@@ -495,69 +495,125 @@ NotificationTemplate
 
 | Aspecto | Descripción |
 |---------|-------------|
-| **Propósito** | Bridge entre microservicios y N8N Pro |
-| **Usuarios** | Sistema, Administrador (configuración) |
+| **Propósito** | Bridge bidireccional entre plataforma web y n8n Cloud |
+| **Usuarios** | Sistema, Administrador (configuración), Marketing (workflows) |
 | **Schema BD** | `n8n_integration` |
 
 **Contexto de Negocio:**
 
-N8N Pro permite automatizaciones sin código:
-- **Abogados** pueden modificar workflows de seguimiento
-- **Marketing** puede crear automatizaciones de leads
-- **Flexibilidad** para adaptar procesos sin desarrollador
+n8n Cloud es el **motor de automatización de marketing** que ejecuta 17 workflows organizados en **3 MEGA-WORKFLOWS**:
+
+| MEGA-WORKFLOW | Propósito | Workflows | Nodos | Estado |
+|---------------|-----------|-----------|-------|--------|
+| **MW#1: Captura** | Lead → Cliente | 7 | 108 | 28% implementado |
+| **MW#2: Retención** | Cliente → Recompra (Flywheel) | 5 | 72 | Q2 2026 |
+| **MW#3: SEO** | Tráfico → Lead (Content Factory) | 5 | 60 | Q2-Q3 2026 |
+
+**Ver documentación completa:** [ESTRATEGIA_AUTOMATIZACION.md](./ESTRATEGIA_AUTOMATIZACION.md)
 
 **Funciones de Negocio:**
 
 | Función | Descripción | Prioridad |
 |---------|-------------|-----------|
-| Webhooks | Recibir llamadas de N8N | SHOULD |
-| Triggers | Disparar workflows desde eventos | SHOULD |
-| API Bridge | Exponer datos a N8N de forma segura | SHOULD |
-| Logs | Auditoría de ejecuciones | SHOULD |
+| **NATS → n8n** | Escuchar eventos y enviar a webhooks n8n | MUST |
+| **n8n → API** | Recibir callbacks y ejecutar acciones | MUST |
+| **Lead Sync** | Sincronizar leads entre Firestore y PostgreSQL | MUST |
+| **Logs** | Auditoría de ejecuciones | SHOULD |
 
-**Casos de Uso de Automatización:**
+**Webhooks Expuestos (n8n → Plataforma):**
+
+| Endpoint | Método | Origen n8n | Acción |
+|----------|--------|------------|--------|
+| `/webhook/lead-scored` | POST | SUB-A | Actualizar leadScore en client-service |
+| `/webhook/lead-hot` | POST | SUB-B | Notificar abogado, crear tarea urgente |
+| `/webhook/upsell-detected` | POST | SUB-J | Crear oportunidad en case-service |
+| `/webhook/content-ready` | POST | SUB-L | Publicar en blog (document-service) |
+
+**Webhooks que Dispara (Plataforma → n8n):**
+
+| Evento NATS | Webhook n8n | MEGA-WORKFLOW |
+|-------------|-------------|---------------|
+| `lead.capturado` | `/lead-events` | MW#1 → SUB-A |
+| `cita.agendada` | `/meeting-events` | MW#1 → SUB-F |
+| `cliente.inactivo` | `/client-events` | MW#2 → SUB-I |
+| `caso.cerrado` | `/case-events` | MW#2 → SUB-G |
+
+**Sub-Workflows MW#1 (Captura y Conversión):**
 
 ```
-1. NUEVO LEAD
-   Trigger: Formulario contacto enviado
-   Acciones:
-   - Crear registro en CRM
-   - Enviar email de bienvenida
-   - Asignar seguimiento a abogado
-   - Crear tarea de seguimiento en 3 días
-
-2. TÉRMINO PRÓXIMO
-   Trigger: Término vence en 7 días
-   Acciones:
-   - Enviar alerta a abogado
-   - Crear recordatorio en Calendar
-   - Si vence en 24h y no hay actividad, escalar a admin
-
-3. CLIENTE INACTIVO
-   Trigger: Cliente sin actividad 30 días
-   Acciones:
-   - Enviar email de seguimiento
-   - Notificar a abogado asignado
-   - Registrar en log de marketing
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     MW#1: LEAD LIFECYCLE MANAGER                            │
+│                     (7 Sub-Workflows, 108 Nodos)                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  SUB-A: Lead Intake (Scoring)    ──► Lead capturado → scoring → clasificar │
+│  SUB-B: Hot Lead Notifier        ──► HOT (≥70) → notificar Dr. Carrillo    │
+│  SUB-C: AI Email Responder       ──► Respuesta IA < 1 minuto (Gemini)      │
+│  SUB-D: Lead Nurturing           ──► Secuencia 12 emails (60 días)         │
+│  SUB-E: Email Engagement Tracker ──► Opens, clicks → actualizar score      │
+│  SUB-F: Meeting Scheduler        ──► Calendly → confirmar cita             │
+│  MAIN:  Orquestador Hub          ──► Coordina todos los sub-workflows      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Lead Scoring (Calculado por n8n, almacenado en Firestore + PostgreSQL):**
+
+| Criterio | Puntos | Descripción |
+|----------|--------|-------------|
+| Base | 30 | Todo lead inicia con 30 pts |
+| Servicio "marca" o "litigio" | +20 | Alta intención comercial |
+| Mensaje > 50 caracteres | +10 | Interés detallado |
+| Tiene teléfono | +10 | Contactabilidad |
+| Tiene empresa | +10 | Posible cliente B2B |
+| Email corporativo | +10 | No @gmail, @hotmail |
+| Cargo C-Level | +20 | Decisor |
+| **HOT** | ≥70 | Notificar inmediatamente |
+| **WARM** | 40-69 | Nurturing automatizado |
+| **COLD** | <40 | Respuesta genérica |
 
 **Modelo de Datos:**
 
 ```
+Lead (en client-service)
+├── id: UUID
+├── nombre, email, telefono, empresa, cargo
+├── servicio: String (área de interés)
+├── mensaje: String
+├── leadScore: Integer (0-100)
+├── leadCategory: HOT | WARM | COLD
+├── leadStatus: NUEVO | NURTURING | MQL | SQL | CONVERTIDO | CHURNED
+├── emailsSent, emailsOpened, emailsClicked: Integer
+├── lastEngagement: Timestamp
+├── clientId: UUID (si se convierte)
+└── source: WEBSITE | REFERRAL | LINKEDIN | EVENTO
+
 WorkflowExecution
 ├── id: UUID
-├── workflowId: String (ID en N8N)
-├── workflowName: String
+├── megaWorkflow: MW1 | MW2 | MW3
+├── subWorkflow: String (SUB-A, SUB-B, etc.)
 ├── triggerEvent: String
-├── triggerData: JSON
+├── inputData: JSON
+├── outputData: JSON
 ├── status: RUNNING | SUCCESS | FAILED
-├── result: JSON
-├── errorMessage: String
-├── startedAt: Timestamp
-└── finishedAt: Timestamp
+├── executionTimeMs: Long
+├── startedAt, finishedAt: Timestamp
+└── errorMessage: String
 ```
 
-**Estado de Implementación:** 5% ⏳
+**Integraciones n8n Configuradas:**
+
+| Servicio | Estado | Uso |
+|----------|--------|-----|
+| Gmail OAuth2 | ✅ Activo | Envío emails, respuestas |
+| Firestore | ✅ Activo | Almacenamiento leads (n8n) |
+| Google Gemini | ✅ Activo | IA para emails personalizados |
+| Mailersend | ⏳ Pendiente | Email marketing (MW#2) |
+| Calendly | ⏳ Pendiente | Booking citas (SUB-F) |
+| WordPress REST | ⏳ Pendiente | Publicación blog (MW#3) |
+| Google Search Console | ⏳ Pendiente | Tracking SEO (MW#3) |
+
+**Estado de Implementación:** 15% 🔄
 
 ---
 

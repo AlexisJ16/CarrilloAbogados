@@ -33,6 +33,11 @@ docs/
 | [ROLES_USUARIOS.md](business/ROLES_USUARIOS.md) | 4 roles: Administrador, Abogado, Cliente, Visitante | ✅ |
 | [CASOS_USO.md](business/CASOS_USO.md) | Flujos detallados por actor con diagramas | ✅ |
 | [ARQUITECTURA_FUNCIONAL.md](business/ARQUITECTURA_FUNCIONAL.md) | Mapeo microservicio → función de negocio | ✅ |
+| [ESTRATEGIA_AUTOMATIZACION.md](business/ESTRATEGIA_AUTOMATIZACION.md) | Integración plataforma ↔ n8n (3 MEGA-WORKFLOWS) | ✅ NEW |
+
+### Subcarpetas
+- `Analizar_Ya/` - Documentación de marketing y automatizaciones n8n (4 documentos)
+- `Documentación_Proporcionada/` - Archivos originales del cliente (briefs, PDFs)
 
 ### Archivos de Referencia (PDFs)
 - `Brief de requerimientos.pdf` - Cuestionario original
