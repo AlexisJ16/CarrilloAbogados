@@ -43,7 +43,22 @@
     
     // ================== UTILITY ==================
     "formulahendry.code-runner",          // Code Runner
-    "ms-vscode.powershell"                // PowerShell
+    "ms-vscode.powershell",               // PowerShell
+    
+    // ================== FRONTEND (React/Next.js) ==================
+    "angular.ng-template",                // Angular Language Service (si se usa Angular)
+    "bradlc.vscode-tailwindcss",          // Tailwind CSS IntelliSense
+    "dbaeumer.vscode-eslint",             // ESLint
+    "dsznajder.es7-react-js-snippets",    // React snippets
+    "christian-kohler.npm-intellisense",  // npm autocomplete
+    "yoavbls.pretty-ts-errors",           // TypeScript errors legibles
+    "pulkitgangwar.nextjs-snippets",      // Next.js snippets
+    
+    // ================== DATABASE & API ==================
+    "mtxr.sqltools",                      // SQL Tools
+    "mtxr.sqltools-driver-pg",            // PostgreSQL driver
+    "rangav.vscode-thunder-client",       // Thunder Client (REST)
+    "42crunch.vscode-openapi"             // OpenAPI Editor
   ],
   "unwantedRecommendations": [
     "google.geminicodeassist",            // Conflicto con Copilot

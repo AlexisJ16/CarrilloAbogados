@@ -87,7 +87,11 @@
         "markdown": true,
         "java": true,
         "xml": true,
-        "dockerfile": true
+        "dockerfile": true,
+        "typescript": true,
+        "typescriptreact": true,
+        "javascript": true,
+        "javascriptreact": true
     },
     "github.copilot.editor.enableAutoCompletions": true,
     
@@ -109,5 +113,64 @@
     "gitlens.codeLens.enabled": true,
     
     // === DOCKER ===
-    "docker.showStartPage": false
+    "docker.showStartPage": false,
+    
+    // === TYPESCRIPT/JAVASCRIPT (Frontend) ===
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    
+    // === TAILWIND CSS ===
+    "tailwindCSS.includeLanguages": {
+        "typescript": "javascript",
+        "typescriptreact": "javascript"
+    },
+    "tailwindCSS.experimental.classRegex": [
+        ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    ],
+    
+    // === ESLINT ===
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "eslint.workingDirectories": [
+        { "directory": "frontend", "changeProcessCWD": true }
+    ],
+    
+    // === EMMET ===
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "typescriptreact"
+    },
+    
+    // === EXPLORER ===
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, .npmrc",
+        "tsconfig.json": "tsconfig.*.json",
+        ".eslintrc*": ".eslintignore, .prettierrc*, .prettierignore",
+        "next.config.*": "next-env.d.ts",
+        "pom.xml": "mvnw, mvnw.cmd, .mvn"
+    },
+    
+    // === BRACKET PAIR COLORIZATION ===
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active"
 }

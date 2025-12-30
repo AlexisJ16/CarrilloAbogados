@@ -6,64 +6,16 @@
       "type": "shell",
       "command": ".\\mvnw clean package -DskipTests -T 1C",
       "group": "build",
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
       "problemMatcher": ["$java"]
     },
     {
       "label": "✅ Build + Tests",
       "type": "shell",
       "command": ".\\mvnw clean verify -T 1C",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
       "problemMatcher": ["$java"]
-    },
-    {
-      "label": "🧪 Run Tests (client-service)",
-      "type": "shell",
-      "command": ".\\mvnw test -pl client-service",
-      "group": "test",
-      "presentation": {
-        "reveal": "always"
-      },
-      "problemMatcher": ["$java"]
-    },
-    {
-      "label": "🐳 Docker Compose Up",
-      "type": "shell",
-      "command": "docker-compose up -d",
-      "group": "none",
-      "presentation": {
-        "reveal": "always"
-      }
-    },
-    {
-      "label": "🛑 Docker Compose Down",
-      "type": "shell",
-      "command": "docker-compose down",
-      "group": "none",
-      "presentation": {
-        "reveal": "always"
-      }
-    },
-    {
-      "label": "📋 Docker Compose Logs",
-      "type": "shell",
-      "command": "docker-compose logs -f",
-      "group": "none",
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
-      "isBackground": true
     },
     {
       "label": "🔨 Build client-service",
@@ -80,22 +32,185 @@
       "problemMatcher": ["$java"]
     },
     {
+      "label": "🔨 Build api-gateway",
+      "type": "shell",
+      "command": ".\\mvnw package -DskipTests -pl api-gateway",
+      "group": "build",
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🔨 Build calendar-service",
+      "type": "shell",
+      "command": ".\\mvnw package -DskipTests -pl calendar-service",
+      "group": "build",
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🧪 Run Tests (client-service)",
+      "type": "shell",
+      "command": ".\\mvnw test -pl client-service",
+      "group": "test",
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🧪 Run Tests (case-service)",
+      "type": "shell",
+      "command": ".\\mvnw test -pl case-service",
+      "group": "test",
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🧪 Run Security Tests",
+      "type": "shell",
+      "command": ".\\mvnw test -pl client-service \"-Dtest=*SecurityTest,*ValidationTest\"",
+      "group": "test",
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🧪 Run All Tests",
+      "type": "shell",
+      "command": ".\\mvnw test -T 1C",
+      "group": "test",
+      "problemMatcher": ["$java"]
+    },
+    {
+      "label": "🐳 Docker Compose Up",
+      "type": "shell",
+      "command": "docker-compose up -d",
+      "group": "none"
+    },
+    {
+      "label": "🛑 Docker Compose Down",
+      "type": "shell",
+      "command": "docker-compose down",
+      "group": "none"
+    },
+    {
+      "label": "📋 Docker Compose Logs",
+      "type": "shell",
+      "command": "docker-compose logs -f",
+      "isBackground": true,
+      "group": "none"
+    },
+    {
+      "label": "🐳 Docker Logs (service)",
+      "type": "shell",
+      "command": "docker-compose logs -f ${input:serviceName}",
+      "isBackground": true,
+      "group": "none"
+    },
+    {
+      "label": "🔄 Docker Rebuild Service",
+      "type": "shell",
+      "command": "docker-compose up -d --build ${input:serviceName}",
+      "group": "none"
+    },
+    {
+      "label": "📊 Docker PS",
+      "type": "shell",
+      "command": "docker-compose ps",
+      "group": "none"
+    },
+    {
       "label": "☸️ Minikube Start (WSL)",
       "type": "shell",
       "command": "wsl bash -c 'minikube start'",
-      "group": "none",
-      "presentation": {
-        "reveal": "always"
-      }
+      "group": "none"
+    },
+    {
+      "label": "☸️ Minikube Status (WSL)",
+      "type": "shell",
+      "command": "wsl bash -c 'minikube status'",
+      "group": "none"
     },
     {
       "label": "☸️ Kubectl Get Pods (WSL)",
       "type": "shell",
       "command": "wsl bash -c 'kubectl get pods -n carrillo-dev'",
-      "group": "none",
-      "presentation": {
-        "reveal": "always"
-      }
+      "group": "none"
+    },
+    {
+      "label": "☸️ Kubectl Get All (WSL)",
+      "type": "shell",
+      "command": "wsl bash -c 'kubectl get all -n carrillo-dev'",
+      "group": "none"
+    },
+    {
+      "label": "☸️ Port Forward Gateway (WSL)",
+      "type": "shell",
+      "command": "wsl bash -c 'kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev'",
+      "isBackground": true,
+      "group": "none"
+    },
+    {
+      "label": "☸️ Helm Deploy (WSL)",
+      "type": "shell",
+      "command": "wsl bash -c 'helm upgrade --install carrillo-dev helm-charts/carrillo-abogados/ -n carrillo-dev --create-namespace'",
+      "group": "none"
+    },
+    {
+      "label": "🔄 WSL Restart",
+      "type": "shell",
+      "command": "wsl --shutdown; Start-Sleep -Seconds 5; wsl bash -c 'echo WSL restarted'",
+      "group": "none"
+    },
+    {
+      "label": "🎨 Frontend: Install",
+      "type": "shell",
+      "command": "cd frontend && npm install",
+      "group": "none"
+    },
+    {
+      "label": "🎨 Frontend: Dev Server",
+      "type": "shell",
+      "command": "cd frontend && npm run dev",
+      "isBackground": true,
+      "group": "none"
+    },
+    {
+      "label": "🎨 Frontend: Build",
+      "type": "shell",
+      "command": "cd frontend && npm run build",
+      "group": "build"
+    },
+    {
+      "label": "🎨 Frontend: Lint",
+      "type": "shell",
+      "command": "cd frontend && npm run lint",
+      "group": "none"
+    },
+    {
+      "label": "🎨 Frontend: Type Check",
+      "type": "shell",
+      "command": "cd frontend && npm run type-check",
+      "group": "none"
+    },
+    {
+      "label": "🗄️ DB: Connect PostgreSQL",
+      "type": "shell",
+      "command": "docker exec -it postgresql psql -U carrillo -d carrillo_legal_tech",
+      "group": "none"
+    },
+    {
+      "label": "📝 Open Swagger UI",
+      "type": "shell",
+      "command": "start http://localhost:8200/client-service/swagger-ui.html",
+      "group": "none"
+    },
+    {
+      "label": "🔍 Check All Health",
+      "type": "shell",
+      "command": "$ports = @('8080','8200','8300','8400','8500','8600','8700','8800'); foreach ($p in $ports) { try { $r = Invoke-WebRequest \"http://localhost:$p/actuator/health\" -TimeoutSec 2 -UseBasicParsing; Write-Host \"$p : UP\" -ForegroundColor Green } catch { Write-Host \"$p : DOWN\" -ForegroundColor Red } }",
+      "group": "none"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "serviceName",
+      "description": "Nombre del servicio",
+      "type": "pickString",
+      "options": ["api-gateway","client-service","case-service","payment-service","document-service","calendar-service","notification-service","n8n-integration-service"],
+      "default": "client-service"
     }
   ]
 }

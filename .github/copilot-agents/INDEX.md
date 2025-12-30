@@ -1,0 +1,106 @@
+# 🤖 Copilot Agents Index - Carrillo Abogados
+
+## Agentes Disponibles
+
+Este directorio contiene **agentes especializados** para diferentes áreas del proyecto. Cada agente tiene conocimiento profundo de su dominio y puede ser invocado según la tarea.
+
+---
+
+## 📋 Lista de Agentes
+
+### 1. [Backend Agent](./backend-agent.md)
+**Especialización**: Spring Boot, Microservicios, Java 21
+- Desarrollo de servicios REST
+- Patrones de código
+- Configuraciones Spring
+- Tests unitarios e integración
+
+### 2. [Frontend Agent](./frontend-agent.md)
+**Especialización**: React, Next.js, TypeScript, Tailwind
+- Desarrollo UI/UX
+- Integración con APIs
+- Componentes reutilizables
+- Estado y formularios
+
+### 3. [DevOps Agent](./devops-agent.md)
+**Especialización**: Docker, Kubernetes, CI/CD
+- Configuración de contenedores
+- Helm charts
+- GitHub Actions
+- Troubleshooting de infraestructura
+
+### 4. [Testing Agent](./testing-agent.md)
+**Especialización**: Tests exhaustivos y seguridad
+- Tests unitarios (JUnit 5)
+- Tests de integración (MockMvc)
+- Tests de seguridad (OWASP)
+- Cobertura de código
+
+### 5. [Documentation Agent](./documentation-agent.md)
+**Especialización**: Mantenimiento de documentación
+- Actualizar PROYECTO_ESTADO.md
+- Sincronizar documentos de contexto
+- Documentar errores y soluciones
+- Mantener consistencia
+
+### 6. [Project Manager Agent](./project-manager-agent.md)
+**Especialización**: Gestión y tracking
+- Estado del proyecto
+- Priorización de tareas
+- Timeline y milestones
+- Métricas de progreso
+
+---
+
+## 🎯 Cómo Usar los Agentes
+
+### Opción 1: Referenciar en el Chat
+```
+@workspace Usando el conocimiento del backend-agent, 
+crea un nuevo endpoint para gestión de audiencias en calendar-service
+```
+
+### Opción 2: Contextualizar la Tarea
+```
+Estoy trabajando en frontend. Necesito crear un formulario de contacto 
+que se integre con la Lead API del backend.
+```
+
+### Opción 3: Pedir Actualización de Documentación
+```
+Acabo de completar la implementación de calendar-service.
+Actualiza la documentación del proyecto usando el documentation-agent.
+```
+
+---
+
+## 📁 Estructura de Archivos
+
+```
+.github/
+├── copilot-instructions.md    # Instrucciones principales de Copilot
+├── copilot-agents/
+│   ├── INDEX.md               # Este archivo
+│   ├── backend-agent.md       # Desarrollo Spring Boot
+│   ├── frontend-agent.md      # Desarrollo React/Next.js
+│   ├── devops-agent.md        # Docker, K8s, CI/CD
+│   ├── testing-agent.md       # Tests y seguridad
+│   ├── documentation-agent.md # Mantenimiento de docs
+│   └── project-manager-agent.md # Gestión de proyecto
+└── workflows/                 # GitHub Actions
+```
+
+---
+
+## 🔄 Mantenimiento
+
+Estos agentes deben actualizarse cuando:
+
+1. **Cambia la arquitectura** → Actualizar backend-agent, devops-agent
+2. **Nuevos endpoints API** → Actualizar frontend-agent
+3. **Nuevas convenciones de código** → Actualizar todos los agentes relevantes
+4. **Nuevas herramientas** → Actualizar devops-agent
+
+---
+
+*Última actualización: Diciembre 30, 2025*

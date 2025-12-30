@@ -1,29 +1,52 @@
 # 🎨 Frontend - Carrillo Abogados Legal Tech Platform
 
-**Framework sugerido**: React/Next.js o Lovable  
-**Integración**: API REST + OpenAPI 3.0
+**Estado**: ✅ Scaffolding Completo  
+**Framework**: Next.js 14 + React 18 + TypeScript  
+**Estilos**: Tailwind CSS 3.4  
 
 ---
 
-## 📁 Estructura del Directorio
+## 🚀 Quick Start
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Abrir [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 📁 Estructura del Proyecto
 
 ```
 frontend/
-├── README.md                    # Este archivo
-├── api-contracts/               # Contratos de API
-│   ├── openapi/                 # Especificaciones OpenAPI
-│   │   └── client-service.json  # OpenAPI spec de client-service
-│   └── types/                   # TypeScript types generados
-│       └── lead.types.ts        # Tipos para Lead API
-├── docs/                        # Documentación de integración
-│   └── API_INTEGRATION.md       # Guía de integración
-└── examples/                    # Ejemplos de uso
-    └── lead-capture-form.tsx    # Ejemplo de formulario de captura
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── layout.tsx          # Layout principal
+│   │   ├── page.tsx            # Landing page
+│   │   ├── globals.css         # Estilos Tailwind
+│   │   └── providers.tsx       # React Query
+│   ├── components/
+│   │   ├── home/               # HeroSection, ServicesSection, etc.
+│   │   ├── layout/             # Header, Footer
+│   │   └── ui/                 # Button, Input, Card
+│   ├── lib/
+│   │   ├── api/                # Cliente API + hooks
+│   │   └── utils.ts            # cn() utility
+│   └── types/                  # TypeScript types
+├── api-contracts/              # OpenAPI specs + tipos legacy
+├── package.json
+├── tsconfig.json
+├── next.config.js
+├── tailwind.config.js
+└── postcss.config.js
 ```
 
 ---
 
-## 🚀 Inicio Rápido
+## 🔌 Integración con Backend
 
 ### URLs del Backend (Docker Compose Local)
 
