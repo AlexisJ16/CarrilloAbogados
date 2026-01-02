@@ -52,6 +52,15 @@ Este directorio contiene **agentes especializados** para diferentes áreas del p
 - Timeline y milestones
 - Métricas de progreso
 
+### 7. [QA & Quality Agent](./qa-quality-agent.md) 🆕
+**Especialización**: Control de calidad y depuración
+- Análisis profundo del proyecto
+- Depuración y limpieza de código
+- Validación E2E de Docker y APIs
+- Monitoreo de Snyk, SonarCloud y VSCode
+- Asegurar cero errores en herramientas de calidad
+- Tests unitarios e integración
+
 ---
 
 ## 🎯 Cómo Usar los Agentes

@@ -2,8 +2,6 @@
 # Docker Compose para desarrollo local
 # Para Kubernetes, usar Helm charts en ./helm-charts/carrillo-abogados/
 
-version: '3.8'
-
 services:
   # ===== INFRAESTRUCTURA =====
   postgresql:
