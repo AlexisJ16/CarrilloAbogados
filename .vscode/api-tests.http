@@ -1,0 +1,247 @@
+### ============================================
+### 🏛️ Carrillo Abogados API - REST Client
+### ============================================
+### Variables de entorno: Ctrl+Shift+P → "Rest Client: Switch Environment"
+### Ejecutar request: Ctrl+Alt+R o click en "Send Request"
+
+### --------------------------
+### 📡 Health Checks
+### --------------------------
+
+### API Gateway Health
+# @name gatewayHealth
+GET {{baseUrl}}/actuator/health
+Accept: application/json
+
+###
+
+### Client Service Health
+# @name clientHealth
+GET {{baseUrl}}/client-service/actuator/health
+Accept: application/json
+
+###
+
+### Case Service Health
+# @name caseHealth
+GET {{baseUrl}}/case-service/actuator/health
+Accept: application/json
+
+###
+
+### --------------------------
+### 👥 LEADS API
+### --------------------------
+
+### Crear Nuevo Lead
+# @name createLead
+POST {{baseUrl}}/client-service/api/leads
+Content-Type: application/json
+
+{
+  "nombre": "Juan Pérez Test",
+  "email": "juan.perez@empresa.com",
+  "telefono": "+57 315 123 4567",
+  "empresa": "TechCorp SAS",
+  "cargo": "Gerente General",
+  "servicio": "TRADEMARK_LAW",
+  "mensaje": "Necesito asesoría para registrar mi marca comercial en Colombia. Mi empresa está en el sector tecnológico."
+}
+
+###
+
+### Obtener Todos los Leads
+# @name getAllLeads
+GET {{baseUrl}}/client-service/api/leads
+Accept: application/json
+
+###
+
+### Obtener Lead por ID
+@leadId = {{createLead.response.body.$.id}}
+# @name getLeadById
+GET {{baseUrl}}/client-service/api/leads/{{leadId}}
+Accept: application/json
+
+###
+
+### Buscar Leads por Email
+# @name findLeadByEmail
+GET {{baseUrl}}/client-service/api/leads/by-email?email=juan.perez@empresa.com
+Accept: application/json
+
+###
+
+### Obtener Leads HOT
+# @name getHotLeads
+GET {{baseUrl}}/client-service/api/leads/hot
+Accept: application/json
+
+###
+
+### Obtener Leads por Estado
+# @name getLeadsByStatus
+GET {{baseUrl}}/client-service/api/leads/by-status/NEW
+Accept: application/json
+
+###
+
+### Actualizar Score de Lead
+# @name updateLeadScore
+PUT {{baseUrl}}/client-service/api/leads/{{leadId}}/score
+Content-Type: application/json
+
+{
+  "score": 75,
+  "category": "HOT"
+}
+
+###
+
+### Convertir Lead a Cliente
+# @name convertLead
+POST {{baseUrl}}/client-service/api/leads/{{leadId}}/convert
+Content-Type: application/json
+
+###
+
+### --------------------------
+### 👤 CLIENTS API
+### --------------------------
+
+### Crear Cliente (Persona Natural)
+# @name createClientNatural
+POST {{baseUrl}}/client-service/api/clients
+Content-Type: application/json
+
+{
+  "clientType": "NATURAL",
+  "documentType": "CC",
+  "documentNumber": "1234567890",
+  "firstName": "María",
+  "lastName": "González Rodríguez",
+  "email": "maria.gonzalez@email.com",
+  "phone": "+57 318 987 6543",
+  "address": "Calle 50 # 10-25, Oficina 301",
+  "city": "Cali"
+}
+
+###
+
+### Crear Cliente (Persona Jurídica)
+# @name createClientJuridica
+POST {{baseUrl}}/client-service/api/clients
+Content-Type: application/json
+
+{
+  "clientType": "JURIDICA",
+  "documentType": "NIT",
+  "documentNumber": "900123456-1",
+  "companyName": "Innovatech Solutions SAS",
+  "legalRepresentative": "Carlos Andrés Martínez",
+  "email": "contacto@innovatech.com.co",
+  "phone": "+57 2 345 6789",
+  "address": "Avenida 6N # 45-12, Torre Empresarial, Piso 8",
+  "city": "Cali"
+}
+
+###
+
+### Obtener Todos los Clientes
+# @name getAllClients
+GET {{baseUrl}}/client-service/api/clients
+Accept: application/json
+
+###
+
+### Buscar Cliente por Documento
+# @name findClientByDocument
+GET {{baseUrl}}/client-service/api/clients/by-document?documentType=NIT&documentNumber=900123456-1
+Accept: application/json
+
+###
+
+### --------------------------
+### ⚖️ CASES API
+### --------------------------
+
+### Crear Nuevo Caso
+@clientId = {{createClientJuridica.response.body.$.id}}
+# @name createCase
+POST {{baseUrl}}/case-service/api/cases
+Content-Type: application/json
+
+{
+  "title": "Registro de Marca Comercial - Innovatech",
+  "description": "Solicitud de registro de marca ante la SIC para la marca 'Innovatech' en clase 42 (servicios tecnológicos).",
+  "clientId": "{{clientId}}",
+  "practiceArea": "TRADEMARK_LAW",
+  "caseType": "ADMINISTRATIVE",
+  "assignedLawyerId": "00000000-0000-0000-0000-000000000001",
+  "filingNumber": "SD2024-0001234"
+}
+
+###
+
+### Obtener Todos los Casos
+# @name getAllCases
+GET {{baseUrl}}/case-service/api/cases
+Accept: application/json
+
+###
+
+### Obtener Casos por Cliente
+# @name getCasesByClient
+GET {{baseUrl}}/case-service/api/cases/by-client/{{clientId}}
+Accept: application/json
+
+###
+
+### Agregar Actividad a Caso
+@caseId = {{createCase.response.body.$.id}}
+# @name addCaseActivity
+POST {{baseUrl}}/case-service/api/cases/{{caseId}}/activities
+Content-Type: application/json
+
+{
+  "activityType": "DOCUMENT_FILED",
+  "description": "Se radicó solicitud de registro de marca ante la SIC",
+  "activityDate": "2024-12-19",
+  "visibleToClient": true
+}
+
+###
+
+### --------------------------
+### 📊 ESTADÍSTICAS
+### --------------------------
+
+### Estadísticas de Leads
+# @name leadStats
+GET {{baseUrl}}/client-service/api/leads/stats
+Accept: application/json
+
+###
+
+### Leads Pendientes de Contacto (24h)
+# @name leadsPendingContact
+GET {{baseUrl}}/client-service/api/leads/pending-contact
+Accept: application/json
+
+###
+
+### --------------------------
+### 🔧 ACTUATOR ENDPOINTS
+### --------------------------
+
+### Gateway Routes
+# @name gatewayRoutes
+GET {{baseUrl}}/actuator/gateway/routes
+Accept: application/json
+
+###
+
+### Info
+# @name info
+GET {{baseUrl}}/actuator/info
+Accept: application/json

@@ -1,90 +1,119 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 18 de Diciembre, 2025 - 20:30 COT  
-**Estado General**: ✅ **DOCKER COMPOSE FUNCIONANDO** | 10/10 Contenedores Healthy | API Gateway Routing OK  
-**Rama Actual**: `dev`
+**Última Actualización**: 19 de Diciembre, 2025 - 05:15 COT  
+**Estado General**: ✅ **FASE 1 COMPLETA** | client-service 100% | Security Tests ✅ | CI/CD ✅  
+**Rama Actual**: `dev`  
+**Último Commit**: `43cd864` - Security tests for client-service
 
 ---
 
 ## 🎯 RESUMEN EJECUTIVO
 
-Plataforma cloud-native de gestión legal empresarial con **8 microservicios** Spring Boot sobre Docker/Kubernetes. Proyecto migrado exitosamente desde plantilla e-commerce a plataforma legal.
+Plataforma cloud-native de gestión legal empresarial con **8 microservicios** Spring Boot sobre Docker/Kubernetes para el bufete **Carrillo ABGD SAS** de Cali, Colombia.
+
+### Sobre el Bufete
+- **Razón Social**: Carrillo ABGD SAS (fundado abril 2001)
+- **Equipo**: 7 abogados + 2 administrativos
+- **Especialización**: 5 áreas de práctica legal
+- **Ubicación**: Torre de Cali, Piso 21, Oficina 2102A
+- **Diferenciador**: Dr. Omar Carrillo - 15 años experiencia en SIC
 
 ### Propósito Dual
 1. **Académico**: Proyecto final curso Plataformas II
-2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
+2. **Empresarial**: Sistema real para bufete Carrillo Abogados
 
-### Hitos Clave
-| Hito | Fecha | Estado |
-|------|-------|--------|
-| Docker Compose Local | 18 Dic 2025 | ✅ COMPLETADO |
-| MVP Empresarial | 18 Mar 2026 | 📋 Planificado |
-
----
-
-## ✅ ESTADO ACTUAL (18 Diciembre 2025 - 20:30)
-
-### 🎉 LOGRO: Todos los Servicios Funcionando en Docker Compose
-
-```
-✅ 10/10 contenedores HEALTHY
-✅ 8/8 microservicios respondiendo a health checks
-✅ API Gateway routing a todos los servicios
-✅ PostgreSQL y NATS operativos
-```
-
-### Estado de Contenedores
-| Contenedor | Puerto | Estado | Health |
-|------------|--------|--------|--------|
-| carrillo-api-gateway | 8080 | ✅ Up | healthy |
-| carrillo-client-service | 8200 | ✅ Up | healthy |
-| carrillo-case-service | 8300 | ✅ Up | healthy |
-| carrillo-payment-service | 8400 | ✅ Up | healthy |
-| carrillo-document-service | 8500 | ✅ Up | healthy |
-| carrillo-calendar-service | 8600 | ✅ Up | healthy |
-| carrillo-notification-service | 8700 | ✅ Up | healthy |
-| carrillo-n8n-integration-service | 8800 | ✅ Up | healthy |
-| carrillo-postgresql | 5432 | ✅ Up | healthy |
-| carrillo-nats | 4222/8222 | ✅ Up | healthy |
+### Métricas Objetivo
+| Métrica | Actual | Objetivo | Incremento |
+|---------|-------:|--------:|------------|
+| Leads/mes | 20 | 300+ | 15x |
+| Respuesta a leads | 4-24h | < 1 min | 1440x |
+| Conversión | ~5% | 15%+ | 3x |
+| Clientes nuevos/año | ~15 | 100+ | 6.7x |
 
 ---
 
-## 🔧 CORRECCIONES APLICADAS (Sesión 18 Dic 2025)
+## 📅 HISTORIAL DE COMMITS RECIENTES
 
-### 1. Puerto payment-service
-- **Archivo**: `payment-service/src/main/resources/application.yaml`
-- **Cambio**: `server.port: 8750` → `server.port: 8400`
+```
+43cd864 feat(security): add comprehensive security tests for client-service lead API
+c331aab ci: modernize CI/CD pipeline + VSCode workspace config
+155e11e feat(client-service): Lead API completa con NATS events y frontend structure
+161d190 docs: update AI context files and continuation prompt
+b7557b0 docs: integrate marketing automation strategy with n8n workflows
+b048fce docs: Add complete business documentation
+f29944a feat(case-service): Complete implementation of case-service microservice
+```
 
-### 2. Hibernate DDL Strategy
-- **Archivos**: `client-service`, `case-service`, `notification-service`, `n8n-integration-service`
-- **Cambio**: `ddl-auto: validate` → `ddl-auto: update`
-- **Razón**: Las tablas no existían y Flyway no puede migrar (incompatible con PG 16)
+---
 
-### 3. Flyway Deshabilitado Temporalmente
-- **Archivos**: Todos los servicios con PostgreSQL
-- **Cambio**: `flyway.enabled: true` → `flyway.enabled: false`
-- **Razón**: Flyway 10.10.0 incompatible con PostgreSQL 16.11
-- **Acción futura**: Actualizar Flyway o añadir `flyway-database-postgresql` dependency
+## ✅ HITOS COMPLETADOS
 
-### 4. Health Check Paths en Dockerfiles
-- **Archivo**: `client-service/Dockerfile`
-- **Cambio**: `/actuator/health` → `/client-service/actuator/health`
-- **start-period**: 5s → 60s (servicios Spring Boot tardan ~20-45s en arrancar)
+| Hito | Fecha | Commit | Estado |
+|------|-------|--------|--------|
+| Docker Compose Local (10 servicios) | 18 Dic 2025 | - | ✅ |
+| Documentación de Negocio Completa | 19 Dic 2025 | `b048fce` | ✅ |
+| Integración n8n Documentada | 19 Dic 2025 | `b7557b0` | ✅ |
+| Lead Entity + API Completa | 19 Dic 2025 | `155e11e` | ✅ |
+| **CI/CD Pipeline Modernizado** | **19 Dic 2025** | **`c331aab`** | ✅ |
+| **VSCode Workspace Optimizado** | **19 Dic 2025** | **`c331aab`** | ✅ |
+| **Security Tests (66 tests)** | **19 Dic 2025** | **`43cd864`** | ✅ |
+| MVP Empresarial | 27 Mar 2026 | - | 📋 Planificado |
 
-### 5. Variables PostgreSQL en compose.yml
-- **Servicio**: `n8n-integration-service`
-- **Añadido**: `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
+---
 
-### 6. Notification Service Health Indicator
-- **Archivo**: `notification-service/src/main/resources/application.yaml`
-- **Añadido**: `management.health.mail.enabled: false`
-- **Razón**: Mail health check fallaba sin credenciales configuradas
+## 🏗️ ARQUITECTURA ACTUAL
 
-### 7. API Gateway Profile Local
-- **Archivo NUEVO**: `api-gateway/src/main/resources/application-local.yml`
-- **Propósito**: Rutas directas para Docker Compose (sin Kubernetes service discovery)
-- **Cambio**: `lb://SERVICE-NAME` → `http://service-name:PORT`
-- **Filtro**: `StripPrefix=1` para servicios sin context-path
+### Microservicios (8 activos)
+
+| Servicio | Puerto | Estado | Tests | Descripción |
+|----------|--------|--------|-------|-------------|
+| api-gateway | 8080 | ✅ 100% | - | Spring Cloud Gateway + OAuth2 |
+| client-service | 8200 | ✅ 100% | 66 security | Gestión clientes + Lead API |
+| case-service | 8300 | ✅ 95% | básicos | Gestión casos legales |
+| payment-service | 8400 | 🔄 15% | - | Pagos gubernamentales |
+| document-service | 8500 | 🔄 15% | - | Almacenamiento documentos |
+| calendar-service | 8600 | 🔄 15% | - | Google Calendar sync |
+| notification-service | 8700 | 🔄 15% | - | Email/SMS notifications |
+| n8n-integration-service | 8800 | 🔄 20% | - | Bridge n8n Cloud |
+
+### Infraestructura
+
+| Componente | Tecnología | Estado |
+|------------|------------|--------|
+| Base de Datos | PostgreSQL 16 | ✅ Operativo |
+| Mensajería | NATS 2.10 | ✅ Operativo |
+| Contenedores | Docker Compose | ✅ 10/10 healthy |
+| Orquestación | Kubernetes (Minikube) | ✅ Configurado |
+| CI/CD | GitHub Actions | ✅ 2 workflows |
+
+---
+
+## 🔧 CONFIGURACIÓN DEL ESPACIO DE TRABAJO
+
+### GitHub Actions (`.github/workflows/`)
+
+| Workflow | Trigger | Propósito |
+|----------|---------|-----------|
+| `ci-cd-pipeline.yml` | push main/dev, PR | Build, test, Docker, deploy |
+| `pr-validation.yml` | PR opened | Validación rápida (5 min) |
+
+### VSCode (`.vscode/`)
+
+| Archivo | Contenido |
+|---------|-----------|
+| `tasks.json` | 10 tareas rápidas (build, test, docker) |
+| `launch.json` | 8 configuraciones debug (1 por servicio) |
+| `api-tests.http` | Tests REST Client para endpoints |
+| `extensions.json` | Extensiones recomendadas |
+| `settings.json` | Configuración Java/Spring |
+
+### Tests de Seguridad (`client-service/src/test/java/.../security/`)
+
+| Clase | Tests | Cobertura |
+|-------|-------|-----------|
+| `InputValidationSecurityTest` | 34 | SQL injection, XSS, Path traversal |
+| `BeanValidationTest` | 32 | Validación de campos DTO |
+| **Total** | **66** | **BUILD SUCCESS ✅** |
 
 ---
 
@@ -92,106 +121,156 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 
 ```
 CarrilloAbogados/
-├── 📦 Microservicios (8 activos)
-│   ├── api-gateway/           # Spring Cloud Gateway + OAuth2
-│   ├── client-service/        # Gestión de clientes legales
-│   ├── case-service/          # Casos legales
-│   ├── payment-service/       # Pagos gubernamentales
-│   ├── document-service/      # Documentos legales (skeleton)
-│   ├── calendar-service/      # Google Calendar (skeleton)
-│   ├── notification-service/  # Email/SMS (skeleton)
-│   └── n8n-integration-service/ # Workflows N8N (skeleton)
-│
-├── 🚀 Infraestructura
-│   ├── helm-charts/carrillo-abogados/
-│   ├── k8s-manifests/
-│   └── compose.yml           # ✅ FUNCIONANDO
-│
-├── 📚 Documentación
-│   ├── CLAUDE.md             # Contexto para Claude AI
-│   ├── PROYECTO_ESTADO.md    # Este archivo
-│   ├── COPILOT_PROMPT.md     # Prompt para nuevos chats
-│   └── docs/                 # Documentación técnica
-│
-└── 🔧 Scripts
-    ├── check.sh, deploy.sh, validate.sh, test.sh, reset.sh
+├── .github/
+│   ├── workflows/          # CI/CD pipelines
+│   │   ├── ci-cd-pipeline.yml
+│   │   └── pr-validation.yml
+│   └── copilot-instructions.md  # Instrucciones para Copilot
+├── .vscode/
+│   ├── tasks.json          # 10 tareas rápidas
+│   ├── launch.json         # 8 configs debug
+│   ├── api-tests.http      # Tests REST
+│   └── extensions.json     # Extensiones recomendadas
+├── api-gateway/            # Spring Cloud Gateway
+├── client-service/         # ✅ COMPLETO - Lead API + 66 tests
+├── case-service/           # ✅ 95% - Casos legales
+├── payment-service/        # 🔄 Skeleton
+├── document-service/       # 🔄 Skeleton
+├── calendar-service/       # 🔄 Skeleton
+├── notification-service/   # 🔄 Skeleton
+├── n8n-integration-service/# 🔄 Bridge n8n
+├── helm-charts/            # Kubernetes Helm
+├── infrastructure/         # Terraform, K8s manifests
+├── docs/
+│   ├── business/           # Documentación de negocio
+│   ├── architecture/       # ADRs y arquitectura
+│   └── operations/         # Guías operativas
+├── scripts/                # Shell scripts utilidades
+├── compose.yml             # Docker Compose
+├── CLAUDE.md               # Contexto para Claude AI
+├── COPILOT_PROMPT.md       # Prompt para nuevos chats
+└── PROYECTO_ESTADO.md      # Este archivo
 ```
 
 ---
 
-## 🖥️ COMANDOS DE DESARROLLO
+## 🧪 ESTADO DE TESTS
 
-### Docker Compose (Desarrollo Local)
-```powershell
-# Levantar todo
-docker-compose up -d
+### client-service Security Tests (66 tests)
 
-# Ver estado
-docker-compose ps
+```
+✅ InputValidationSecurityTest
+   ├── SqlInjectionTests: 11 tests
+   ├── XssPreventionTests: 13 tests
+   ├── PathTraversalTests: 4 tests
+   ├── RequestValidationTests: 4 tests
+   └── FieldLengthValidationTests: 2 tests
 
-# Ver logs de un servicio
-docker logs carrillo-client-service --tail 50
-
-# Reconstruir un servicio específico
-docker-compose up -d --build client-service
-
-# Detener todo
-docker-compose down
+✅ BeanValidationTest
+   ├── EmailValidationTests: 14 tests
+   ├── NombreValidationTests: 3 tests
+   ├── TelefonoValidationTests: 5 tests
+   ├── ServicioValidationTests: 6 tests
+   ├── MensajeValidationTests: 2 tests
+   └── CompleteValidLeadTests: 2 tests
 ```
 
-### Probar Servicios
+### Comando para ejecutar tests
 ```powershell
-# Directo (sin Gateway)
-Invoke-RestMethod http://localhost:8200/client-service/actuator/health
-Invoke-RestMethod http://localhost:8400/actuator/health
-
-# Via API Gateway
-Invoke-RestMethod http://localhost:8080/client-service/actuator/health
-Invoke-RestMethod http://localhost:8080/payment-service/actuator/health
-```
-
-### Build Maven
-```powershell
-# Build completo
-.\mvnw clean package -DskipTests -T 1C
-
-# Build servicio específico
-.\mvnw package -DskipTests -pl client-service
+.\mvnw test -pl client-service "-Dtest=InputValidationSecurityTest,BeanValidationTest" "-Dspring.profiles.active=test"
 ```
 
 ---
 
-## 🚀 PRÓXIMOS PASOS
+## 🔄 INTEGRACIÓN n8n (Marketing Automation)
 
-### Inmediatos
-1. [ ] Implementar entidades de dominio en client-service
-2. [ ] Implementar entidades de dominio en case-service
-3. [ ] Crear endpoints REST básicos
-4. [ ] Configurar Swagger/OpenAPI
+### 3 MEGA-WORKFLOWS Planificados
 
-### Corto Plazo
-5. [ ] Integrar Google Workspace APIs (Calendar, Gmail)
-6. [ ] Configurar OAuth2 con @carrilloabgd.com
-7. [ ] Implementar document-service con storage
+| MEGA-WORKFLOW | Propósito | Workflows | Estado |
+|---------------|-----------|-----------|--------|
+| MW#1: Captura | Lead → Cliente (< 1 min) | 7 | 28% |
+| MW#2: Retención | Cliente → Recompra | 5 | Q2 2026 |
+| MW#3: SEO | Tráfico → Lead | 5 | Q2-Q3 2026 |
 
-### Mediano Plazo
-8. [ ] Desplegar a GKE Staging
-9. [ ] Configurar CI/CD con GitHub Actions
-10. [ ] Integrar N8N Pro workflows
+### Eventos NATS Implementados
+- `lead.capturado` → Trigger MW#1 scoring
 
 ---
 
-## ⚠️ ISSUES CONOCIDOS
+## 📋 PRÓXIMOS PASOS RECOMENDADOS
 
-### Flyway + PostgreSQL 16
-- **Problema**: Flyway 10.10.0 no soporta PostgreSQL 16
-- **Workaround**: Flyway deshabilitado, usando `ddl-auto: update`
-- **Solución**: Añadir dependency `flyway-database-postgresql` o actualizar Flyway
+### Opción A: Completar case-service (Recomendado)
+1. Crear tests de seguridad similares a client-service
+2. Implementar validaciones de entrada
+3. Agregar eventos NATS para casos
 
-### compose.yml Warning
-- **Problema**: `attribute 'version' is obsolete`
-- **Impacto**: Solo warning, no afecta funcionamiento
-- **Solución**: Remover línea `version: '3.8'` del compose.yml
+### Opción B: Implementar calendar-service
+1. Integrar Google Calendar API
+2. Booking system para citas
+3. Recordatorios automáticos
+
+### Opción C: Deploy a GKE Staging
+1. Configurar cluster GKE
+2. Aplicar Helm charts
+3. Configurar secrets de producción
+
+### Opción D: Implementar OAuth2 completo
+1. Configurar Google Workspace OAuth
+2. Integrar con api-gateway
+3. Roles y permisos RBAC
+
+---
+
+## ⚠️ LECCIONES APRENDIDAS (Sesión 19 Dic)
+
+### Errores Comunes y Soluciones
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| `Schema "CLIENTS" no encontrado` | H2 no crea schema | `INIT=CREATE SCHEMA IF NOT EXISTS clients` |
+| `StatusAggregator NoSuchBean` | Resilience4j health | `resilience4j.circuitbreaker.enabled: false` |
+| `Invalid UUID string` en tests | UUID validation | Try-catch para aceptar excepción |
+| `missing@domain` email válido | RFC 5321 permite | Ajustar test expectations |
+
+### Configuración Test Profile
+```yaml
+# application-test.yml esencial
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS clients
+  jpa:
+    properties:
+      hibernate:
+        default_schema: clients
+resilience4j:
+  circuitbreaker:
+    enabled: false
+```
+
+---
+
+## 🛠️ COMANDOS FRECUENTES
+
+### Docker Compose
+```powershell
+docker-compose up -d                    # Levantar todo
+docker-compose ps                       # Ver estado
+docker logs carrillo-client-service     # Ver logs
+```
+
+### Maven Build
+```powershell
+.\mvnw clean package -DskipTests -T 1C  # Build rápido
+.\mvnw test -pl client-service          # Tests de un servicio
+```
+
+### Git
+```powershell
+git status
+git add .
+git commit -m "feat: descripción"
+git push origin dev
+```
 
 ---
 
@@ -199,8 +278,9 @@ Invoke-RestMethod http://localhost:8080/payment-service/actuator/health
 
 - **Desarrollador**: Alexis
 - **Cliente**: Carrillo Abogados, Cali, Colombia
-- **Admin técnico**: ingenieria@carrilloabgd.com
+- **Email Admin**: ingenieria@carrilloabgd.com
+- **MVP Target**: 27 Marzo 2026
 
 ---
 
-*Última actualización: 18 de Diciembre 2025, 20:30 COT*
+*Documento actualizado automáticamente - 19 de Diciembre 2025, 05:15 COT*

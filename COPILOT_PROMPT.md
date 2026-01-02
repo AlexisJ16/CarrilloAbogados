@@ -1,189 +1,224 @@
-# 🔄 PROMPT DE CONTINUACIÓN - Carrillo Abogados Legal Tech Platform
+# 🚀 COPILOT PROMPT - Carrillo Abogados Legal Tech Platform
 
-**Fecha de Creación**: 18 de Diciembre, 2025  
-**Propósito**: Proporcionar contexto completo para continuar el desarrollo en un nuevo chat de GitHub Copilot
-
----
-
-## 📋 INSTRUCCIÓN INICIAL
-
-Hola, soy Alexis y estoy continuando el desarrollo del proyecto **Carrillo Abogados Legal Tech Platform**. Este es un nuevo chat porque el anterior se saturó por la cantidad de contexto.
-
-Por favor, lee los siguientes archivos para entender el proyecto completo:
-
-1. **`CLAUDE.md`** - Contexto completo del desarrollador y ambiente WSL
-2. **`PROYECTO_ESTADO.md`** - Estado actual del proyecto (última actualización)
-3. **`.github/copilot-instructions.md`** - Instrucciones de arquitectura y convenciones
-4. **`docs/architecture/ARCHITECTURE.md`** - Arquitectura del sistema
-5. **`compose.yml`** - Docker Compose para desarrollo local (¡FUNCIONANDO!)
+**Fecha**: 19 de Diciembre, 2025  
+**Versión**: 3.0 (Actualizado después de FASE 1 completa)  
+**Propósito**: Documento de transición para nuevo chat con contexto completo
 
 ---
 
-## 🎯 ESTADO ACTUAL DEL PROYECTO
+## 📋 INSTRUCCIONES PARA EL NUEVO CHAT
 
-### ✅ LOGRO ALCANZADO (18 Dic 2025)
+### Cómo usar este documento
 
-**Docker Compose funcionando al 100%:**
-- 10/10 contenedores HEALTHY
-- 8 microservicios Spring Boot respondiendo
-- API Gateway routing correctamente a todos los servicios
-- PostgreSQL y NATS operativos
+Copia y pega el siguiente bloque como primer mensaje en un nuevo chat de GitHub Copilot:
 
-### Contenedores Activos
+---
 
-| Servicio | Puerto | Health |
+## 🎯 PROMPT DE INICIO
+
+```
+Soy Alexis, desarrollador del proyecto Carrillo Abogados Legal Tech Platform. Este es un proyecto de microservicios Spring Boot para un bufete de abogados en Colombia.
+
+## CONTEXTO DEL PROYECTO
+
+### Estado Actual (19 Dic 2025)
+- **FASE 1 COMPLETADA**: client-service al 100% con 66 tests de seguridad
+- **CI/CD**: GitHub Actions configurado (ci-cd-pipeline.yml + pr-validation.yml)
+- **Docker Compose**: 10 contenedores funcionando (8 microservicios + PostgreSQL + NATS)
+- **Último commit**: 43cd864 (Security tests for client-service)
+
+### Arquitectura
+- 8 microservicios Spring Boot 3.3.13 + Java 21
+- PostgreSQL 16 con schemas separados por servicio
+- NATS 2.10 para mensajería asíncrona
+- Kubernetes (Minikube local, GKE para producción)
+- Spring Cloud Kubernetes (NO Eureka, NO Config Server)
+
+### Microservicios y Estado
+| Servicio | Puerto | Estado |
 |----------|--------|--------|
-| api-gateway | 8080 | ✅ healthy |
-| client-service | 8200 | ✅ healthy |
-| case-service | 8300 | ✅ healthy |
-| payment-service | 8400 | ✅ healthy |
-| document-service | 8500 | ✅ healthy |
-| calendar-service | 8600 | ✅ healthy |
-| notification-service | 8700 | ✅ healthy |
-| n8n-integration-service | 8800 | ✅ healthy |
-| postgresql | 5432 | ✅ healthy |
-| nats | 4222 | ✅ healthy |
+| api-gateway | 8080 | ✅ 100% |
+| client-service | 8200 | ✅ 100% (66 tests) |
+| case-service | 8300 | ✅ 95% |
+| payment-service | 8400 | 🔄 15% |
+| document-service | 8500 | 🔄 15% |
+| calendar-service | 8600 | 🔄 15% |
+| notification-service | 8700 | 🔄 15% |
+| n8n-integration-service | 8800 | 🔄 20% |
+
+### Entorno de Desarrollo
+- **OS**: Windows 11 con WSL2 (Ubuntu-24.04)
+- **Minikube**: Corre DENTRO de WSL (usar `wsl bash -c "kubectl ..."`)
+- **Docker**: Desktop con integración WSL
+- **IDE**: VS Code con extensiones Java/Spring configuradas
+
+### Archivos de Contexto Importantes
+1. `.github/copilot-instructions.md` - Instrucciones detalladas para Copilot
+2. `CLAUDE.md` - Contexto técnico completo
+3. `PROYECTO_ESTADO.md` - Estado actual del proyecto
+4. `docs/business/` - Documentación de negocio
+
+### Propósito Dual
+1. **Académico**: Proyecto final Plataformas II (evaluación basada en K8s, CI/CD, etc.)
+2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
+
+### Fechas Clave
+- **MVP Empresarial**: 27 Marzo 2026
+- **Entrega Académica**: Por definir
 
 ---
-
-## 🛠️ STACK TECNOLÓGICO
-
-| Componente | Versión |
-|------------|---------|
-| Java | 21 LTS |
-| Spring Boot | 3.3.13 |
-| Spring Cloud | 2023.0.6 |
-| Spring Cloud Kubernetes | 3.1.3 |
-| PostgreSQL | 16.11 |
-| NATS | 2.10 |
-| Docker Desktop | Windows |
-
----
-
-## 📁 ESTRUCTURA DE MICROSERVICIOS
-
-```
-CarrilloAbogados/
-├── api-gateway/           # Spring Cloud Gateway + OAuth2 (puerto 8080)
-├── client-service/        # Gestión de clientes legales (8200, context-path: /client-service)
-├── case-service/          # Casos legales (8300, context-path: /case-service)
-├── payment-service/       # Pagos gubernamentales (8400, sin context-path)
-├── document-service/      # Documentos legales - SKELETON (8500)
-├── calendar-service/      # Google Calendar - SKELETON (8600)
-├── notification-service/  # Email/SMS - SKELETON (8700)
-└── n8n-integration-service/ # Workflows N8N - SKELETON (8800)
-```
-
----
-
-## ⚠️ ISSUES CONOCIDOS
-
-### 1. Flyway + PostgreSQL 16
-- **Estado**: Flyway deshabilitado temporalmente
-- **Problema**: Flyway 10.10.0 incompatible con PostgreSQL 16.11
-- **Workaround actual**: `flyway.enabled: false` + `ddl-auto: update`
-- **Solución pendiente**: Añadir `flyway-database-postgresql` dependency
-
-### 2. Servicios Skeleton
-- `document-service`, `calendar-service`, `notification-service`, `n8n-integration-service`
-- Solo tienen la clase Application y configuración básica
-- Necesitan implementación de lógica de negocio
-
----
-
-## 🚀 PRÓXIMOS PASOS SUGERIDOS
-
-### Opción A: Implementar Lógica de Negocio
-1. Diseñar entidades de dominio para client-service
-2. Implementar endpoints CRUD para clientes
-3. Diseñar entidades para case-service
-4. Implementar endpoints para casos legales
-
-### Opción B: Integrar Google Workspace
-1. Configurar Google Cloud Console
-2. Habilitar Calendar API y Gmail API
-3. Implementar OAuth2 con @carrilloabgd.com
-4. Crear servicios de integración
-
-### Opción C: Preparar Kubernetes
-1. Verificar Helm charts
-2. Desplegar en Docker Desktop Kubernetes
-3. Configurar ingress y network policies
-
----
-
-## 💻 COMANDOS ÚTILES
-
-### Docker Compose
-```powershell
-# Levantar todo
-docker-compose up -d
-
-# Ver estado
-docker-compose ps
-
-# Logs de un servicio
-docker logs carrillo-client-service --tail 50
-
-# Reconstruir servicio
-docker-compose up -d --build client-service
-```
-
-### Probar Servicios
-```powershell
-# Via API Gateway (recomendado)
-Invoke-RestMethod http://localhost:8080/client-service/actuator/health
-Invoke-RestMethod http://localhost:8080/case-service/actuator/health
-Invoke-RestMethod http://localhost:8080/payment-service/actuator/health
-
-# Directo (debug)
-Invoke-RestMethod http://localhost:8200/client-service/actuator/health
-```
-
-### Build Maven
-```powershell
-# Build completo
-.\mvnw clean package -DskipTests -T 1C
-
-# Build específico
-.\mvnw package -DskipTests -pl client-service
-```
-
----
-
-## 🔧 CONFIGURACIÓN IMPORTANTE
-
-### Base de Datos (Docker Compose)
-```yaml
-POSTGRES_HOST: postgresql
-POSTGRES_PORT: 5432
-POSTGRES_DB: carrillo_legal_tech
-POSTGRES_USER: carrillo
-POSTGRES_PASSWORD: CarrilloAbogados2025!
-```
-
-### Schemas PostgreSQL
-- `clients` - client-service
-- `cases` - case-service
-- `payments` - payment-service
-- `documents` - document-service
-- `calendar` - calendar-service
-- `notifications` - notification-service
-- `public` - n8n-integration-service
-
----
-
-## 📝 INSTRUCCIÓN PARA EL NUEVO CHAT
 
 Por favor:
+1. Lee los archivos `.github/copilot-instructions.md`, `CLAUDE.md`, y `PROYECTO_ESTADO.md` para contexto completo
+2. Usa el comando `wsl bash -c "..."` para ejecutar comandos de Kubernetes/Minikube
+3. Mantén el patrón de desarrollo establecido (tests de seguridad, eventos NATS, etc.)
 
-1. Lee los archivos de documentación mencionados arriba
-2. Verifica que Docker Compose siga funcionando (`docker-compose ps`)
-3. Pregúntame qué tarea específica quiero abordar de los "Próximos Pasos"
-4. Si hay algún error, diagnostícalo antes de continuar
-
-**Nota sobre el entorno**: Estoy en Windows 11 con Docker Desktop. El proyecto tiene configuración para WSL pero actualmente usamos Docker Desktop directamente.
+¿Qué tarea te gustaría que abordemos?
+```
 
 ---
 
-*Archivo creado para facilitar la continuidad entre sesiones de GitHub Copilot Chat*
+## 📊 ESTADO DETALLADO DEL PROYECTO
+
+### Commits Recientes
+```
+43cd864 feat(security): add comprehensive security tests for client-service lead API
+c331aab ci: modernize CI/CD pipeline + VSCode workspace config
+155e11e feat(client-service): Lead API completa con NATS events y frontend structure
+161d190 docs: update AI context files and continuation prompt
+b7557b0 docs: integrate marketing automation strategy with n8n workflows
+b048fce docs: Add complete business documentation
+f29944a feat(case-service): Complete implementation of case-service microservice
+```
+
+### Tests de Seguridad Implementados (66 total)
+
+**InputValidationSecurityTest (34 tests):**
+- SQL Injection: 11 tests
+- XSS Prevention: 13 tests
+- Path Traversal: 4 tests
+- Request Validation: 4 tests
+- Field Length: 2 tests
+
+**BeanValidationTest (32 tests):**
+- Email: 14 tests
+- Nombre: 3 tests
+- Teléfono: 5 tests
+- Servicio: 6 tests
+- Mensaje: 2 tests
+- Complete: 2 tests
+
+### Configuración VSCode (`.vscode/`)
+- `tasks.json`: 10 tareas rápidas
+- `launch.json`: 8 configuraciones de debug
+- `api-tests.http`: Tests REST Client
+- `extensions.json`: Extensiones recomendadas
+
+### GitHub Actions (`.github/workflows/`)
+- `ci-cd-pipeline.yml`: Build, test, Docker, deploy
+- `pr-validation.yml`: Validación rápida de PRs
+
+---
+
+## 🎯 PRÓXIMOS PASOS RECOMENDADOS
+
+### Opción A: Completar Security Tests en case-service
+Replicar el patrón de tests de seguridad de client-service:
+1. Crear `application-test.yml` con H2 y schema
+2. Crear `InputValidationSecurityTest.java`
+3. Crear `BeanValidationTest.java`
+4. Validar que todos los tests pasen
+
+### Opción B: Implementar calendar-service
+Prioridad alta para la integración con Google Calendar:
+1. Configurar Google Calendar API
+2. Implementar booking system
+3. Agregar eventos NATS para citas
+
+### Opción C: Deploy a GKE Staging
+Preparar el ambiente de staging:
+1. Configurar cluster GKE con créditos gratuitos
+2. Aplicar Helm charts
+3. Configurar secrets de producción
+4. Probar CI/CD pipeline completo
+
+### Opción D: Implementar OAuth2
+Seguridad para el API Gateway:
+1. Configurar Google Workspace OAuth
+2. Integrar con api-gateway
+3. Implementar RBAC
+
+---
+
+## ⚠️ LECCIONES APRENDIDAS (Importante)
+
+### Errores Comunes y Soluciones
+
+| Error | Solución |
+|-------|----------|
+| Schema "CLIENTS" no encontrado (H2) | `INIT=CREATE SCHEMA IF NOT EXISTS clients` en URL |
+| StatusAggregator NoSuchBean | `resilience4j.circuitbreaker.enabled: false` en tests |
+| UUID IllegalArgumentException | Try-catch para aceptar excepción como validación correcta |
+| Email sin TLD aceptado | `@Email` de Jakarta acepta `user@domain` (RFC 5321) |
+
+### Configuración Test Profile Esencial
+```yaml
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS clients
+  jpa:
+    properties:
+      hibernate:
+        default_schema: clients
+resilience4j:
+  circuitbreaker:
+    enabled: false
+```
+
+### Comandos Críticos Windows + WSL
+```powershell
+# Kubernetes/Minikube (SIEMPRE a través de WSL)
+wsl bash -c "kubectl get pods -n carrillo-dev"
+wsl bash -c "minikube status"
+
+# Maven
+.\mvnw clean package -DskipTests -T 1C
+.\mvnw test -pl client-service "-Dtest=InputValidationSecurityTest" "-Dspring.profiles.active=test"
+
+# Docker
+docker-compose up -d
+docker logs carrillo-client-service
+```
+
+---
+
+## 📁 ARCHIVOS DE CONTEXTO
+
+El agente debe leer estos archivos para tener contexto completo:
+
+1. **`.github/copilot-instructions.md`** - Instrucciones detalladas del proyecto
+2. **`CLAUDE.md`** - Contexto técnico completo para AI
+3. **`PROYECTO_ESTADO.md`** - Estado actual del desarrollo
+4. **`docs/business/REQUERIMIENTOS.md`** - 76 requerimientos funcionales + 23 no funcionales
+5. **`docs/business/ARQUITECTURA_FUNCIONAL.md`** - Mapeo microservicios a funciones
+6. **`docs/business/ESTRATEGIA_AUTOMATIZACION.md`** - Integración con n8n
+
+---
+
+## 🔧 STACK TECNOLÓGICO
+
+| Componente | Tecnología | Versión |
+|------------|------------|---------|
+| Backend | Spring Boot | 3.3.13 |
+| Java | OpenJDK | 21 LTS |
+| Spring Cloud | Kubernetes | 3.1.3 |
+| Database | PostgreSQL | 16.2 |
+| Messaging | NATS | 2.10.22 |
+| Container | Docker | 24.x |
+| Orchestration | Kubernetes | 1.34.0 |
+| CI/CD | GitHub Actions | - |
+| Local K8s | Minikube | 1.33.x |
+
+---
+
+*Documento de transición - 19 de Diciembre 2025*

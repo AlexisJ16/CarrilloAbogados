@@ -1,0 +1,81 @@
+# ==================================================
+# 🧪 TEST PROFILE - client-service
+# ==================================================
+# Used for automated testing (unit, integration, security)
+# Uses H2 in-memory database for fast tests
+# ==================================================
+
+spring:
+  application:
+    name: CLIENT-SERVICE
+
+  # H2 In-Memory Database for Tests
+  # INIT creates the 'clients' schema that entities expect
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS clients
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        default_schema: clients
+
+  # Disable Flyway for tests (use Hibernate ddl-auto)
+  flyway:
+    enabled: false
+
+  # H2 Console (for debugging tests)
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # Cloud Kubernetes disabled for tests
+  cloud:
+    kubernetes:
+      enabled: false
+      discovery:
+        enabled: false
+
+# Server configuration
+server:
+  port: 0  # Random port for tests
+  servlet:
+    context-path: ""  # No context path for simpler testing
+
+# NATS disabled for tests
+nats:
+  enabled: false
+  server: nats://localhost:4222
+
+# Logging - minimal for tests
+logging:
+  level:
+    root: WARN
+    com.carrilloabogados: INFO
+    org.springframework.web: WARN
+    org.hibernate: WARN
+
+# Actuator - minimal for tests
+management:
+  endpoints:
+    enabled-by-default: false
+  health:
+    circuitbreakers:
+      enabled: false
+    ratelimiters:
+      enabled: false
+
+# Resilience4j - disabled for tests
+resilience4j:
+  circuitbreaker:
+    enabled: false
+  ratelimiter:
+    enabled: false

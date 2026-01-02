@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 18 de Diciembre, 2025
+**Última Actualización**: 19 de Diciembre, 2025
 
 ## ⚠️ CRÍTICO: ENTORNO WINDOWS + WSL
 
@@ -42,14 +42,23 @@ wsl bash -c "kubectl get pods -A"
 ## CONTEXTO DEL PROYECTO
 
 ### Propósito Dual
-1. **Académico**: Proyecto final curso Plataformas II (entrega 1 diciembre 2025)
+1. **Académico**: Proyecto final curso Plataformas II
 2. **Empresarial**: Plataforma real para bufete Carrillo Abogados, Cali, Colombia
 
 ### Cliente
-- 5 abogados + 2 administrativos
-- Sin presencia digital actual
-- MVP: 18 marzo 2026
-- Presupuesto inicial: $0 (escalar según demanda)
+- **Bufete**: Carrillo ABGD SAS (fundado abril 2001)
+- **Equipo**: 7 abogados + 2 administrativos
+- **Ubicación**: Torre de Cali, Piso 21
+- **Diferenciador**: Dr. Omar Carrillo - 15 años experiencia en SIC
+- **MVP**: 27 marzo 2026
+
+### Métricas Objetivo del Sistema
+| Métrica | Actual | Objetivo |
+|---------|--------|----------|
+| Leads/mes | 20 | 300+ |
+| Tiempo respuesta | 4-24h | < 1 min |
+| Conversión | ~5% | 15%+ |
+| Clientes nuevos/año | ~15 | 100+ |
 
 ## DECISIONES ARQUITECTÓNICAS CRÍTICAS
 
@@ -71,7 +80,7 @@ wsl bash -c "kubectl get pods -A"
 - OAuth2 (cada abogado usa su cuenta @carrilloabgd.com)
 - Trazabilidad legal crítica
 
-## MICROSERVICIOS ACTUALES (7 Activos)
+## MICROSERVICIOS ACTUALES (8 Activos)
 
 ### Infraestructura (1)
 1. api-gateway - Spring Cloud Gateway + OAuth2
@@ -83,11 +92,47 @@ wsl bash -c "kubectl get pods -A"
 5. document-service - Almacenamiento seguro documentos legales (puerto 8500)
 6. calendar-service - Google Calendar API integration (puerto 8600)
 7. notification-service - Email/SMS via Gmail API (puerto 8700)
-8. n8n-integration-service - Bridge con N8N Pro para workflows (puerto 8800)
+8. n8n-integration-service - Bridge con n8n Cloud para workflows (puerto 8800)
 
 ### Eliminados/Deprecados
 - ~~user-service~~ - Migrado a client-service (deshabilitado en Helm)
 - ~~order-service~~ - Nunca existió, era template e-commerce
+
+## INTEGRACIÓN n8n (Marketing Automation)
+
+### 3 MEGA-WORKFLOWS
+
+| MEGA-WORKFLOW | Propósito | Workflows | Nodos | Estado |
+|---------------|-----------|-----------|-------|--------|
+| MW#1: Captura | Lead → Cliente (< 1 min) | 7 | 108 | 28% |
+| MW#2: Retención | Cliente → Recompra | 5 | 72 | Q2 2026 |
+| MW#3: SEO | Tráfico → Lead | 5 | 60 | Q2-Q3 2026 |
+
+### Eventos NATS → n8n
+- `lead.capturado` → MW#1 scoring
+- `cita.agendada` → MW#1 confirmación
+- `caso.cerrado` → MW#2 follow-up
+- `cliente.inactivo` → MW#2 reactivación
+
+### Webhooks n8n → Plataforma
+- `POST /webhook/lead-scored` - Actualizar score en BD
+- `POST /webhook/lead-hot` - Notificar abogado (≥70 pts)
+- `POST /webhook/upsell-detected` - Crear oportunidad
+
+### Lead Scoring (calculado por n8n)
+```
+Base: 30 pts
++ Servicio "marca"/"litigio": +20
++ Mensaje > 50 chars: +10
++ Tiene teléfono: +10
++ Tiene empresa: +10
++ Email corporativo: +10
++ Cargo C-Level: +20
+───────────────────
+HOT:  ≥70 pts
+WARM: 40-69 pts
+COLD: <40 pts
+```
 
 ## STACK TECNOLÓGICO
 

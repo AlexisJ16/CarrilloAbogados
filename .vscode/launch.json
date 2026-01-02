@@ -1,0 +1,82 @@
+{
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "java",
+        "name": "🚀 API Gateway",
+        "request": "launch",
+        "mainClass": "com.carrilloabogados.apigateway.ApiGatewayApplication",
+        "projectName": "api-gateway",
+        "vmArgs": "-Dspring.profiles.active=dev"
+      },
+      {
+        "type": "java",
+        "name": "👥 Client Service",
+        "request": "launch",
+        "mainClass": "com.carrilloabogados.clientservice.ClientServiceApplication",
+        "projectName": "client-service",
+        "vmArgs": "-Dspring.profiles.active=dev"
+      },
+      {
+        "type": "java",
+        "name": "⚖️ Case Service",
+        "request": "launch",
+        "mainClass": "com.carrilloabogados.caseservice.CaseServiceApplication",
+        "projectName": "case-service",
+        "vmArgs": "-Dspring.profiles.active=dev"
+      },
+      {
+        "type": "java",
+        "name": "💰 Payment Service",
+        "request": "launch",
+        "mainClass": "com.carrilloabogados.paymentservice.PaymentServiceApplication",
+        "projectName": "payment-service",
+        "vmArgs": "-Dspring.profiles.active=dev"
+      },
+      {
+        "type": "java",
+        "name": "📄 Document Service",
+        "request": "launch",
+        "mainClass": "com.carrilloabogados.documentservice.DocumentServiceApplication",
+        "projectName": "document-service",
+        "vmArgs": "-Dspring.profiles.active=dev"
+      },
+      {
+        "type": "java",
+        "name": "📅 Calendar Service",
+        "request": "launch",
+        "mainClass": "com.carrilloabogados.calendarservice.CalendarServiceApplication",
+        "projectName": "calendar-service",
+        "vmArgs": "-Dspring.profiles.active=dev"
+      },
+      {
+        "type": "java",
+        "name": "🔔 Notification Service",
+        "request": "launch",
+        "mainClass": "com.carrilloabogados.notificationservice.NotificationServiceApplication",
+        "projectName": "notification-service",
+        "vmArgs": "-Dspring.profiles.active=dev"
+      },
+      {
+        "type": "java",
+        "name": "🔗 N8N Integration Service",
+        "request": "launch",
+        "mainClass": "com.carrilloabogados.n8nintegrationservice.N8nIntegrationServiceApplication",
+        "projectName": "n8n-integration-service",
+        "vmArgs": "-Dspring.profiles.active=dev"
+      }
+    ],
+    "compounds": [
+      {
+        "name": "🏛️ Full Stack (Gateway + Core Services)",
+        "configurations": [
+          "🚀 API Gateway",
+          "👥 Client Service",
+          "⚖️ Case Service"
+        ],
+        "stopAll": true
+      }
+    ]
+  }
+}

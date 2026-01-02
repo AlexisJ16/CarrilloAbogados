@@ -34,6 +34,15 @@ spring:
 server:
   port: 8200
 
+# NATS Configuration
+nats:
+  enabled: ${NATS_ENABLED:false}
+  server: ${NATS_SERVER:nats://localhost:4222}
+  connection-name: client-service
+  reconnect:
+    max-attempts: 60
+    wait-seconds: 2
+
 management:
   endpoints:
     web:

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.carrilloabogados.client.exception.payload.ExceptionMsg;
 import com.carrilloabogados.client.exception.wrapper.AddressNotFoundException;
 import com.carrilloabogados.client.exception.wrapper.CredentialNotFoundException;
+import com.carrilloabogados.client.exception.wrapper.LeadNotFoundException;
 import com.carrilloabogados.client.exception.wrapper.UserObjectNotFoundException;
 import com.carrilloabogados.client.exception.wrapper.VerificationTokenNotFoundException;
 
@@ -24,55 +25,46 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class ApiExceptionHandler {
-	
-	@ExceptionHandler(value = {
-		MethodArgumentNotValidException.class,
-		HttpMessageNotReadableException.class
-	})
-	public <T extends BindException> ResponseEntity<ExceptionMsg> handleValidationException(final T e) {
-		
-		log.info("**ApiExceptionHandler controller, handle validation exception*\n");
-		final var badRequest = HttpStatus.BAD_REQUEST;
-		
-		return new ResponseEntity<>(
-				ExceptionMsg.builder()
-					.msg("*" + e.getBindingResult().getFieldError().getDefaultMessage() + "!**")
-					.httpStatus(badRequest)
-					.timestamp(ZonedDateTime
-							.now(ZoneId.systemDefault()))
-					.build(), badRequest);
-	}
-	
-	@ExceptionHandler(value = {
-		UserObjectNotFoundException.class,
-		CredentialNotFoundException.class,
-		VerificationTokenNotFoundException.class,
-		AddressNotFoundException.class
-	})
-	public <T extends RuntimeException> ResponseEntity<ExceptionMsg> handleApiRequestException(final T e) {
-		
-		log.info("**ApiExceptionHandler controller, handle API request*\n");
-		final var badRequest = HttpStatus.BAD_REQUEST;
-		
-		return new ResponseEntity<>(
-				ExceptionMsg.builder()
-					.msg("#### " + e.getMessage() + "! ####")
-					.httpStatus(badRequest)
-					.timestamp(ZonedDateTime
-							.now(ZoneId.systemDefault()))
-					.build(), badRequest);
-	}
-	
-	
-	
+
+    @ExceptionHandler(value = {
+            MethodArgumentNotValidException.class,
+            HttpMessageNotReadableException.class
+    })
+    public <T extends BindException> ResponseEntity<ExceptionMsg> handleValidationException(final T e) {
+
+        log.info("**ApiExceptionHandler controller, handle validation exception*\n");
+        final var badRequest = HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<>(
+                ExceptionMsg.builder()
+                        .msg("*" + e.getBindingResult().getFieldError().getDefaultMessage() + "!**")
+                        .httpStatus(badRequest)
+                        .timestamp(ZonedDateTime
+                                .now(ZoneId.systemDefault()))
+                        .build(),
+                badRequest);
+    }
+
+    @ExceptionHandler(value = {
+            UserObjectNotFoundException.class,
+            CredentialNotFoundException.class,
+            VerificationTokenNotFoundException.class,
+            AddressNotFoundException.class,
+            LeadNotFoundException.class
+    })
+    public <T extends RuntimeException> ResponseEntity<ExceptionMsg> handleApiRequestException(final T e) {
+
+        log.info("**ApiExceptionHandler controller, handle API request*\n");
+        final var badRequest = HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<>(
+                ExceptionMsg.builder()
+                        .msg("#### " + e.getMessage() + "! ####")
+                        .httpStatus(badRequest)
+                        .timestamp(ZonedDateTime
+                                .now(ZoneId.systemDefault()))
+                        .build(),
+                badRequest);
+    }
+
 }
-
-
-
-
-
-
-
-
-
-

@@ -190,12 +190,17 @@ kubectl logs -f deployment/api-gateway -n carrillo-dev
 ```
 
 ### Documentación Clave
-- Arquitectura: [docs/architecture/ARCHITECTURE.md](../architecture/ARCHITECTURE.md)
+- **NUEVO** Modelo de Negocio: [docs/business/MODELO_NEGOCIO.md](../business/MODELO_NEGOCIO.md)
+- **NUEVO** Requerimientos: [docs/business/REQUERIMIENTOS.md](../business/REQUERIMIENTOS.md)
+- **NUEVO** Roles: [docs/business/ROLES_USUARIOS.md](../business/ROLES_USUARIOS.md)
+- **NUEVO** Casos de Uso: [docs/business/CASOS_USO.md](../business/CASOS_USO.md)
+- **NUEVO** Arquitectura Funcional: [docs/business/ARQUITECTURA_FUNCIONAL.md](../business/ARQUITECTURA_FUNCIONAL.md)
+- Arquitectura Técnica: [docs/architecture/ARCHITECTURE.md](../architecture/ARCHITECTURE.md)
 - Base de datos: [docs/architecture/ADR-005-database-strategy.md](../architecture/ADR-005-database-strategy.md)
 - Operaciones: [docs/operations/OPERATIONS.md](../operations/OPERATIONS.md)
 - Versiones: [docs/development/VERSION_STABILITY.md](../development/VERSION_STABILITY.md)
 
 ---
 
-*Generado: 18 de Diciembre, 2024*  
+*Generado: 19 de Diciembre, 2025*  
 *Mantener actualizado con cada cambio significativo del proyecto*

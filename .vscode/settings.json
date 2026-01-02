@@ -1,0 +1,176 @@
+{
+    // ========================================
+    // CARRILLO ABOGADOS - VS CODE WORKSPACE
+    // ========================================
+
+    // === JAVA ===
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m",
+    "java.import.maven.enabled": true,
+    "java.maven.downloadSources": true,
+    "java.saveActions.organizeImports": true,
+    
+    // === SPRING BOOT ===
+    "spring-boot.ls.javahome": null,
+    "boot-java.rewrite.reconcile": true,
+    
+    // === EDITOR ===
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+    },
+    "editor.rulers": [120],
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    
+    // === FILES ===
+    "files.exclude": {
+        "**/.git": true,
+        "**/.mvn": true,
+        "**/target": true,
+        "**/*.class": true
+    },
+    "files.watcherExclude": {
+        "**/target/**": true,
+        "**/.git/objects/**": true
+    },
+    "files.associations": {
+        "*.yaml": "yaml",
+        "*.yml": "yaml"
+    },
+    
+    // === YAML (Kubernetes/Helm) ===
+    "yaml.schemas": {
+        "kubernetes": [
+            "k8s-manifests/**/*.yaml",
+            "infrastructure/k8s-manifests/**/*.yaml"
+        ]
+    },
+    "[yaml]": {
+        "editor.tabSize": 2
+    },
+    
+    // === MARKDOWN (Documentation) ===
+    "[markdown]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": false
+        }
+    },
+    
+    // === TERMINAL ===
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.scrollback": 5000,
+    
+    // === SEARCH ===
+    "search.exclude": {
+        "**/target": true,
+        "**/node_modules": true,
+        "**/*.class": true
+    },
+    
+    // === GIT ===
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    
+    // === EXTENSIONS ===
+    "redhat.telemetry.enabled": false,
+    
+    // === COPILOT ===
+    "github.copilot.enable": {
+        "*": true,
+        "yaml": true,
+        "markdown": true,
+        "java": true,
+        "xml": true,
+        "dockerfile": true,
+        "typescript": true,
+        "typescriptreact": true,
+        "javascript": true,
+        "javascriptreact": true
+    },
+    "github.copilot.editor.enableAutoCompletions": true,
+    
+    // === REST CLIENT ===
+    "rest-client.environmentVariables": {
+        "$shared": {
+            "baseUrl": "http://localhost:8080"
+        },
+        "local": {
+            "baseUrl": "http://localhost:8080"
+        },
+        "docker": {
+            "baseUrl": "http://localhost:8080"
+        }
+    },
+    
+    // === GITLENS ===
+    "gitlens.hovers.currentLine.over": "line",
+    "gitlens.codeLens.enabled": true,
+    
+    // === DOCKER ===
+    "docker.showStartPage": false,
+    
+    // === TYPESCRIPT/JAVASCRIPT (Frontend) ===
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    
+    // === TAILWIND CSS ===
+    "tailwindCSS.includeLanguages": {
+        "typescript": "javascript",
+        "typescriptreact": "javascript"
+    },
+    "tailwindCSS.experimental.classRegex": [
+        ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+    ],
+    
+    // === ESLINT ===
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+    "eslint.workingDirectories": [
+        { "directory": "frontend", "changeProcessCWD": true }
+    ],
+    
+    // === EMMET ===
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact",
+        "typescript": "typescriptreact"
+    },
+    
+    // === EXPLORER ===
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, .npmrc",
+        "tsconfig.json": "tsconfig.*.json",
+        ".eslintrc*": ".eslintignore, .prettierrc*, .prettierignore",
+        "next.config.*": "next-env.d.ts",
+        "pom.xml": "mvnw, mvnw.cmd, .mvn"
+    },
+    
+    // === BRACKET PAIR COLORIZATION ===
+    "editor.bracketPairColorization.enabled": true,
+    "editor.guides.bracketPairs": "active"
+}

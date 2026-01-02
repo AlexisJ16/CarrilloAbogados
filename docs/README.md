@@ -1,7 +1,7 @@
 # 📚 Índice Maestro de Documentación
 
 **Proyecto**: Carrillo Abogados Legal Tech Platform  
-**Última Actualización**: 18 de Diciembre, 2024  
+**Última Actualización**: 19 de Diciembre, 2025  
 **Estado**: 🔄 En desarrollo activo
 
 ---
@@ -10,27 +10,40 @@
 
 ```
 docs/
-├── 📊 tracking/         → Trazabilidad del proyecto
+├── 💼 business/         → Documentación de negocio ⭐ NUEVO
 ├── 🤖 ai-context/       → Instrucciones para IAs
 ├── 🏗️ architecture/     → Decisiones arquitectónicas
 ├── 📡 api/              → Documentación de APIs
 ├── 💻 development/      → Guías de desarrollo
 ├── ⚙️ operations/       → Deployment y operaciones
-└── 🔒 security/         → Políticas de seguridad
+├── 🔒 security/         → Políticas de seguridad
+└── 📦 archive/          → Documentos obsoletos
 ```
 
 ---
 
-## 📊 TRACKING (Trazabilidad del Proyecto)
+## ⭐ BUSINESS (Documentación de Negocio)
 
-Documentos de seguimiento del estado del proyecto, auditorías y planificación.
+**Documentación fundamental del modelo de negocio y requerimientos.**
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
-| [PLAN_TRABAJO.md](tracking/PLAN_TRABAJO.md) | Plan de trabajo por fases | ✅ |
-| [RESUMEN_EJECUTIVO.md](tracking/RESUMEN_EJECUTIVO.md) | Resumen ejecutivo del proyecto | ✅ |
-| [DOCUMENTACION_ANALISIS.md](tracking/DOCUMENTACION_ANALISIS.md) | Análisis de gaps documentales | ✅ |
-| [AUDITORIA_DEPURACION_REPORTE.md](tracking/AUDITORIA_DEPURACION_REPORTE.md) | Reporte de auditoría y limpieza | ✅ |
+| [MODELO_NEGOCIO.md](business/MODELO_NEGOCIO.md) | Contexto del bufete, 5 áreas de práctica, visión del portal | ✅ |
+| [REQUERIMIENTOS.md](business/REQUERIMIENTOS.md) | Requerimientos funcionales (64) y no funcionales (23) | ✅ |
+| [ROLES_USUARIOS.md](business/ROLES_USUARIOS.md) | 4 roles: Administrador, Abogado, Cliente, Visitante | ✅ |
+| [CASOS_USO.md](business/CASOS_USO.md) | Flujos detallados por actor con diagramas | ✅ |
+| [ARQUITECTURA_FUNCIONAL.md](business/ARQUITECTURA_FUNCIONAL.md) | Mapeo microservicio → función de negocio | ✅ |
+| [ESTRATEGIA_AUTOMATIZACION.md](business/ESTRATEGIA_AUTOMATIZACION.md) | Integración plataforma ↔ n8n (3 MEGA-WORKFLOWS) | ✅ NEW |
+
+### Subcarpetas
+- `Analizar_Ya/` - Documentación de marketing y automatizaciones n8n (4 documentos)
+- `Documentación_Proporcionada/` - Archivos originales del cliente (briefs, PDFs)
+
+### Archivos de Referencia (PDFs)
+- `Brief de requerimientos.pdf` - Cuestionario original
+- `Respuestas del Brief de requerimientos.xlsx` - Respuestas del cliente
+- `Planeación empresarial para abogados.pdf` - Plan empresarial
+- `Estimacion de clientes y presupuesto solo de pauta.pdf` - Presupuesto marketing
 
 ---
 
@@ -42,101 +55,105 @@ Documentos de contexto y memoria para inteligencias artificiales.
 |-----------|-------------|-----------|
 | [AI_CONTEXT_MASTER.md](ai-context/AI_CONTEXT_MASTER.md) | Contexto maestro (resumen completo) | Todas |
 | [COPILOT_INSTRUCTIONS.md](ai-context/COPILOT_INSTRUCTIONS.md) | Instrucciones específicas Copilot | GitHub Copilot |
+| [PROMPT_CONTINUACION.md](ai-context/PROMPT_CONTINUACION.md) | Prompt para continuar sesiones | Todas |
 | [../CLAUDE.md](../CLAUDE.md) | Contexto completo Claude Code | Claude Code |
+| [../.github/copilot-instructions.md](../.github/copilot-instructions.md) | Instrucciones GitHub Copilot | GitHub Copilot |
 
-> **Nota**: CLAUDE.md permanece en la raíz por compatibilidad con Claude Code
+> **Nota**: CLAUDE.md y copilot-instructions.md permanecen en sus ubicaciones por compatibilidad
 
 ---
 
-## 🏗️ ARCHITECTURE (Decisiones Arquitectónicas)
+## 🏗️ ARCHITECTURE (Arquitectura)
 
-Documentación de arquitectura y ADRs (Architecture Decision Records).
+Decisiones de arquitectura y diseño técnico.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
-| [ARCHITECTURE.md](architecture/ARCHITECTURE.md) | Visión general de arquitectura | ✅ |
-| [ADR-005-database-strategy.md](architecture/ADR-005-database-strategy.md) | Estrategia de base de datos | ✅ |
+| [ARCHITECTURE.md](architecture/ARCHITECTURE.md) | Arquitectura general del sistema | ✅ |
+| [ADR-005-database-strategy.md](architecture/ADR-005-database-strategy.md) | Estrategia de base de datos compartida | ✅ |
 
 ---
 
 ## 📡 API (Documentación de APIs)
 
-Documentación de endpoints y contratos de servicio.
+Documentación de endpoints y contratos de API.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
-| *(pendiente)* | OpenAPI specs por servicio | ⏳ |
-| *(pendiente)* | Guía de integración | ⏳ |
+| [openapi/](api/openapi/) | Especificaciones OpenAPI por servicio | ⏳ |
+
+> **Nota**: Las APIs están documentadas con Swagger/OpenAPI en cada microservicio en `/swagger-ui.html`
 
 ---
 
-## 💻 DEVELOPMENT (Guías de Desarrollo)
+## 💻 DEVELOPMENT (Desarrollo)
 
-Guías para desarrolladores y estándares de código.
+Guías y estándares de desarrollo.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
-| [VERSION_STABILITY.md](development/VERSION_STABILITY.md) | Gestión de versiones y compatibilidad | ✅ |
-| *(pendiente)* | CONTRIBUTING.md | ⏳ |
-| *(pendiente)* | CODING_STANDARDS.md | ⏳ |
+| [VERSION_STABILITY.md](development/VERSION_STABILITY.md) | Control de versiones estables | ✅ |
 
 ---
 
 ## ⚙️ OPERATIONS (Operaciones)
 
-Guías de deployment, operaciones y checklist.
+Guías de despliegue y operaciones.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
-| [OPERATIONS.md](operations/OPERATIONS.md) | Guía de operaciones | ✅ |
-| [DEPLOYMENT_CHECKLIST.md](operations/DEPLOYMENT_CHECKLIST.md) | Checklist de deployment | ✅ |
-| [OPS_README.md](operations/OPS_README.md) | README de operaciones | ✅ |
+| [OPERATIONS.md](operations/OPERATIONS.md) | Guía de operaciones Kubernetes | ✅ |
+| [OPS_README.md](operations/OPS_README.md) | Comandos operacionales rápidos | ✅ |
 
 ---
 
 ## 🔒 SECURITY (Seguridad)
 
-Políticas de seguridad y compliance.
+Políticas y configuraciones de seguridad.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
-| *(pendiente)* | SECURITY_POLICY.md | ⏳ |
-| *(pendiente)* | COMPLIANCE.md | ⏳ |
+| *Por crear* | Políticas de seguridad | ⏳ |
 
 ---
 
-## 📄 DOCUMENTOS RAÍZ
+## 📦 ARCHIVE (Documentos Obsoletos)
 
-Documentos principales en la raíz del proyecto.
+Documentos archivados para referencia histórica.
+
+| Documento | Razón de Archivo | Fecha |
+|-----------|------------------|-------|
+| PLAN_TRABAJO.md | Plan obsoleto (11 Dic 2025) | 19 Dic 2025 |
+| RESUMEN_EJECUTIVO.md | Superado por documentación actual | 19 Dic 2025 |
+| DOCUMENTACION_ANALISIS.md | Análisis completado | 19 Dic 2025 |
+| AUDITORIA_DEPURACION_REPORTE.md | Auditoría antigua (11 Dic 2025) | 19 Dic 2025 |
+
+---
+
+## 📖 OTROS DOCUMENTOS EN RAÍZ
 
 | Documento | Descripción |
 |-----------|-------------|
-| [README.md](../README.md) | README principal del proyecto |
-| [PROYECTO_ESTADO.md](../PROYECTO_ESTADO.md) | Estado actual del proyecto |
-| [CLAUDE.md](../CLAUDE.md) | Contexto para Claude Code |
+| [../PROYECTO_ESTADO.md](../PROYECTO_ESTADO.md) | Estado actual del proyecto (mantener actualizado) |
+| [../CLAUDE.md](../CLAUDE.md) | Contexto para Claude Code |
+| [../COPILOT_PROMPT.md](../COPILOT_PROMPT.md) | Prompt inicial para GitHub Copilot |
+| [../README.md](../README.md) | README principal del repositorio |
 
 ---
 
-## 🔗 RECURSOS ADICIONALES
+## 🔗 NAVEGACIÓN RÁPIDA
 
-### Configuración Obsidian
-- [OBSIDIAN_SETUP.md](OBSIDIAN_SETUP.md) - Guía para usar docs/ como vault de Obsidian
+### Para Nuevos Desarrolladores
+1. Leer [MODELO_NEGOCIO.md](business/MODELO_NEGOCIO.md) - Entender el negocio
+2. Leer [ROLES_USUARIOS.md](business/ROLES_USUARIOS.md) - Entender los usuarios
+3. Leer [ARQUITECTURA_FUNCIONAL.md](business/ARQUITECTURA_FUNCIONAL.md) - Entender la arquitectura
+4. Leer [../CLAUDE.md](../CLAUDE.md) - Contexto técnico completo
 
-### Enlaces Externos
-- [Spring Boot 3.3.x Docs](https://docs.spring.io/spring-boot/docs/3.3.x/reference/html/)
-- [Spring Cloud 2023.0.x Docs](https://docs.spring.io/spring-cloud/docs/2023.0.x/reference/html/)
-- [Kubernetes Docs](https://kubernetes.io/docs/)
-
----
-
-## 📈 ESTADÍSTICAS
-
-| Métrica | Valor |
-|---------|-------|
-| Total documentos | 15+ |
-| Cobertura estimada | ~40% |
-| Última reorganización | 18 Dic 2024 |
+### Para IAs
+1. [AI_CONTEXT_MASTER.md](ai-context/AI_CONTEXT_MASTER.md) - Resumen ejecutivo
+2. [../PROYECTO_ESTADO.md](../PROYECTO_ESTADO.md) - Estado actual
+3. Documentación de negocio en `business/`
 
 ---
 
-*Mantener este índice actualizado con cada nuevo documento*
+*Última actualización: 19 de Diciembre, 2025*

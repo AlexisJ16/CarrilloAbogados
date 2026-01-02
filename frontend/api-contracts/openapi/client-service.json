@@ -1,0 +1,1843 @@
+﻿{
+    "openapi":  "3.0.1",
+    "info":  {
+                 "title":  "OpenAPI definition",
+                 "version":  "v0"
+             },
+    "servers":  [
+                    {
+                        "url":  "http://localhost:8200/client-service",
+                        "description":  "Generated server url"
+                    }
+                ],
+    "paths":  {
+                  "/api/verificationTokens":  {
+                                                  "get":  {
+                                                              "tags":  [
+                                                                           "verification-token-resource"
+                                                                       ],
+                                                              "operationId":  "findAll",
+                                                              "responses":  {
+                                                                                "200":  {
+                                                                                            "description":  "OK",
+                                                                                            "content":  {
+                                                                                                            "*/*":  {
+                                                                                                                        "schema":  {
+                                                                                                                                       "$ref":  "#/components/schemas/DtoCollectionResponseVerificationTokenDto"
+                                                                                                                                   }
+                                                                                                                    }
+                                                                                                        }
+                                                                                        }
+                                                                            }
+                                                          },
+                                                  "put":  {
+                                                              "tags":  [
+                                                                           "verification-token-resource"
+                                                                       ],
+                                                              "operationId":  "update",
+                                                              "requestBody":  {
+                                                                                  "content":  {
+                                                                                                  "application/json":  {
+                                                                                                                           "schema":  {
+                                                                                                                                          "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                                      }
+                                                                                                                       }
+                                                                                              },
+                                                                                  "required":  true
+                                                                              },
+                                                              "responses":  {
+                                                                                "200":  {
+                                                                                            "description":  "OK",
+                                                                                            "content":  {
+                                                                                                            "*/*":  {
+                                                                                                                        "schema":  {
+                                                                                                                                       "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                                   }
+                                                                                                                    }
+                                                                                                        }
+                                                                                        }
+                                                                            }
+                                                          },
+                                                  "post":  {
+                                                               "tags":  [
+                                                                            "verification-token-resource"
+                                                                        ],
+                                                               "operationId":  "save",
+                                                               "requestBody":  {
+                                                                                   "content":  {
+                                                                                                   "application/json":  {
+                                                                                                                            "schema":  {
+                                                                                                                                           "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                                       }
+                                                                                                                        }
+                                                                                               },
+                                                                                   "required":  true
+                                                                               },
+                                                               "responses":  {
+                                                                                 "200":  {
+                                                                                             "description":  "OK",
+                                                                                             "content":  {
+                                                                                                             "*/*":  {
+                                                                                                                         "schema":  {
+                                                                                                                                        "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                                    }
+                                                                                                                     }
+                                                                                                         }
+                                                                                         }
+                                                                             }
+                                                           }
+                                              },
+                  "/api/verificationTokens/{verificationTokenId}":  {
+                                                                        "get":  {
+                                                                                    "tags":  [
+                                                                                                 "verification-token-resource"
+                                                                                             ],
+                                                                                    "operationId":  "findById",
+                                                                                    "parameters":  [
+                                                                                                       {
+                                                                                                           "name":  "verificationTokenId",
+                                                                                                           "in":  "path",
+                                                                                                           "required":  true,
+                                                                                                           "schema":  {
+                                                                                                                          "type":  "string"
+                                                                                                                      }
+                                                                                                       }
+                                                                                                   ],
+                                                                                    "responses":  {
+                                                                                                      "200":  {
+                                                                                                                  "description":  "OK",
+                                                                                                                  "content":  {
+                                                                                                                                  "*/*":  {
+                                                                                                                                              "schema":  {
+                                                                                                                                                             "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                                                         }
+                                                                                                                                          }
+                                                                                                                              }
+                                                                                                              }
+                                                                                                  }
+                                                                                },
+                                                                        "put":  {
+                                                                                    "tags":  [
+                                                                                                 "verification-token-resource"
+                                                                                             ],
+                                                                                    "operationId":  "update_1",
+                                                                                    "parameters":  [
+                                                                                                       {
+                                                                                                           "name":  "verificationTokenId",
+                                                                                                           "in":  "path",
+                                                                                                           "required":  true,
+                                                                                                           "schema":  {
+                                                                                                                          "type":  "string"
+                                                                                                                      }
+                                                                                                       }
+                                                                                                   ],
+                                                                                    "requestBody":  {
+                                                                                                        "content":  {
+                                                                                                                        "application/json":  {
+                                                                                                                                                 "schema":  {
+                                                                                                                                                                "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                                                            }
+                                                                                                                                             }
+                                                                                                                    },
+                                                                                                        "required":  true
+                                                                                                    },
+                                                                                    "responses":  {
+                                                                                                      "200":  {
+                                                                                                                  "description":  "OK",
+                                                                                                                  "content":  {
+                                                                                                                                  "*/*":  {
+                                                                                                                                              "schema":  {
+                                                                                                                                                             "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                                                         }
+                                                                                                                                          }
+                                                                                                                              }
+                                                                                                              }
+                                                                                                  }
+                                                                                },
+                                                                        "delete":  {
+                                                                                       "tags":  [
+                                                                                                    "verification-token-resource"
+                                                                                                ],
+                                                                                       "operationId":  "deleteById",
+                                                                                       "parameters":  [
+                                                                                                          {
+                                                                                                              "name":  "verificationTokenId",
+                                                                                                              "in":  "path",
+                                                                                                              "required":  true,
+                                                                                                              "schema":  {
+                                                                                                                             "type":  "string"
+                                                                                                                         }
+                                                                                                          }
+                                                                                                      ],
+                                                                                       "responses":  {
+                                                                                                         "200":  {
+                                                                                                                     "description":  "OK",
+                                                                                                                     "content":  {
+                                                                                                                                     "*/*":  {
+                                                                                                                                                 "schema":  {
+                                                                                                                                                                "type":  "boolean"
+                                                                                                                                                            }
+                                                                                                                                             }
+                                                                                                                                 }
+                                                                                                                 }
+                                                                                                     }
+                                                                                   }
+                                                                    },
+                  "/api/users":  {
+                                     "get":  {
+                                                 "tags":  [
+                                                              "user-resource"
+                                                          ],
+                                                 "operationId":  "findAll_1",
+                                                 "responses":  {
+                                                                   "200":  {
+                                                                               "description":  "OK",
+                                                                               "content":  {
+                                                                                               "*/*":  {
+                                                                                                           "schema":  {
+                                                                                                                          "$ref":  "#/components/schemas/DtoCollectionResponseUserDto"
+                                                                                                                      }
+                                                                                                       }
+                                                                                           }
+                                                                           }
+                                                               }
+                                             },
+                                     "put":  {
+                                                 "tags":  [
+                                                              "user-resource"
+                                                          ],
+                                                 "operationId":  "update_2",
+                                                 "requestBody":  {
+                                                                     "content":  {
+                                                                                     "application/json":  {
+                                                                                                              "schema":  {
+                                                                                                                             "$ref":  "#/components/schemas/UserDto"
+                                                                                                                         }
+                                                                                                          }
+                                                                                 },
+                                                                     "required":  true
+                                                                 },
+                                                 "responses":  {
+                                                                   "200":  {
+                                                                               "description":  "OK",
+                                                                               "content":  {
+                                                                                               "*/*":  {
+                                                                                                           "schema":  {
+                                                                                                                          "$ref":  "#/components/schemas/UserDto"
+                                                                                                                      }
+                                                                                                       }
+                                                                                           }
+                                                                           }
+                                                               }
+                                             },
+                                     "post":  {
+                                                  "tags":  [
+                                                               "user-resource"
+                                                           ],
+                                                  "operationId":  "save_1",
+                                                  "requestBody":  {
+                                                                      "content":  {
+                                                                                      "application/json":  {
+                                                                                                               "schema":  {
+                                                                                                                              "$ref":  "#/components/schemas/UserDto"
+                                                                                                                          }
+                                                                                                           }
+                                                                                  },
+                                                                      "required":  true
+                                                                  },
+                                                  "responses":  {
+                                                                    "200":  {
+                                                                                "description":  "OK",
+                                                                                "content":  {
+                                                                                                "*/*":  {
+                                                                                                            "schema":  {
+                                                                                                                           "$ref":  "#/components/schemas/UserDto"
+                                                                                                                       }
+                                                                                                        }
+                                                                                            }
+                                                                            }
+                                                                }
+                                              }
+                                 },
+                  "/api/users/{userId}":  {
+                                              "get":  {
+                                                          "tags":  [
+                                                                       "user-resource"
+                                                                   ],
+                                                          "operationId":  "findById_1",
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "userId",
+                                                                                 "in":  "path",
+                                                                                 "required":  true,
+                                                                                 "schema":  {
+                                                                                                "type":  "string"
+                                                                                            }
+                                                                             }
+                                                                         ],
+                                                          "responses":  {
+                                                                            "200":  {
+                                                                                        "description":  "OK",
+                                                                                        "content":  {
+                                                                                                        "*/*":  {
+                                                                                                                    "schema":  {
+                                                                                                                                   "$ref":  "#/components/schemas/UserDto"
+                                                                                                                               }
+                                                                                                                }
+                                                                                                    }
+                                                                                    }
+                                                                        }
+                                                      },
+                                              "put":  {
+                                                          "tags":  [
+                                                                       "user-resource"
+                                                                   ],
+                                                          "operationId":  "update_3",
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "userId",
+                                                                                 "in":  "path",
+                                                                                 "required":  true,
+                                                                                 "schema":  {
+                                                                                                "type":  "string"
+                                                                                            }
+                                                                             }
+                                                                         ],
+                                                          "requestBody":  {
+                                                                              "content":  {
+                                                                                              "application/json":  {
+                                                                                                                       "schema":  {
+                                                                                                                                      "$ref":  "#/components/schemas/UserDto"
+                                                                                                                                  }
+                                                                                                                   }
+                                                                                          },
+                                                                              "required":  true
+                                                                          },
+                                                          "responses":  {
+                                                                            "200":  {
+                                                                                        "description":  "OK",
+                                                                                        "content":  {
+                                                                                                        "*/*":  {
+                                                                                                                    "schema":  {
+                                                                                                                                   "$ref":  "#/components/schemas/UserDto"
+                                                                                                                               }
+                                                                                                                }
+                                                                                                    }
+                                                                                    }
+                                                                        }
+                                                      },
+                                              "delete":  {
+                                                             "tags":  [
+                                                                          "user-resource"
+                                                                      ],
+                                                             "operationId":  "deleteById_1",
+                                                             "parameters":  [
+                                                                                {
+                                                                                    "name":  "userId",
+                                                                                    "in":  "path",
+                                                                                    "required":  true,
+                                                                                    "schema":  {
+                                                                                                   "type":  "string"
+                                                                                               }
+                                                                                }
+                                                                            ],
+                                                             "responses":  {
+                                                                               "200":  {
+                                                                                           "description":  "OK",
+                                                                                           "content":  {
+                                                                                                           "*/*":  {
+                                                                                                                       "schema":  {
+                                                                                                                                      "type":  "boolean"
+                                                                                                                                  }
+                                                                                                                   }
+                                                                                                       }
+                                                                                       }
+                                                                           }
+                                                         }
+                                          },
+                  "/api/leads/{leadId}":  {
+                                              "get":  {
+                                                          "tags":  [
+                                                                       "lead-resource"
+                                                                   ],
+                                                          "operationId":  "findById_2",
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "leadId",
+                                                                                 "in":  "path",
+                                                                                 "required":  true,
+                                                                                 "schema":  {
+                                                                                                "type":  "string"
+                                                                                            }
+                                                                             }
+                                                                         ],
+                                                          "responses":  {
+                                                                            "200":  {
+                                                                                        "description":  "OK",
+                                                                                        "content":  {
+                                                                                                        "*/*":  {
+                                                                                                                    "schema":  {
+                                                                                                                                   "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                               }
+                                                                                                                }
+                                                                                                    }
+                                                                                    }
+                                                                        }
+                                                      },
+                                              "put":  {
+                                                          "tags":  [
+                                                                       "lead-resource"
+                                                                   ],
+                                                          "operationId":  "update_4",
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "leadId",
+                                                                                 "in":  "path",
+                                                                                 "required":  true,
+                                                                                 "schema":  {
+                                                                                                "type":  "string"
+                                                                                            }
+                                                                             }
+                                                                         ],
+                                                          "requestBody":  {
+                                                                              "content":  {
+                                                                                              "application/json":  {
+                                                                                                                       "schema":  {
+                                                                                                                                      "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                                  }
+                                                                                                                   }
+                                                                                          },
+                                                                              "required":  true
+                                                                          },
+                                                          "responses":  {
+                                                                            "200":  {
+                                                                                        "description":  "OK",
+                                                                                        "content":  {
+                                                                                                        "*/*":  {
+                                                                                                                    "schema":  {
+                                                                                                                                   "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                               }
+                                                                                                                }
+                                                                                                    }
+                                                                                    }
+                                                                        }
+                                                      },
+                                              "delete":  {
+                                                             "tags":  [
+                                                                          "lead-resource"
+                                                                      ],
+                                                             "operationId":  "deleteById_2",
+                                                             "parameters":  [
+                                                                                {
+                                                                                    "name":  "leadId",
+                                                                                    "in":  "path",
+                                                                                    "required":  true,
+                                                                                    "schema":  {
+                                                                                                   "type":  "string"
+                                                                                               }
+                                                                                }
+                                                                            ],
+                                                             "responses":  {
+                                                                               "200":  {
+                                                                                           "description":  "OK"
+                                                                                       }
+                                                                           }
+                                                         }
+                                          },
+                  "/api/credentials":  {
+                                           "get":  {
+                                                       "tags":  [
+                                                                    "credential-resource"
+                                                                ],
+                                                       "operationId":  "findAll_3",
+                                                       "responses":  {
+                                                                         "200":  {
+                                                                                     "description":  "OK",
+                                                                                     "content":  {
+                                                                                                     "*/*":  {
+                                                                                                                 "schema":  {
+                                                                                                                                "$ref":  "#/components/schemas/DtoCollectionResponseCredentialDto"
+                                                                                                                            }
+                                                                                                             }
+                                                                                                 }
+                                                                                 }
+                                                                     }
+                                                   },
+                                           "put":  {
+                                                       "tags":  [
+                                                                    "credential-resource"
+                                                                ],
+                                                       "operationId":  "update_5",
+                                                       "requestBody":  {
+                                                                           "content":  {
+                                                                                           "application/json":  {
+                                                                                                                    "schema":  {
+                                                                                                                                   "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                               }
+                                                                                                                }
+                                                                                       },
+                                                                           "required":  true
+                                                                       },
+                                                       "responses":  {
+                                                                         "200":  {
+                                                                                     "description":  "OK",
+                                                                                     "content":  {
+                                                                                                     "*/*":  {
+                                                                                                                 "schema":  {
+                                                                                                                                "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                            }
+                                                                                                             }
+                                                                                                 }
+                                                                                 }
+                                                                     }
+                                                   },
+                                           "post":  {
+                                                        "tags":  [
+                                                                     "credential-resource"
+                                                                 ],
+                                                        "operationId":  "save_2",
+                                                        "requestBody":  {
+                                                                            "content":  {
+                                                                                            "application/json":  {
+                                                                                                                     "schema":  {
+                                                                                                                                    "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                                }
+                                                                                                                 }
+                                                                                        },
+                                                                            "required":  true
+                                                                        },
+                                                        "responses":  {
+                                                                          "200":  {
+                                                                                      "description":  "OK",
+                                                                                      "content":  {
+                                                                                                      "*/*":  {
+                                                                                                                  "schema":  {
+                                                                                                                                 "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                             }
+                                                                                                              }
+                                                                                                  }
+                                                                                  }
+                                                                      }
+                                                    }
+                                       },
+                  "/api/credentials/{credentialId}":  {
+                                                          "get":  {
+                                                                      "tags":  [
+                                                                                   "credential-resource"
+                                                                               ],
+                                                                      "operationId":  "findById_3",
+                                                                      "parameters":  [
+                                                                                         {
+                                                                                             "name":  "credentialId",
+                                                                                             "in":  "path",
+                                                                                             "required":  true,
+                                                                                             "schema":  {
+                                                                                                            "type":  "string"
+                                                                                                        }
+                                                                                         }
+                                                                                     ],
+                                                                      "responses":  {
+                                                                                        "200":  {
+                                                                                                    "description":  "OK",
+                                                                                                    "content":  {
+                                                                                                                    "*/*":  {
+                                                                                                                                "schema":  {
+                                                                                                                                               "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                                           }
+                                                                                                                            }
+                                                                                                                }
+                                                                                                }
+                                                                                    }
+                                                                  },
+                                                          "put":  {
+                                                                      "tags":  [
+                                                                                   "credential-resource"
+                                                                               ],
+                                                                      "operationId":  "update_6",
+                                                                      "parameters":  [
+                                                                                         {
+                                                                                             "name":  "credentialId",
+                                                                                             "in":  "path",
+                                                                                             "required":  true,
+                                                                                             "schema":  {
+                                                                                                            "type":  "string"
+                                                                                                        }
+                                                                                         }
+                                                                                     ],
+                                                                      "requestBody":  {
+                                                                                          "content":  {
+                                                                                                          "application/json":  {
+                                                                                                                                   "schema":  {
+                                                                                                                                                  "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                                              }
+                                                                                                                               }
+                                                                                                      },
+                                                                                          "required":  true
+                                                                                      },
+                                                                      "responses":  {
+                                                                                        "200":  {
+                                                                                                    "description":  "OK",
+                                                                                                    "content":  {
+                                                                                                                    "*/*":  {
+                                                                                                                                "schema":  {
+                                                                                                                                               "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                                           }
+                                                                                                                            }
+                                                                                                                }
+                                                                                                }
+                                                                                    }
+                                                                  },
+                                                          "delete":  {
+                                                                         "tags":  [
+                                                                                      "credential-resource"
+                                                                                  ],
+                                                                         "operationId":  "deleteById_3",
+                                                                         "parameters":  [
+                                                                                            {
+                                                                                                "name":  "credentialId",
+                                                                                                "in":  "path",
+                                                                                                "required":  true,
+                                                                                                "schema":  {
+                                                                                                               "type":  "string"
+                                                                                                           }
+                                                                                            }
+                                                                                        ],
+                                                                         "responses":  {
+                                                                                           "200":  {
+                                                                                                       "description":  "OK",
+                                                                                                       "content":  {
+                                                                                                                       "*/*":  {
+                                                                                                                                   "schema":  {
+                                                                                                                                                  "type":  "boolean"
+                                                                                                                                              }
+                                                                                                                               }
+                                                                                                                   }
+                                                                                                   }
+                                                                                       }
+                                                                     }
+                                                      },
+                  "/api/address":  {
+                                       "get":  {
+                                                   "tags":  [
+                                                                "address-resource"
+                                                            ],
+                                                   "operationId":  "findAll_4",
+                                                   "responses":  {
+                                                                     "200":  {
+                                                                                 "description":  "OK",
+                                                                                 "content":  {
+                                                                                                 "*/*":  {
+                                                                                                             "schema":  {
+                                                                                                                            "$ref":  "#/components/schemas/DtoCollectionResponseAddressDto"
+                                                                                                                        }
+                                                                                                         }
+                                                                                             }
+                                                                             }
+                                                                 }
+                                               },
+                                       "put":  {
+                                                   "tags":  [
+                                                                "address-resource"
+                                                            ],
+                                                   "operationId":  "update_7",
+                                                   "requestBody":  {
+                                                                       "content":  {
+                                                                                       "application/json":  {
+                                                                                                                "schema":  {
+                                                                                                                               "$ref":  "#/components/schemas/AddressDto"
+                                                                                                                           }
+                                                                                                            }
+                                                                                   },
+                                                                       "required":  true
+                                                                   },
+                                                   "responses":  {
+                                                                     "200":  {
+                                                                                 "description":  "OK",
+                                                                                 "content":  {
+                                                                                                 "*/*":  {
+                                                                                                             "schema":  {
+                                                                                                                            "$ref":  "#/components/schemas/AddressDto"
+                                                                                                                        }
+                                                                                                         }
+                                                                                             }
+                                                                             }
+                                                                 }
+                                               },
+                                       "post":  {
+                                                    "tags":  [
+                                                                 "address-resource"
+                                                             ],
+                                                    "operationId":  "save_3",
+                                                    "requestBody":  {
+                                                                        "content":  {
+                                                                                        "application/json":  {
+                                                                                                                 "schema":  {
+                                                                                                                                "$ref":  "#/components/schemas/AddressDto"
+                                                                                                                            }
+                                                                                                             }
+                                                                                    },
+                                                                        "required":  true
+                                                                    },
+                                                    "responses":  {
+                                                                      "200":  {
+                                                                                  "description":  "OK",
+                                                                                  "content":  {
+                                                                                                  "*/*":  {
+                                                                                                              "schema":  {
+                                                                                                                             "$ref":  "#/components/schemas/AddressDto"
+                                                                                                                         }
+                                                                                                          }
+                                                                                              }
+                                                                              }
+                                                                  }
+                                                }
+                                   },
+                  "/api/address/{addressId}":  {
+                                                   "get":  {
+                                                               "tags":  [
+                                                                            "address-resource"
+                                                                        ],
+                                                               "operationId":  "findById_4",
+                                                               "parameters":  [
+                                                                                  {
+                                                                                      "name":  "addressId",
+                                                                                      "in":  "path",
+                                                                                      "required":  true,
+                                                                                      "schema":  {
+                                                                                                     "type":  "string"
+                                                                                                 }
+                                                                                  }
+                                                                              ],
+                                                               "responses":  {
+                                                                                 "200":  {
+                                                                                             "description":  "OK",
+                                                                                             "content":  {
+                                                                                                             "*/*":  {
+                                                                                                                         "schema":  {
+                                                                                                                                        "$ref":  "#/components/schemas/AddressDto"
+                                                                                                                                    }
+                                                                                                                     }
+                                                                                                         }
+                                                                                         }
+                                                                             }
+                                                           },
+                                                   "put":  {
+                                                               "tags":  [
+                                                                            "address-resource"
+                                                                        ],
+                                                               "operationId":  "update_8",
+                                                               "parameters":  [
+                                                                                  {
+                                                                                      "name":  "addressId",
+                                                                                      "in":  "path",
+                                                                                      "required":  true,
+                                                                                      "schema":  {
+                                                                                                     "type":  "string"
+                                                                                                 }
+                                                                                  }
+                                                                              ],
+                                                               "requestBody":  {
+                                                                                   "content":  {
+                                                                                                   "application/json":  {
+                                                                                                                            "schema":  {
+                                                                                                                                           "$ref":  "#/components/schemas/AddressDto"
+                                                                                                                                       }
+                                                                                                                        }
+                                                                                               },
+                                                                                   "required":  true
+                                                                               },
+                                                               "responses":  {
+                                                                                 "200":  {
+                                                                                             "description":  "OK",
+                                                                                             "content":  {
+                                                                                                             "*/*":  {
+                                                                                                                         "schema":  {
+                                                                                                                                        "$ref":  "#/components/schemas/AddressDto"
+                                                                                                                                    }
+                                                                                                                     }
+                                                                                                         }
+                                                                                         }
+                                                                             }
+                                                           },
+                                                   "delete":  {
+                                                                  "tags":  [
+                                                                               "address-resource"
+                                                                           ],
+                                                                  "operationId":  "deleteById_4",
+                                                                  "parameters":  [
+                                                                                     {
+                                                                                         "name":  "addressId",
+                                                                                         "in":  "path",
+                                                                                         "required":  true,
+                                                                                         "schema":  {
+                                                                                                        "type":  "string"
+                                                                                                    }
+                                                                                     }
+                                                                                 ],
+                                                                  "responses":  {
+                                                                                    "200":  {
+                                                                                                "description":  "OK",
+                                                                                                "content":  {
+                                                                                                                "*/*":  {
+                                                                                                                            "schema":  {
+                                                                                                                                           "type":  "boolean"
+                                                                                                                                       }
+                                                                                                                        }
+                                                                                                            }
+                                                                                            }
+                                                                                }
+                                                              }
+                                               },
+                  "/api/leads":  {
+                                     "get":  {
+                                                 "tags":  [
+                                                              "lead-resource"
+                                                          ],
+                                                 "operationId":  "findAll_2",
+                                                 "responses":  {
+                                                                   "200":  {
+                                                                               "description":  "OK",
+                                                                               "content":  {
+                                                                                               "*/*":  {
+                                                                                                           "schema":  {
+                                                                                                                          "$ref":  "#/components/schemas/DtoCollectionResponseLeadDto"
+                                                                                                                      }
+                                                                                                       }
+                                                                                           }
+                                                                           }
+                                                               }
+                                             },
+                                     "post":  {
+                                                  "tags":  [
+                                                               "lead-resource"
+                                                           ],
+                                                  "operationId":  "capture",
+                                                  "requestBody":  {
+                                                                      "content":  {
+                                                                                      "application/json":  {
+                                                                                                               "schema":  {
+                                                                                                                              "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                          }
+                                                                                                           }
+                                                                                  },
+                                                                      "required":  true
+                                                                  },
+                                                  "responses":  {
+                                                                    "200":  {
+                                                                                "description":  "OK",
+                                                                                "content":  {
+                                                                                                "*/*":  {
+                                                                                                            "schema":  {
+                                                                                                                           "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                       }
+                                                                                                        }
+                                                                                            }
+                                                                            }
+                                                                }
+                                              }
+                                 },
+                  "/api/leads/{leadId}/convert":  {
+                                                      "post":  {
+                                                                   "tags":  [
+                                                                                "lead-resource"
+                                                                            ],
+                                                                   "operationId":  "convertToClient",
+                                                                   "parameters":  [
+                                                                                      {
+                                                                                          "name":  "leadId",
+                                                                                          "in":  "path",
+                                                                                          "required":  true,
+                                                                                          "schema":  {
+                                                                                                         "type":  "string"
+                                                                                                     }
+                                                                                      },
+                                                                                      {
+                                                                                          "name":  "clientId",
+                                                                                          "in":  "query",
+                                                                                          "required":  true,
+                                                                                          "schema":  {
+                                                                                                         "type":  "integer",
+                                                                                                         "format":  "int32"
+                                                                                                     }
+                                                                                      }
+                                                                                  ],
+                                                                   "responses":  {
+                                                                                     "200":  {
+                                                                                                 "description":  "OK",
+                                                                                                 "content":  {
+                                                                                                                 "*/*":  {
+                                                                                                                             "schema":  {
+                                                                                                                                            "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                                        }
+                                                                                                                         }
+                                                                                                             }
+                                                                                             }
+                                                                                 }
+                                                               }
+                                                  },
+                  "/api/leads/{leadId}/status":  {
+                                                     "patch":  {
+                                                                   "tags":  [
+                                                                                "lead-resource"
+                                                                            ],
+                                                                   "operationId":  "updateStatus",
+                                                                   "parameters":  [
+                                                                                      {
+                                                                                          "name":  "leadId",
+                                                                                          "in":  "path",
+                                                                                          "required":  true,
+                                                                                          "schema":  {
+                                                                                                         "type":  "string"
+                                                                                                     }
+                                                                                      },
+                                                                                      {
+                                                                                          "name":  "status",
+                                                                                          "in":  "query",
+                                                                                          "required":  true,
+                                                                                          "schema":  {
+                                                                                                         "type":  "string",
+                                                                                                         "enum":  [
+                                                                                                                      "NUEVO",
+                                                                                                                      "NURTURING",
+                                                                                                                      "MQL",
+                                                                                                                      "SQL",
+                                                                                                                      "CONVERTIDO",
+                                                                                                                      "CHURNED"
+                                                                                                                  ]
+                                                                                                     }
+                                                                                      }
+                                                                                  ],
+                                                                   "responses":  {
+                                                                                     "200":  {
+                                                                                                 "description":  "OK",
+                                                                                                 "content":  {
+                                                                                                                 "*/*":  {
+                                                                                                                             "schema":  {
+                                                                                                                                            "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                                        }
+                                                                                                                         }
+                                                                                                             }
+                                                                                             }
+                                                                                 }
+                                                               }
+                                                 },
+                  "/api/leads/{leadId}/scoring":  {
+                                                      "patch":  {
+                                                                    "tags":  [
+                                                                                 "lead-resource"
+                                                                             ],
+                                                                    "operationId":  "updateScoring",
+                                                                    "parameters":  [
+                                                                                       {
+                                                                                           "name":  "leadId",
+                                                                                           "in":  "path",
+                                                                                           "required":  true,
+                                                                                           "schema":  {
+                                                                                                          "type":  "string"
+                                                                                                      }
+                                                                                       },
+                                                                                       {
+                                                                                           "name":  "score",
+                                                                                           "in":  "query",
+                                                                                           "required":  true,
+                                                                                           "schema":  {
+                                                                                                          "type":  "integer",
+                                                                                                          "format":  "int32"
+                                                                                                      }
+                                                                                       },
+                                                                                       {
+                                                                                           "name":  "category",
+                                                                                           "in":  "query",
+                                                                                           "required":  true,
+                                                                                           "schema":  {
+                                                                                                          "type":  "string",
+                                                                                                          "enum":  [
+                                                                                                                       "HOT",
+                                                                                                                       "WARM",
+                                                                                                                       "COLD"
+                                                                                                                   ]
+                                                                                                      }
+                                                                                       }
+                                                                                   ],
+                                                                    "responses":  {
+                                                                                      "200":  {
+                                                                                                  "description":  "OK",
+                                                                                                  "content":  {
+                                                                                                                  "*/*":  {
+                                                                                                                              "schema":  {
+                                                                                                                                             "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                                         }
+                                                                                                                          }
+                                                                                                              }
+                                                                                              }
+                                                                                  }
+                                                                }
+                                                  },
+                  "/api/leads/{leadId}/engagement":  {
+                                                         "patch":  {
+                                                                       "tags":  [
+                                                                                    "lead-resource"
+                                                                                ],
+                                                                       "operationId":  "updateEngagement",
+                                                                       "parameters":  [
+                                                                                          {
+                                                                                              "name":  "leadId",
+                                                                                              "in":  "path",
+                                                                                              "required":  true,
+                                                                                              "schema":  {
+                                                                                                             "type":  "string"
+                                                                                                         }
+                                                                                          },
+                                                                                          {
+                                                                                              "name":  "sent",
+                                                                                              "in":  "query",
+                                                                                              "required":  false,
+                                                                                              "schema":  {
+                                                                                                             "type":  "integer",
+                                                                                                             "format":  "int32"
+                                                                                                         }
+                                                                                          },
+                                                                                          {
+                                                                                              "name":  "opened",
+                                                                                              "in":  "query",
+                                                                                              "required":  false,
+                                                                                              "schema":  {
+                                                                                                             "type":  "integer",
+                                                                                                             "format":  "int32"
+                                                                                                         }
+                                                                                          },
+                                                                                          {
+                                                                                              "name":  "clicked",
+                                                                                              "in":  "query",
+                                                                                              "required":  false,
+                                                                                              "schema":  {
+                                                                                                             "type":  "integer",
+                                                                                                             "format":  "int32"
+                                                                                                         }
+                                                                                          }
+                                                                                      ],
+                                                                       "responses":  {
+                                                                                         "200":  {
+                                                                                                     "description":  "OK",
+                                                                                                     "content":  {
+                                                                                                                     "*/*":  {
+                                                                                                                                 "schema":  {
+                                                                                                                                                "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                                            }
+                                                                                                                             }
+                                                                                                                 }
+                                                                                                 }
+                                                                                     }
+                                                                   }
+                                                     },
+                  "/api/users/username/{username}":  {
+                                                         "get":  {
+                                                                     "tags":  [
+                                                                                  "user-resource"
+                                                                              ],
+                                                                     "operationId":  "findByUsername",
+                                                                     "parameters":  [
+                                                                                        {
+                                                                                            "name":  "username",
+                                                                                            "in":  "path",
+                                                                                            "required":  true,
+                                                                                            "schema":  {
+                                                                                                           "type":  "string"
+                                                                                                       }
+                                                                                        }
+                                                                                    ],
+                                                                     "responses":  {
+                                                                                       "200":  {
+                                                                                                   "description":  "OK",
+                                                                                                   "content":  {
+                                                                                                                   "*/*":  {
+                                                                                                                               "schema":  {
+                                                                                                                                              "$ref":  "#/components/schemas/UserDto"
+                                                                                                                                          }
+                                                                                                                           }
+                                                                                                               }
+                                                                                               }
+                                                                                   }
+                                                                 }
+                                                     },
+                  "/api/leads/status/{status}":  {
+                                                     "get":  {
+                                                                 "tags":  [
+                                                                              "lead-resource"
+                                                                          ],
+                                                                 "operationId":  "findByStatus",
+                                                                 "parameters":  [
+                                                                                    {
+                                                                                        "name":  "status",
+                                                                                        "in":  "path",
+                                                                                        "required":  true,
+                                                                                        "schema":  {
+                                                                                                       "type":  "string",
+                                                                                                       "enum":  [
+                                                                                                                    "NUEVO",
+                                                                                                                    "NURTURING",
+                                                                                                                    "MQL",
+                                                                                                                    "SQL",
+                                                                                                                    "CONVERTIDO",
+                                                                                                                    "CHURNED"
+                                                                                                                ]
+                                                                                                   }
+                                                                                    }
+                                                                                ],
+                                                                 "responses":  {
+                                                                                   "200":  {
+                                                                                               "description":  "OK",
+                                                                                               "content":  {
+                                                                                                               "*/*":  {
+                                                                                                                           "schema":  {
+                                                                                                                                          "$ref":  "#/components/schemas/DtoCollectionResponseLeadDto"
+                                                                                                                                      }
+                                                                                                                       }
+                                                                                                           }
+                                                                                           }
+                                                                               }
+                                                             }
+                                                 },
+                  "/api/leads/status/{status}/paged":  {
+                                                           "get":  {
+                                                                       "tags":  [
+                                                                                    "lead-resource"
+                                                                                ],
+                                                                       "operationId":  "findByStatusPaged",
+                                                                       "parameters":  [
+                                                                                          {
+                                                                                              "name":  "status",
+                                                                                              "in":  "path",
+                                                                                              "required":  true,
+                                                                                              "schema":  {
+                                                                                                             "type":  "string",
+                                                                                                             "enum":  [
+                                                                                                                          "NUEVO",
+                                                                                                                          "NURTURING",
+                                                                                                                          "MQL",
+                                                                                                                          "SQL",
+                                                                                                                          "CONVERTIDO",
+                                                                                                                          "CHURNED"
+                                                                                                                      ]
+                                                                                                         }
+                                                                                          },
+                                                                                          {
+                                                                                              "name":  "pageable",
+                                                                                              "in":  "query",
+                                                                                              "required":  true,
+                                                                                              "schema":  {
+                                                                                                             "$ref":  "#/components/schemas/Pageable"
+                                                                                                         }
+                                                                                          }
+                                                                                      ],
+                                                                       "responses":  {
+                                                                                         "200":  {
+                                                                                                     "description":  "OK",
+                                                                                                     "content":  {
+                                                                                                                     "*/*":  {
+                                                                                                                                 "schema":  {
+                                                                                                                                                "$ref":  "#/components/schemas/PageLeadDto"
+                                                                                                                                            }
+                                                                                                                             }
+                                                                                                                 }
+                                                                                                 }
+                                                                                     }
+                                                                   }
+                                                       },
+                  "/api/leads/search":  {
+                                            "get":  {
+                                                        "tags":  [
+                                                                     "lead-resource"
+                                                                 ],
+                                                        "operationId":  "search",
+                                                        "parameters":  [
+                                                                           {
+                                                                               "name":  "query",
+                                                                               "in":  "query",
+                                                                               "required":  true,
+                                                                               "schema":  {
+                                                                                              "type":  "string"
+                                                                                          }
+                                                                           }
+                                                                       ],
+                                                        "responses":  {
+                                                                          "200":  {
+                                                                                      "description":  "OK",
+                                                                                      "content":  {
+                                                                                                      "*/*":  {
+                                                                                                                  "schema":  {
+                                                                                                                                 "$ref":  "#/components/schemas/DtoCollectionResponseLeadDto"
+                                                                                                                             }
+                                                                                                              }
+                                                                                                  }
+                                                                                  }
+                                                                      }
+                                                    }
+                                        },
+                  "/api/leads/paged":  {
+                                           "get":  {
+                                                       "tags":  [
+                                                                    "lead-resource"
+                                                                ],
+                                                       "operationId":  "findAllPaged",
+                                                       "parameters":  [
+                                                                          {
+                                                                              "name":  "pageable",
+                                                                              "in":  "query",
+                                                                              "required":  true,
+                                                                              "schema":  {
+                                                                                             "$ref":  "#/components/schemas/Pageable"
+                                                                                         }
+                                                                          }
+                                                                      ],
+                                                       "responses":  {
+                                                                         "200":  {
+                                                                                     "description":  "OK",
+                                                                                     "content":  {
+                                                                                                     "*/*":  {
+                                                                                                                 "schema":  {
+                                                                                                                                "$ref":  "#/components/schemas/PageLeadDto"
+                                                                                                                            }
+                                                                                                             }
+                                                                                                 }
+                                                                                 }
+                                                                     }
+                                                   }
+                                       },
+                  "/api/leads/inactive":  {
+                                              "get":  {
+                                                          "tags":  [
+                                                                       "lead-resource"
+                                                                   ],
+                                                          "operationId":  "findInactiveLeads",
+                                                          "parameters":  [
+                                                                             {
+                                                                                 "name":  "days",
+                                                                                 "in":  "query",
+                                                                                 "required":  false,
+                                                                                 "schema":  {
+                                                                                                "type":  "integer",
+                                                                                                "format":  "int32",
+                                                                                                "default":  30
+                                                                                            }
+                                                                             }
+                                                                         ],
+                                                          "responses":  {
+                                                                            "200":  {
+                                                                                        "description":  "OK",
+                                                                                        "content":  {
+                                                                                                        "*/*":  {
+                                                                                                                    "schema":  {
+                                                                                                                                   "$ref":  "#/components/schemas/DtoCollectionResponseLeadDto"
+                                                                                                                               }
+                                                                                                                }
+                                                                                                    }
+                                                                                    }
+                                                                        }
+                                                      }
+                                          },
+                  "/api/leads/hot":  {
+                                         "get":  {
+                                                     "tags":  [
+                                                                  "lead-resource"
+                                                              ],
+                                                     "operationId":  "findHotLeadsPending",
+                                                     "responses":  {
+                                                                       "200":  {
+                                                                                   "description":  "OK",
+                                                                                   "content":  {
+                                                                                                   "*/*":  {
+                                                                                                               "schema":  {
+                                                                                                                              "$ref":  "#/components/schemas/DtoCollectionResponseLeadDto"
+                                                                                                                          }
+                                                                                                           }
+                                                                                               }
+                                                                               }
+                                                                   }
+                                                 }
+                                     },
+                  "/api/leads/exists":  {
+                                            "get":  {
+                                                        "tags":  [
+                                                                     "lead-resource"
+                                                                 ],
+                                                        "operationId":  "existsByEmail",
+                                                        "parameters":  [
+                                                                           {
+                                                                               "name":  "email",
+                                                                               "in":  "query",
+                                                                               "required":  true,
+                                                                               "schema":  {
+                                                                                              "type":  "string"
+                                                                                          }
+                                                                           }
+                                                                       ],
+                                                        "responses":  {
+                                                                          "200":  {
+                                                                                      "description":  "OK",
+                                                                                      "content":  {
+                                                                                                      "*/*":  {
+                                                                                                                  "schema":  {
+                                                                                                                                 "type":  "boolean"
+                                                                                                                             }
+                                                                                                              }
+                                                                                                  }
+                                                                                  }
+                                                                      }
+                                                    }
+                                        },
+                  "/api/leads/email/{email}":  {
+                                                   "get":  {
+                                                               "tags":  [
+                                                                            "lead-resource"
+                                                                        ],
+                                                               "operationId":  "findByEmail",
+                                                               "parameters":  [
+                                                                                  {
+                                                                                      "name":  "email",
+                                                                                      "in":  "path",
+                                                                                      "required":  true,
+                                                                                      "schema":  {
+                                                                                                     "type":  "string"
+                                                                                                 }
+                                                                                  }
+                                                                              ],
+                                                               "responses":  {
+                                                                                 "200":  {
+                                                                                             "description":  "OK",
+                                                                                             "content":  {
+                                                                                                             "*/*":  {
+                                                                                                                         "schema":  {
+                                                                                                                                        "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                                    }
+                                                                                                                     }
+                                                                                                         }
+                                                                                         }
+                                                                             }
+                                                           }
+                                               },
+                  "/api/leads/category/{category}":  {
+                                                         "get":  {
+                                                                     "tags":  [
+                                                                                  "lead-resource"
+                                                                              ],
+                                                                     "operationId":  "findByCategory",
+                                                                     "parameters":  [
+                                                                                        {
+                                                                                            "name":  "category",
+                                                                                            "in":  "path",
+                                                                                            "required":  true,
+                                                                                            "schema":  {
+                                                                                                           "type":  "string",
+                                                                                                           "enum":  [
+                                                                                                                        "HOT",
+                                                                                                                        "WARM",
+                                                                                                                        "COLD"
+                                                                                                                    ]
+                                                                                                       }
+                                                                                        }
+                                                                                    ],
+                                                                     "responses":  {
+                                                                                       "200":  {
+                                                                                                   "description":  "OK",
+                                                                                                   "content":  {
+                                                                                                                   "*/*":  {
+                                                                                                                               "schema":  {
+                                                                                                                                              "$ref":  "#/components/schemas/DtoCollectionResponseLeadDto"
+                                                                                                                                          }
+                                                                                                                           }
+                                                                                                               }
+                                                                                               }
+                                                                                   }
+                                                                 }
+                                                     },
+                  "/api/leads/category/{category}/paged":  {
+                                                               "get":  {
+                                                                           "tags":  [
+                                                                                        "lead-resource"
+                                                                                    ],
+                                                                           "operationId":  "findByCategoryPaged",
+                                                                           "parameters":  [
+                                                                                              {
+                                                                                                  "name":  "category",
+                                                                                                  "in":  "path",
+                                                                                                  "required":  true,
+                                                                                                  "schema":  {
+                                                                                                                 "type":  "string",
+                                                                                                                 "enum":  [
+                                                                                                                              "HOT",
+                                                                                                                              "WARM",
+                                                                                                                              "COLD"
+                                                                                                                          ]
+                                                                                                             }
+                                                                                              },
+                                                                                              {
+                                                                                                  "name":  "pageable",
+                                                                                                  "in":  "query",
+                                                                                                  "required":  true,
+                                                                                                  "schema":  {
+                                                                                                                 "$ref":  "#/components/schemas/Pageable"
+                                                                                                             }
+                                                                                              }
+                                                                                          ],
+                                                                           "responses":  {
+                                                                                             "200":  {
+                                                                                                         "description":  "OK",
+                                                                                                         "content":  {
+                                                                                                                         "*/*":  {
+                                                                                                                                     "schema":  {
+                                                                                                                                                    "$ref":  "#/components/schemas/PageLeadDto"
+                                                                                                                                                }
+                                                                                                                                 }
+                                                                                                                     }
+                                                                                                     }
+                                                                                         }
+                                                                       }
+                                                           },
+                  "/api/credentials/username/{username}":  {
+                                                               "get":  {
+                                                                           "tags":  [
+                                                                                        "credential-resource"
+                                                                                    ],
+                                                                           "operationId":  "findByUsername_1",
+                                                                           "parameters":  [
+                                                                                              {
+                                                                                                  "name":  "username",
+                                                                                                  "in":  "path",
+                                                                                                  "required":  true,
+                                                                                                  "schema":  {
+                                                                                                                 "type":  "string"
+                                                                                                             }
+                                                                                              }
+                                                                                          ],
+                                                                           "responses":  {
+                                                                                             "200":  {
+                                                                                                         "description":  "OK",
+                                                                                                         "content":  {
+                                                                                                                         "*/*":  {
+                                                                                                                                     "schema":  {
+                                                                                                                                                    "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                                                }
+                                                                                                                                 }
+                                                                                                                     }
+                                                                                                     }
+                                                                                         }
+                                                                       }
+                                                           }
+              },
+    "components":  {
+                       "schemas":  {
+                                       "AddressDto":  {
+                                                          "type":  "object",
+                                                          "properties":  {
+                                                                             "addressId":  {
+                                                                                               "type":  "integer",
+                                                                                               "format":  "int32"
+                                                                                           },
+                                                                             "fullAddress":  {
+                                                                                                 "type":  "string"
+                                                                                             },
+                                                                             "postalCode":  {
+                                                                                                "type":  "string"
+                                                                                            },
+                                                                             "city":  {
+                                                                                          "type":  "string"
+                                                                                      },
+                                                                             "user":  {
+                                                                                          "$ref":  "#/components/schemas/UserDto"
+                                                                                      }
+                                                                         }
+                                                      },
+                                       "CredentialDto":  {
+                                                             "type":  "object",
+                                                             "properties":  {
+                                                                                "credentialId":  {
+                                                                                                     "type":  "integer",
+                                                                                                     "format":  "int32"
+                                                                                                 },
+                                                                                "username":  {
+                                                                                                 "type":  "string"
+                                                                                             },
+                                                                                "password":  {
+                                                                                                 "type":  "string"
+                                                                                             },
+                                                                                "roleBasedAuthority":  {
+                                                                                                           "type":  "string",
+                                                                                                           "enum":  [
+                                                                                                                        "ROLE_USER",
+                                                                                                                        "ROLE_ADMIN"
+                                                                                                                    ]
+                                                                                                       },
+                                                                                "isEnabled":  {
+                                                                                                  "type":  "boolean"
+                                                                                              },
+                                                                                "isAccountNonExpired":  {
+                                                                                                            "type":  "boolean"
+                                                                                                        },
+                                                                                "isAccountNonLocked":  {
+                                                                                                           "type":  "boolean"
+                                                                                                       },
+                                                                                "isCredentialsNonExpired":  {
+                                                                                                                "type":  "boolean"
+                                                                                                            },
+                                                                                "verificationTokenDtos":  {
+                                                                                                              "uniqueItems":  true,
+                                                                                                              "type":  "array",
+                                                                                                              "items":  {
+                                                                                                                            "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                        }
+                                                                                                          },
+                                                                                "user":  {
+                                                                                             "$ref":  "#/components/schemas/UserDto"
+                                                                                         }
+                                                                            }
+                                                         },
+                                       "UserDto":  {
+                                                       "type":  "object",
+                                                       "properties":  {
+                                                                          "userId":  {
+                                                                                         "type":  "integer",
+                                                                                         "format":  "int32"
+                                                                                     },
+                                                                          "firstName":  {
+                                                                                            "type":  "string"
+                                                                                        },
+                                                                          "lastName":  {
+                                                                                           "type":  "string"
+                                                                                       },
+                                                                          "imageUrl":  {
+                                                                                           "type":  "string"
+                                                                                       },
+                                                                          "email":  {
+                                                                                        "type":  "string"
+                                                                                    },
+                                                                          "phone":  {
+                                                                                        "type":  "string"
+                                                                                    },
+                                                                          "addressDtos":  {
+                                                                                              "uniqueItems":  true,
+                                                                                              "type":  "array",
+                                                                                              "items":  {
+                                                                                                            "$ref":  "#/components/schemas/AddressDto"
+                                                                                                        }
+                                                                                          },
+                                                                          "credential":  {
+                                                                                             "$ref":  "#/components/schemas/CredentialDto"
+                                                                                         }
+                                                                      }
+                                                   },
+                                       "VerificationTokenDto":  {
+                                                                    "type":  "object",
+                                                                    "properties":  {
+                                                                                       "verificationTokenId":  {
+                                                                                                                   "type":  "integer",
+                                                                                                                   "format":  "int32"
+                                                                                                               },
+                                                                                       "token":  {
+                                                                                                     "type":  "string"
+                                                                                                 },
+                                                                                       "expireDate":  {
+                                                                                                          "type":  "string",
+                                                                                                          "format":  "date"
+                                                                                                      },
+                                                                                       "credential":  {
+                                                                                                          "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                      }
+                                                                                   }
+                                                                },
+                                       "LeadDto":  {
+                                                       "required":  [
+                                                                        "email",
+                                                                        "nombre"
+                                                                    ],
+                                                       "type":  "object",
+                                                       "properties":  {
+                                                                          "leadId":  {
+                                                                                         "type":  "string",
+                                                                                         "format":  "uuid"
+                                                                                     },
+                                                                          "nombre":  {
+                                                                                         "maxLength":  150,
+                                                                                         "minLength":  0,
+                                                                                         "type":  "string"
+                                                                                     },
+                                                                          "email":  {
+                                                                                        "maxLength":  255,
+                                                                                        "minLength":  0,
+                                                                                        "type":  "string"
+                                                                                    },
+                                                                          "telefono":  {
+                                                                                           "maxLength":  20,
+                                                                                           "minLength":  0,
+                                                                                           "type":  "string"
+                                                                                       },
+                                                                          "empresa":  {
+                                                                                          "maxLength":  200,
+                                                                                          "minLength":  0,
+                                                                                          "type":  "string"
+                                                                                      },
+                                                                          "cargo":  {
+                                                                                        "maxLength":  100,
+                                                                                        "minLength":  0,
+                                                                                        "type":  "string"
+                                                                                    },
+                                                                          "servicio":  {
+                                                                                           "maxLength":  100,
+                                                                                           "minLength":  0,
+                                                                                           "type":  "string"
+                                                                                       },
+                                                                          "mensaje":  {
+                                                                                          "maxLength":  2000,
+                                                                                          "minLength":  0,
+                                                                                          "type":  "string"
+                                                                                      },
+                                                                          "leadScore":  {
+                                                                                            "type":  "integer",
+                                                                                            "format":  "int32"
+                                                                                        },
+                                                                          "leadCategory":  {
+                                                                                               "type":  "string",
+                                                                                               "enum":  [
+                                                                                                            "HOT",
+                                                                                                            "WARM",
+                                                                                                            "COLD"
+                                                                                                        ]
+                                                                                           },
+                                                                          "leadStatus":  {
+                                                                                             "type":  "string",
+                                                                                             "enum":  [
+                                                                                                          "NUEVO",
+                                                                                                          "NURTURING",
+                                                                                                          "MQL",
+                                                                                                          "SQL",
+                                                                                                          "CONVERTIDO",
+                                                                                                          "CHURNED"
+                                                                                                      ]
+                                                                                         },
+                                                                          "emailsSent":  {
+                                                                                             "type":  "integer",
+                                                                                             "format":  "int32"
+                                                                                         },
+                                                                          "emailsOpened":  {
+                                                                                               "type":  "integer",
+                                                                                               "format":  "int32"
+                                                                                           },
+                                                                          "emailsClicked":  {
+                                                                                                "type":  "integer",
+                                                                                                "format":  "int32"
+                                                                                            },
+                                                                          "lastContact":  {
+                                                                                              "type":  "string",
+                                                                                              "format":  "date-time"
+                                                                                          },
+                                                                          "lastEngagement":  {
+                                                                                                 "type":  "string",
+                                                                                                 "format":  "date-time"
+                                                                                             },
+                                                                          "source":  {
+                                                                                         "type":  "string",
+                                                                                         "enum":  [
+                                                                                                      "WEBSITE",
+                                                                                                      "REFERRAL",
+                                                                                                      "LINKEDIN",
+                                                                                                      "EVENTO",
+                                                                                                      "GOOGLE_ADS",
+                                                                                                      "TELEFONO",
+                                                                                                      "OTRO"
+                                                                                                  ]
+                                                                                     },
+                                                                          "clientId":  {
+                                                                                           "type":  "integer",
+                                                                                           "format":  "int32"
+                                                                                       },
+                                                                          "convertedAt":  {
+                                                                                              "type":  "string",
+                                                                                              "format":  "date-time"
+                                                                                          },
+                                                                          "createdAt":  {
+                                                                                            "type":  "string",
+                                                                                            "format":  "date-time"
+                                                                                        },
+                                                                          "updatedAt":  {
+                                                                                            "type":  "string",
+                                                                                            "format":  "date-time"
+                                                                                        }
+                                                                      }
+                                                   },
+                                       "DtoCollectionResponseVerificationTokenDto":  {
+                                                                                         "type":  "object",
+                                                                                         "properties":  {
+                                                                                                            "collection":  {
+                                                                                                                               "type":  "array",
+                                                                                                                               "items":  {
+                                                                                                                                             "$ref":  "#/components/schemas/VerificationTokenDto"
+                                                                                                                                         }
+                                                                                                                           }
+                                                                                                        }
+                                                                                     },
+                                       "DtoCollectionResponseUserDto":  {
+                                                                            "type":  "object",
+                                                                            "properties":  {
+                                                                                               "collection":  {
+                                                                                                                  "type":  "array",
+                                                                                                                  "items":  {
+                                                                                                                                "$ref":  "#/components/schemas/UserDto"
+                                                                                                                            }
+                                                                                                              }
+                                                                                           }
+                                                                        },
+                                       "DtoCollectionResponseLeadDto":  {
+                                                                            "type":  "object",
+                                                                            "properties":  {
+                                                                                               "collection":  {
+                                                                                                                  "type":  "array",
+                                                                                                                  "items":  {
+                                                                                                                                "$ref":  "#/components/schemas/LeadDto"
+                                                                                                                            }
+                                                                                                              }
+                                                                                           }
+                                                                        },
+                                       "Pageable":  {
+                                                        "type":  "object",
+                                                        "properties":  {
+                                                                           "page":  {
+                                                                                        "minimum":  0,
+                                                                                        "type":  "integer",
+                                                                                        "format":  "int32"
+                                                                                    },
+                                                                           "size":  {
+                                                                                        "minimum":  1,
+                                                                                        "type":  "integer",
+                                                                                        "format":  "int32"
+                                                                                    },
+                                                                           "sort":  {
+                                                                                        "type":  "array",
+                                                                                        "items":  {
+                                                                                                      "type":  "string"
+                                                                                                  }
+                                                                                    }
+                                                                       }
+                                                    },
+                                       "PageLeadDto":  {
+                                                           "type":  "object",
+                                                           "properties":  {
+                                                                              "totalElements":  {
+                                                                                                    "type":  "integer",
+                                                                                                    "format":  "int64"
+                                                                                                },
+                                                                              "totalPages":  {
+                                                                                                 "type":  "integer",
+                                                                                                 "format":  "int32"
+                                                                                             },
+                                                                              "pageable":  {
+                                                                                               "$ref":  "#/components/schemas/PageableObject"
+                                                                                           },
+                                                                              "numberOfElements":  {
+                                                                                                       "type":  "integer",
+                                                                                                       "format":  "int32"
+                                                                                                   },
+                                                                              "size":  {
+                                                                                           "type":  "integer",
+                                                                                           "format":  "int32"
+                                                                                       },
+                                                                              "content":  {
+                                                                                              "type":  "array",
+                                                                                              "items":  {
+                                                                                                            "$ref":  "#/components/schemas/LeadDto"
+                                                                                                        }
+                                                                                          },
+                                                                              "number":  {
+                                                                                             "type":  "integer",
+                                                                                             "format":  "int32"
+                                                                                         },
+                                                                              "sort":  {
+                                                                                           "type":  "array",
+                                                                                           "items":  {
+                                                                                                         "$ref":  "#/components/schemas/SortObject"
+                                                                                                     }
+                                                                                       },
+                                                                              "first":  {
+                                                                                            "type":  "boolean"
+                                                                                        },
+                                                                              "last":  {
+                                                                                           "type":  "boolean"
+                                                                                       },
+                                                                              "empty":  {
+                                                                                            "type":  "boolean"
+                                                                                        }
+                                                                          }
+                                                       },
+                                       "PageableObject":  {
+                                                              "type":  "object",
+                                                              "properties":  {
+                                                                                 "paged":  {
+                                                                                               "type":  "boolean"
+                                                                                           },
+                                                                                 "pageSize":  {
+                                                                                                  "type":  "integer",
+                                                                                                  "format":  "int32"
+                                                                                              },
+                                                                                 "pageNumber":  {
+                                                                                                    "type":  "integer",
+                                                                                                    "format":  "int32"
+                                                                                                },
+                                                                                 "unpaged":  {
+                                                                                                 "type":  "boolean"
+                                                                                             },
+                                                                                 "offset":  {
+                                                                                                "type":  "integer",
+                                                                                                "format":  "int64"
+                                                                                            },
+                                                                                 "sort":  {
+                                                                                              "type":  "array",
+                                                                                              "items":  {
+                                                                                                            "$ref":  "#/components/schemas/SortObject"
+                                                                                                        }
+                                                                                          }
+                                                                             }
+                                                          },
+                                       "SortObject":  {
+                                                          "type":  "object",
+                                                          "properties":  {
+                                                                             "direction":  {
+                                                                                               "type":  "string"
+                                                                                           },
+                                                                             "nullHandling":  {
+                                                                                                  "type":  "string"
+                                                                                              },
+                                                                             "ascending":  {
+                                                                                               "type":  "boolean"
+                                                                                           },
+                                                                             "property":  {
+                                                                                              "type":  "string"
+                                                                                          },
+                                                                             "ignoreCase":  {
+                                                                                                "type":  "boolean"
+                                                                                            }
+                                                                         }
+                                                      },
+                                       "DtoCollectionResponseCredentialDto":  {
+                                                                                  "type":  "object",
+                                                                                  "properties":  {
+                                                                                                     "collection":  {
+                                                                                                                        "type":  "array",
+                                                                                                                        "items":  {
+                                                                                                                                      "$ref":  "#/components/schemas/CredentialDto"
+                                                                                                                                  }
+                                                                                                                    }
+                                                                                                 }
+                                                                              },
+                                       "DtoCollectionResponseAddressDto":  {
+                                                                               "type":  "object",
+                                                                               "properties":  {
+                                                                                                  "collection":  {
+                                                                                                                     "type":  "array",
+                                                                                                                     "items":  {
+                                                                                                                                   "$ref":  "#/components/schemas/AddressDto"
+                                                                                                                               }
+                                                                                                                 }
+                                                                                              }
+                                                                           }
+                                   }
+                   }
+}
