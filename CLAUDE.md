@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 19 de Diciembre, 2025
+**Última Actualización**: 2 de Enero, 2026
 
 ## ⚠️ CRÍTICO: ENTORNO WINDOWS + WSL
 
