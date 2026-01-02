@@ -1,9 +1,9 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 19 de Diciembre, 2025 - 05:15 COT  
-**Estado General**: ✅ **FASE 1 COMPLETA** | client-service 100% | Security Tests ✅ | CI/CD ✅  
+**Última Actualización**: 20 de Diciembre, 2025 - 01:30 COT  
+**Estado General**: ✅ **FASE 2: DEVOPS** | Observabilidad ✅ | Security CI/CD ✅ | Deploy Strategy ✅  
 **Rama Actual**: `dev`  
-**Último Commit**: `43cd864` - Security tests for client-service
+**Último Commit**: `58ebb3d` - complete observability stack + security CI/CD + deployment strategy
 
 ---
 
@@ -35,13 +35,13 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 ## 📅 HISTORIAL DE COMMITS RECIENTES
 
 ```
+58ebb3d feat(devops): complete observability stack + security CI/CD + deployment strategy
+24c4b80 Merge pull request #19 from AlexisJ16/dev (dev → main)
 43cd864 feat(security): add comprehensive security tests for client-service lead API
 c331aab ci: modernize CI/CD pipeline + VSCode workspace config
 155e11e feat(client-service): Lead API completa con NATS events y frontend structure
 161d190 docs: update AI context files and continuation prompt
 b7557b0 docs: integrate marketing automation strategy with n8n workflows
-b048fce docs: Add complete business documentation
-f29944a feat(case-service): Complete implementation of case-service microservice
 ```
 
 ---
@@ -54,10 +54,75 @@ f29944a feat(case-service): Complete implementation of case-service microservice
 | Documentación de Negocio Completa | 19 Dic 2025 | `b048fce` | ✅ |
 | Integración n8n Documentada | 19 Dic 2025 | `b7557b0` | ✅ |
 | Lead Entity + API Completa | 19 Dic 2025 | `155e11e` | ✅ |
-| **CI/CD Pipeline Modernizado** | **19 Dic 2025** | **`c331aab`** | ✅ |
-| **VSCode Workspace Optimizado** | **19 Dic 2025** | **`c331aab`** | ✅ |
-| **Security Tests (66 tests)** | **19 Dic 2025** | **`43cd864`** | ✅ |
+| CI/CD Pipeline Modernizado | 19 Dic 2025 | `c331aab` | ✅ |
+| VSCode Workspace Optimizado | 19 Dic 2025 | `c331aab` | ✅ |
+| Security Tests (66 tests) | 19 Dic 2025 | `43cd864` | ✅ |
+| **PR #19: Merge dev → main** | **20 Dic 2025** | **`24c4b80`** | ✅ |
+| **Grafana LGTM Stack (7 servicios)** | **20 Dic 2025** | **`58ebb3d`** | ✅ |
+| **Security CI/CD (Snyk + SonarCloud + Trivy)** | **20 Dic 2025** | **`58ebb3d`** | ✅ |
+| **Deployment Strategy Documentada** | **20 Dic 2025** | **`58ebb3d`** | ✅ |
 | MVP Empresarial | 27 Mar 2026 | - | 📋 Planificado |
+
+---
+
+## 🔐 SEGURIDAD Y ANÁLISIS DE CÓDIGO
+
+### Estado Actual de Seguridad
+
+| Herramienta | Estado | Issues Detectados |
+|-------------|--------|-------------------|
+| **Snyk** | ✅ Activo | 1 Critical, 80 High, 83 Medium, 62 Low |
+| **SonarCloud** | ✅ Activo | 8 Security, 27 Maintainability |
+| **Trivy** | ✅ CI/CD | Pendiente primer scan |
+
+### Accesos
+- **Snyk**: https://app.snyk.io/org/alexisj16
+- **SonarCloud**: https://sonarcloud.io/project/overview?id=AlexisJ16_CarrilloAbogados
+
+---
+
+## 🔭 STACK DE OBSERVABILIDAD
+
+### Grafana LGTM Stack (Docker Compose)
+
+| Servicio | Puerto | Propósito |
+|----------|--------|-----------|
+| **Grafana** | 3100 | Visualización centralizada |
+| **Loki** | 3101 | Agregación de logs |
+| **Tempo** | 3102 | Distributed tracing |
+| **Mimir** | 3103 | Almacenamiento métricas largo plazo |
+| **Prometheus** | 9090 | Recolección métricas |
+| **Promtail** | - | Recolector de logs Docker |
+| **Alertmanager** | 9093 | Gestión de alertas |
+
+**Credenciales Grafana**: admin / carrillo2025
+
+**Comando para iniciar**:
+```bash
+cd monitoring
+docker-compose -f docker-compose.observability.yml up -d
+```
+
+---
+
+## 🚀 ESTRATEGIA DE DEPLOYMENT
+
+### Arquitectura Híbrida
+
+| Componente | Destino | Tecnología |
+|------------|---------|------------|
+| **Frontend** | HostGator cPanel | Static export (Next.js) |
+| **Backend** | GCP Cloud Run | Docker containers |
+| **Base de Datos** | Cloud SQL | PostgreSQL 16 |
+| **Dominio** | HostGator | carrilloabgd.com |
+
+### Dominios
+- `carrilloabgd.com` → Frontend (HostGator)
+- `api.carrilloabgd.com` → Backend (GCP Cloud Run)
+
+### Costos Estimados
+- **HostGator**: Ya contratado (~$10/mes)
+- **GCP**: ~$40-50/mes con créditos (Cloud Run + Cloud SQL)
 
 ---
 
@@ -84,7 +149,9 @@ f29944a feat(case-service): Complete implementation of case-service microservice
 | Mensajería | NATS 2.10 | ✅ Operativo |
 | Contenedores | Docker Compose | ✅ 10/10 healthy |
 | Orquestación | Kubernetes (Minikube) | ✅ Configurado |
-| CI/CD | GitHub Actions | ✅ 2 workflows |
+| CI/CD | GitHub Actions | ✅ 3 workflows |
+| Observabilidad | Grafana LGTM | ✅ Configurado |
+| Seguridad | Snyk + SonarCloud | ✅ Activo |
 
 ---
 
@@ -96,6 +163,7 @@ f29944a feat(case-service): Complete implementation of case-service microservice
 |----------|---------|-----------|
 | `ci-cd-pipeline.yml` | push main/dev, PR | Build, test, Docker, deploy |
 | `pr-validation.yml` | PR opened | Validación rápida (5 min) |
+| `security-scan.yml` | push main, schedule, manual | Snyk + SonarCloud + Trivy |
 
 ### VSCode (`.vscode/`)
 
