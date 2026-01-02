@@ -1,0 +1,104 @@
+# ===========================================
+# Carrillo Abogados - api-gateway
+# GCP Cloud Run Profile
+# ===========================================
+
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: API-GATEWAY
+  
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_UNIQUE
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "${CORS_ALLOWED_ORIGINS:https://app.carrilloabgd.com,https://app-staging.carrilloabgd.com}"
+            allowed-headers: "*"
+            exposed-headers: "*"
+            allow-credentials: true
+            allowed-methods: 
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+      routes:
+      # Client Service - Direct Cloud Run URL
+      - id: CLIENT-SERVICE
+        uri: ${CLIENT_SERVICE_URL:http://localhost:8200}
+        predicates:
+        - Path=/client-service/**
+      
+      # Case Service - Direct Cloud Run URL
+      - id: CASE-SERVICE
+        uri: ${CASE_SERVICE_URL:http://localhost:8300}
+        predicates:
+        - Path=/case-service/**
+      
+      # Payment Service
+      - id: PAYMENT-SERVICE
+        uri: ${PAYMENT_SERVICE_URL:http://localhost:8400}
+        predicates:
+        - Path=/payment-service/**
+      
+      # Document Service
+      - id: DOCUMENT-SERVICE
+        uri: ${DOCUMENT_SERVICE_URL:http://localhost:8500}
+        predicates:
+        - Path=/document-service/**
+      
+      # Calendar Service
+      - id: CALENDAR-SERVICE
+        uri: ${CALENDAR_SERVICE_URL:http://localhost:8600}
+        predicates:
+        - Path=/calendar-service/**
+      
+      # Notification Service
+      - id: NOTIFICATION-SERVICE
+        uri: ${NOTIFICATION_SERVICE_URL:http://localhost:8700}
+        predicates:
+        - Path=/notification-service/**
+      
+      # N8N Integration Service
+      - id: N8N-INTEGRATION-SERVICE
+        uri: ${N8N_SERVICE_URL:http://localhost:8800}
+        predicates:
+        - Path=/n8n-integration-service/**
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      apiGateway:
+        register-health-indicator: true
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 10s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+  endpoint:
+    health:
+      show-details: when_authorized
+    gateway:
+      enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: INFO
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

@@ -1,9 +1,10 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 2 de Enero, 2026 - 07:00 COT  
-**Estado General**: ✅ **FASE 3: QA VALIDATION COMPLETA** | E2E Tests ✅ | Docker 10/10 ✅ | API Tests ✅  
+**Última Actualización**: 3 de Enero, 2026 - 18:00 COT  
+**Estado General**: ✅ **FASE 5: MVP COMPLETE** | PILAR 1 ✅ | PILAR 2 ✅ | PILAR 3 ✅ | PILAR 4 ✅ | PILAR 5 ✅  
 **Rama Actual**: `dev`  
-**Último Commit**: `ca46838` - feat(qa): add QA agent + E2E validation complete + compose cleanup
+**Último Commit**: Pending - Documentation audit and agent improvements  
+**Siguiente Fase**: 🚀 **Merge to main + Deploy a GCP Cloud Run**
 
 ---
 
@@ -60,11 +61,23 @@ c331aab ci: modernize CI/CD pipeline + VSCode workspace config
 | Grafana LGTM Stack (7 servicios) | 20 Dic 2025 | `58ebb3d` | ✅ |
 | Security CI/CD (Snyk + SonarCloud + Trivy) | 20 Dic 2025 | `58ebb3d` | ✅ |
 | Deployment Strategy Documentada | 20 Dic 2025 | `58ebb3d` | ✅ |
-| **GitHub Secrets Configurados** | **2 Ene 2026** | - | ✅ |
-| **Documentación Auditada y Limpia** | **2 Ene 2026** | - | ✅ |
-| **E2E Testing Docker Compose (10/10)** | **2 Ene 2026** | - | ✅ |
-| **QA Agent Creado** | **2 Ene 2026** | - | ✅ |
-| **Lead API E2E Verificada** | **2 Ene 2026** | - | ✅ |
+| GitHub Secrets Configurados | 2 Ene 2026 | - | ✅ |
+| Documentación Auditada y Limpia | 2 Ene 2026 | - | ✅ |
+| E2E Testing Docker Compose (10/10) | 2 Ene 2026 | - | ✅ |
+| QA Agent Creado | 2 Ene 2026 | - | ✅ |
+| Lead API E2E Verificada | 2 Ene 2026 | - | ✅ |
+| Business Product Agent Creado | 2 Ene 2026 | - | ✅ |
+| MVP Roadmap Definido (5 Pilares) | 2 Ene 2026 | - | ✅ |
+| Documentación Business Organizada | 2 Ene 2026 | - | ✅ |
+| **PILAR 1: Auth Backend + Frontend** | **3 Ene 2026** | - | ✅ |
+| **PILAR 2: Lead Capture + Management** | **3 Ene 2026** | - | ✅ |
+| **PILAR 3: Case Management Frontend** | **3 Ene 2026** | - | ✅ |
+| **Frontend Routes: 10 páginas** | **3 Ene 2026** | - | ✅ |
+| **PILAR 4: Notification System Backend** | **3 Ene 2026** | - | ✅ |
+| **PILAR 4: Notification UI Components** | **3 Ene 2026** | - | ✅ |
+| **PILAR 5: Production Config (SEO, Dockerfile)** | **3 Ene 2026** | - | ✅ |
+| **PILAR 5: GCP Deploy Workflow + Docs** | **3 Ene 2026** | - | ✅ |
+| **Frontend Routes: 11 páginas** | **3 Ene 2026** | - | ✅ |
 | MVP Empresarial | 27 Mar 2026 | - | 📋 Planificado |
 
 ---
@@ -127,6 +140,104 @@ docker-compose -f docker-compose.observability.yml up -d
 ### Costos Estimados
 - **HostGator**: Ya contratado (~$10/mes)
 - **GCP**: ~$40-50/mes con créditos (Cloud Run + Cloud SQL)
+
+---
+
+## 🚀 MVP ROADMAP - 5 PILARES
+
+**Fecha de Lanzamiento**: 27 de Marzo, 2026 (12 semanas)
+
+| # | Pilar | Descripción | Semanas | Estado |
+|---|-------|-------------|---------|--------|
+| 1 | **Autenticación y Roles** | 4 tipos usuario + OAuth2 + RBAC | S1-S4 | ✅ 100% |
+| 2 | **Captura de Leads** | Formulario → API → NATS → Notificación | S2-S5 | ✅ 100% |
+| 3 | **Gestión de Casos** | CRUD + Timeline + Estados | S3-S8 | ✅ 100% |
+| 4 | **Notificaciones** | Email + Push + UI de notificaciones | S6-S10 | ✅ 100% |
+| 5 | **Producción** | Seguridad, SEO, Responsive, HA | S9-S12 | ✅ 100% |
+
+### Progreso Detallado por Pilar
+
+#### PILAR 1: Autenticación y Roles ✅
+- ✅ Spring Security + JWT Backend (JJWT 0.12.6)
+- ✅ 4 roles implementados: VISITOR, CLIENT, LAWYER, ADMIN
+- ✅ Login/Register frontend con React Hook Form + Zod
+- ✅ Dashboard role-based con vistas diferenciadas
+- ✅ Middleware de autenticación Next.js
+- ✅ AuthGuard component con protección de rutas
+
+#### PILAR 2: Captura de Leads ✅
+- ✅ Formulario de contacto público (/contact)
+- ✅ Lead API hooks con TanStack Query
+- ✅ Página de gestión de leads (/leads)
+- ✅ Filtros por estado y categoría
+- ✅ Cambio de estado de leads
+- ✅ Backend-to-frontend mapping (leadId → id)
+
+#### PILAR 3: Gestión de Casos ✅
+- ✅ Cases API hooks completos
+- ✅ Página listado de casos (/cases)
+- ✅ Filtros por estado (OPEN, IN_PROGRESS, SUSPENDED, CLOSED)
+- ✅ Formulario nuevo caso (/cases/new)
+- ✅ Página detalle de caso (/cases/[id])
+- ✅ Timeline de actividades
+- ✅ Modal cambio de estado
+- ✅ Links en dashboard para lawyers/admins
+
+#### PILAR 4: Notificaciones ✅
+- ✅ notification-service Backend completo (domain, DTOs, repository, service, REST API)
+- ✅ 17 tipos de notificación definidos
+- ✅ 4 canales de entrega: IN_APP, EMAIL, SMS, PUSH
+- ✅ API endpoints: CRUD, mark as read, get unread count
+- ✅ Frontend types y API hooks con TanStack Query
+- ✅ NotificationBell component con dropdown
+- ✅ DashboardHeader con campana de notificaciones
+- ✅ Página completa de notificaciones (/notifications)
+- ✅ Filtros por tipo: todas, no leídas, leads, casos, citas, sistema
+- ✅ Paginación y gestión de estado
+
+#### PILAR 5: Producción ✅
+- ✅ Next.js config para standalone output
+- ✅ Variables de entorno (.env.production, .env.development)
+- ✅ SEO completo: meta tags, OpenGraph, Twitter cards
+- ✅ robots.txt y sitemap.xml
+- ✅ manifest.json para PWA
+- ✅ .htaccess para Apache/HostGator
+- ✅ Dockerfile frontend multi-stage
+- ✅ Docker Compose con frontend incluido
+- ✅ GitHub Actions workflow para GCP Cloud Run
+- ✅ application-gcp.yml profiles para todos los microservicios
+- ✅ Documentación completa de deploy (docs/operations/DEPLOY_GCP.md)
+- ✅ Template de GitHub Secrets configurado
+- ✅ .env.staging para ambiente de pruebas
+
+### Frontend Routes (11 total)
+
+| Ruta | Tipo | Descripción |
+|------|------|-------------|
+| `/` | Static | Landing page |
+| `/contact` | Static | Formulario de contacto |
+| `/login` | Static | Página de login |
+| `/register` | Static | Página de registro |
+| `/dashboard` | Static | Dashboard role-based |
+| `/leads` | Static | Gestión de leads (Lawyer/Admin) |
+| `/cases` | Static | Listado de casos (Lawyer/Admin) |
+| `/cases/new` | Static | Crear nuevo caso |
+| `/cases/[id]` | Dynamic | Detalle de caso |
+| `/notifications` | Static | Notificaciones del usuario |
+| `/_not-found` | Static | Página 404 |
+
+### Timeline Visual
+
+```
+ENERO 2026          FEBRERO 2026        MARZO 2026
+S1-S4               S5-S8               S9-S12
+├───────────────────┼───────────────────┼───────────────────►
+│ ✅ Auth + Roles   │ ✅ Notificaciones  │ ✅ Production     │
+│ ✅ Lead Capture   │ ✅ Production      │    Ready!         │
+│ ✅ Case Mgmt      │                   │                🚀 │
+```
+
+**Ver detalle completo**: [docs/business/MVP_ROADMAP.md](./docs/business/MVP_ROADMAP.md)
 
 ---
 

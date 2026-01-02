@@ -26,7 +26,7 @@ Este agente está especializado en **gestión del proyecto, tracking de progreso
 
 ---
 
-## 📋 Estado Actual del Proyecto
+## 📋 Estado Actual del Proyecto (Actualizado: 3 Enero 2026)
 
 ### Microservicios - Progreso
 
@@ -34,22 +34,25 @@ Este agente está especializado en **gestión del proyecto, tracking de progreso
 |----------|---------|-------|--------|-----|-------|
 | api-gateway | ✅ 100% | ✅ | ✅ | ✅ | 100% |
 | client-service | ✅ 100% | ✅ 66 | ✅ | ✅ | 100% |
-| case-service | ✅ 95% | 🔄 | ✅ | ✅ | 85% |
+| case-service | ✅ 100% | ✅ | ✅ | ✅ | 100% |
 | payment-service | 🔄 15% | ❌ | ✅ | ✅ | 15% |
 | document-service | 🔄 15% | ❌ | ✅ | ✅ | 15% |
 | calendar-service | 🔄 15% | ❌ | ✅ | ✅ | 15% |
-| notification-service | 🔄 15% | ❌ | ✅ | ✅ | 15% |
+| notification-service | ✅ 100% | ✅ | ✅ | ✅ | 100% |
 | n8n-integration-service | 🔄 20% | ❌ | ✅ | ✅ | 20% |
 
-### Frontend - Progreso
+### Frontend - Progreso (MVP COMPLETE ✅)
 
 | Componente | Estado | Notas |
 |------------|--------|-------|
-| Estructura proyecto | ✅ 100% | Next.js 14 + Tailwind configurado |
-| Diseño UI/UX | 🔄 30% | HeroSection, ServicesSection creados |
-| Formulario contacto | 🔄 50% | Existe ejemplo funcional |
-| Panel admin | ❌ 0% | - |
-| Portal cliente | ❌ 0% | - |
+| Estructura proyecto | ✅ 100% | Next.js 15 + Tailwind + TanStack Query |
+| Autenticación | ✅ 100% | Login/Register con JWT + AuthContext |
+| Dashboard | ✅ 100% | Role-based (Admin, Lawyer, Client) |
+| Gestión Leads | ✅ 100% | CRUD completo con filtros |
+| Gestión Casos | ✅ 100% | Lista, detalle, nuevo caso, timeline |
+| Notificaciones | ✅ 100% | Bell component + página completa |
+| Formulario contacto | ✅ 100% | Integrado con Lead API |
+| **Total rutas** | **11** | `/`, `/contact`, `/login`, `/register`, `/dashboard`, `/leads`, `/cases`, `/cases/new`, `/cases/[id]`, `/notifications`, `/_not-found` |
 
 ### Infraestructura - Progreso
 
@@ -57,60 +60,84 @@ Este agente está especializado en **gestión del proyecto, tracking de progreso
 |------------|-------|---------|------|
 | Docker Compose | ✅ 100% | - | - |
 | Kubernetes/Minikube | ✅ 100% | ❌ | ❌ |
-| CI/CD GitHub Actions | ✅ 100% | ❌ | ❌ |
+| CI/CD GitHub Actions | ✅ 100% | ✅ | ✅ |
+| GCP Cloud Run Deploy | ✅ 100% | ✅ | ⏳ |
 | Monitoring | ✅ 100% | ❌ | ❌ |
 | Security Scan | ✅ 100% | ✅ | ✅ |
 
 ---
 
-## 🎯 Prioridades de Negocio (MoSCoW)
+## 🎯 Prioridades de Negocio - MVP ROADMAP (5 PILARES)
 
-### MUST HAVE (MVP - 27 Marzo 2026)
+### ✅ PILAR 1: Autenticación y Roles (100%)
+- [x] Spring Security + JWT Backend (JJWT 0.12.6)
+- [x] 4 roles: VISITOR, CLIENT, LAWYER, ADMIN
+- [x] Login/Register frontend con React Hook Form + Zod
+- [x] Dashboard role-based con vistas diferenciadas
+- [x] Middleware de autenticación Next.js
+- [x] AuthGuard component
 
-**Backend:**
-- [x] CRUD Clientes (client-service)
-- [x] CRUD Casos (case-service)
-- [x] Captura de Leads (client-service)
-- [ ] Gestión de citas (calendar-service)
-- [ ] Notificaciones email (notification-service)
+### ✅ PILAR 2: Captura de Leads (100%)
+- [x] Formulario de contacto público (/contact)
+- [x] Lead API hooks con TanStack Query
+- [x] Página de gestión de leads (/leads)
+- [x] Filtros por estado y categoría
+- [x] Cambio de estado de leads
+- [x] Backend-to-frontend mapping
 
-**Frontend:**
-- [x] Estructura base Next.js
-- [ ] Landing page completa
-- [ ] Formulario de contacto funcional
-- [ ] Booking de citas
-- [ ] Autenticación OAuth2
+### ✅ PILAR 3: Gestión de Casos (100%)
+- [x] Cases API hooks completos
+- [x] Página listado de casos (/cases)
+- [x] Filtros por estado
+- [x] Formulario nuevo caso (/cases/new)
+- [x] Página detalle de caso (/cases/[id])
+- [x] Timeline de actividades
+- [x] Modal cambio de estado
 
-### SHOULD HAVE (Post-MVP)
+### ✅ PILAR 4: Notificaciones (100%)
+- [x] notification-service Backend completo
+- [x] 17 tipos de notificación definidos
+- [x] 4 canales de entrega: IN_APP, EMAIL, SMS, PUSH
+- [x] API endpoints: CRUD, mark as read, get unread count
+- [x] Frontend types y API hooks
+- [x] NotificationBell component con dropdown
+- [x] Página completa de notificaciones (/notifications)
 
-- Blog con CMS
-- Portal de cliente
-- SMS notifications
-- Gestión de documentos
+### ✅ PILAR 5: Producción (100%)
+- [x] Next.js config para standalone output
+- [x] Variables de entorno (.env.production, .env.development)
+- [x] SEO completo: meta tags, OpenGraph, Twitter cards
+- [x] robots.txt, sitemap.xml, manifest.json
+- [x] .htaccess para Apache/HostGator
+- [x] Dockerfile frontend multi-stage
+- [x] GitHub Actions workflow para GCP Cloud Run
+- [x] application-gcp.yml profiles para microservicios
+- [x] Documentación deploy (docs/operations/DEPLOY_GCP.md)
 
 ---
 
 ## 📅 Timeline
 
-### Q4 2025 (Diciembre)
+### Q4 2025 (Diciembre) ✅ COMPLETADO
 - ✅ client-service completo con Lead API
-- ✅ case-service 95% completo
-- ✅ Tests de seguridad implementados
-- ✅ CI/CD configurado
-- 🔄 Iniciar desarrollo frontend
+- ✅ case-service 100% completo
+- ✅ notification-service 100% completo
+- ✅ Tests de seguridad implementados (66 tests)
+- ✅ CI/CD configurado (4 workflows)
+- ✅ Frontend MVP completo (11 rutas)
 
-### Q1 2026 (Enero-Marzo)
-- Completar calendar-service
-- Completar notification-service
-- Frontend MVP funcional
-- OAuth2 integrado
-- Deploy a staging
+### Q1 2026 (Enero-Marzo) 🔄 EN PROGRESO
+- ⏳ Completar calendar-service (integración Google)
+- ⏳ Completar document-service
+- ⏳ Deploy a GCP Cloud Run (staging)
+- ⏳ OAuth2 con Google Workspace
+- ⏳ Pruebas E2E exhaustivas
 
 ### MVP: 27 Marzo 2026
-- Sitio web público funcional
-- Formulario de contacto → Lead scoring
-- Booking de citas
-- Panel básico para abogados
+- ✅ Sitio web público funcional
+- ✅ Formulario de contacto → Lead scoring
+- ⏳ Booking de citas (pending calendar-service)
+- ✅ Panel básico para abogados
 
 ---
 
