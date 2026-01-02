@@ -1,7 +1,20 @@
 # 🤖 AI Context Master - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 18 de Diciembre, 2025  
+**Última Actualización**: 2 de Enero, 2026  
 **Propósito**: Documento maestro de contexto para todas las IAs que trabajan en el proyecto
+
+---
+
+## 📍 DOCUMENTOS DE REFERENCIA PRINCIPALES
+
+Para obtener contexto completo del proyecto, revisar estos archivos en orden de prioridad:
+
+| Archivo | Propósito | Actualización |
+|---------|-----------|---------------|
+| `PROYECTO_ESTADO.md` | Estado actual detallado | Cada sesión |
+| `.github/copilot-instructions.md` | Instrucciones para Copilot | Frecuente |
+| `CLAUDE.md` | Contexto técnico para Claude AI | Cambios mayores |
+| `.github/copilot-agents/` | 7 agentes especializados | Por dominio |
 
 ---
 
@@ -41,22 +54,22 @@ wsl bash -c "minikube start"
 ### Información General
 - **Nombre**: Carrillo Abogados Legal Tech Platform
 - **Tipo**: Plataforma cloud-native de gestión legal empresarial
-- **Arquitectura**: 7 microservicios Spring Boot sobre Kubernetes
+- **Arquitectura**: 8 microservicios Spring Boot sobre Kubernetes
 - **Propósito Dual**:
-  1. **Académico**: Proyecto final curso Plataformas II (entrega 1 diciembre 2025)
+  1. **Académico**: Proyecto final curso Plataformas II
   2. **Empresarial**: Sistema real para bufete Carrillo Abogados, Cali, Colombia
 
 ### Cliente
-- 5 abogados + 2 administrativos
+- 7 abogados + 2 administrativos
 - Dominio: @carrilloabgd.com (Google Workspace)
-- MVP objetivo: 18 marzo 2026
+- MVP objetivo: 27 marzo 2026
 - Presupuesto inicial: $0 (escalar según demanda)
 
 ---
 
 ## 🛠️ STACK TECNOLÓGICO ACTUAL
 
-### Versiones Estables (Diciembre 2025)
+### Versiones Estables (Enero 2026)
 | Tecnología | Versión | Notas |
 |------------|---------|-------|
 | Java | 21 LTS | Requerido |
@@ -67,7 +80,7 @@ wsl bash -c "minikube start"
 | PostgreSQL | 16.2 | Bitnami Helm chart |
 | NATS | 2.10.22 | Dev/Staging messaging |
 
-### Microservicios Activos (7)
+### Microservicios Activos (8)
 | Servicio | Puerto | Context-Path | Estado |
 |----------|--------|--------------|--------|
 | api-gateway | 8080 | / | ✅ Activo |

@@ -172,5 +172,9 @@
     
     // === BRACKET PAIR COLORIZATION ===
     "editor.bracketPairColorization.enabled": true,
-    "editor.guides.bracketPairs": "active"
+    "editor.guides.bracketPairs": "active",
+    "sonarlint.connectedMode.project": {
+        "connectionId": "alexisj16",
+        "projectKey": "AlexisJ16_CarrilloAbogados"
+    }
 }

@@ -36,12 +36,14 @@ Este directorio contiene **agentes especializados** para diferentes áreas del p
 - Tests de seguridad (OWASP)
 - Cobertura de código
 
-### 5. [Documentation Agent](./documentation-agent.md)
-**Especialización**: Mantenimiento de documentación
-- Actualizar PROYECTO_ESTADO.md
-- Sincronizar documentos de contexto
-- Documentar errores y soluciones
-- Mantener consistencia
+### 5. [Documentation Agent](./documentation-agent.md) ⭐
+**Especialización**: Gestión integral de documentación + Auditoría
+- Auditar toda la documentación del repositorio
+- Control absoluto de archivos .md y textos
+- Detectar documentos obsoletos, duplicados o inconsistentes
+- Actualizar PROYECTO_ESTADO.md, CLAUDE.md, copilot-instructions.md
+- Mantener consistencia y calidad documental
+- Limpiar documentación basura
 
 ### 6. [Project Manager Agent](./project-manager-agent.md)
 **Especialización**: Gestión y tracking
@@ -103,4 +105,4 @@ Estos agentes deben actualizarse cuando:
 
 ---
 
-*Última actualización: Diciembre 30, 2025*
+*Última actualización: 2 de Enero, 2026*
