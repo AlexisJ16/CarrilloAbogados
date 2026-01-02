@@ -1,0 +1,38 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Build output
+.next
+out
+
+# Environment files (build-time args used instead)
+.env*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage
+.nyc_output
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Git
+.git
+.gitignore
+
+# Development
+.eslintcache
+.turbo
+*.log

@@ -1,0 +1,19 @@
+# Carrillo Abogados - robots.txt
+# https://carrilloabgd.com
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://carrilloabgd.com/sitemap.xml
+
+# Páginas privadas (no indexar)
+Disallow: /dashboard
+Disallow: /leads
+Disallow: /cases
+Disallow: /notifications
+Disallow: /profile
+Disallow: /settings
+
+# Rutas de API (no debería haber en frontend estático)
+Disallow: /api/

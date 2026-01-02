@@ -1,0 +1,259 @@
+# ===========================================
+# 🏛️ Carrillo Abogados - GCP Cloud Run Deploy
+# ===========================================
+# Deploy frontend and backend to GCP Cloud Run
+# Triggers: push to main, manual dispatch
+# ===========================================
+
+name: Deploy to GCP Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+      deploy_frontend:
+        description: 'Deploy frontend'
+        required: false
+        default: true
+        type: boolean
+      deploy_backend:
+        description: 'Deploy backend services'
+        required: false
+        default: true
+        type: boolean
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_REGION: us-central1
+  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+  FRONTEND_SERVICE: carrillo-frontend
+  API_GATEWAY_SERVICE: carrillo-api-gateway
+
+jobs:
+  # =========================================
+  # 🔐 SETUP
+  # =========================================
+  setup:
+    name: 🔐 Setup GCP
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-env.outputs.environment }}
+    
+    steps:
+    - name: 🎯 Set environment
+      id: set-env
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "environment=${{ github.event.inputs.environment }}" >> $GITHUB_OUTPUT
+        else
+          echo "environment=staging" >> $GITHUB_OUTPUT
+        fi
+
+  # =========================================
+  # 🎨 DEPLOY FRONTEND
+  # =========================================
+  deploy-frontend:
+    name: 🎨 Deploy Frontend
+    runs-on: ubuntu-latest
+    needs: setup
+    if: ${{ github.event_name == 'push' || github.event.inputs.deploy_frontend == 'true' }}
+    environment: ${{ needs.setup.outputs.environment }}
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: 🔑 Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+    
+    - name: ☁️ Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.GCP_PROJECT_ID }}
+    
+    - name: 🔧 Configure Docker for Artifact Registry
+      run: |
+        gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }}
+    
+    - name: 🏗️ Build Frontend Docker image
+      working-directory: ./frontend
+      env:
+        NEXT_PUBLIC_API_URL: ${{ needs.setup.outputs.environment == 'production' && 'https://api.carrilloabgd.com' || 'https://api-staging.carrilloabgd.com' }}
+        NEXT_PUBLIC_SITE_URL: ${{ needs.setup.outputs.environment == 'production' && 'https://app.carrilloabgd.com' || 'https://app-staging.carrilloabgd.com' }}
+      run: |
+        docker build \
+          --build-arg NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+          --build-arg NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
+          -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ env.FRONTEND_SERVICE }}:${{ github.sha }} \
+          -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ env.FRONTEND_SERVICE }}:latest \
+          .
+    
+    - name: 📤 Push Frontend image to Artifact Registry
+      run: |
+        docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ env.FRONTEND_SERVICE }}:${{ github.sha }}
+        docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ env.FRONTEND_SERVICE }}:latest
+    
+    - name: 🚀 Deploy Frontend to Cloud Run
+      run: |
+        gcloud run deploy ${{ env.FRONTEND_SERVICE }} \
+          --image ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ env.FRONTEND_SERVICE }}:${{ github.sha }} \
+          --platform managed \
+          --region ${{ env.GCP_REGION }} \
+          --allow-unauthenticated \
+          --memory 512Mi \
+          --cpu 1 \
+          --min-instances 0 \
+          --max-instances 10 \
+          --port 3000 \
+          --set-env-vars "NODE_ENV=production"
+    
+    - name: 📋 Get Frontend URL
+      run: |
+        URL=$(gcloud run services describe ${{ env.FRONTEND_SERVICE }} --region ${{ env.GCP_REGION }} --format 'value(status.url)')
+        echo "## 🎨 Frontend Deployed" >> $GITHUB_STEP_SUMMARY
+        echo "URL: $URL" >> $GITHUB_STEP_SUMMARY
+
+  # =========================================
+  # ⚙️ DEPLOY BACKEND SERVICES
+  # =========================================
+  deploy-backend:
+    name: ⚙️ Deploy ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    needs: setup
+    if: ${{ github.event_name == 'push' || github.event.inputs.deploy_backend == 'true' }}
+    environment: ${{ needs.setup.outputs.environment }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        service:
+          - api-gateway
+          - client-service
+          - case-service
+          - notification-service
+        include:
+          - service: api-gateway
+            port: 8080
+            memory: 512Mi
+            cpu: 1
+          - service: client-service
+            port: 8200
+            memory: 512Mi
+            cpu: 1
+          - service: case-service
+            port: 8300
+            memory: 512Mi
+            cpu: 1
+          - service: notification-service
+            port: 8700
+            memory: 256Mi
+            cpu: 1
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+    
+    - name: ☕ Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+        cache: maven
+    
+    - name: 📦 Build ${{ matrix.service }}
+      run: ./mvnw package -DskipTests -pl ${{ matrix.service }} -am -B
+    
+    - name: 🔑 Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+    
+    - name: ☁️ Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.GCP_PROJECT_ID }}
+    
+    - name: 🔧 Configure Docker for Artifact Registry
+      run: |
+        gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }}
+    
+    - name: 🏗️ Build Docker image
+      run: |
+        docker build \
+          -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ matrix.service }}:${{ github.sha }} \
+          -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ matrix.service }}:latest \
+          ./${{ matrix.service }}
+    
+    - name: 📤 Push image to Artifact Registry
+      run: |
+        docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ matrix.service }}:${{ github.sha }}
+        docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ matrix.service }}:latest
+    
+    - name: 🚀 Deploy to Cloud Run
+      run: |
+        gcloud run deploy carrillo-${{ matrix.service }} \
+          --image ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/carrillo-repo/${{ matrix.service }}:${{ github.sha }} \
+          --platform managed \
+          --region ${{ env.GCP_REGION }} \
+          --allow-unauthenticated \
+          --memory ${{ matrix.memory }} \
+          --cpu ${{ matrix.cpu }} \
+          --min-instances 0 \
+          --max-instances 5 \
+          --port ${{ matrix.port }} \
+          --set-env-vars "SPRING_PROFILES_ACTIVE=gcp,POSTGRES_HOST=${{ secrets.CLOUD_SQL_HOST }},POSTGRES_DB=carrillo_legal_tech,POSTGRES_USER=${{ secrets.CLOUD_SQL_USER }},POSTGRES_PASSWORD=${{ secrets.CLOUD_SQL_PASSWORD }}"
+    
+    - name: 📋 Get Service URL
+      run: |
+        URL=$(gcloud run services describe carrillo-${{ matrix.service }} --region ${{ env.GCP_REGION }} --format 'value(status.url)')
+        echo "## ⚙️ ${{ matrix.service }} Deployed" >> $GITHUB_STEP_SUMMARY
+        echo "URL: $URL" >> $GITHUB_STEP_SUMMARY
+
+  # =========================================
+  # 🔗 POST DEPLOY - Update API Gateway routes
+  # =========================================
+  post-deploy:
+    name: 🔗 Post Deploy Configuration
+    runs-on: ubuntu-latest
+    needs: [deploy-frontend, deploy-backend]
+    if: always() && (needs.deploy-frontend.result == 'success' || needs.deploy-backend.result == 'success')
+    
+    steps:
+    - name: 🔑 Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SA_KEY }}
+    
+    - name: ☁️ Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.GCP_PROJECT_ID }}
+    
+    - name: 📋 Generate Deployment Summary
+      run: |
+        echo "# 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Services Deployed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        for service in carrillo-frontend carrillo-api-gateway carrillo-client-service carrillo-case-service carrillo-notification-service; do
+          URL=$(gcloud run services describe $service --region ${{ env.GCP_REGION }} --format 'value(status.url)' 2>/dev/null || echo "Not deployed")
+          echo "- **$service**: $URL" >> $GITHUB_STEP_SUMMARY
+        done
+        
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "## Next Steps" >> $GITHUB_STEP_SUMMARY
+        echo "1. Verify services are healthy" >> $GITHUB_STEP_SUMMARY
+        echo "2. Configure custom domains in Cloud Run" >> $GITHUB_STEP_SUMMARY
+        echo "3. Update DNS records in HostGator" >> $GITHUB_STEP_SUMMARY

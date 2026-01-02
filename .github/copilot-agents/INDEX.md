@@ -52,6 +52,25 @@ Este directorio contiene **agentes especializados** para diferentes áreas del p
 - Timeline y milestones
 - Métricas de progreso
 
+### 7. [QA & Quality Agent](./qa-quality-agent.md)
+**Especialización**: Control de calidad y depuración
+- Análisis profundo del proyecto
+- Depuración y limpieza de código
+- Validación E2E de Docker y APIs
+- Monitoreo de Snyk, SonarCloud y VSCode
+- Asegurar cero errores en herramientas de calidad
+- Tests unitarios e integración
+
+### 8. [Business Product Agent](./business-product-agent.md) 🆕
+**Especialización**: Investigación, Gerencia de Producto y Planificación de Negocio
+- Gestión completa de la carpeta `docs/business/`
+- Definición de requerimientos y prioridades del MVP
+- Investigación del contexto legal colombiano
+- Traducción de necesidades de negocio a requerimientos técnicos
+- Coordinación de estrategia Flywheel + n8n
+- Roadmap del producto y timeline
+- Definición de los 4 tipos de usuario y sus funcionalidades
+
 ---
 
 ## 🎯 Cómo Usar los Agentes
@@ -105,4 +124,4 @@ Estos agentes deben actualizarse cuando:
 
 ---
 
-*Última actualización: 2 de Enero, 2026*
+*Última actualización: 3 de Enero, 2026*

@@ -1,0 +1,76 @@
+# ===========================================
+# Carrillo Abogados - case-service
+# GCP Cloud Run Profile
+# ===========================================
+
+server:
+  port: ${PORT:8300}
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=cases
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: cases
+  
+  flyway:
+    enabled: true
+    schemas: cases
+    baseline-on-migrate: true
+
+# NATS Configuration (use Google Pub/Sub in production)
+nats:
+  enabled: false
+
+# JWT Configuration
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: ${JWT_ISSUER:carrillo-abogados}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:https://app.carrilloabgd.com,https://app-staging.carrilloabgd.com}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+  health:
+    circuitbreakers:
+      enabled: true
+
+# Resilience4j for Cloud Run
+resilience4j:
+  circuitbreaker:
+    instances:
+      caseService:
+        register-health-indicator: true
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 10s
+
+logging:
+  level:
+    root: INFO
+    com.carrilloabogados: INFO
+    org.springframework.web: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

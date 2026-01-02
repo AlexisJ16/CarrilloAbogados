@@ -1,0 +1,122 @@
+# ===========================================
+# Carrillo Abogados - Apache Configuration
+# Para despliegue en HostGator cPanel
+# ===========================================
+
+# Habilitar RewriteEngine
+RewriteEngine On
+
+# HTTPS Redirect (descomentar en producción)
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# SPA Fallback - Redirigir todas las rutas que no existen a index.html
+# Esto es necesario para que las rutas de Next.js funcionen
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /$1.html [L]
+
+# Fallback final a index.html si la página .html no existe
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /index.html [L]
+
+# ===========================================
+# Headers de Seguridad
+# ===========================================
+
+<IfModule mod_headers.c>
+    # Prevenir clickjacking
+    Header always set X-Frame-Options "DENY"
+    
+    # Prevenir MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (ajustar según necesidad)
+    # Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://api.carrilloabgd.com"
+    
+    # HSTS (descomentar después de verificar HTTPS)
+    # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# ===========================================
+# Compresión GZIP
+# ===========================================
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ===========================================
+# Cache Control
+# ===========================================
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Default expiration
+    ExpiresDefault "access plus 1 month"
+    
+    # HTML - no cache para actualizaciones inmediatas
+    ExpiresByType text/html "access plus 0 seconds"
+    
+    # CSS y JavaScript - cache largo con versionado
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    
+    # Imágenes
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # Fuentes
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+</IfModule>
+
+# ===========================================
+# Tipos MIME
+# ===========================================
+
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType text/css .css
+    AddType image/svg+xml .svg
+    AddType font/woff2 .woff2
+    AddType font/woff .woff
+</IfModule>
+
+# ===========================================
+# Bloquear acceso a archivos sensibles
+# ===========================================
+
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.(env|json|md|yml|yaml|lock)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Permitir manifest.json y otros necesarios
+<FilesMatch "^(manifest|robots|sitemap)\.">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
