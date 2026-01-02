@@ -6,11 +6,15 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:export": "BUILD_MODE=export next build",
+    "build:docker": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "analyze": "ANALYZE=true next build",
+    "clean": "rm -rf .next out node_modules/.cache"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

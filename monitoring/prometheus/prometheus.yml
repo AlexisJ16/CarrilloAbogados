@@ -1,0 +1,94 @@
+# ===========================================
+# 📊 Prometheus Configuration
+# Carrillo Abogados - Metrics Collection
+# ===========================================
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'carrillo-dev'
+    env: 'development'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+# Remote write to Mimir for long-term storage
+remote_write:
+  - url: http://mimir:9009/api/v1/push
+
+# Scrape configs
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Carrillo Microservices (via Docker network)
+  - job_name: 'carrillo-services'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - 'api-gateway:8080'
+          - 'client-service:8200'
+          - 'case-service:8300'
+          - 'payment-service:8400'
+          - 'document-service:8500'
+          - 'calendar-service:8600'
+          - 'notification-service:8700'
+          - 'n8n-integration-service:8800'
+        labels:
+          group: 'carrillo-backend'
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: '([^:]+):.*'
+        target_label: 'service'
+        replacement: '$1'
+
+  # PostgreSQL metrics (if using postgres_exporter)
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgresql:5432']
+        labels:
+          group: 'database'
+    metrics_path: '/metrics'
+
+  # NATS metrics
+  - job_name: 'nats'
+    static_configs:
+      - targets: ['nats:8222']
+        labels:
+          group: 'messaging'
+    metrics_path: '/metrics'
+
+  # Docker Engine metrics (if enabled)
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['host.docker.internal:9323']
+        labels:
+          group: 'infrastructure'
+
+  # Grafana LGTM Stack
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
+
+  - job_name: 'loki'
+    static_configs:
+      - targets: ['loki:3100']
+
+  - job_name: 'tempo'
+    static_configs:
+      - targets: ['tempo:3200']
+
+  - job_name: 'mimir'
+    static_configs:
+      - targets: ['mimir:9009']

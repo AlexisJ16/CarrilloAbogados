@@ -1,0 +1,86 @@
+# ===========================================
+# 🔔 Alertmanager Configuration
+# Carrillo Abogados - Alert Handling
+# ===========================================
+
+global:
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'alerts@carrilloabgd.com'
+  smtp_auth_username: 'ingenieria@carrilloabgd.com'
+  smtp_auth_password: '${GMAIL_APP_PASSWORD}'
+  smtp_require_tls: true
+  resolve_timeout: 5m
+
+# Route tree
+route:
+  receiver: 'default-receiver'
+  group_by: ['alertname', 'service', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+  routes:
+    # Critical alerts - immediate notification
+    - receiver: 'critical-alerts'
+      match:
+        severity: critical
+      group_wait: 10s
+      repeat_interval: 1h
+
+    # High priority alerts
+    - receiver: 'high-priority'
+      match:
+        severity: high
+      group_wait: 30s
+      repeat_interval: 2h
+
+    # Service-specific routing
+    - receiver: 'database-alerts'
+      match:
+        group: database
+      group_wait: 1m
+
+# Inhibition rules
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'service']
+
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'high'
+    equal: ['alertname', 'service']
+
+# Receivers
+receivers:
+  - name: 'default-receiver'
+    email_configs:
+      - to: 'ingenieria@carrilloabgd.com'
+        send_resolved: true
+        headers:
+          Subject: '🏛️ Carrillo Abogados - {{ .Status | toUpper }}: {{ .GroupLabels.alertname }}'
+
+  - name: 'critical-alerts'
+    email_configs:
+      - to: 'ingenieria@carrilloabgd.com'
+        send_resolved: true
+        headers:
+          Subject: '🚨 CRITICAL: {{ .GroupLabels.alertname }} - Carrillo Abogados'
+
+  - name: 'high-priority'
+    email_configs:
+      - to: 'ingenieria@carrilloabgd.com'
+        send_resolved: true
+
+  - name: 'database-alerts'
+    email_configs:
+      - to: 'ingenieria@carrilloabgd.com'
+        send_resolved: true
+        headers:
+          Subject: '💾 Database Alert: {{ .GroupLabels.alertname }}'
+
+# Templates
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'

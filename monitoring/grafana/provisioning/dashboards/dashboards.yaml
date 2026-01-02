@@ -1,0 +1,18 @@
+# ===========================================
+# 📊 Grafana Dashboard Provisioning
+# Carrillo Abogados - Auto-load dashboards
+# ===========================================
+
+apiVersion: 1
+
+providers:
+  - name: 'Carrillo Abogados Dashboards'
+    orgId: 1
+    folder: 'Carrillo Abogados'
+    folderUid: 'carrillo'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    allowUiUpdates: true
+    options:
+      path: /var/lib/grafana/dashboards
