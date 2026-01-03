@@ -1,0 +1,542 @@
+{
+  "validation_info": {
+    "workflow_name": "SUB-A: Lead Intake & Enrichment (v2 - Hub & Spoke)",
+    "workflow_file": "workflow_v2.json",
+    "workflow_source": "LOCAL_FILE",
+    "workflow_id_cloud": "UNKNOWN - NOT PROVIDED",
+    "validation_date": "2025-12-17",
+    "validator": "QA Specialist Agent",
+    "validation_status": "INCOMPLETE",
+    "limitation": "Cannot access real workflow in n8n Cloud - only validated local file"
+  },
+
+  "overall_status": {
+    "status": "VALIDATION_INCOMPLETE",
+    "local_file_status": "REJECTED",
+    "cloud_workflow_status": "NOT_VALIDATED",
+    "reason": "User indicates cloud workflow has MORE nodes than local file (3 nodes). Need workflow ID or exported file to validate real workflow.",
+    "blocking_issue": "Missing workflow ID or exported JSON from n8n Cloud"
+  },
+
+  "validation_summary": {
+    "structural_validation": "VALID",
+    "functional_validation": "INVALID",
+    "total_nodes_local": 3,
+    "total_nodes_cloud": "UNKNOWN",
+    "enabled_nodes": 3,
+    "trigger_nodes": 1,
+    "valid_connections": 2,
+    "invalid_connections": 0,
+    "expressions_validated": 12,
+    "structural_errors": 0,
+    "functional_errors": 5,
+    "warnings": 3,
+    "suggestions": 4
+  },
+
+  "structural_validation": {
+    "valid": true,
+    "summary": {
+      "totalNodes": 3,
+      "enabledNodes": 3,
+      "triggerNodes": 1,
+      "validConnections": 2,
+      "invalidConnections": 0,
+      "expressionsValidated": 12,
+      "errorCount": 0,
+      "warningCount": 0
+    },
+    "nodes": [
+      {
+        "id": "trigger_sub_a",
+        "name": "Execute Workflow Trigger SUB-A",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "status": "VALID",
+        "issues": [
+          "All input fields are optional - no required validation"
+        ],
+        "configuration_status": "CORRECT"
+      },
+      {
+        "id": "map_input",
+        "name": "0. Mapear Input del Orquestador",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "status": "VALID_BUT_REDUNDANT",
+        "issues": [
+          "1:1 mapping without transformation",
+          "Does not add functional value",
+          "Slows workflow unnecessarily"
+        ],
+        "configuration_status": "CORRECT"
+      },
+      {
+        "id": "final_result",
+        "name": "FINAL. Resultado del Sub-Workflow",
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "status": "FUNCTIONALLY_INVALID",
+        "issues": [
+          "References non-existent field: lead_id",
+          "References non-existent field: score",
+          "References non-existent field: categoria",
+          "Hardcoded success value - always true",
+          "Static message - not informative"
+        ],
+        "configuration_status": "INCORRECT"
+      }
+    ],
+    "connections": {
+      "valid": true,
+      "total": 2,
+      "flow": "LINEAR",
+      "details": [
+        {
+          "from": "Execute Workflow Trigger SUB-A",
+          "to": "0. Mapear Input del Orquestador",
+          "type": "main",
+          "index": 0,
+          "status": "VALID"
+        },
+        {
+          "from": "0. Mapear Input del Orquestador",
+          "to": "FINAL. Resultado del Sub-Workflow",
+          "type": "main",
+          "index": 0,
+          "status": "VALID"
+        }
+      ]
+    }
+  },
+
+  "functional_errors": [
+    {
+      "id": "FUNC-ERROR-001",
+      "severity": "CRITICAL",
+      "category": "missing_functionality",
+      "title": "Workflow Incomplete - Missing Core Business Logic",
+      "description": "Workflow is only a skeleton with 3 basic nodes. Missing all business logic described in name 'Lead Intake & Enrichment'",
+      "location": "entire_workflow",
+      "missing_components": [
+        "Input validation (required fields, formats)",
+        "Lead enrichment logic",
+        "AI scoring (Gemini node)",
+        "Firestore persistence",
+        "Email notifications",
+        "Error handling",
+        "Metadata enrichment"
+      ],
+      "impact": "Workflow cannot fulfill its basic function. Only maps input to output without processing",
+      "blocking": true,
+      "solution": "Add missing nodes according to workflow specification"
+    },
+    {
+      "id": "FUNC-ERROR-002",
+      "severity": "CRITICAL",
+      "category": "data_flow",
+      "title": "Invalid Output Data - Non-existent Fields",
+      "description": "Final node attempts to return fields that DO NOT EXIST in data flow",
+      "location": "final_result node",
+      "invalid_fields": [
+        {
+          "field": "lead_id",
+          "expression": "={{ $json.lead_id }}",
+          "problem": "Field never created - no Firestore node to generate it",
+          "will_return": "undefined or null"
+        },
+        {
+          "field": "score",
+          "expression": "={{ $json.score }}",
+          "problem": "Field never calculated - no AI node to compute it",
+          "will_return": "undefined or null"
+        },
+        {
+          "field": "categoria",
+          "expression": "={{ $json.categoria }}",
+          "problem": "Field never assigned - no classification logic",
+          "will_return": "undefined or null"
+        }
+      ],
+      "impact": "Parent workflow (orchestrator) will receive invalid/empty data for key fields",
+      "blocking": true,
+      "solution": "Add Firestore node (for lead_id), AI node (for score), and classification logic (for categoria) BEFORE final node"
+    },
+    {
+      "id": "FUNC-ERROR-003",
+      "severity": "CRITICAL",
+      "category": "validation",
+      "title": "No Required Input Validation",
+      "description": "No validation of required fields. Workflow accepts invalid data without verification",
+      "location": "after_trigger",
+      "required_validations": [
+        {
+          "field": "email",
+          "rules": ["required", "valid_email_format"]
+        },
+        {
+          "field": "nombre",
+          "rules": ["required", "min_length:2"]
+        },
+        {
+          "field": "telefono",
+          "rules": ["valid_phone_format"]
+        },
+        {
+          "field": "empresa",
+          "rules": ["required_for_scoring"]
+        }
+      ],
+      "impact": "Invalid data can reach Firestore, AI can fail with empty inputs, incorrect results",
+      "blocking": true,
+      "solution": "Add IF node or Code node to validate inputs before processing"
+    },
+    {
+      "id": "FUNC-ERROR-004",
+      "severity": "CRITICAL",
+      "category": "error_handling",
+      "title": "No Error Handling Implemented",
+      "description": "NO error handling in any node. If any node fails, entire workflow fails without recovery",
+      "location": "entire_workflow",
+      "missing_mechanisms": [
+        "Error outputs configured",
+        "Fallback nodes",
+        "Try-Catch logic",
+        "Error Trigger",
+        "continueOnFail settings",
+        "Retry logic"
+      ],
+      "impact": "Single error (API timeout, Firestore down, etc.) causes total workflow failure",
+      "blocking": true,
+      "solution": "Configure continueOnFail, add error outputs, implement fallback nodes, add Error Trigger"
+    },
+    {
+      "id": "FUNC-ERROR-005",
+      "severity": "CRITICAL",
+      "category": "persistence",
+      "title": "No Data Persistence - Leads Not Saved",
+      "description": "No integration with Firestore or other database. Leads are NOT saved permanently",
+      "location": "entire_workflow",
+      "missing_nodes": [
+        "Google Firestore (for lead persistence)"
+      ],
+      "impact": "Leads are lost after execution. No permanent record. Cannot track leads over time.",
+      "blocking": true,
+      "solution": "Add Google Firestore node to save leads in collection 'leads'"
+    }
+  ],
+
+  "warnings": [
+    {
+      "id": "WARN-001",
+      "severity": "MEDIUM",
+      "category": "optimization",
+      "title": "Redundant Input Mapping",
+      "description": "Node only copies fields 1:1 without transformation. Adds no functional value.",
+      "location": "map_input node",
+      "recommendation": "Remove this node and use trigger data directly, OR add real transformations (normalization, validation, enrichment)",
+      "impact": "Unnecessarily slows workflow, adds complexity without value"
+    },
+    {
+      "id": "WARN-002",
+      "severity": "MEDIUM",
+      "category": "data_quality",
+      "title": "Missing Metadata Enrichment",
+      "description": "Important metadata fields not added for tracking and debugging",
+      "location": "entire_workflow",
+      "missing_fields": [
+        "created_at",
+        "workflow_id",
+        "execution_id",
+        "source",
+        "version",
+        "processed_by"
+      ],
+      "recommendation": "Add Set node for metadata enrichment before Firestore save",
+      "impact": "Difficult to debug, track and audit leads over time"
+    },
+    {
+      "id": "WARN-003",
+      "severity": "LOW",
+      "category": "configuration",
+      "title": "Workflow Settings - Storage Issues",
+      "description": "Current settings can cause performance and storage issues",
+      "location": "workflow_settings",
+      "current_config": {
+        "saveDataErrorExecution": "all",
+        "saveDataSuccessExecution": "all"
+      },
+      "problem": "Saves ALL data from ALL executions. Can fill storage quickly and increase costs.",
+      "recommended_config": {
+        "saveDataErrorExecution": "all",
+        "saveDataSuccessExecution": "lastSave",
+        "executionTimeout": 300
+      },
+      "impact": "Unnecessary storage costs, degraded performance with large execution history"
+    }
+  ],
+
+  "suggestions": [
+    {
+      "id": "SUGG-001",
+      "priority": "HIGH",
+      "category": "validation",
+      "title": "Implement Input Validation",
+      "description": "Add IF or Code node to validate inputs before processing",
+      "implementation_type": "code_node",
+      "estimated_effort": "1 hour"
+    },
+    {
+      "id": "SUGG-002",
+      "priority": "HIGH",
+      "category": "ai",
+      "title": "Implement AI Scoring",
+      "description": "Add Google Gemini node for automatic lead scoring and categorization",
+      "implementation_type": "gemini_node",
+      "estimated_effort": "2 hours"
+    },
+    {
+      "id": "SUGG-003",
+      "priority": "MEDIUM",
+      "category": "data_enrichment",
+      "title": "Add Metadata Enrichment",
+      "description": "Add Set node to enrich data with metadata fields for tracking",
+      "implementation_type": "set_node",
+      "estimated_effort": "30 minutes"
+    },
+    {
+      "id": "SUGG-004",
+      "priority": "MEDIUM",
+      "category": "observability",
+      "title": "Implement Structured Logging",
+      "description": "Implement structured logging for debugging and auditing",
+      "implementation_type": "code_node_to_firestore_logs",
+      "estimated_effort": "1 hour"
+    }
+  ],
+
+  "expression_validation": {
+    "total_expressions": 12,
+    "syntactically_valid": 12,
+    "semantically_valid": 9,
+    "semantically_invalid": 3,
+    "details": [
+      {
+        "type": "simple_mapping",
+        "count": 9,
+        "status": "VALID",
+        "examples": [
+          "={{ $json.nombre }}",
+          "={{ $json.email }}",
+          "={{ $json.telefono }}"
+        ]
+      },
+      {
+        "type": "non_existent_field_reference",
+        "count": 3,
+        "status": "SYNTACTICALLY_VALID_SEMANTICALLY_INVALID",
+        "result": "returns_undefined_or_null",
+        "examples": [
+          "={{ $json.lead_id }}",
+          "={{ $json.score }}",
+          "={{ $json.categoria }}"
+        ]
+      }
+    ]
+  },
+
+  "error_handling_validation": {
+    "total_checks": 7,
+    "passed_checks": 0,
+    "failed_checks": 7,
+    "score": "0/7",
+    "status": "CRITICAL - NO ERROR HANDLING",
+    "details": {
+      "nodes_with_continueOnFail": 0,
+      "nodes_with_error_output": 0,
+      "error_trigger_exists": false,
+      "input_validation_exists": false,
+      "error_messages_configured": false,
+      "fallback_logic_exists": false,
+      "retry_logic_exists": false
+    }
+  },
+
+  "integration_validation": {
+    "total_integrations": 3,
+    "implemented": 0,
+    "missing": 3,
+    "score": "0/3",
+    "status": "NO INTEGRATIONS IMPLEMENTED",
+    "details": [
+      {
+        "name": "Google Firestore",
+        "status": "NOT_IMPLEMENTED",
+        "required": true,
+        "purpose": "Lead persistence and lead_id generation",
+        "impact": "CRITICAL - leads not saved"
+      },
+      {
+        "name": "Google Gemini AI",
+        "status": "NOT_IMPLEMENTED",
+        "required": true,
+        "purpose": "Lead scoring and categorization",
+        "impact": "CRITICAL - score and categoria not calculated"
+      },
+      {
+        "name": "Gmail / Email",
+        "status": "NOT_IMPLEMENTED",
+        "required": true,
+        "purpose": "Notifications for new leads",
+        "impact": "HIGH - no notifications sent"
+      }
+    ]
+  },
+
+  "performance_analysis": {
+    "current_workflow": {
+      "estimated_duration_ms": 50,
+      "nodes_executed": 3,
+      "bottlenecks": []
+    },
+    "complete_workflow_estimate": {
+      "estimated_duration_ms": "3000-5000",
+      "estimated_duration_seconds": "3-5",
+      "nodes_expected": "10-12",
+      "bottlenecks": [
+        {
+          "component": "Gemini API",
+          "estimated_time_ms": "2000-3000",
+          "severity": "HIGH",
+          "percentage_of_total": "60-75%"
+        },
+        {
+          "component": "Email Send",
+          "estimated_time_ms": "500-1000",
+          "severity": "MEDIUM",
+          "percentage_of_total": "15-20%"
+        },
+        {
+          "component": "Firestore Write",
+          "estimated_time_ms": "200-400",
+          "severity": "LOW",
+          "percentage_of_total": "5-10%"
+        }
+      ],
+      "recommendations": [
+        "Execute email asynchronously (non-blocking)",
+        "Consider caching similar scores",
+        "Set workflow timeout to 60 seconds"
+      ]
+    }
+  },
+
+  "security_analysis": {
+    "credentials_configured": false,
+    "input_sanitization": false,
+    "rate_limiting": false,
+    "caller_policy": {
+      "configured": true,
+      "value": "workflowsFromSameOwner",
+      "status": "SECURE - Only same owner workflows can call"
+    },
+    "recommendations": [
+      "Sanitize inputs before using in queries/prompts",
+      "Implement rate limiting per email",
+      "Validate email and phone formats",
+      "Use credentials with minimum required privileges",
+      "Do not expose sensitive data in logs"
+    ]
+  },
+
+  "comparison_with_previous_report": {
+    "previous_report": "test_report_v1.md",
+    "previous_date": "2025-12-17",
+    "changes_made": "NONE",
+    "improvements": "NONE",
+    "status": "UNCHANGED",
+    "notes": "Workflow remains exactly the same as previous validation. All critical errors and warnings persist."
+  },
+
+  "next_steps": {
+    "immediate_action": "USER_MUST_PROVIDE_WORKFLOW_ID",
+    "options": [
+      {
+        "option": "A",
+        "description": "Provide workflow ID from n8n Cloud",
+        "steps": [
+          "Go to n8n Cloud UI",
+          "Open workflow 'SUB-A: Lead Intake & Enrichment'",
+          "Copy ID from URL (e.g., https://app.n8n.cloud/workflow/[ID])",
+          "Provide ID to QA agent"
+        ]
+      },
+      {
+        "option": "B",
+        "description": "Export complete workflow from n8n Cloud",
+        "steps": [
+          "In n8n UI: Open workflow",
+          "Click menu '...' (three dots)",
+          "Select 'Download'",
+          "Save JSON to: .../artifacts/workflow_real_deployed.json",
+          "Request validation of exported file"
+        ]
+      }
+    ],
+    "after_obtaining_real_workflow": [
+      "Full structural validation",
+      "Individual node validation",
+      "Connection and flow validation",
+      "Expression validation",
+      "Error handling validation",
+      "Integration validation",
+      "Functional testing (if possible)",
+      "Performance analysis",
+      "Security validation",
+      "Final report with approval decision"
+    ]
+  },
+
+  "completion_estimate": {
+    "if_workflow_incomplete": {
+      "phase_1_core": {
+        "tasks": [
+          "Add input validation",
+          "Add AI scoring (Gemini)",
+          "Add Firestore persistence",
+          "Add email notifications",
+          "Implement error handling"
+        ],
+        "estimated_hours": "4-6"
+      },
+      "phase_2_quality": {
+        "tasks": [
+          "Add metadata enrichment",
+          "Optimize settings",
+          "Add structured logging"
+        ],
+        "estimated_hours": "2-3"
+      },
+      "phase_3_hardening": {
+        "tasks": [
+          "Security improvements",
+          "Documentation"
+        ],
+        "estimated_hours": "1-2"
+      },
+      "total_estimated_hours": "7-11"
+    }
+  },
+
+  "decision": {
+    "local_file_decision": "REJECTED",
+    "cloud_workflow_decision": "NOT_VALIDATED_YET",
+    "overall_status": "VALIDATION_INCOMPLETE",
+    "reason": "Cannot access real workflow in n8n Cloud. Only validated local file which is confirmed incomplete.",
+    "blocking_issue": "Missing workflow ID or exported JSON from n8n Cloud",
+    "ready_for_deployment": false,
+    "ready_for_optimization": false,
+    "next_agent": "NONE - Waiting for user to provide workflow access",
+    "action_required": "User must provide workflow ID or exported JSON file"
+  }
+}
