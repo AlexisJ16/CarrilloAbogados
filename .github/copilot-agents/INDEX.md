@@ -61,7 +61,7 @@ Este directorio contiene **agentes especializados** para diferentes áreas del p
 - Asegurar cero errores en herramientas de calidad
 - Tests unitarios e integración
 
-### 8. [Business Product Agent](./business-product-agent.md) 🆕
+### 8. [Business Product Agent](./business-product-agent.md)
 **Especialización**: Investigación, Gerencia de Producto y Planificación de Negocio
 - Gestión completa de la carpeta `docs/business/`
 - Definición de requerimientos y prioridades del MVP
@@ -70,6 +70,14 @@ Este directorio contiene **agentes especializados** para diferentes áreas del p
 - Coordinación de estrategia Flywheel + n8n
 - Roadmap del producto y timeline
 - Definición de los 4 tipos de usuario y sus funcionalidades
+
+### 9. [Branch Sync Agent](./branch-sync-agent.md) 🆕
+**Especialización**: Sincronización de ramas y gestión de integración
+- Mantener sincronizadas las ramas main, dev y automation
+- Integrar cambios de automation a dev de forma segura
+- Revisar y resolver conflictos de merge
+- Mantener historial de git limpio y ordenado
+- Coordinación entre equipo de desarrollo y marketing
 
 ---
 
@@ -99,16 +107,19 @@ Actualiza la documentación del proyecto usando el documentation-agent.
 
 ```
 .github/
-├── copilot-instructions.md    # Instrucciones principales de Copilot
+├── copilot-instructions.md       # Instrucciones principales de Copilot
 ├── copilot-agents/
-│   ├── INDEX.md               # Este archivo
-│   ├── backend-agent.md       # Desarrollo Spring Boot
-│   ├── frontend-agent.md      # Desarrollo React/Next.js
-│   ├── devops-agent.md        # Docker, K8s, CI/CD
-│   ├── testing-agent.md       # Tests y seguridad
-│   ├── documentation-agent.md # Mantenimiento de docs
-│   └── project-manager-agent.md # Gestión de proyecto
-└── workflows/                 # GitHub Actions
+│   ├── INDEX.md                  # Este archivo
+│   ├── backend-agent.md          # Desarrollo Spring Boot
+│   ├── frontend-agent.md         # Desarrollo React/Next.js
+│   ├── devops-agent.md           # Docker, K8s, CI/CD
+│   ├── testing-agent.md          # Tests y seguridad
+│   ├── documentation-agent.md    # Mantenimiento de docs
+│   ├── project-manager-agent.md  # Gestión de proyecto
+│   ├── qa-quality-agent.md       # Control de calidad
+│   ├── business-product-agent.md # Producto y negocio
+│   └── branch-sync-agent.md      # Sincronización de ramas 🆕
+└── workflows/                    # GitHub Actions
 ```
 
 ---
