@@ -27,6 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -51,6 +52,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Alexis - Carrillo Abogados
  */
 @WebMvcTest(LeadResource.class)
+@AutoConfigureMockMvc(addFilters = false)
 @DisplayName("LeadResource REST Controller Tests")
 class LeadResourceTest {
 
@@ -62,6 +64,12 @@ class LeadResourceTest {
 
     @MockBean
     private LeadService leadService;
+
+    @MockBean
+    private com.carrilloabogados.client.security.JwtTokenProvider jwtTokenProvider;
+
+    @MockBean
+    private com.carrilloabogados.client.security.JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private LeadDto testLeadDto;
     private UUID testLeadId;
