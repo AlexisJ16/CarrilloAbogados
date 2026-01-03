@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Cloud-native legal management platform with 11 Spring Boot microservices on Kubernetes. **Dual purpose**: Academic project (Plataformas II) + Real production system for 5-lawyer firm in Cali, Colombia. Built with zero vendor lock-in using Spring Cloud Kubernetes instead of Eureka/Config Server.
+Cloud-native legal management platform with 8 Spring Boot microservices on Kubernetes. **Dual purpose**: Academic project (Plataformas II) + Real production system for 5-lawyer firm in Cali, Colombia. Built with zero vendor lock-in using Spring Cloud Kubernetes instead of Eureka/Config Server.
 
 ## Critical Architecture Decisions
 

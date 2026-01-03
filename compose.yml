@@ -192,12 +192,26 @@ services:
       POSTGRES_DB: carrillo_legal_tech
       POSTGRES_USER: carrillo
       POSTGRES_PASSWORD: CarrilloAbogados2025!
-      NATS_URL: nats://nats:4222
+      POSTGRES_SCHEMA_N8N: n8n_integration
+      # NATS Configuration
+      NATS_ENABLED: "true"
+      NATS_SERVER: nats://nats:4222
+      # n8n Cloud Configuration
+      N8N_CLOUD_URL: https://carrilloabgd.app.n8n.cloud
+      N8N_WEBHOOK_LEAD_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/lead-events
+      N8N_WEBHOOK_MEETING_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/meeting-events
+      N8N_WEBHOOK_CASE_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/case-events
     depends_on:
       postgresql:
         condition: service_healthy
       nats:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8800/n8n-integration-service/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     networks:
       - carrillo-network
 

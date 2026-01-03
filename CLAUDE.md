@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 2 de Enero, 2026
+**Última Actualización**: 4 de Enero, 2026
 
 ## ⚠️ CRÍTICO: ENTORNO WINDOWS + WSL
 
@@ -92,7 +92,7 @@ wsl bash -c "kubectl get pods -A"
 5. document-service - Almacenamiento seguro documentos legales (puerto 8500)
 6. calendar-service - Google Calendar API integration (puerto 8600)
 7. notification-service - Email/SMS via Gmail API (puerto 8700)
-8. n8n-integration-service - Bridge con n8n Cloud para workflows (puerto 8800)
+8. n8n-integration-service - Bridge con n8n Cloud para workflows (puerto 8800, context-path: /n8n-integration-service)
 
 ### Eliminados/Deprecados
 - ~~user-service~~ - Migrado a client-service (deshabilitado en Helm)
@@ -104,7 +104,7 @@ wsl bash -c "kubectl get pods -A"
 
 | MEGA-WORKFLOW | Propósito | Workflows | Nodos | Estado |
 |---------------|-----------|-----------|-------|--------|
-| MW#1: Captura | Lead → Cliente (< 1 min) | 7 | 108 | 28% |
+| MW#1: Captura | Lead → Cliente (< 1 min) | 7 | 108 | 90% |
 | MW#2: Retención | Cliente → Recompra | 5 | 72 | Q2 2026 |
 | MW#3: SEO | Tráfico → Lead | 5 | 60 | Q2-Q3 2026 |
 
