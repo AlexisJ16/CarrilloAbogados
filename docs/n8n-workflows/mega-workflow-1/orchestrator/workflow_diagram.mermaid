@@ -1,0 +1,27 @@
+graph TD
+    %% SUBGRAPH: ORQUESTADOR
+    subgraph Orchestrator [WORKFLOW A: ORQUESTADOR (Agente IA)]
+        WH[Webhook: /lead-events] --> AIAgent[🤖 AI Router Agent<br>(Gemini Model)]
+        
+        AIAgent -- "new_lead" --> R_Lead[Route: New Lead]
+        AIAgent -- "email_open" --> R_Email[Route: Email Open]
+        AIAgent -- "meeting_booked" --> R_Meet[Route: Meeting]
+        AIAgent -- "unknown" --> R_Error[Route: Error]
+    end
+
+    %% SUBGRAPH: SUB-A
+    subgraph SubA [SUB-WORKFLOW A: LEAD INTAKE (Híbrido)]
+        R_Lead --> TriggerA[Execute Workflow Trigger]
+        TriggerA --> NormAI[🤖 AI Normalizer<br>Prompt: Classify Role/Industry]
+        
+        NormAI --> NormData{Datos Normalizados}
+        NormData --> |"Normalized"| ScoreCode[⚙️ Deterministic Scoring<br>JS Code Node]
+        
+        ScoreCode --> |"Score Calculated"| DB[Firestore: Save Lead]
+        DB --> Email[Gmail: Send Welcome]
+        Email --> EndA[Return Output]
+    end
+
+    %% CONNECTIONS
+    EndA --> Consol[Consolidate Response]
+    Consol --> Final[Respond to Webhook]

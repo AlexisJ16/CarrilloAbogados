@@ -1,0 +1,111 @@
+{
+  "id": "bva1Kc1USbbITEAw",
+  "name": "WORKFLOW A: Lead Lifecycle Manager (Orquestador)",
+  "active": true,
+  "createdAt": "2025-12-21T21:45:06.001Z",
+  "updatedAt": "2025-12-21T21:45:45.000Z",
+  "nodes": [
+    {
+      "id": "webhook_main",
+      "name": "Webhook Principal Lead Events",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [240, 304],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-events",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "identify_event",
+      "name": "Identify",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [464, 304],
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst payload = input.body || input;\nlet eventType = payload.event_type || 'unknown';\nlet targetWorkflowId = null;\n\nif (eventType === 'new_lead' || (payload.email && !payload.lead_id)) {\n  eventType = 'new_lead';\n  targetWorkflowId = 'RHj1TAqBazxNFriJ';\n} else if (eventType === 'email_opened') {\n  eventType = 'email_opened';\n}\n\nreturn {\n  json: {\n    ...payload,\n    event_type: eventType,\n    target_workflow_id: targetWorkflowId,\n    orchestrator_timestamp: new Date().toISOString(),\n    orchestrator_execution_id: $execution.id\n  }\n};"
+      }
+    },
+    {
+      "id": "sub_a",
+      "name": "SubA",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [688, 304],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "RHj1TAqBazxNFriJ",
+          "mode": "id"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "id": "consolidate",
+      "name": "Consolidate",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [912, 304],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success",
+              "name": "success",
+              "type": "boolean",
+              "value": "={{ $json.success !== false }}"
+            },
+            {
+              "id": "result",
+              "name": "result",
+              "type": "object",
+              "value": "={{ $json }}"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1136, 304],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: $json.success, result: $json.result } }}",
+        "options": {
+          "responseCode": "={{ $json.success ? 200 : 500 }}"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Principal Lead Events": {
+      "main": [[{"node": "Identify", "type": "main", "index": 0}]]
+    },
+    "Identify": {
+      "main": [[{"node": "SubA", "type": "main", "index": 0}]]
+    },
+    "SubA": {
+      "main": [[{"node": "Consolidate", "type": "main", "index": 0}]]
+    },
+    "Consolidate": {
+      "main": [[{"node": "Respond", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  }
+}
