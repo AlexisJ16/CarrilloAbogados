@@ -14,6 +14,10 @@ spring:
           uri: http://case-service:8300
           predicates:
             - Path=/case-service/**
+        - id: N8N-INTEGRATION-SERVICE
+          uri: http://n8n-integration-service:8800
+          predicates:
+            - Path=/n8n-integration-service/**
         # Servicios SIN context-path (necesitan StripPrefix)
         - id: PAYMENT-SERVICE
           uri: http://payment-service:8400
@@ -37,11 +41,5 @@ spring:
           uri: http://notification-service:8700
           predicates:
             - Path=/notification-service/**
-          filters:
-            - StripPrefix=1
-        - id: N8N-INTEGRATION-SERVICE
-          uri: http://n8n-integration-service:8800
-          predicates:
-            - Path=/n8n-integration-service/**
           filters:
             - StripPrefix=1

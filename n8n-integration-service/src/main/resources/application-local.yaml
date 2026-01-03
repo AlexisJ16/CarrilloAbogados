@@ -1,0 +1,44 @@
+# Local Development Profile for n8n-integration-service
+# Uses Docker Compose services (postgresql, nats)
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=${POSTGRES_SCHEMA_N8N:n8n_integration}
+    username: ${POSTGRES_USER:carrillo}
+    password: ${POSTGRES_PASSWORD:CarrilloAbogados2025!}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# Disable Zipkin (not running in local)
+management:
+  tracing:
+    enabled: false
+  zipkin:
+    tracing:
+      enabled: false
+
+# Connect to n8n Cloud (real)
+n8n:
+  cloud:
+    base-url: ${N8N_CLOUD_URL:https://carrilloabgd.app.n8n.cloud}
+    enabled: true
+    webhooks:
+      lead-events: /webhook/lead-events
+      meeting-events: /webhook/meeting-events
+      case-events: /webhook/case-events
+    timeout-seconds: 30
+    retry:
+      max-attempts: 3
+      delay-ms: 1000
+
+# Local NATS
+nats:
+  enabled: ${NATS_ENABLED:true}
+  server: ${NATS_SERVER:nats://localhost:4222}
+
+logging:
+  level:
+    com.carrilloabogados.n8n: DEBUG
+    io.nats: DEBUG
