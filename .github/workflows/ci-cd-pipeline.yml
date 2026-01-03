@@ -37,7 +37,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
-    - name: 📦 Build with Maven
+    - name: � Make Maven Wrapper executable
+      run: chmod +x ./mvnw
+    
+    - name: �📦 Build with Maven
       run: ./mvnw clean verify -T 1C -B
     
     - name: 📊 Upload build artifacts
