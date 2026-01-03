@@ -12,7 +12,7 @@ Este directorio contiene todo el sistema de automatización de marketing integra
 
 ## 🏗️ Estructura del Directorio
 
-```
+```text
 automation/
 ├── README.md                    # Este archivo
 ├── .claude/
@@ -62,17 +62,17 @@ automation/
 
 Cada MEGA-WORKFLOW sigue un patrón de **Orquestador (Hub)** y **Sub-workflows especializados (Spokes)**:
 
-| MEGA-WORKFLOW | Propósito | Workflows | Nodos | Estado |
-|---------------|-----------|-----------|-------|--------|
-| **MW#1: Captura** | Lead → Cliente (<1 min) | 7 | 108 | 🔄 28% |
-| **MW#2: Retención** | Cliente → Recompra (Flywheel) | 5 | 72 | 📋 Q2 2026 |
-| **MW#3: SEO** | Tráfico → Lead (Content Factory) | 5 | 60 | 📋 Q2-Q3 2026 |
+| MEGA-WORKFLOW       | Propósito                        | Workflows | Nodos | Estado        |
+| ------------------- | -------------------------------- | --------- | ----- | ------------- |
+| **MW#1: Captura**   | Lead → Cliente (<1 min)          | 7         | 108   | 🔄 28%        |
+| **MW#2: Retención** | Cliente → Recompra (Flywheel)    | 5         | 72    | 📋 Q2 2026    |
+| **MW#3: SEO**       | Tráfico → Lead (Content Factory) | 5         | 60    | 📋 Q2-Q3 2026 |
 
 **Total**: 17 workflows, 240 nodos planificados
 
 ### MW#1: Lead Lifecycle Manager (En Desarrollo)
 
-```
+```text
 Formulario Web → NATS → n8n-integration-service → n8n Cloud
                                                        │
                     ┌──────────────────────────────────┘
@@ -92,7 +92,7 @@ Formulario Web → NATS → n8n-integration-service → n8n Cloud
 
 ### Flujo de Eventos
 
-```
+```text
 Portal Web (Frontend)
         │
         ▼
@@ -120,32 +120,32 @@ n8n Cloud (carrilloabgd.app.n8n.cloud)
 
 ### Eventos NATS
 
-| Evento | Origen | Destino n8n | Acción |
-|--------|--------|-------------|--------|
-| `lead.capturado` | client-service | MW#1 SUB-A | Scoring + Respuesta IA |
-| `cita.agendada` | calendar-service | MW#1 SUB-F | Confirmación |
-| `caso.cerrado` | case-service | MW#2 | Follow-up satisfacción |
-| `cliente.inactivo` | client-service | MW#2 | Reactivación |
+| Evento             | Origen           | Destino n8n | Acción                 |
+| ------------------ | ---------------- | ----------- | ---------------------- |
+| `lead.capturado`   | client-service   | MW#1 SUB-A  | Scoring + Respuesta IA |
+| `cita.agendada`    | calendar-service | MW#1 SUB-F  | Confirmación           |
+| `caso.cerrado`     | case-service     | MW#2        | Follow-up satisfacción |
+| `cliente.inactivo` | client-service   | MW#2        | Reactivación           |
 
 ## 🔧 Agentes Claude
 
 Los agentes Claude están diseñados para asistir en el desarrollo de workflows:
 
-| Agente | Propósito |
-|--------|-----------|
-| `architect` | Diseño de arquitectura de workflows |
-| `engineer` | Implementación de nodos y conexiones |
-| `qa-specialist` | Testing y validación |
-| `optimizer` | Optimización de rendimiento |
-| `validator` | Validación de configuraciones |
+| Agente           | Propósito                            |
+| ---------------- | ------------------------------------ |
+| `architect`      | Diseño de arquitectura de workflows  |
+| `engineer`       | Implementación de nodos y conexiones |
+| `qa-specialist`  | Testing y validación                 |
+| `optimizer`      | Optimización de rendimiento          |
+| `validator`      | Validación de configuraciones        |
 
 ## 📊 Métricas Objetivo
 
-| Métrica | Actual | Objetivo | Impacto |
-|---------|-------:|--------:|---------|
-| Leads/mes | 20 | 300+ | 15x crecimiento |
-| Tiempo respuesta | 4-24h | < 1 min | 1440x más rápido |
-| Conversión | ~5% | 15%+ | 3x mejora |
+| Métrica          | Actual | Objetivo | Impacto           |
+| ---------------- | -----: | -------: | ----------------- |
+| Leads/mes        |     20 |    300+  | 15x crecimiento   |
+| Tiempo respuesta |  4-24h |  < 1 min | 1440x más rápido  |
+| Conversión       |    ~5% |    15%+  | 3x mejora         |
 
 ## 🔗 Documentación Relacionada
 
@@ -159,11 +159,13 @@ Los agentes Claude están diseñados para asistir en el desarrollo de workflows:
 ## ⚠️ Notas Importantes
 
 ### Acceso a n8n Cloud
-- **URL**: https://carrilloabgd.app.n8n.cloud
+
+- **URL**: <https://carrilloabgd.app.n8n.cloud>
 - **Versión**: 1.120.4
 - **Plan**: Pro (Enterprise features)
 
 ### Credenciales Configuradas
+
 - ✅ Gmail OAuth2 (carrilloabgd.com)
 - ✅ Firestore (GCP)
 - ✅ Google Gemini AI
@@ -174,10 +176,10 @@ Los agentes Claude están diseñados para asistir en el desarrollo de workflows:
 
 ## 📅 Historial de Integración
 
-| Fecha | Acción | Commit |
-|-------|--------|--------|
-| 4 Ene 2026 | Integración inicial desde n8n-antigravity | - |
+| Fecha       | Acción                                    | Commit |
+| ----------- | ----------------------------------------- | ------ |
+| 4 Ene 2026  | Integración inicial desde n8n-antigravity | -      |
 
 ---
 
-*Documentación generada como parte de la integración del proyecto n8n-antigravity a CarrilloAbogados*
+> Documentación generada como parte de la integración del proyecto n8n-antigravity a CarrilloAbogados

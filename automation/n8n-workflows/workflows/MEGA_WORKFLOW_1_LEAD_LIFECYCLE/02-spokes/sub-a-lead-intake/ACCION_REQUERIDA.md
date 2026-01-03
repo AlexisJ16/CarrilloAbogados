@@ -24,7 +24,7 @@ He completado la auditoría y reparación del workflow SUB-A. Detecté y correg�
 
 ### OPCIÓN RÁPIDA (RECOMENDADA) - 5 minutos
 
-1. Ir a: https://carrilloabgd.app.n8n.cloud
+1. Ir a: <https://carrilloabgd.app.n8n.cloud>
 2. Abrir workflow "SUB-A: Lead Intake & Enrichment"
 3. Menu (tres puntos) → "Download" (hacer backup)
 4. Menu → "Import from File"
@@ -72,10 +72,10 @@ Para confirmar que funciona correctamente:
 }
 ```
 
-3. Ejecutar
-4. Verificar:
+1. Ejecutar
+2. Verificar:
    - ✅ Lead se guarda en Firestore
-   - ✅ Se envía notificación a marketing@carrilloabgd.com (es HOT)
+   - ✅ Se envía notificación a `marketing@carrilloabgd.com` (es HOT)
    - ✅ Se genera respuesta con IA
    - ✅ Se envía email al lead
 
@@ -113,6 +113,7 @@ Una vez el workflow esté actualizado y probado:
 3. Monitorear las primeras ejecuciones reales
 
 **Estado Actual del Proyecto**:
+
 - ✅ SUB-A: Diseñado, implementado, auditado, reparado
 - ⏳ SUB-A: Pendiente despliegue (TU ACCIÓN)
 - ⏳ SUB-A: Pendiente testing E2E

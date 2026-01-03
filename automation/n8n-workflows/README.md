@@ -79,12 +79,24 @@ n8n-antigravity/
 
 ### En n8n Cloud
 
+**Última verificación**: 2026-01-03 (via MCP)  
+**URL**: https://carrilloabgd.app.n8n.cloud  
+**Versión**: v1.120.4
+
+| ID | Nombre | Nodos | Estado | Validación |
+|----|--------|-------|--------|------------|
+| `bva1Kc1USbbITEAw` | **Orquestador** (Lead Lifecycle) | 5 | ⚪ INACTIVO | ❌ 1 error |
+| `RHj1TAqBazxNFriJ` | **SUB-A** (Lead Intake v5 - AI) | 10 | ⚪ INACTIVO | ⚠️ 7 warnings |
+| `tpCV4mNjRiuOjeM8` | SUB-A PRUEBA (legacy) | 12 | ⚪ INACTIVO | - |
+| `3FG9LxOp09FLC5s4` | My workflow (test) | 2 | ⚪ INACTIVO | - |
+
 ```bash
-# Ver workflows actuales
+# Verificar estado actual con MCP:
 > Dame un listado de los workflows que hay en mi instancia de n8n
+> Valida el workflow bva1Kc1USbbITEAw
 ```
 
-**Estado actual**: Verificar con el comando anterior (no asumir)
+**⚠️ ACCIÓN REQUERIDA**: Ver `workflows/MEGA_WORKFLOW_1_LEAD_LIFECYCLE/ACCION_REQUERIDA.md`
 
 ### En Desarrollo Local
 

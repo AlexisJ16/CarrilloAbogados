@@ -1,22 +1,22 @@
 # MEGA-WORKFLOW #1: Lead Lifecycle Manager
 
-## Estado: ✅ OPERATIVO EN PRODUCCIÓN
+## Estado: ⚠️ INACTIVO - PENDIENTE ACTIVACIÓN
 
-**Última actualización:** 2025-12-21  
-**Versión:** 1.0.0 (Production)
+**Última actualización:** 2026-01-03 (Verificado con MCP n8n)  
+**Versión:** 1.0.0 (Production-Ready)  
+**n8n Cloud:** v1.120.4
 
 ---
 
-## 🔄 Verificar Estado Real
+## 🔄 Estado Real (Verificado 2026-01-03)
 
-```bash
-# Antes de modificar, SIEMPRE verificar con MCP que este documento esté sincronizado:
-> Obtén el workflow bva1Kc1USbbITEAw y valídalo
-> Obtén el workflow RHj1TAqBazxNFriJ y valídalo
-> Lista las últimas 5 ejecuciones
-```
+Datos obtenidos directamente de la API de n8n Cloud mediante MCP:
 
-**⚠️ Si hay diferencias entre esta documentación y n8n Cloud, actualizar este archivo.**
+### Instancia n8n
+- **URL**: https://carrilloabgd.app.n8n.cloud
+- **Versión**: 1.120.4
+- **Usuario**: marketing@carrilloabgd.com
+- **Workflows totales**: 4
 
 ---
 
@@ -24,9 +24,13 @@
 
 Sistema completo de captura y procesamiento de leads para Carrillo Abogados, utilizando IA (Google Gemini 2.5-pro) para análisis y scoring automático.
 
+**Arquitectura**: Hub & Spoke
+- 1 Orquestador (Hub) recibe eventos via webhook
+- 1 Sub-workflow (Spoke) procesa leads con IA
+
 ---
 
-## Workflows en Producción
+## Workflows en n8n Cloud
 
 ### Orquestador (Hub)
 
@@ -34,9 +38,12 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 |-------|-------|
 | **ID** | `bva1Kc1USbbITEAw` |
 | **Nombre** | WORKFLOW A: Lead Lifecycle Manager (Orquestador) |
-| **Estado** | ✅ ACTIVO |
+| **Estado** | ⚪ INACTIVO (requiere activación manual) |
 | **Webhook** | `https://carrilloabgd.app.n8n.cloud/webhook/lead-events` |
 | **Nodos** | 5 (Webhook → Identify → SubA → Consolidate → Respond) |
+| **Última ejecución** | 2025-12-22 (éxito) |
+| **Total ejecuciones** | 3 (2 éxitos, 1 error) |
+| **Validación** | ⚠️ 1 error, 5 warnings |
 
 ### SUB-A: Lead Intake (Spoke)
 
@@ -47,6 +54,9 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 | **Estado** | ⚪ INACTIVO (triggered by Orquestador) |
 | **Nodos** | 10 |
 | **IA** | Google Gemini 2.5-pro (análisis + respuesta) |
+| **Última ejecución** | 2025-12-22 (éxito) |
+| **Total ejecuciones** | 10 (4 éxitos, 6 errores) |
+| **Validación** | ✅ Válido (7 warnings menores) |
 
 ---
 
@@ -150,3 +160,152 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ### Gmail Node
 - Siempre especificar `operation: "send"` explícitamente
+
+---
+
+## 🔧 Validación n8n (2026-01-03)
+
+### Orquestador - Errores Detectados
+
+| Tipo | Nodo | Problema | Solución |
+|------|------|----------|----------|
+| ❌ **ERROR** | Webhook Principal | `responseNode` mode sin `onError` configurado | Agregar `"onError": "continueRegularOutput"` |
+| ⚠️ Warning | Execute Workflow | typeVersion 1.2 → 1.3 disponible | Actualizar nodo |
+| ⚠️ Warning | Respond to Webhook | typeVersion 1.1 → 1.5 disponible | Actualizar nodo |
+| ⚠️ Warning | General | Sin error handling global | Agregar nodos Error Trigger |
+
+### SUB-A - Warnings Detectados
+
+| Tipo | Nodo | Problema | Solución |
+|------|------|----------|----------|
+| ⚠️ Warning | IF Node | typeVersion 2 → 2.3 disponible | Actualizar nodo |
+| ⚠️ Warning | Gmail Nodes (x2) | typeVersion 2.1 → 2.2 disponible | Actualizar nodos |
+| ⚠️ Warning | IF Node | Sin `onError` configurado | Agregar manejo de errores |
+| ⚠️ Warning | General | Sin error handling global | Agregar workflow Error Trigger |
+
+---
+
+## 🚀 Acciones Requeridas (Prioridad)
+
+### 🔴 P0 - Crítico (Antes de activar)
+
+1. **Corregir error Webhook Orquestador**
+   ```javascript
+   // En nodo "Webhook Principal Lead Events" agregar:
+   "parameters": {
+     "httpMethod": "POST",
+     "path": "lead-events",
+     "responseMode": "responseNode",
+     "onError": "continueRegularOutput"  // <- AGREGAR
+   }
+   ```
+
+2. **Actualizar typeVersions**
+   - Execute Workflow: 1.2 → 1.3
+   - Respond to Webhook: 1.1 → 1.5
+   - If Node: 2 → 2.3
+
+### 🟡 P1 - Importante (Post-activación)
+
+3. **Agregar Error Handling**
+   - Añadir nodo "Error Trigger" en ambos workflows
+   - Configurar notificación Slack/Email ante errores
+
+4. **Mejorar tasa de éxito SUB-A**
+   - Actual: 40% (4/10 éxitos)
+   - Revisar logs de errores
+   - Agregar validación de payload más robusta
+
+### 🟢 P2 - Mejoras (Futuro)
+
+5. **Integración Web**
+   - Conectar formulario web → NATS → n8n-integration-service → Webhook
+   - Probar flujo E2E con datos reales
+
+6. **Monitoreo**
+   - Dashboard Grafana para métricas de leads
+   - Alertas ante fallos de workflows
+
+---
+
+## 🔗 Integración con Plataforma Web
+
+### Arquitectura de Conexión
+
+```
+┌──────────────────────┐    ┌──────────────────────┐    ┌────────────────────┐
+│   Frontend Web       │    │  client-service      │    │  n8n Cloud         │
+│   (Formulario)       │    │  (Spring Boot)       │    │                    │
+├──────────────────────┤    ├──────────────────────┤    ├────────────────────┤
+│ POST /api/leads      │───►│ LeadResource.java    │    │                    │
+│                      │    │   └─ NATS Event      │───►│ (pendiente)        │
+│                      │    │      "lead.created"  │    │                    │
+└──────────────────────┘    └──────────────────────┘    └────────────────────┘
+                                      │
+                                      ▼
+                            ┌──────────────────────┐
+                            │ n8n-integration-svc  │
+                            │ NatsEventListener    │
+                            │   └─ HTTP POST ──────┼───► Webhook lead-events
+                            └──────────────────────┘
+                                      ▲
+                                      │
+                            ┌──────────────────────┐
+                            │ n8n Callbacks        │
+                            │ WebhookController    │
+                            │   /webhook/lead-scored
+                            │   /webhook/lead-hot  │
+                            └──────────────────────┘
+```
+
+### Endpoints del Microservicio
+
+| Servicio | Endpoint | Propósito |
+|----------|----------|-----------|
+| client-service | `POST /api/leads` | Captura lead desde formulario web |
+| n8n-integration-service | `POST /webhook/lead-scored` | n8n envía score calculado |
+| n8n-integration-service | `POST /webhook/lead-hot` | n8n notifica lead urgente |
+| n8n-integration-service | `GET /webhook/health` | Health check |
+
+### Flujo de Activación
+
+Para que la integración funcione completamente:
+
+1. ⬜ Activar Orquestador en n8n Cloud
+2. ⬜ Verificar webhook accesible: `curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
+3. ⬜ Configurar NatsEventListener con URL correcta del webhook
+4. ⬜ Desplegar n8n-integration-service en producción
+5. ⬜ Probar flujo E2E: Formulario → client-service → NATS → n8n
+
+---
+
+## 📊 Métricas de Ejecución
+
+### Últimas Ejecuciones (Diciembre 2025)
+
+**Orquestador:**
+| Fecha | Estado | Duración | Modo |
+|-------|--------|----------|------|
+| 2025-12-22 | ✅ Éxito | - | Manual |
+| 2025-12-22 | ✅ Éxito | - | Manual |
+| 2025-12-22 | ❌ Error | - | Manual |
+
+**SUB-A:**
+| Fecha | Estado | Notas |
+|-------|--------|-------|
+| 2025-12-22 | ✅ Éxito | Último test exitoso |
+| 2025-12-17-21 | Mixto | 4 éxitos, 6 errores (debugging) |
+
+---
+
+## 🔐 Credenciales Verificadas
+
+| Credencial | ID | Estado | Última verificación |
+|------------|------|--------|---------------------|
+| Google Gemini API | `jk2FHcbAC71LuRl2` | ✅ Activo | 2026-01-03 |
+| Gmail OAuth2 | `l2mMgEf8YUV7HHlK` | ✅ Activo | 2026-01-03 |
+| Google Firestore | `AAhdRNGzvsFnYN9O` | ✅ Activo | 2026-01-03 |
+
+---
+
+*Documento actualizado automáticamente con datos de n8n MCP - 2026-01-03*
