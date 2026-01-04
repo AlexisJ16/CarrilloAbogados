@@ -1,53 +1,155 @@
-# 🚨 ACCIONES REQUERIDAS - MW#1 Lead Lifecycle + Integración Web
+# ✅ MW#1 Lead Lifecycle - ACTIVO Y FUNCIONANDO
 
-**Estado**: ⚠️ WORKFLOWS INACTIVOS - PENDIENTE CORRECCIONES  
-**Última verificación**: 2026-01-03 (via n8n MCP)  
-**Próxima revisión**: Antes de lanzamiento MVP (27 Marzo 2026)
-
----
-
-## 📋 Resumen de Estado
-
-### n8n Cloud
-
-| Workflow | ID | Estado | Validación |
-|----------|-----|--------|------------|
-| Orquestador | `bva1Kc1USbbITEAw` | ⚪ INACTIVO | ❌ 1 error, 5 warnings |
-| SUB-A Lead Intake | `RHj1TAqBazxNFriJ` | ⚪ INACTIVO | ⚠️ 7 warnings |
-
-### Backend Platform
-
-| Componente | Estado | Notas |
-|------------|--------|-------|
-| client-service Lead API | ✅ Ready | POST /api/leads funcional |
-| n8n-integration-service | ⚠️ 80% | Falta configurar URL webhook |
-| Frontend /contacto | ✅ Ready | Formulario implementado |
-| NATS Messaging | ✅ Ready | Operativo en Docker |
+**Estado**: ✅ **PRODUCCIÓN READY**  
+**Última verificación**: 2026-01-04 00:27 COT  
+**Webhook URL**: `https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
 
 ---
 
-## 🔴 P0 - CRÍTICO (Bloquea activación)
+## 📋 Estado de Workflows
 
-### 1. Corregir Error en Webhook del Orquestador
+| Workflow | ID | Estado | Nodos | Validación |
+|----------|-----|--------|-------|------------|
+| **Orquestador** | `bva1Kc1USbbITEAw` | ✅ **ACTIVO** | 8 | ✅ 0 errores |
+| **SUB-A Lead Intake** | `RHj1TAqBazxNFriJ` | ✅ Listo | 13 | ✅ 0 errores |
 
-**Problema**: El nodo "Webhook Principal Lead Events" usa `responseMode: responseNode` pero no tiene configurado `onError`.
+---
 
-**Impacto**: El workflow falla al validar y no puede activarse correctamente.
+## ✅ Correcciones Completadas (4 Enero 2026)
 
-**Solución**:
+### 1. Error Webhook `onError` - CORREGIDO ✅
+- **Problema**: Nodo webhook sin `onError: continueRegularOutput`
+- **Solución**: Agregado via n8n MCP
+- **Resultado**: Workflow puede activarse correctamente
+
+### 2. Error Handlers Agregados - COMPLETADO ✅
+
+**Orquestador:**
+- `Error Handler` (Error Trigger)
+- `Preparar Datos Error` (Set node)
+- `Notificar Error Email` (Gmail → ingenieria@carrilloabgd.com)
+
+**SUB-A:**
+- `Error Handler` (Error Trigger)
+- `Preparar Error` (Set node)
+- `Notificar Error` (Gmail → ingenieria@carrilloabgd.com)
+
+### 3. Test E2E Exitoso ✅
+```json
+{
+  "success": true,
+  "message": "Lead procesado exitosamente por SUB-A (AI Powered)",
+  "score": 90,
+  "categoria": "HOT",
+  "ai_analysis": {
+    "normalized_interest": "Marcas",
+    "analysis_reason": "Lead de alta calidad...",
+    "calculated_score": 90
+  }
+}
+```
+
+---
+
+## 🔧 Backend Platform
+
+| Componente | Estado | Endpoint |
+|------------|--------|----------|
+| client-service Lead API | ✅ Ready | `POST /api/leads` |
+| n8n-integration-service | ✅ Ready | Webhooks configurados |
+| Frontend /contacto | ✅ Ready | Envía a API Gateway |
+| NATS Messaging | ✅ Ready | Operativo |
+
+---
+
+## 🟡 P2 - Mejoras Opcionales (No bloquean producción)
+
+### TypeVersions Obsoletas (Warnings)
+
+| Workflow | Nodo | Actual | Recomendada |
+|----------|------|--------|-------------|
+| Orquestador | Notificar Error Email | 2.1 | 2.2 |
+| SUB-A | If Node | 2 | 2.3 |
+| SUB-A | Gmail (x2) | 2.1 | 2.2 |
+| SUB-A | Notificar Error | 2.1 | 2.2 |
+
+**Acción**: En n8n UI, click "Update" en nodos con banner amarillo.
+
+---
+
+## 📊 Flujo de Datos
+
+```
+Frontend /contacto
+       │
+       ▼
+POST /api/client-service/api/leads
+       │
+       ▼ (futuro: NATS → n8n-integration-service)
+       │
+POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events
+       │
+       ▼
+┌──────────────────────────────────────┐
+│ ORQUESTADOR (bva1Kc1USbbITEAw)       │
+│ ├─ Webhook Principal Lead Events    │
+│ ├─ Identify (clasificar evento)     │
+│ ├─ SubA (Execute Workflow)          │
+│ ├─ Consolidate                      │
+│ └─ Respond (respuesta webhook)      │
+│                                      │
+│ Error Handler:                       │
+│ ├─ Error Handler → Preparar → Gmail │
+└──────────────────────────────────────┘
+       │
+       ▼
+┌──────────────────────────────────────┐
+│ SUB-A (RHj1TAqBazxNFriJ)             │
+│ ├─ When Executed by Another Workflow│
+│ ├─ 0. Mapear Input                  │
+│ ├─ 0.5. Analizar Lead (Gemini AI)   │
+│ ├─ 1. Validar y Clasificar          │
+│ ├─ 2. Guardar en Firestore          │
+│ ├─ 3. Es Lead HOT? (If)             │
+│ │   ├─ HOT → 4. Notificar Equipo    │
+│ │   └─ WARM/COLD → continúa         │
+│ ├─ 5. Generar Respuesta (Gemini)    │
+│ ├─ 6. Enviar Respuesta Lead         │
+│ └─ FINAL. Resultado                 │
+│                                      │
+│ Error Handler:                       │
+│ ├─ Error Handler → Preparar → Gmail │
+└──────────────────────────────────────┘
+       │
+       ▼
+Lead procesado: Score calculado, guardado en Firestore,
+emails enviados (notificación equipo + respuesta lead)
+```
+
+---
+
+## 🧪 Comando de Prueba
 
 ```bash
-# Opción A: Usar n8n MCP para actualizar
-mcp_n8n_n8n_update_workflow --id bva1Kc1USbbITEAw --changes '
-{
-  "nodes": [
-    {
-      "name": "Webhook Principal Lead Events",
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "lead-events",
-        "responseMode": "responseNode",
-        "options": {
+curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event_type": "new_lead",
+    "nombre": "Test Lead",
+    "email": "test@example.com",
+    "telefono": "+573001234567",
+    "empresa": "Test Company",
+    "cargo": "CEO",
+    "servicio_interes": "Registro de Marca",
+    "mensaje": "Necesito proteger mi marca urgentemente.",
+    "utm_source": "test",
+    "utm_campaign": "manual"
+  }'
+```
+
+---
+
+*Documento actualizado: 4 Enero 2026 - Sistema en producción*
           "onError": "continueRegularOutput"
         }
       }
