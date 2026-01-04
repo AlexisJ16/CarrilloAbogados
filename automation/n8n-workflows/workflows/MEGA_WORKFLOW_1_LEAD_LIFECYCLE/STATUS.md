@@ -1,14 +1,15 @@
 # MEGA-WORKFLOW #1: Lead Lifecycle Manager
 
-## Estado: ⚠️ INACTIVO - PENDIENTE ACTIVACIÓN
+## Estado: ✅ ACTIVO EN PRODUCCIÓN
 
-**Última actualización:** 2026-01-03 (Verificado con MCP n8n)  
-**Versión:** 1.0.0 (Production-Ready)  
-**n8n Cloud:** v1.120.4
+**Última actualización:** 2026-01-04 (Verificado con MCP n8n)  
+**Versión:** 1.1.0 (Production-Active)  
+**n8n Cloud:** v1.120.4  
+**Webhook URL:** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
 
 ---
 
-## 🔄 Estado Real (Verificado 2026-01-03)
+## 🔄 Estado Real (Verificado 2026-01-04)
 
 Datos obtenidos directamente de la API de n8n Cloud mediante MCP:
 
@@ -17,6 +18,7 @@ Datos obtenidos directamente de la API de n8n Cloud mediante MCP:
 - **Versión**: 1.120.4
 - **Usuario**: marketing@carrilloabgd.com
 - **Workflows totales**: 4
+- **Estado**: ✅ Orquestador ACTIVO, procesando leads
 
 ---
 
@@ -38,12 +40,12 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 |-------|-------|
 | **ID** | `bva1Kc1USbbITEAw` |
 | **Nombre** | WORKFLOW A: Lead Lifecycle Manager (Orquestador) |
-| **Estado** | ⚪ INACTIVO (requiere activación manual) |
+| **Estado** | ✅ **ACTIVO** |
 | **Webhook** | `https://carrilloabgd.app.n8n.cloud/webhook/lead-events` |
-| **Nodos** | 5 (Webhook → Identify → SubA → Consolidate → Respond) |
-| **Última ejecución** | 2025-12-22 (éxito) |
-| **Total ejecuciones** | 3 (2 éxitos, 1 error) |
-| **Validación** | ⚠️ 1 error, 5 warnings |
+| **Nodos** | 8 (Webhook → Identify → SubA → Consolidate → Respond + Error Handler) |
+| **Última ejecución** | 2026-01-04 (éxito - Score 90 HOT) |
+| **Total ejecuciones** | 6+ |
+| **Validación** | ✅ 0 errores |
 
 ### SUB-A: Lead Intake (Spoke)
 
@@ -51,12 +53,12 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 |-------|-------|
 | **ID** | `RHj1TAqBazxNFriJ` |
 | **Nombre** | SUB-A: Lead Intake (v5 - AI POWERED - NATIVE) |
-| **Estado** | ⚪ INACTIVO (triggered by Orquestador) |
-| **Nodos** | 10 |
+| **Estado** | ✅ Listo (triggered by Orquestador) |
+| **Nodos** | 13 (incluye Error Handler) |
 | **IA** | Google Gemini 2.5-pro (análisis + respuesta) |
-| **Última ejecución** | 2025-12-22 (éxito) |
-| **Total ejecuciones** | 10 (4 éxitos, 6 errores) |
-| **Validación** | ✅ Válido (7 warnings menores) |
+| **Última ejecución** | 2026-01-04 (éxito) |
+| **Total ejecuciones** | 13+ |
+| **Validación** | ✅ 0 errores |
 
 ---
 
@@ -65,22 +67,27 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 ```
 [Webhook POST] 
     ↓
-[Orquestador]
+[Orquestador] (8 nodos)
+    ├── Webhook Principal Lead Events
     ├── Identify Event (Code)
     ├── Execute SUB-A
     ├── Consolidate Response
-    └── Respond to Webhook
+    ├── Respond to Webhook
+    └── Error Handler → Preparar Datos Error → Notificar Error Email
          ↓
-    [SUB-A]
+    [SUB-A] (13 nodos)
+        ├── When Executed by Another Workflow
         ├── 0. Mapear Input
         ├── 0.5. Analizar Lead (Gemini IA)
         ├── 1. Validar y Clasificar
         ├── 2. Guardar en Firestore
         ├── 3. Es Lead HOT? (IF)
-        │   ├── [HOT] → 4. Notificar Equipo
-        │   └── [ALL] → 5. Generar Respuesta (Gemini)
+        │   ├── [HOT ≥70] → 4. Notificar Equipo
+        │   └── [WARM/COLD] → continúa
+        ├── 5. Generar Respuesta (Gemini)
         ├── 6. Enviar Respuesta Lead
-        └── FINAL. Resultado
+        ├── FINAL. Resultado
+        └── Error Handler → Preparar Error → Notificar Error
 ```
 
 ---
@@ -126,6 +133,14 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ## Historial de Cambios
 
+### 2026-01-04 - ACTIVACIÓN PRODUCCIÓN ✅
+- ✅ Corregido error webhook `onError: continueRegularOutput`
+- ✅ Agregado Error Handler a Orquestador (3 nodos)
+- ✅ Agregado Error Handler a SUB-A (3 nodos)
+- ✅ Configuradas credenciales Gmail para notificaciones de error
+- ✅ Orquestador ACTIVADO en producción
+- ✅ Test E2E exitoso (Score 90, categoría HOT)
+
 ### 2025-12-21 - Debugging y Reparación Completa
 - ✅ Corregido mapeo de datos (eliminado optional chaining `?.`)
 - ✅ Corregido nodo IF (agregada estructura `options`)
@@ -163,66 +178,57 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ---
 
-## 🔧 Validación n8n (2026-01-03)
+## 🔧 Validación n8n (2026-01-04)
 
-### Orquestador - Errores Detectados
+### Estado de Validación: ✅ APROBADO
 
-| Tipo | Nodo | Problema | Solución |
-|------|------|----------|----------|
-| ❌ **ERROR** | Webhook Principal | `responseNode` mode sin `onError` configurado | Agregar `"onError": "continueRegularOutput"` |
-| ⚠️ Warning | Execute Workflow | typeVersion 1.2 → 1.3 disponible | Actualizar nodo |
-| ⚠️ Warning | Respond to Webhook | typeVersion 1.1 → 1.5 disponible | Actualizar nodo |
-| ⚠️ Warning | General | Sin error handling global | Agregar nodos Error Trigger |
+| Workflow | Errores | Warnings | Estado |
+|----------|---------|----------|--------|
+| Orquestador | 0 | 1 (typeVersion) | ✅ Activo |
+| SUB-A | 0 | 4 (typeVersions) | ✅ Listo |
 
-### SUB-A - Warnings Detectados
+### Correcciones Aplicadas (2026-01-04)
 
-| Tipo | Nodo | Problema | Solución |
-|------|------|----------|----------|
-| ⚠️ Warning | IF Node | typeVersion 2 → 2.3 disponible | Actualizar nodo |
-| ⚠️ Warning | Gmail Nodes (x2) | typeVersion 2.1 → 2.2 disponible | Actualizar nodos |
-| ⚠️ Warning | IF Node | Sin `onError` configurado | Agregar manejo de errores |
-| ⚠️ Warning | General | Sin error handling global | Agregar workflow Error Trigger |
+| Problema | Solución | Estado |
+|----------|----------|--------|
+| Webhook sin `onError` | Agregado `continueRegularOutput` | ✅ Corregido |
+| Sin Error Handling | Agregado Error Trigger + Set + Gmail | ✅ Corregido |
+| Credenciales Gmail | Configuradas en n8n UI | ✅ Activas |
+
+### Warnings Pendientes (P2 - No bloquean)
+
+| Workflow | Nodo | Actual → Recomendada |
+|----------|------|----------------------|
+| Orquestador | Notificar Error Email | 2.1 → 2.2 |
+| SUB-A | If Node | 2 → 2.3 |
+| SUB-A | Gmail (x2) | 2.1 → 2.2 |
+| SUB-A | Notificar Error | 2.1 → 2.2 |
 
 ---
 
-## 🚀 Acciones Requeridas (Prioridad)
+## 🚀 Estado de Acciones
 
-### 🔴 P0 - Crítico (Antes de activar)
+### ✅ P0 - COMPLETADO
 
-1. **Corregir error Webhook Orquestador**
-   ```javascript
-   // En nodo "Webhook Principal Lead Events" agregar:
-   "parameters": {
-     "httpMethod": "POST",
-     "path": "lead-events",
-     "responseMode": "responseNode",
-     "onError": "continueRegularOutput"  // <- AGREGAR
-   }
-   ```
+1. ✅ **Error Webhook Orquestador** - Corregido `onError: continueRegularOutput`
+2. ✅ **Error Handling** - Agregado a ambos workflows (Error Trigger → Set → Gmail)
+3. ✅ **Activación** - Orquestador activo en producción
+4. ✅ **Test E2E** - Lead procesado exitosamente (Score 90, HOT)
 
-2. **Actualizar typeVersions**
-   - Execute Workflow: 1.2 → 1.3
-   - Respond to Webhook: 1.1 → 1.5
-   - If Node: 2 → 2.3
+### 🟡 P1 - En Progreso
 
-### 🟡 P1 - Importante (Post-activación)
+5. **Integración Web Completa**
+   - ✅ client-service Lead API funcionando
+   - ✅ n8n-integration-service webhooks implementados
+   - ⏳ Conectar NATS → n8n webhook (pendiente prueba E2E)
+   - ⏳ Frontend /contacto → flujo completo
 
-3. **Agregar Error Handling**
-   - Añadir nodo "Error Trigger" en ambos workflows
-   - Configurar notificación Slack/Email ante errores
+### 🟢 P2 - Mejoras Futuras
 
-4. **Mejorar tasa de éxito SUB-A**
-   - Actual: 40% (4/10 éxitos)
-   - Revisar logs de errores
-   - Agregar validación de payload más robusta
+6. **Actualizar typeVersions** (warnings, no crítico)
+   - Click "Update" en nodos con banner amarillo en n8n UI
 
-### 🟢 P2 - Mejoras (Futuro)
-
-5. **Integración Web**
-   - Conectar formulario web → NATS → n8n-integration-service → Webhook
-   - Probar flujo E2E con datos reales
-
-6. **Monitoreo**
+7. **Monitoreo**
    - Dashboard Grafana para métricas de leads
    - Alertas ante fallos de workflows
 
@@ -269,32 +275,41 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ### Flujo de Activación
 
-Para que la integración funcione completamente:
+| Paso | Descripción | Estado |
+|------|-------------|--------|
+| 1 | Activar Orquestador en n8n Cloud | ✅ ACTIVO |
+| 2 | Verificar webhook accesible | ✅ Funcionando |
+| 3 | Configurar NatsEventListener | ✅ Implementado |
+| 4 | Desplegar n8n-integration-service | ⏳ Pendiente deploy |
+| 5 | Probar flujo E2E completo | ⏳ Pendiente |
 
-1. ⬜ Activar Orquestador en n8n Cloud
-2. ⬜ Verificar webhook accesible: `curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
-3. ⬜ Configurar NatsEventListener con URL correcta del webhook
-4. ⬜ Desplegar n8n-integration-service en producción
-5. ⬜ Probar flujo E2E: Formulario → client-service → NATS → n8n
+### URLs de Producción
+
+| Componente | URL |
+|------------|-----|
+| **n8n Webhook** | `https://carrilloabgd.app.n8n.cloud/webhook/lead-events` |
+| **API Gateway** | `https://api.carrilloabgd.com` (pendiente deploy) |
+| **Frontend** | `https://carrilloabgd.com/contacto` (pendiente deploy) |
 
 ---
 
 ## 📊 Métricas de Ejecución
 
-### Últimas Ejecuciones (Diciembre 2025)
+### Últimas Ejecuciones (Enero 2026)
 
 **Orquestador:**
-| Fecha | Estado | Duración | Modo |
-|-------|--------|----------|------|
-| 2025-12-22 | ✅ Éxito | - | Manual |
-| 2025-12-22 | ✅ Éxito | - | Manual |
-| 2025-12-22 | ❌ Error | - | Manual |
+| Fecha | Estado | Score | Categoría |
+|-------|--------|-------|----------|
+| 2026-01-04 | ✅ Éxito | 90 | HOT |
+| 2026-01-04 | ✅ Éxito | 90 | HOT |
+| 2026-01-04 | ✅ Éxito | 90 | HOT |
 
 **SUB-A:**
 | Fecha | Estado | Notas |
 |-------|--------|-------|
-| 2025-12-22 | ✅ Éxito | Último test exitoso |
-| 2025-12-17-21 | Mixto | 4 éxitos, 6 errores (debugging) |
+| 2026-01-04 | ✅ Éxito | Lead procesado con Gemini AI |
+| 2026-01-04 | ✅ Éxito | Email enviado al equipo (HOT) |
+| 2026-01-04 | ✅ Éxito | Guardado en Firestore |
 
 ---
 
@@ -302,10 +317,49 @@ Para que la integración funcione completamente:
 
 | Credencial | ID | Estado | Última verificación |
 |------------|------|--------|---------------------|
-| Google Gemini API | `jk2FHcbAC71LuRl2` | ✅ Activo | 2026-01-03 |
-| Gmail OAuth2 | `l2mMgEf8YUV7HHlK` | ✅ Activo | 2026-01-03 |
-| Google Firestore | `AAhdRNGzvsFnYN9O` | ✅ Activo | 2026-01-03 |
+| Google Gemini API | `jk2FHcbAC71LuRl2` | ✅ Activo | 2026-01-04 |
+| Gmail OAuth2 | `l2mMgEf8YUV7HHlK` | ✅ Activo | 2026-01-04 |
+| Google Firestore | `AAhdRNGzvsFnYN9O` | ✅ Activo | 2026-01-04 |
 
 ---
 
-*Documento actualizado automáticamente con datos de n8n MCP - 2026-01-03*
+---
+
+## 🧪 Comando de Prueba Directa
+
+```bash
+curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event_type": "new_lead",
+    "nombre": "Test Lead",
+    "email": "test@example.com",
+    "telefono": "+573001234567",
+    "empresa": "Test Company",
+    "cargo": "CEO",
+    "servicio_interes": "Registro de Marca",
+    "mensaje": "Necesito proteger mi marca urgentemente.",
+    "utm_source": "test",
+    "utm_campaign": "manual"
+  }'
+```
+
+### Respuesta Esperada
+
+```json
+{
+  "success": true,
+  "message": "Lead procesado exitosamente por SUB-A (AI Powered)",
+  "score": 90,
+  "categoria": "HOT",
+  "ai_analysis": {
+    "normalized_interest": "Marcas",
+    "analysis_reason": "Lead de alta calidad...",
+    "calculated_score": 90
+  }
+}
+```
+
+---
+
+*Documento actualizado con datos de n8n MCP - 2026-01-04 - Sistema en producción*
