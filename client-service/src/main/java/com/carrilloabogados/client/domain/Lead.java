@@ -1,7 +1,5 @@
 package com.carrilloabogados.client.domain;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -45,10 +43,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Builder
-public final class Lead extends AbstractMappedEntity implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public final class Lead extends AbstractMappedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

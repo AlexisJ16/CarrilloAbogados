@@ -1,8 +1,8 @@
 package com.carrilloabogados.client.domain;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,9 +15,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,48 +25,35 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, exclude = {"addresses", "credential"})
+@EqualsAndHashCode(callSuper = true, exclude = { "addresses", "credential" })
 @Data
 @Builder
-public final class User extends AbstractMappedEntity implements Serializable {
+public final class User extends AbstractMappedEntity {
 
-	@Serial
-	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id", unique = true, nullable = false, updatable = false)
-	private Integer userId;
-	
-	@Column(name = "first_name")
-	private String firstName;
-	
-	@Column(name = "last_name")
-	private String lastName;
-	
-	@Column(name = "image_url")
-	private String imageUrl;
-	
-	@Email(message = "*Input must be in Email format!**")
-	private String email;
-	
-	private String phone;
-	
-	@JsonIgnore
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-	private Set<Address> addresses;
-	
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-	private Credential credential;
-	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id", unique = true, nullable = false, updatable = false)
+    private Integer userId;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Email(message = "*Input must be in Email format!**")
+    private String email;
+
+    private String phone;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Address> addresses;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private Credential credential;
+
 }
-
-
-
-
-
-
-
-
-
-
