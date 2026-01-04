@@ -485,3 +485,103 @@ Antes de considerar un microservicio "completo", verificar:
 2. Mantener PROYECTO_ESTADO.md actualizado después de cada sesión
 3. Ejecutar tests antes de commit: `./mvnw test -pl service-name`
 4. Usar semantic_search para encontrar patrones existentes en el código
+
+---
+
+## 🤖 SISTEMA DE AGENTES ESPECIALIZADOS
+
+Este proyecto utiliza un sistema de agentes especializados organizados en dos dominios:
+
+### Dominios de Agentes
+
+| Dominio            | Ubicación                         | Propósito                 |
+| ------------------ | --------------------------------- | ------------------------- |
+| **Web Platform**   | `.github/copilot-instructions.md` | Backend, Frontend, DevOps |
+| **n8n Automation** | `automation/.claude/agents/`      | Workflows n8n, Marketing  |
+
+### Agente Orquestador (Principal)
+
+**Invocar con**: "Actúa como orquestador" o cuando se necesite visión global
+
+El **Orquestador** tiene visión completa del proyecto y puede:
+
+- Analizar impacto cross-domain (web ↔ n8n)
+- Delegar tareas a agentes especializados
+- Coordinar trabajo paralelo
+- Validar integración entre componentes
+
+### Agentes de n8n Automation
+
+**Ubicación**: `automation/.claude/agents/`
+
+| Agente            | Archivo            | Rol                 | Cuándo usar                     |
+| ----------------- | ------------------ | ------------------- | ------------------------------- |
+| **Architect**     | `architect.md`     | Diseño de workflows | Nuevos workflows, planificación |
+| **Engineer**      | `engineer.md`      | Implementación      | Construir workflows             |
+| **QA Specialist** | `qa-specialist.md` | Testing             | Validar y probar                |
+| **Optimizer**     | `optimizer.md`     | Optimización        | Mejorar performance             |
+| **Validator**     | `validator.md`     | Deploy              | Documentar y desplegar          |
+
+**Invocar con**: "Actúa como el subagente [nombre]"
+
+### Flujo de Trabajo con Agentes
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    ORQUESTADOR                                  │
+│    (Visión global: Web + Automatizaciones)                      │
+├─────────────────────────────────────────────────────────────────┤
+│                           │                                     │
+│         ┌─────────────────┴─────────────────┐                  │
+│         ▼                                   ▼                  │
+│  ┌──────────────┐                   ┌──────────────┐           │
+│  │ WEB PLATFORM │                   │ N8N AUTOMATION│          │
+│  │              │                   │              │           │
+│  │ • Backend    │                   │ • Architect  │           │
+│  │ • Frontend   │                   │ • Engineer   │           │
+│  │ • DevOps     │                   │ • QA         │           │
+│  │ • Tests      │                   │ • Optimizer  │           │
+│  │              │                   │ • Validator  │           │
+│  └──────────────┘                   └──────────────┘           │
+│         │                                   │                  │
+│         └─────────────────┬─────────────────┘                  │
+│                           ▼                                     │
+│              ┌──────────────────────┐                          │
+│              │ n8n-integration-svc  │                          │
+│              │   (Bridge/Puente)    │                          │
+│              └──────────────────────┘                          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Documentación de Automatizaciones
+
+| Documento           | Ubicación                                                        | Contenido                |
+| ------------------- | ---------------------------------------------------------------- | ------------------------ |
+| Estado Workflows    | `automation/n8n-workflows/workflows/*/STATUS.md`                 | Estado actual n8n Cloud  |
+| Acciones Pendientes | `automation/n8n-workflows/workflows/*/ACCION_REQUERIDA.md`       | Tareas priorizadas       |
+| Integración Web     | `automation/n8n-workflows/WEB_INTEGRATION.md`                    | Arquitectura de conexión |
+| Contexto n8n MCP    | `automation/n8n-workflows/02-context/technical/n8n_mcp_guide.md` | Guía de tools MCP        |
+
+### n8n Cloud - Datos Clave
+
+| Campo              | Valor                              |
+| ------------------ | ---------------------------------- |
+| **URL**            | https://carrilloabgd.app.n8n.cloud |
+| **Versión**        | v1.120.4                           |
+| **Orquestador ID** | `bva1Kc1USbbITEAw`                 |
+| **SUB-A ID**       | `RHj1TAqBazxNFriJ`                 |
+| **Webhook**        | `/webhook/lead-events`             |
+
+### Integración Web ↔ n8n
+
+```
+Frontend → API Gateway → client-service → NATS → n8n-integration-service → n8n Cloud
+                                                            ↑
+n8n Cloud → callbacks → n8n-integration-service → client-service (actualiza BD)
+```
+
+**Eventos NATS**:
+
+- `carrillo.events.lead.created` → Trigger MW#1
+- `carrillo.events.case.closed` → Trigger MW#2
+- `carrillo.events.appointment.scheduled` → Confirmación
