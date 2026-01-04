@@ -81,6 +81,7 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 - `Notificar Error` (Gmail → ingenieria@carrilloabgd.com)
 
 ### 3. Test E2E Exitoso ✅
+
 ```json
 {
   "success": true,

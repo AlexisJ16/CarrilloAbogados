@@ -35,6 +35,7 @@
 - `Notificar Error` (Gmail → ingenieria@carrilloabgd.com)
 
 ### 3. Test E2E Exitoso ✅
+
 ```json
 {
   "success": true,
