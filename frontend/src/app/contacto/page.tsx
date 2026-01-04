@@ -61,8 +61,9 @@ export default function ContactoPage() {
     setFormState('loading');
 
     try {
-      // TODO: Integrar con Lead API del backend
-      const response = await fetch('/api/leads', {
+      // Enviar lead al backend a través del API Gateway
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const response = await fetch(`${apiUrl}/client-service/api/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
@@ -79,18 +80,22 @@ export default function ContactoPage() {
         servicio: '',
         mensaje: '',
       });
-    } catch {
-      // Para demo, mostrar éxito aunque no haya backend
-      setFormState('success');
-      setFormData({
-        nombre: '',
-        email: '',
-        telefono: '',
-        empresa: '',
-        servicio: '',
-        mensaje: '',
-      });
+    } catch (error) {
+      console.error('Error capturando lead:', error);
+      setFormState('error');
     }
+  };
+
+  const resetForm = () => {
+    setFormState('idle');
+    setFormData({
+      nombre: '',
+      email: '',
+      telefono: '',
+      empresa: '',
+      servicio: '',
+      mensaje: '',
+    });
   };
 
   return (
@@ -168,11 +173,21 @@ export default function ContactoPage() {
                     <p className="mt-2 text-gray-600">
                       Gracias por contactarnos. Un abogado se comunicará con usted pronto.
                     </p>
-                    <button
-                      onClick={() => setFormState('idle')}
-                      className="mt-6 text-primary-600 hover:underline"
-                    >
+                    <button onClick={resetForm} className="mt-6 text-primary-600 hover:underline">
                       Enviar otro mensaje
+                    </button>
+                  </div>
+                ) : formState === 'error' ? (
+                  <div className="py-12 text-center">
+                    <AlertCircle className="mx-auto h-16 w-16 text-red-500" />
+                    <h3 className="mt-4 font-heading text-xl font-bold text-gray-900">
+                      Error al Enviar
+                    </h3>
+                    <p className="mt-2 text-gray-600">
+                      Hubo un problema al enviar su mensaje. Por favor intente nuevamente.
+                    </p>
+                    <button onClick={resetForm} className="mt-6 text-primary-600 hover:underline">
+                      Intentar de nuevo
                     </button>
                   </div>
                 ) : (
@@ -295,13 +310,6 @@ export default function ContactoPage() {
                         placeholder="Describa brevemente su consulta..."
                       />
                     </div>
-
-                    {formState === 'error' && (
-                      <div className="flex items-center gap-2 rounded-lg bg-red-50 p-4 text-red-600">
-                        <AlertCircle className="h-5 w-5" />
-                        <span>Hubo un error al enviar. Por favor, intente nuevamente.</span>
-                      </div>
-                    )}
 
                     <button
                       type="submit"
