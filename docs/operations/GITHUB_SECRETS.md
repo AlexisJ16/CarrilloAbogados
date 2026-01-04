@@ -76,6 +76,7 @@
 5. Pegarlo como secret en GitHub
 
 **Permisos mínimos requeridos**:
+
 ```
 roles/run.admin
 roles/artifactregistry.writer
@@ -87,7 +88,7 @@ roles/iam.serviceAccountUser
 
 **Propósito**: Dirección del servidor Cloud SQL
 
-**Formato**: Para conexión con Cloud SQL Proxy: `/cloudsql/PROJECT:REGION:INSTANCE`  
+**Formato**: `/cloudsql/PROJECT:REGION:INSTANCE`  
 **Ejemplo**: `carrillo-abogados-prod:us-central1:carrillo-db`
 
 ### CLOUD_SQL_USER
@@ -117,6 +118,7 @@ roles/iam.serviceAccountUser
 ### Secrets actuales configurados
 
 Para verificar qué secrets están configurados, ir a:
+
 ```
 https://github.com/AlexisJ16/CarrilloAbogados/settings/secrets/actions
 ```
