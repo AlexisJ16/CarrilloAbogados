@@ -83,7 +83,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: 📦 Build with Maven (generate coverage)
+    - name: � Make Maven Wrapper executable
+      run: chmod +x ./mvnw
+
+    - name: �📦 Build with Maven (generate coverage)
       run: ./mvnw clean verify -T 1C -B -Pcoverage
       continue-on-error: true
 
