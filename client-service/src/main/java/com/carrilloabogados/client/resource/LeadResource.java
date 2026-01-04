@@ -148,7 +148,7 @@ public class LeadResource {
     // ========== Endpoints para n8n integration ==========
 
     /**
-     * Actualiza el scoring de un lead.
+     * Actualiza el scoring de un lead (via query params).
      * Llamado desde webhook de n8n después de calcular el score.
      */
     @PatchMapping("/{leadId}/scoring")
@@ -162,13 +162,44 @@ public class LeadResource {
     }
 
     /**
-     * Actualiza el estado del lead en el funnel.
+     * Actualiza el scoring de un lead (via JSON body).
+     * Endpoint alternativo para llamadas desde n8n-integration-service.
+     */
+    @PatchMapping("/{leadId}/score")
+    public ResponseEntity<LeadDto> updateScore(
+            @PathVariable @NotBlank final String leadId,
+            @RequestBody java.util.Map<String, Object> payload) {
+        log.info("*** LeadDto, controller; update score for lead: {} via body *", leadId);
+        Integer score = (Integer) payload.get("score");
+        String categoryStr = (String) payload.get("category");
+        LeadCategory category = LeadCategory.valueOf(categoryStr.toUpperCase());
+        return ResponseEntity.ok(leadService.updateScoring(
+                UUID.fromString(leadId.strip()), score, category));
+    }
+
+    /**
+     * Actualiza el estado del lead en el funnel (via query param).
      */
     @PatchMapping("/{leadId}/status")
     public ResponseEntity<LeadDto> updateStatus(
             @PathVariable @NotBlank final String leadId,
             @RequestParam @NotNull final LeadStatus status) {
         log.info("*** LeadDto, controller; update status for lead: {} *", leadId);
+        return ResponseEntity.ok(leadService.updateStatus(
+                UUID.fromString(leadId.strip()), status));
+    }
+
+    /**
+     * Actualiza el estado del lead en el funnel (via JSON body).
+     * Endpoint alternativo para llamadas desde n8n-integration-service.
+     */
+    @PatchMapping("/{leadId}/update-status")
+    public ResponseEntity<LeadDto> updateStatusFromBody(
+            @PathVariable @NotBlank final String leadId,
+            @RequestBody java.util.Map<String, Object> payload) {
+        log.info("*** LeadDto, controller; update status for lead: {} via body *", leadId);
+        String statusStr = (String) payload.get("status");
+        LeadStatus status = LeadStatus.valueOf(statusStr.toUpperCase());
         return ResponseEntity.ok(leadService.updateStatus(
                 UUID.fromString(leadId.strip()), status));
     }

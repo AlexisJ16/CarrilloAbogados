@@ -55,14 +55,24 @@ management:
 n8n:
   cloud:
     base-url: ${N8N_CLOUD_URL:https://carrilloabgd.app.n8n.cloud}
+    enabled: ${N8N_ENABLED:true}
     webhooks:
-      lead-events: ${N8N_WEBHOOK_LEAD_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook/lead-events}
-      meeting-events: ${N8N_WEBHOOK_MEETING_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook/meeting-events}
-      case-events: ${N8N_WEBHOOK_CASE_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook/case-events}
+      lead-events: ${N8N_WEBHOOK_LEAD_EVENTS:/webhook/lead-events}
+      meeting-events: ${N8N_WEBHOOK_MEETING_EVENTS:/webhook/meeting-events}
+      case-events: ${N8N_WEBHOOK_CASE_EVENTS:/webhook/case-events}
     timeout-seconds: ${N8N_TIMEOUT:30}
     retry:
       max-attempts: 3
       delay-ms: 1000
+
+# Microservices URLs (for callbacks)
+microservices:
+  client-service:
+    url: ${CLIENT_SERVICE_URL:http://localhost:8200}
+    context-path: /client-service
+  notification-service:
+    url: ${NOTIFICATION_SERVICE_URL:http://localhost:8700}
+    context-path: /notification-service
 
 # NATS Configuration
 nats:

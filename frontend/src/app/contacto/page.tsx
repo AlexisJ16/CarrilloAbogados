@@ -61,11 +61,22 @@ export default function ContactoPage() {
     setFormState('loading');
 
     try {
-      // TODO: Integrar con Lead API del backend
-      const response = await fetch('/api/leads', {
+      // Enviar al Lead API via API Gateway
+      // La ruta /api/client-service/* es reescrita por next.config.js a localhost:8080/client-service/*
+      const response = await fetch('/api/client-service/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          email: formData.email,
+          telefono: formData.telefono || null,
+          empresa: formData.empresa || null,
+          servicio: formData.servicio,
+          mensaje: formData.mensaje,
+          source: 'WEBSITE',
+          utmSource: new URLSearchParams(window.location.search).get('utm_source') || '',
+          utmCampaign: new URLSearchParams(window.location.search).get('utm_campaign') || '',
+        }),
       });
 
       if (!response.ok) throw new Error('Error al enviar');

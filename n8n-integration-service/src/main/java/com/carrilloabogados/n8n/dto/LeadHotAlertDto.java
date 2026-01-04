@@ -28,6 +28,9 @@ public class LeadHotAlertDto {
     @JsonProperty("notification_channels")
     private String[] notificationChannels;
 
+    @JsonProperty("assigned_to")
+    private String assignedTo;
+
     // Getters and Setters
     public String getEventType() {
         return eventType;
@@ -83,6 +86,14 @@ public class LeadHotAlertDto {
 
     public void setNotificationChannels(String[] notificationChannels) {
         this.notificationChannels = notificationChannels;
+    }
+
+    public String getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(String assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
     /**

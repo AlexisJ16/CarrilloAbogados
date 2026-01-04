@@ -1,7 +1,7 @@
 # 🔗 Integración Plataforma Web ↔ n8n Cloud
 
 **Última actualización**: 2026-01-03  
-**Estado**: ⚠️ PENDIENTE CONEXIÓN
+**Estado**: ✅ IMPLEMENTADO (Pendiente activar n8n workflows)
 
 ---
 
@@ -176,8 +176,11 @@ nats sub "carrillo.events.lead.*"
 
 | Componente | Estado | Notas |
 |------------|--------|-------|
-| client-service | ✅ Ready | Lead API completa |
-| n8n-integration-service | ✅ Ready | Bridge implementado |
+| client-service | ✅ Ready | Lead API completa + endpoints para scoring |
+| n8n-integration-service | ✅ Ready | Bridge implementado con callbacks reales |
+| WebhookController | ✅ Ready | `/lead-scored` y `/lead-hot` implementados |
+| Frontend /contacto | ✅ Ready | Envía a `/api/client-service/api/leads` |
+| next.config.js | ✅ Ready | Rewrites configurados para API Gateway |
 | NATS | ✅ Ready | Operativo en Docker |
 | Orquestador n8n | ⚠️ Inactivo | Requiere corrección |
 | SUB-A n8n | ⚠️ Inactivo | Triggered by Orquestador |
@@ -186,8 +189,7 @@ nats sub "carrillo.events.lead.*"
 
 1. **Corregir error webhook Orquestador** (ver ACCION_REQUERIDA.md)
 2. **Activar workflows en n8n Cloud**
-3. **Probar flujo E2E**
-4. **Desplegar n8n-integration-service en Cloud Run**
+3. **Probar flujo E2E con Docker Compose**
 
 ---
 

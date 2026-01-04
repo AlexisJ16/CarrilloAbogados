@@ -38,6 +38,15 @@ nats:
   enabled: ${NATS_ENABLED:true}
   server: ${NATS_SERVER:nats://localhost:4222}
 
+# Microservices URLs (for callbacks from n8n webhooks)
+microservices:
+  client-service:
+    url: ${CLIENT_SERVICE_URL:http://localhost:8200}
+    context-path: /client-service
+  notification-service:
+    url: ${NOTIFICATION_SERVICE_URL:http://localhost:8700}
+    context-path: /notification-service
+
 logging:
   level:
     com.carrilloabogados.n8n: DEBUG

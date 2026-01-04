@@ -198,9 +198,13 @@ services:
       NATS_SERVER: nats://nats:4222
       # n8n Cloud Configuration
       N8N_CLOUD_URL: https://carrilloabgd.app.n8n.cloud
-      N8N_WEBHOOK_LEAD_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/lead-events
-      N8N_WEBHOOK_MEETING_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/meeting-events
-      N8N_WEBHOOK_CASE_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/case-events
+      N8N_ENABLED: "true"
+      N8N_WEBHOOK_LEAD_EVENTS: /webhook/lead-events
+      N8N_WEBHOOK_MEETING_EVENTS: /webhook/meeting-events
+      N8N_WEBHOOK_CASE_EVENTS: /webhook/case-events
+      # Microservices URLs (for callbacks)
+      CLIENT_SERVICE_URL: http://client-service:8200
+      NOTIFICATION_SERVICE_URL: http://notification-service:8700
     depends_on:
       postgresql:
         condition: service_healthy

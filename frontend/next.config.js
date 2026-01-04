@@ -13,14 +13,36 @@ const nextConfig = {
   trailingSlash: isExport,
 
   // Reescribir llamadas API al backend (solo en modo server)
+  // Frontend envía: /api/client-service/api/leads
+  // Se reescribe a: http://localhost:8080/client-service/api/leads (API Gateway)
+  // API Gateway enruta a: client-service:8200/client-service/api/leads
   ...(isExport
     ? {}
     : {
         async rewrites() {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
           return [
+            // Rutas específicas para cada microservicio via API Gateway
+            {
+              source: '/api/client-service/:path*',
+              destination: `${apiUrl}/client-service/:path*`,
+            },
+            {
+              source: '/api/case-service/:path*',
+              destination: `${apiUrl}/case-service/:path*`,
+            },
+            {
+              source: '/api/n8n-integration-service/:path*',
+              destination: `${apiUrl}/n8n-integration-service/:path*`,
+            },
+            {
+              source: '/api/notification-service/:path*',
+              destination: `${apiUrl}/notification-service/:path*`,
+            },
+            // Fallback para otras rutas API
             {
               source: '/api/:path*',
-              destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'}/:path*`,
+              destination: `${apiUrl}/:path*`,
             },
           ];
         },
