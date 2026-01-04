@@ -1,11 +1,11 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 4 de Enero, 2026 - 03:00 COT  
-**Estado General**: ✅ **FASE 5: MVP COMPLETE + BRANCHES SYNCED** | PILAR 1 ✅ | PILAR 2 ✅ | PILAR 3 ✅ | PILAR 4 ✅ | PILAR 5 ✅ | E2E ✅  
+**Última Actualización**: 4 de Enero, 2026 - 15:30 COT  
+**Estado General**: ✅ **FASE 7: ESTABILIZACIÓN + AGENTES IA** | TAREAS 1-4 ✅ | Code Quality ✅ | Agentes 6 ✅  
 **Rama Actual**: `dev`  
-**Último Commit (dev)**: `231f998` - docs: update documentation with n8n integration status and session fixes  
-**Último Commit (main)**: `5554fa2` - Merge branch 'dev'  
-**Siguiente Fase**: 🚀 **Deploy a GCP Cloud Run**
+**Último Commit (dev)**: `0906dde` - merge: integrate automation branch into dev  
+**Último Commit (main)**: `5554fa2` - Merge branch 'dev' (pendiente sync)  
+**Siguiente Fase**: 🚀 **Merge dev → main + Verificar CI/CD**
 
 ---
 
@@ -37,13 +37,13 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 ## 📅 HISTORIAL DE COMMITS RECIENTES
 
 ```
-f320e8f feat(n8n): complete n8n-integration-service with NATS listener and webhook endpoints
-09e434e docs: update project state with DevOps phase completion
-58ebb3d feat(devops): complete observability stack + security CI/CD + deployment strategy
-24c4b80 Merge pull request #19 from AlexisJ16/dev (dev → main)
-43cd864 feat(security): add comprehensive security tests for client-service lead API
-c331aab ci: modernize CI/CD pipeline + VSCode workspace config
-155e11e feat(client-service): Lead API completa con NATS events y frontend structure
+1d66c29 style: fix markdown linting in GITHUB_SECRETS.md
+1501377 fix(ci): add mvnw chmod, JaCoCo coverage profile, and secrets docs
+04b9186 feat(frontend): connect contact form to Lead API backend
+e460150 fix: remove redundant Serializable interface and unused imports
+052a839 docs(n8n): actualizar STATUS.md con estado activo e integración web
+efc8cf0 fix(tests): accept 403 status in security tests for protected endpoints
+c629deb fix(docker): correct healthcheck commands for alpine images
 ```
 
 ---
@@ -84,6 +84,13 @@ c331aab ci: modernize CI/CD pipeline + VSCode workspace config
 | **n8n-integration-service Fixed** | **4 Ene 2026** | `f320e8f` | ✅ |
 | **API Gateway Routing Fixed** | **4 Ene 2026** | `f320e8f` | ✅ |
 | **Git Branches Synced (dev, main, automation)** | **4 Ene 2026** | `5554fa2` | ✅ |
+| **Páginas Públicas Español (5 nuevas)** | **3 Ene 2026** | `c79ad6c` | ✅ |
+| **Docker Healthchecks Fixed (wget, IPv4)** | **3 Ene 2026** | `c629deb` | ✅ |
+| **CI/CD Tests Fixed (403 status)** | **3 Ene 2026** | `efc8cf0` | ✅ |
+| **FASE 7: Estabilización Completa** | **4 Ene 2026** | `1d66c29` | ✅ |
+| **Code Quality: Redundant Serializable removed (14 files)** | **4 Ene 2026** | `e460150` | ✅ |
+| **CI/CD: mvnw chmod + JaCoCo coverage profile** | **4 Ene 2026** | `1501377` | ✅ |
+| **GitHub Secrets Documentation** | **4 Ene 2026** | `1501377` | ✅ |
 | MVP Empresarial | 27 Mar 2026 | - | 📋 Planificado |
 
 ---
@@ -216,12 +223,17 @@ docker-compose -f docker-compose.observability.yml up -d
 - ✅ Template de GitHub Secrets configurado
 - ✅ .env.staging para ambiente de pruebas
 
-### Frontend Routes (11 total)
+### Frontend Routes (16 total)
 
 | Ruta | Tipo | Descripción |
 |------|------|-------------|
 | `/` | Static | Landing page |
-| `/contact` | Static | Formulario de contacto |
+| `/nosotros` | Static | Quiénes Somos - Historia del bufete |
+| `/servicios` | Static | 5 áreas de práctica legal |
+| `/equipo` | Static | 7 abogados + personal administrativo |
+| `/contacto` | Static | Formulario de contacto (pendiente n8n) |
+| `/blog` | Static | Artículos legales y newsletter |
+| `/contact` | Static | Formulario de contacto (legacy) |
 | `/login` | Static | Página de login |
 | `/register` | Static | Página de registro |
 | `/dashboard` | Static | Dashboard role-based |
@@ -254,12 +266,12 @@ S1-S4               S5-S8               S9-S12
 | Servicio | Puerto | Estado | Tests | Descripción |
 |----------|--------|--------|-------|-------------|
 | api-gateway | 8080 | ✅ 100% | - | Spring Cloud Gateway + OAuth2 |
-| client-service | 8200 | ✅ 100% | 66 security | Gestión clientes + Lead API |
+| client-service | 8200 | ✅ 100% | 105 tests | Gestión clientes + Lead API |
 | case-service | 8300 | ✅ 95% | básicos | Gestión casos legales |
 | payment-service | 8400 | 🔄 15% | - | Pagos gubernamentales |
 | document-service | 8500 | 🔄 15% | - | Almacenamiento documentos |
 | calendar-service | 8600 | 🔄 15% | - | Google Calendar sync |
-| notification-service | 8700 | 🔄 15% | - | Email/SMS notifications |
+| notification-service | 8700 | ✅ 80% | - | Email/SMS notifications |
 | n8n-integration-service | 8800 | ✅ 95% | básicos | Bridge n8n Cloud (NATS + Webhooks) |
 
 ### Infraestructura
@@ -268,7 +280,7 @@ S1-S4               S5-S8               S9-S12
 |------------|------------|--------|
 | Base de Datos | PostgreSQL 16 | ✅ Operativo |
 | Mensajería | NATS 2.10 | ✅ Operativo |
-| Contenedores | Docker Compose | ✅ 10/10 healthy |
+| Contenedores | Docker Compose | ✅ 11/11 healthy |
 | Orquestación | Kubernetes (Minikube) | ✅ Configurado |
 | CI/CD | GitHub Actions | ✅ 3 workflows |
 | Observabilidad | Grafana LGTM | ✅ Configurado |
@@ -466,6 +478,67 @@ git push origin dev
 ## 📞 CONTACTO
 
 - **Desarrollador**: Alexis
+- **Cliente**: Carrillo Abogados, Cali, Colombia
+- **Email Admin**: ingenieria@carrilloabgd.com
+- **MVP Target**: 27 Marzo 2026
+
+---
+
+## 🚀 PRÓXIMOS DESARROLLOS - ROADMAP Q1 2026
+
+### Fase Actual: Integración Marketing + Deploy
+
+#### 🔴 BLOQUEADORES (Requieren acción externa)
+
+| Tarea | Responsable | Dependencia |
+|-------|-------------|-------------|
+| Configurar webhooks n8n Cloud | Marketing Dev | Acceso a n8n Cloud |
+| Conectar formulario `/contacto` con n8n | Marketing Dev | Webhooks activos |
+| Configurar MW#1 (Lead Scoring) | Marketing Dev | Datos de prueba |
+
+#### 🟡 LISTOS PARA DESARROLLO (Sin dependencias)
+
+| Prioridad | Feature | Servicio | Tiempo Est. |
+|-----------|---------|----------|-------------|
+| P0 | **Sync branches dev → main** | Git | 30 min |
+| P1 | **Deploy staging GCP** | Infra | 4h |
+| P2 | **Google Calendar integration** | calendar-service | 8h |
+| P3 | **Email templates Notification** | notification-service | 4h |
+| P4 | **Document upload/download** | document-service | 6h |
+| P5 | **Payment CRUD completo** | payment-service | 6h |
+
+### Servicios por Completar
+
+| Servicio | Estado Actual | Trabajo Restante |
+|----------|---------------|------------------|
+| **payment-service** | 15% Skeleton | Modelo de pagos, CRUD, vincular a casos |
+| **document-service** | 15% Skeleton | Storage (GCS/local), upload, clasificación |
+| **calendar-service** | 15% Skeleton | Google Calendar API, booking público |
+| **notification-service** | 80% Backend | Templates email, integración Gmail API |
+
+### Integraciones Externas Pendientes
+
+| Integración | Prioridad | Estado |
+|-------------|-----------|--------|
+| **n8n Cloud** | Alta | ⏳ Esperando marketing dev |
+| **Google Calendar API** | Media | Credenciales listas |
+| **Gmail API** | Media | Credenciales listas |
+| **Google Drive** | Baja | Futuro |
+| **Calendly** | Baja | Q2 2026 |
+
+### Mejoras Técnicas Sugeridas
+
+| Área | Mejora | Impacto |
+|------|--------|---------|
+| **Testing** | E2E con Playwright | Cobertura frontend |
+| **CI/CD** | Deploy automático a staging | Velocidad |
+| **Seguridad** | OAuth2 Google Workspace | Autenticación real |
+| **Performance** | Redis cache | Velocidad API |
+| **Observabilidad** | Custom Grafana dashboards | Monitoreo |
+
+---
+
+*Documento actualizado automáticamente - 3 de Enero 2026, 18:00 COT*
 - **Cliente**: Carrillo Abogados, Cali, Colombia
 - **Email Admin**: ingenieria@carrilloabgd.com
 - **MVP Target**: 27 Marzo 2026

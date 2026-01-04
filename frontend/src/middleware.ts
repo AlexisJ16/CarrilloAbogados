@@ -10,10 +10,17 @@ const publicRoutes = [
   '/reset-password',
   '/terms',
   '/privacy',
+  // Spanish routes (actual navigation)
+  '/nosotros',
+  '/servicios',
+  '/equipo',
+  '/contacto',
+  '/blog',
+  // English aliases (kept for compatibility)
   '/contact',
   '/about',
   '/services',
-  '/blog',
+  '/team',
 ];
 
 // Routes that authenticated users shouldn't access

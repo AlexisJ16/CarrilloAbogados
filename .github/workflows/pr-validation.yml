@@ -32,7 +32,10 @@ jobs:
         distribution: 'temurin'
         cache: maven
     
-    - name: 📦 Build with Maven (skip slow tests)
+    - name: � Make Maven Wrapper executable
+      run: chmod +x ./mvnw
+    
+    - name: �📦 Build with Maven (skip slow tests)
       run: ./mvnw clean verify -T 1C -B -DskipITs
     
     - name: 📊 Generate PR Summary
