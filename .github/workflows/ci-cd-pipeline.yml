@@ -17,6 +17,7 @@ permissions:
   contents: read
   security-events: write
   actions: read
+  packages: write
 
 env:
   JAVA_VERSION: '21'
