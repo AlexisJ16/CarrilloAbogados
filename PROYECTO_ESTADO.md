@@ -1,11 +1,10 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 4 de Enero, 2026 - 15:30 COT  
-**Estado General**: ✅ **FASE 7: ESTABILIZACIÓN + AGENTES IA** | TAREAS 1-4 ✅ | Code Quality ✅ | Agentes 6 ✅  
-**Rama Actual**: `dev`  
-**Último Commit (dev)**: `0906dde` - merge: integrate automation branch into dev  
-**Último Commit (main)**: `5554fa2` - Merge branch 'dev' (pendiente sync)  
-**Siguiente Fase**: 🚀 **Merge dev → main + Verificar CI/CD**
+**Última Actualización**: 5 de Enero, 2026 - 01:00 COT  
+**Estado General**: ✅ **FASE 8: CI/CD COMPLETAMENTE FUNCIONAL** | Pipeline + Security + Docker ✅  
+**Rama Actual**: `dev` (sincronizado con `main`)  
+**Último Commit**: `9860476` - Merge dev: CI/CD pipeline fully fixed  
+**Siguiente Fase**: 🚀 **Configurar SonarCloud + GCP Deploy**
 
 ---
 
@@ -37,13 +36,12 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 ## 📅 HISTORIAL DE COMMITS RECIENTES
 
 ```
+9860476 Merge dev: CI/CD pipeline fully fixed (permissions + CodeQL v4)
+a3980ff fix(ci): add packages write permission for Docker push to ghcr.io
+f0f0594 fix(ci): add security-events permissions and upgrade CodeQL to v4
+4594738 fix(tests): correct XSS test assertions for REST API behavior
 1d66c29 style: fix markdown linting in GITHUB_SECRETS.md
 1501377 fix(ci): add mvnw chmod, JaCoCo coverage profile, and secrets docs
-04b9186 feat(frontend): connect contact form to Lead API backend
-e460150 fix: remove redundant Serializable interface and unused imports
-052a839 docs(n8n): actualizar STATUS.md con estado activo e integración web
-efc8cf0 fix(tests): accept 403 status in security tests for protected endpoints
-c629deb fix(docker): correct healthcheck commands for alpine images
 ```
 
 ---
@@ -91,6 +89,10 @@ c629deb fix(docker): correct healthcheck commands for alpine images
 | **Code Quality: Redundant Serializable removed (14 files)** | **4 Ene 2026** | `e460150` | ✅ |
 | **CI/CD: mvnw chmod + JaCoCo coverage profile** | **4 Ene 2026** | `1501377` | ✅ |
 | **GitHub Secrets Documentation** | **4 Ene 2026** | `1501377` | ✅ |
+| **FASE 8: CI/CD Pipeline Permissions Fixed** | **5 Ene 2026** | `f0f0594` | ✅ |
+| **CodeQL Action upgraded v3 → v4** | **5 Ene 2026** | `f0f0594` | ✅ |
+| **Docker Build to ghcr.io Working** | **5 Ene 2026** | `a3980ff` | ✅ |
+| **All 8 Microservices Built & Pushed** | **5 Ene 2026** | `9860476` | ✅ |
 | MVP Empresarial | 27 Mar 2026 | - | 📋 Planificado |
 
 ---
