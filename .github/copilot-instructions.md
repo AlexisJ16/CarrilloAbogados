@@ -2,7 +2,10 @@
 
 ## Project Overview
 
-Cloud-native legal management platform with 8 Spring Boot microservices on Kubernetes. **Dual purpose**: Academic project (Plataformas II) + Real production system for 5-lawyer firm in Cali, Colombia. Built with zero vendor lock-in using Spring Cloud Kubernetes instead of Eureka/Config Server.
+Cloud-native legal management platform with 8 Spring Boot microservices on Kubernetes. **Dual purpose**: Academic project (Plataformas II) + Real production system for 7-lawyer firm in Cali, Colombia. Built with zero vendor lock-in using Spring Cloud Kubernetes instead of Eureka/Config Server.
+
+**MVP Target Date**: 27 Marzo 2026  
+**Current Phase**: FASE 8 - CI/CD Fully Functional
 
 ## Critical Architecture Decisions
 
@@ -285,7 +288,56 @@ wsl bash -c "./scripts/deploy.sh"
 
 Always create feature branches from `dev`, not `main`.
 
-## Recent Fixes Applied (Dec 18, 2025)
+## 🚀 FASE 8: CI/CD COMPLETAMENTE FUNCIONAL (5 Enero 2026)
+
+### GitHub Actions - Estado Actual
+
+| Workflow             | Trigger               | Estado                  |
+| -------------------- | --------------------- | ----------------------- |
+| `ci-cd-pipeline.yml` | push dev/staging/main | ✅ 100%                 |
+| `security-scan.yml`  | push main, schedule   | ⚠️ SonarCloud config    |
+| `deploy-gcp.yml`     | push main             | ⚠️ Requiere secrets GCP |
+
+### Jobs del CI/CD Pipeline
+
+1. **🔨 Build & Test** (~2 min) - Maven build + 105 tests
+2. **🔐 Security Scan** (~1.5 min) - Trivy + CodeQL v4
+3. **📊 Pipeline Summary** - Resumen de resultados
+4. **🐳 Docker Build** (8 servicios paralelos) - Push a ghcr.io
+
+### Imágenes Docker Publicadas
+
+```
+ghcr.io/alexisj16/api-gateway:dev
+ghcr.io/alexisj16/client-service:dev
+ghcr.io/alexisj16/case-service:dev
+ghcr.io/alexisj16/payment-service:dev
+ghcr.io/alexisj16/document-service:dev
+ghcr.io/alexisj16/calendar-service:dev
+ghcr.io/alexisj16/notification-service:dev
+ghcr.io/alexisj16/n8n-integration-service:dev
+```
+
+### Workflow Permissions (Corregidos 5 Ene 2026)
+
+```yaml
+permissions:
+  contents: read
+  security-events: write # Para CodeQL SARIF upload
+  actions: read # Para GitHub Actions
+  packages: write # Para push a ghcr.io
+```
+
+## Recent Fixes Applied
+
+### Jan 5, 2026 - FASE 8 CI/CD
+
+1. **CodeQL Action** - Upgraded v3 → v4 (v3 deprecated Dec 2026)
+2. **Workflow Permissions** - Added security-events, packages write
+3. **Docker Registry** - All 8 images now push to ghcr.io
+4. **Branches Synced** - dev and main at commit `9860476`
+
+### Dec 18-19, 2025 - Core Fixes
 
 1. **PostgreSQL DATEDIFF query** - Changed to PostgreSQL syntax in LegalCaseRepository
 2. **Health probes** - Added context-path prefix (/case-service/, /client-service/)
