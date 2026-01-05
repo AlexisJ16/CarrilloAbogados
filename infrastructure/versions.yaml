@@ -21,7 +21,7 @@ spring:
   cloud: "2023.0.6"   # Latest stable release train (compatible con Boot 3.3.x)
   cloud-kubernetes: "3.1.3"  # Compatible with Spring Boot 3.3
   data: "2024.0.x"    # Auto-managed by Boot
-  springdoc: "2.8.14"  # Compatible with Spring Boot 3.3.x (upgraded via Snyk PR)
+  springdoc: "2.6.0"   # Snyk PR #26 upgrade reverted (2.8.14 caused test failures)
 
 # Kubernetes Stack
 kubernetes:
