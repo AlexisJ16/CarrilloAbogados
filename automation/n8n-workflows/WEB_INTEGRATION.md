@@ -1,98 +1,315 @@
-# 🔗 Integración Plataforma Web ↔ n8n Cloud
+# 🔗 Integración Web → n8n → Plataforma Spring Boot
 
-**Última actualización**: 2026-01-03  
-**Estado**: ⚠️ PENDIENTE CONEXIÓN
+**Documento de Especificación Técnica**
+**Última actualización**: 5 de Enero, 2026
+**Estado**: ⚠️ EN DESARROLLO - Opción B (Arquitectura Completa)
+**Propósito**: Definir contrato de integración para MW#1 Lead Lifecycle
+
+**Responsables**:
+- **Marketing Dev (n8n + Frontend)**: Integración webhook n8n + debugging workflows
+- **Backend Dev (Spring Boot)**: Eventos NATS + n8n-integration-service
 
 ---
 
-## 📋 Resumen
+## 📋 ESTADO ACTUAL (Verificado 5 Enero 2026)
 
-Este documento detalla cómo conectar la plataforma web de Carrillo Abogados con los workflows de n8n Cloud para automatización de leads.
+### ✅ Componentes Funcionales
+
+| Componente | Estado | Evidencia |
+|------------|--------|-----------|
+| **Frontend `/contacto`** | ✅ Funcional | Envía a `/client-service/api/leads` |
+| **client-service API** | ✅ Funcional | Guarda en PostgreSQL schema 'clients' |
+| **n8n Webhook** | ✅ Activo | `POST /webhook/lead-events` |
+| **n8n Orquestador** | ✅ Activo | 8 nodos, 60% tasa éxito |
+| **n8n SUB-A (IA)** | ✅ Funcional | 13 nodos, Gemini 2.5 Pro, 40% tasa éxito |
+| **Firestore** | ✅ Operativo | Project: `carrillo-marketing-core` |
+| **Gmail API** | ✅ Configurado | Envío emails marketing@carrilloabgd.com |
+
+### ❌ Integraciones Faltantes (BLOQUEADORES)
+
+| Integración | Estado | Bloqueador |
+|-------------|--------|------------|
+| **Formulario → n8n** | ❌ NO conectado | Frontend apunta a client-service, no a n8n |
+| **client-service → NATS** | ❌ NO implementado | No emite evento `lead.capturado` |
+| **NATS → n8n-integration-service** | ❌ NO implementado | Service sin listener NATS |
+| **n8n-integration-service → n8n** | ❌ NO implementado | No llama webhook n8n |
+| **n8n → Plataforma (callbacks)** | ❌ NO implementado | Webhooks inversos faltantes |
+| **Alta tasa error n8n** | 🚨 CRÍTICO | 50% ejecuciones fallan (debugging pendiente) |
 
 ---
 
-## 🏗️ Arquitectura
+## 📋 Resumen Ejecutivo
+
+Este documento detalla la arquitectura completa de integración entre:
+1. **Frontend Next.js** (formulario de contacto)
+2. **Plataforma Spring Boot** (8 microservicios)
+3. **n8n Cloud** (automatización con IA)
+
+**Objetivo**: Lead capturado en web → Scored con IA → Notificación HOT → BD actualizada en **< 1 minuto**
+
+---
+
+## 🏗️ ARQUITECTURA OBJETIVO (Opción B - Completa)
+
+### Flujo Completo MW#1
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        FLUJO DE INTEGRACIÓN                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐                  │
-│  │   FRONTEND   │    │  API GATEWAY │    │ CLIENT-SVC   │                  │
-│  │  (Next.js)   │───►│  (port 8080) │───►│ (port 8200)  │                  │
-│  │              │    │              │    │              │                  │
-│  │ Formulario   │    │   /api/*     │    │ POST /leads  │                  │
-│  │ de Contacto  │    │              │    │              │                  │
-│  └──────────────┘    └──────────────┘    └──────┬───────┘                  │
-│                                                 │                           │
-│                                                 │ NATS Event                │
-│                                                 │ "carrillo.events.lead.*"  │
-│                                                 ▼                           │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │                           NATS (Messaging)                            │  │
-│  └──────────────────────────────────────────────┬───────────────────────┘  │
-│                                                 │                           │
-│                                                 ▼                           │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │                    n8n-integration-service (port 8800)                │  │
-│  │                                                                       │  │
-│  │  NatsEventListener.java                                               │  │
-│  │  ├─ Suscribe: carrillo.events.lead.created                           │  │
-│  │  ├─ Transforma evento a formato n8n                                  │  │
-│  │  └─ HTTP POST → n8n webhook                                          │  │
-│  └──────────────────────────────────────────────┬───────────────────────┘  │
-│                                                 │                           │
-│                                                 │ HTTP POST                 │
-│                                                 ▼                           │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │                         n8n Cloud                                     │  │
-│  │                                                                       │  │
-│  │  Webhook: https://carrilloabgd.app.n8n.cloud/webhook/lead-events     │  │
-│  │           │                                                           │  │
-│  │           ▼                                                           │  │
-│  │  ┌─────────────────┐      ┌─────────────────┐                        │  │
-│  │  │  Orquestador    │ ───► │    SUB-A        │                        │  │
-│  │  │  (5 nodos)      │      │  (10 nodos)     │                        │  │
-│  │  │                 │      │  - AI Scoring   │                        │  │
-│  │  │  ID: bva1...    │      │  - Firestore    │                        │  │
-│  │  └─────────────────┘      │  - Gmail        │                        │  │
-│  │                           └────────┬────────┘                        │  │
-│  └────────────────────────────────────┼─────────────────────────────────┘  │
-│                                       │                                     │
-│                                       │ Callback HTTP                       │
-│                                       ▼                                     │
-│  ┌──────────────────────────────────────────────────────────────────────┐  │
-│  │                    n8n-integration-service                            │  │
-│  │                                                                       │  │
-│  │  WebhookController.java                                               │  │
-│  │  ├─ POST /webhook/lead-scored  → Actualizar score en BD              │  │
-│  │  ├─ POST /webhook/lead-hot     → Notificar abogado urgente           │  │
-│  │  └─ POST /webhook/meeting-confirmed → Sincronizar calendario         │  │
-│  └──────────────────────────────────────────────────────────────────────┘  │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                     FLUJO COMPLETO MW#1                          │
+└─────────────────────────────────────────────────────────────────┘
+
+👤 Usuario llena formulario /contacto
+   │
+   ↓ POST /client-service/api/leads
+   │
+┌──▼──────────────────────────────────────────┐
+│  1. client-service (Spring Boot)            │
+│  - Valida datos con Bean Validation        │
+│  - Guarda en PostgreSQL schema 'clients'   │
+│  - Asigna leadId (UUID)                    │
+│  - Estado inicial: NEW                     │
+└──┬──────────────────────────────────────────┘
+   │
+   ↓ natsTemplate.publish("lead.capturado", event)
+   │
+┌──▼──────────────────────────────────────────┐
+│  2. NATS Message Broker                     │
+│  - Subject: "lead.capturado"               │
+│  - Payload: LeadCapturedEvent              │
+└──┬──────────────────────────────────────────┘
+   │
+   ↓ @NatsListener("lead.capturado")
+   │
+┌──▼──────────────────────────────────────────┐
+│  3. n8n-integration-service                 │
+│  - Escucha evento NATS                     │
+│  - Transforma a formato n8n                │
+│  - Llama webhook n8n                       │
+└──┬──────────────────────────────────────────┘
+   │
+   ↓ POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events
+   │
+┌──▼──────────────────────────────────────────┐
+│  4. n8n WORKFLOW A (Orquestador)            │
+│  - Recibe webhook                          │
+│  - Identifica event_type: "new_lead"       │
+│  - Invoca SUB-A                            │
+└──┬──────────────────────────────────────────┘
+   │
+   ↓ Execute Workflow: SUB-A
+   │
+┌──▼──────────────────────────────────────────┐
+│  5. n8n SUB-A (Lead Intake AI)              │
+│  - Gemini 2.5 Pro analiza lead             │
+│  - Calcula score (0-100)                   │
+│  - Categoría: HOT/WARM/COLD                │
+│  - Guarda en Firestore                     │
+│  - Si HOT: Email a marketing@              │
+│  - Genera respuesta IA                     │
+│  - Email automático al lead                │
+└──┬──────────────────────────────────────────┘
+   │
+   ↓ POST /webhook/lead-scored (callback)
+   │
+┌──▼──────────────────────────────────────────┐
+│  6. n8n-integration-service (webhook recv)  │
+│  - Recibe score y categoría de n8n         │
+│  - Llama client-service API                │
+└──┬──────────────────────────────────────────┘
+   │
+   ↓ PATCH /api/leads/{leadId}
+   │
+┌──▼──────────────────────────────────────────┐
+│  7. client-service actualiza lead           │
+│  - lead.score = 85                         │
+│  - lead.categoria = "HOT"                  │
+│  - lead.estado = "QUALIFIED"               │
+└─────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📁 Archivos Clave
+## 📦 ESPECIFICACIÓN DE PAYLOADS
 
-### client-service (Origen de eventos)
+### 1. Frontend → client-service (Actual - No Cambia)
 
-| Archivo | Propósito |
-|---------|-----------|
-| `LeadResource.java` | REST API para leads, emite eventos NATS |
-| `LeadService.java` | Lógica de negocio de leads |
-| `NatsEventPublisher.java` | Publica eventos a NATS |
+**Endpoint**: `POST /client-service/api/leads`
+**Headers**: `Content-Type: application/json`
 
-### n8n-integration-service (Bridge)
+```json
+{
+  "nombre": "Juan Pérez",
+  "email": "juan@empresa.com",
+  "telefono": "+57 300 123 4567",
+  "empresa": "Empresa SAS",
+  "servicio": "derecho-marcas",
+  "mensaje": "Necesito registrar una marca para mi producto"
+}
+```
 
-| Archivo | Propósito |
-|---------|-----------|
-| `NatsEventListener.java` | Escucha NATS, envía a n8n webhooks |
-| `WebhookController.java` | Recibe callbacks de n8n |
-| `N8nWebhookService.java` | Cliente HTTP para n8n |
+**Respuesta**:
+
+```json
+{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "nombre": "Juan Pérez",
+  "email": "juan@empresa.com",
+  "telefono": "+57 300 123 4567",
+  "empresa": "Empresa SAS",
+  "servicio": "derecho-marcas",
+  "mensaje": "Necesito registrar una marca",
+  "estado": "NEW",
+  "score": null,
+  "categoria": null,
+  "fechaCreacion": "2026-01-05T18:30:00Z"
+}
+```
+
+---
+
+### 2. client-service → NATS (A IMPLEMENTAR - Backend Dev)
+
+**Subject**: `lead.capturado`
+**Message Type**: `LeadCapturedEvent`
+
+```java
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class LeadCapturedEvent implements Serializable {
+    private String leadId;
+    private String nombre;
+    private String email;
+    private String telefono;
+    private String empresa;
+    private String servicio;
+    private String mensaje;
+    private String source;
+    private Instant timestamp;
+}
+```
+
+**JSON Publicado**:
+
+```json
+{
+  "leadId": "550e8400-e29b-41d4-a716-446655440000",
+  "nombre": "Juan Pérez",
+  "email": "juan@empresa.com",
+  "telefono": "+57 300 123 4567",
+  "empresa": "Empresa SAS",
+  "servicio": "derecho-marcas",
+  "mensaje": "Necesito registrar una marca",
+  "source": "web_contacto",
+  "timestamp": "2026-01-05T18:30:00Z"
+}
+```
+
+---
+
+### 3. n8n-integration-service → n8n Webhook (A IMPLEMENTAR)
+
+**Endpoint**: `POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
+**Headers**: `Content-Type: application/json`
+
+**Transformación de Campos**:
+
+```
+NATS Event          →  n8n Webhook
+─────────────────────────────────────
+leadId              →  lead_id
+servicio            →  servicio_interes
+timestamp           →  orchestrator_timestamp
++ event_type: "new_lead"
+```
+
+**Payload Enviado**:
+
+```json
+{
+  "event_type": "new_lead",
+  "lead_id": "550e8400-e29b-41d4-a716-446655440000",
+  "nombre": "Juan Pérez",
+  "email": "juan@empresa.com",
+  "telefono": "+57 300 123 4567",
+  "empresa": "Empresa SAS",
+  "servicio_interes": "derecho-marcas",
+  "mensaje": "Necesito registrar una marca",
+  "source": "web_contacto",
+  "orchestrator_timestamp": "2026-01-05T18:30:00Z"
+}
+```
+
+**Respuesta de n8n**:
+
+```json
+{
+  "success": true,
+  "result": {
+    "lead_id": "550e8400-e29b-41d4-a716-446655440000",
+    "score": 85,
+    "categoria": "HOT"
+  }
+}
+```
+
+---
+
+### 4. n8n → n8n-integration-service Callbacks (A IMPLEMENTAR)
+
+#### Callback 1: Lead Scored
+
+**Endpoint**: `POST /n8n-integration-service/webhook/lead-scored`
+**Headers**: `Content-Type: application/json`
+
+```json
+{
+  "lead_id": "550e8400-e29b-41d4-a716-446655440000",
+  "score": 85,
+  "categoria": "HOT",
+  "ai_analysis": {
+    "normalized_interest": "Marcas",
+    "is_spam": false,
+    "calculated_score": 85,
+    "category": "HOT"
+  },
+  "processed_at": "2026-01-05T18:30:15Z"
+}
+```
+
+#### Callback 2: Lead HOT (solo si score ≥70)
+
+**Endpoint**: `POST /n8n-integration-service/webhook/lead-hot`
+
+```json
+{
+  "lead_id": "550e8400-e29b-41d4-a716-446655440000",
+  "score": 85,
+  "categoria": "HOT",
+  "notified_at": "2026-01-05T18:30:20Z",
+  "email_sent_to": "marketing@carrilloabgd.com"
+}
+```
+
+---
+
+### 5. n8n-integration-service → client-service (A IMPLEMENTAR)
+
+**Endpoint**: `PATCH /client-service/api/leads/{leadId}`
+
+```json
+{
+  "score": 85,
+  "categoria": "HOT",
+  "estado": "QUALIFIED"
+}
+```
+
+---
+
+## 📁 Archivos Clave y Código de Referencia
+
+### client-service (Backend Dev - A IMPLEMENTAR)
 
 ---
 
