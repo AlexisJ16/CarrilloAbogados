@@ -26,20 +26,20 @@ Este agente está especializado en **gestión del proyecto, tracking de progreso
 
 ---
 
-## 📋 Estado Actual del Proyecto (Actualizado: 3 Enero 2026)
+## 📋 Estado Actual del Proyecto (Actualizado: 5 Enero 2026 - FASE 8)
 
 ### Microservicios - Progreso
 
-| Servicio | Backend | Tests | Docker | K8s | Total |
-|----------|---------|-------|--------|-----|-------|
-| api-gateway | ✅ 100% | ✅ | ✅ | ✅ | 100% |
-| client-service | ✅ 100% | ✅ 66 | ✅ | ✅ | 100% |
-| case-service | ✅ 100% | ✅ | ✅ | ✅ | 100% |
-| payment-service | 🔄 15% | ❌ | ✅ | ✅ | 15% |
-| document-service | 🔄 15% | ❌ | ✅ | ✅ | 15% |
-| calendar-service | 🔄 15% | ❌ | ✅ | ✅ | 15% |
-| notification-service | ✅ 100% | ✅ | ✅ | ✅ | 100% |
-| n8n-integration-service | 🔄 20% | ❌ | ✅ | ✅ | 20% |
+| Servicio | Backend | Tests | Docker | K8s | CI/CD | Total |
+|----------|---------|-------|--------|-----|-------|-------|
+| api-gateway | ✅ 100% | ✅ | ✅ | ✅ | ✅ ghcr.io | 100% |
+| client-service | ✅ 100% | ✅ 105 | ✅ | ✅ | ✅ ghcr.io | 100% |
+| case-service | ✅ 95% | ✅ | ✅ | ✅ | ✅ ghcr.io | 95% |
+| payment-service | 🔄 15% | ❌ | ✅ | ✅ | ✅ ghcr.io | 15% |
+| document-service | 🔄 15% | ❌ | ✅ | ✅ | ✅ ghcr.io | 15% |
+| calendar-service | 🔄 15% | ❌ | ✅ | ✅ | ✅ ghcr.io | 15% |
+| notification-service | ✅ 80% | ✅ | ✅ | ✅ | ✅ ghcr.io | 80% |
+| n8n-integration-service | ✅ 95% | ❌ | ✅ | ✅ | ✅ ghcr.io | 95% |
 
 ### Frontend - Progreso (MVP COMPLETE ✅)
 

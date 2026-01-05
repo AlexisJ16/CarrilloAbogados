@@ -1,8 +1,22 @@
 # 🔄 n8n Workflows - Carrillo Abogados
 
-**Última Actualización**: 4 de Enero, 2026  
-**Versión**: 1.0.0  
-**Estado**: ✅ MW#1 en Producción
+**Última Actualización**: 5 de Enero, 2026  
+**Versión**: 1.1.0  
+**Estado**: ✅ MW#1 en Producción  
+**Fase Proyecto**: FASE 8 - CI/CD Completamente Funcional
+
+---
+
+## ⚠️ NOTA: Estructura de Documentación n8n
+
+El proyecto tiene documentación n8n en **DOS ubicaciones**:
+
+| Ubicación | Propósito | Contenido |
+|-----------|-----------|-----------|
+| `docs/n8n-workflows/` | **Documentación técnica** para desarrolladores | Specs, guías, NODE_STANDARDS |
+| `automation/n8n-workflows/` | **Zona de desarrollo n8n** | Workflows JSON, contexto de negocio |
+
+**→ Para desarrollo de workflows n8n, ver: [automation/README.md](../../automation/README.md)**
 
 ---
 
