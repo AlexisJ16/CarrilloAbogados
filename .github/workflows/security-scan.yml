@@ -17,6 +17,11 @@ on:
     - cron: '0 6 * * 1'
   workflow_dispatch: # Allow manual trigger
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 env:
   JAVA_VERSION: '21'
 
@@ -57,7 +62,7 @@ jobs:
         args: --severity-threshold=high
 
     - name: 📊 Upload Snyk results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       if: always()
       with:
         sarif_file: snyk.sarif
@@ -125,7 +130,7 @@ jobs:
         ignore-unfixed: true
 
     - name: 📤 Upload Trivy FS results to GitHub Security
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       if: always()
       with:
         sarif_file: 'trivy-fs-results.sarif'
