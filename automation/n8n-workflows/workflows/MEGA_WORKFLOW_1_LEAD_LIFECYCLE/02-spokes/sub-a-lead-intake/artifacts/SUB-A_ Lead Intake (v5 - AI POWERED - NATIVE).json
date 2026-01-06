@@ -23,8 +23,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        512,
-        480
+        -3760,
+        544
       ],
       "credentials": {
         "googlePalmApi": {
@@ -55,8 +55,8 @@
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
       "position": [
-        1632,
-        496
+        -2512,
+        544
       ],
       "credentials": {
         "googlePalmApi": {
@@ -73,55 +73,55 @@
               "id": "nombre",
               "name": "nombre",
               "type": "string",
-              "value": "={{ $json.body.nombre }}"
+              "value": "={{ $json.nombre ? $json.nombre : ($json.body ? $json.body.nombre : '') }}"
             },
             {
               "id": "email",
               "name": "email",
               "type": "string",
-              "value": "={{ $json.body.email }}"
+              "value": "={{ $json.email ? $json.email : ($json.body ? $json.body.email : '') }}"
             },
             {
               "id": "telefono",
               "name": "telefono",
               "type": "string",
-              "value": "={{ $json.body.telefono }}"
+              "value": "={{ $json.telefono ? $json.telefono : ($json.body ? $json.body.telefono : '') }}"
             },
             {
               "id": "empresa",
               "name": "empresa",
               "type": "string",
-              "value": "={{ $json.body.empresa }}"
+              "value": "={{ $json.empresa ? $json.empresa : ($json.body ? $json.body.empresa : '') }}"
             },
             {
               "id": "cargo",
               "name": "cargo",
               "type": "string",
-              "value": "={{ $json.body.cargo }}"
+              "value": "={{ $json.cargo ? $json.cargo : ($json.body ? $json.body.cargo : '') }}"
             },
             {
               "id": "servicio_interes",
               "name": "servicio_interes",
               "type": "string",
-              "value": "={{ $json.body.servicio_interes }}"
+              "value": "={{ $json.servicio_interes ? $json.servicio_interes : ($json.body ? $json.body.servicio_interes : '') }}"
             },
             {
               "id": "mensaje",
               "name": "mensaje",
               "type": "string",
-              "value": "={{ $json.body.mensaje }}"
+              "value": "={{ $json.mensaje ? $json.mensaje : ($json.body ? $json.body.mensaje : '') }}"
             },
             {
               "id": "utm_source",
               "name": "utm_source",
               "type": "string",
-              "value": "={{ $json.body.utm_source }}"
+              "value": "={{ $json.utm_source ? $json.utm_source : ($json.body ? $json.body.utm_source : '') }}"
             },
             {
               "id": "utm_campaign",
               "name": "utm_campaign",
               "type": "string",
-              "value": "={{ $json.body.utm_campaign }}"
+              "value": "={{ $json.utm_campaign ? $json.utm_campaign : ($json.body ? $json.body.utm_campaign : '') }}"
             }
           ]
         },
@@ -132,8 +132,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        336,
-        480
+        -3984,
+        544
       ]
     },
     {
@@ -145,8 +145,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        784,
-        480
+        -3408,
+        544
       ]
     },
     {
@@ -163,8 +163,8 @@
       "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
       "typeVersion": 1.1,
       "position": [
-        992,
-        480
+        -3184,
+        544
       ],
       "credentials": {
         "googleApi": {
@@ -179,20 +179,21 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict"
+            "typeValidation": "strict",
+            "version": 1
           },
-          "combinator": "and",
           "conditions": [
             {
               "id": "condition1",
               "leftValue": "={{ $json.categoria }}",
-              "rightValue": "HOT",
               "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
+                "operation": "equals",
+                "type": "string"
+              },
+              "rightValue": "HOT"
             }
-          ]
+          ],
+          "combinator": "and"
         },
         "options": {}
       },
@@ -201,8 +202,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
       "position": [
-        1216,
-        480
+        -2960,
+        544
       ]
     },
     {
@@ -217,8 +218,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1424,
-        320
+        -2736,
+        472
       ],
       "webhookId": "2125e449-695c-4e68-bd52-f9de4991c2a2",
       "credentials": {
@@ -230,9 +231,9 @@
     },
     {
       "parameters": {
-        "sendTo": "marketing@carrilloabgd.com",
-        "subject": "Confirmación de Consulta - Carrillo Abogados",
-        "message": "={{ $json.content }}",
+        "sendTo": "={{ $('0. Mapear Input del Orquestador1').item.json.email }}",
+        "subject": "=Gracias por contactar a Carrillo Abogados - {{ $('0. Mapear Input del Orquestador1').item.json.nombre }}",
+        "message": "={{ $input.first().json.content && $input.first().json.content.parts ? $input.first().json.content.parts[0].text : 'Gracias por contactarnos. Pronto le responderemos.' }}",
         "options": {}
       },
       "id": "23df08e9-2164-4824-af6d-c21983b2f9a6",
@@ -240,8 +241,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1952,
-        496
+        -2160,
+        544
       ],
       "webhookId": "6ba4fd43-9d8f-41ed-856b-360d2c2fdfe7",
       "credentials": {
@@ -266,6 +267,48 @@
               "name": "message",
               "type": "string",
               "value": "Lead procesado exitosamente por SUB-A (AI Powered)"
+            },
+            {
+              "id": "lead_id",
+              "name": "lead_id",
+              "type": "string",
+              "value": "={{ $('1. Validar y Clasificar1').item.json.lead_id }}"
+            },
+            {
+              "id": "score",
+              "name": "score",
+              "type": "number",
+              "value": "={{ $('1. Validar y Clasificar1').item.json.score }}"
+            },
+            {
+              "id": "categoria",
+              "name": "categoria",
+              "type": "string",
+              "value": "={{ $('1. Validar y Clasificar1').item.json.categoria }}"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "type": "string",
+              "value": "={{ $('1. Validar y Clasificar1').item.json.email }}"
+            },
+            {
+              "id": "nombre",
+              "name": "nombre",
+              "type": "string",
+              "value": "={{ $('1. Validar y Clasificar1').item.json.nombre }}"
+            },
+            {
+              "id": "empresa",
+              "name": "empresa",
+              "type": "string",
+              "value": "={{ $('1. Validar y Clasificar1').item.json.empresa }}"
+            },
+            {
+              "id": "ai_analysis",
+              "name": "ai_analysis",
+              "type": "object",
+              "value": "={{ $('1. Validar y Clasificar1').item.json.ai_analysis }}"
             }
           ]
         },
@@ -276,8 +319,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2144,
-        496
+        -1936,
+        640
       ]
     },
     {
@@ -287,11 +330,171 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        160,
-        480
+        -4208,
+        544
       ],
       "id": "5f4ec9be-0921-4db3-a81c-c06de46aa35f",
       "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger-suba",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -4208,
+        864
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "workflow_name",
+              "name": "workflow_name",
+              "type": "string",
+              "value": "={{ $workflow.name }}"
+            },
+            {
+              "id": "execution_id",
+              "name": "execution_id",
+              "type": "string",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            },
+            {
+              "id": "error_message",
+              "name": "error_message",
+              "type": "string",
+              "value": "Error en SUB-A Lead Intake - revisar logs"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-error-suba",
+      "name": "Preparar Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3984,
+        864
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "ingenieria@carrilloabgd.com",
+        "subject": "=🚨 [n8n ERROR] {{ $json.workflow_name }}",
+        "message": "=<h2>🚨 Error en SUB-A</h2>\n<p><strong>Workflow:</strong> {{ $json.workflow_name }}</p>\n<p><strong>Execution ID:</strong> {{ $json.execution_id }}</p>\n<p><strong>Timestamp:</strong> {{ $json.timestamp }}</p>\n<p><strong>Error:</strong> {{ $json.error_message }}</p>",
+        "options": {}
+      },
+      "id": "gmail-error-suba",
+      "name": "Notificar Error",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -3760,
+        864
+      ],
+      "webhookId": "61815982-36bc-45d0-8c6f-2755b9c05b9f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webhook.site/e859e2f7-bd8c-4d71-a534-843fc1611f5e",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ leadId: $('FINAL. Resultado del Sub-Workflow1').item.json.lead_id, email: $('FINAL. Resultado del Sub-Workflow1').item.json.email, nombre: $('FINAL. Resultado del Sub-Workflow1').item.json.nombre, score: $('FINAL. Resultado del Sub-Workflow1').item.json.score, categoria: $('FINAL. Resultado del Sub-Workflow1').item.json.categoria, empresa: $('FINAL. Resultado del Sub-Workflow1').item.json.empresa, scored_at: new Date().toISOString() }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "callback_lead_scored",
+      "name": "7. Callback Lead Scored",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1936,
+        448
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://webhook.site/93220bcf-93e5-48ea-a8a5-b27c7099a1a8",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ leadId: $('1. Validar y Clasificar1').item.json.lead_id, email: $('1. Validar y Clasificar1').item.json.email, nombre: $('1. Validar y Clasificar1').item.json.nombre, empresa: $('1. Validar y Clasificar1').item.json.empresa, telefono: $('1. Validar y Clasificar1').item.json.telefono, score: $('1. Validar y Clasificar1').item.json.score, categoria: $('1. Validar y Clasificar1').item.json.categoria, servicio_interes: $('1. Validar y Clasificar1').item.json.servicio_interes, mensaje: $('1. Validar y Clasificar1').item.json.mensaje, ai_analysis: $('1. Validar y Clasificar1').item.json.ai_analysis, alerted_at: new Date().toISOString(), urgency: 'IMMEDIATE' }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "callback_hot_lead",
+      "name": "9. Callback Hot Lead Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1488,
+        448
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $('1. Validar y Clasificar1').item.json.categoria }}",
+              "rightValue": "HOT",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "b3b05f3a-801e-4976-b0ba-c248c2b5c03f"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if_hot_check",
+      "name": "8. Es Lead HOT (Callback)?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -1712,
+        448
+      ]
     }
   ],
   "pinData": {},
@@ -387,6 +590,11 @@
             "node": "FINAL. Resultado del Sub-Workflow1",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "7. Callback Lead Scored",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -396,6 +604,50 @@
         [
           {
             "node": "0. Mapear Input del Orquestador1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Preparar Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Error": {
+      "main": [
+        [
+          {
+            "node": "Notificar Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7. Callback Lead Scored": {
+      "main": [
+        [
+          {
+            "node": "8. Es Lead HOT (Callback)?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "8. Es Lead HOT (Callback)?": {
+      "main": [
+        [
+          {
+            "node": "9. Callback Hot Lead Alert",
             "type": "main",
             "index": 0
           }
@@ -413,7 +665,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "1afa7f68-27f4-4a62-a63d-5f73b43abfc2",
+  "versionId": "670a0f4d-02e1-420f-b74f-5661f30bcda9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3d3321fa006456b860ee93414ff8ce34a43571ec656f012cc11bbaa4bceafb5c"

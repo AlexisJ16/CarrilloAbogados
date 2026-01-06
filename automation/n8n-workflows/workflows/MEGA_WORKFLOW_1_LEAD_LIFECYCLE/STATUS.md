@@ -54,11 +54,11 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 | **ID** | `RHj1TAqBazxNFriJ` |
 | **Nombre** | SUB-A: Lead Intake (v5 - AI POWERED - NATIVE) |
 | **Estado** | ✅ Listo (triggered by Orquestador) |
-| **Nodos** | 13 (incluye Error Handler) |
+| **Nodos** | 16 (incluye Error Handler + Callbacks Backend) |
 | **IA** | Google Gemini 2.5-pro (análisis + respuesta) |
 | **Última ejecución** | 2026-01-04 (éxito) |
 | **Total ejecuciones** | 13+ |
-| **Validación** | ✅ 0 errores |
+| **Validación** | ✅ 0 nuevos errores (warnings menores pre-existentes) |
 
 ---
 
@@ -75,7 +75,7 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
     ├── Respond to Webhook
     └── Error Handler → Preparar Datos Error → Notificar Error Email
          ↓
-    [SUB-A] (13 nodos)
+    [SUB-A] (16 nodos)
         ├── When Executed by Another Workflow
         ├── 0. Mapear Input
         ├── 0.5. Analizar Lead (Gemini IA)
@@ -86,6 +86,9 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
         │   └── [WARM/COLD] → continúa
         ├── 5. Generar Respuesta (Gemini)
         ├── 6. Enviar Respuesta Lead
+        ├── 7. Callback Lead Scored (HTTP → Backend) ← NUEVO
+        ├── 8. Es Lead HOT (Callback)? (IF) ← NUEVO
+        │   └── [HOT] → 9. Callback Hot Lead Alert ← NUEVO
         ├── FINAL. Resultado
         └── Error Handler → Preparar Error → Notificar Error
 ```
@@ -132,6 +135,16 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 ---
 
 ## Historial de Cambios
+
+### 2026-01-05 - TAREA 1: Callbacks Backend Agregados ✅
+- ✅ Agregados 3 nodos nuevos a SUB-A (ahora 16 nodos total)
+- ✅ **Nodo 7: Callback Lead Scored** - HTTP POST a `/webhook/lead-scored` (SIEMPRE ejecuta)
+- ✅ **Nodo 8: Es Lead HOT (Callback)?** - IF evalúa categoria === "HOT"
+- ✅ **Nodo 9: Callback Hot Lead Alert** - HTTP POST a `/webhook/lead-hot` (solo HOT)
+- ✅ Conexiones correctas: 6→7→8→9
+- ✅ Variable entorno `BACKEND_URL` configurada (fallback: localhost:8800)
+- ✅ Error handling con `onError: continueRegularOutput`
+- ⚠️ Warnings menores pre-existentes (typeVersions) - no bloquean
 
 ### 2026-01-04 - ACTIVACIÓN PRODUCCIÓN ✅
 - ✅ Corregido error webhook `onError: continueRegularOutput`
