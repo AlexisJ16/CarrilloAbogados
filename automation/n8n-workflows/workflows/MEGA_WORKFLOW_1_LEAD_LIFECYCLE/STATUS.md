@@ -1,11 +1,13 @@
 # MEGA-WORKFLOW #1: Lead Lifecycle Manager
 
-## Estado: ✅ ACTIVO EN PRODUCCIÓN
+## Estado: ✅ ACTIVO EN PRODUCCION (v1.0) | ORQUESTADOR v3.0 EN TESTING
 
-**Última actualización:** 2026-01-04 (Verificado con MCP n8n)  
-**Versión:** 1.1.0 (Production-Active)  
-**n8n Cloud:** v1.120.4  
-**Webhook URL:** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
+**Ultima actualizacion:** 2026-01-07 (Verificado con MCP n8n)
+**Version Produccion:** 1.1.0 (Orquestador v1.0 activo)
+**Version Testing:** 3.0.0 (Orquestador v3.0 AI Agent - NUEVO)
+**n8n Cloud:** v1.120.4
+**Webhook URL Produccion:** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
+**Webhook URL Testing (v3.0):** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3`
 
 ---
 
@@ -34,7 +36,7 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ## Workflows en n8n Cloud
 
-### Orquestador (Hub)
+### Orquestador v1.0 (Hub - PRODUCCION)
 
 | Campo | Valor |
 |-------|-------|
@@ -43,9 +45,23 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 | **Estado** | ✅ **ACTIVO** |
 | **Webhook** | `https://carrilloabgd.app.n8n.cloud/webhook/lead-events` |
 | **Nodos** | 8 (Webhook → Identify → SubA → Consolidate → Respond + Error Handler) |
-| **Última ejecución** | 2026-01-04 (éxito - Score 90 HOT) |
+| **Ultima ejecucion** | 2026-01-04 (exito - Score 90 HOT) |
 | **Total ejecuciones** | 6+ |
-| **Validación** | ✅ 0 errores |
+| **Validacion** | ✅ 0 errores |
+
+### Orquestador v3.0 (AI Agent - TESTING)
+
+| Campo | Valor |
+|-------|-------|
+| **ID** | `68DDbpQzOEIweiBF` |
+| **Nombre** | Orquestador v3.0 (AI Agent - Gemini) |
+| **Estado** | ⚠️ **INACTIVO** (testing) |
+| **Webhook** | `https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3` |
+| **Nodos** | 9 (Webhook → AI Agent → Respond → Logger + Error Handler) |
+| **LLM** | Google Gemini 2.5 Pro |
+| **Tools** | SUB-A (Lead Intake) |
+| **Arquitectura** | AI Agent (Nivel 4 - Metodologia Nate Herk) |
+| **Validacion** | ✅ Nodos validados individualmente |
 
 ### SUB-A: Lead Intake (Spoke)
 
@@ -54,11 +70,11 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 | **ID** | `RHj1TAqBazxNFriJ` |
 | **Nombre** | SUB-A: Lead Intake (v5 - AI POWERED - NATIVE) |
 | **Estado** | ✅ Listo (triggered by Orquestador) |
-| **Nodos** | 13 (incluye Error Handler) |
+| **Nodos** | 16 (incluye Error Handler + Callbacks Backend) |
 | **IA** | Google Gemini 2.5-pro (análisis + respuesta) |
 | **Última ejecución** | 2026-01-04 (éxito) |
 | **Total ejecuciones** | 13+ |
-| **Validación** | ✅ 0 errores |
+| **Validación** | ✅ 0 nuevos errores (warnings menores pre-existentes) |
 
 ---
 
@@ -75,7 +91,7 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
     ├── Respond to Webhook
     └── Error Handler → Preparar Datos Error → Notificar Error Email
          ↓
-    [SUB-A] (13 nodos)
+    [SUB-A] (16 nodos)
         ├── When Executed by Another Workflow
         ├── 0. Mapear Input
         ├── 0.5. Analizar Lead (Gemini IA)
@@ -86,6 +102,9 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
         │   └── [WARM/COLD] → continúa
         ├── 5. Generar Respuesta (Gemini)
         ├── 6. Enviar Respuesta Lead
+        ├── 7. Callback Lead Scored (HTTP → Backend) ← NUEVO
+        ├── 8. Es Lead HOT (Callback)? (IF) ← NUEVO
+        │   └── [HOT] → 9. Callback Hot Lead Alert ← NUEVO
         ├── FINAL. Resultado
         └── Error Handler → Preparar Error → Notificar Error
 ```
@@ -132,6 +151,54 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 ---
 
 ## Historial de Cambios
+
+### 2026-01-07 - ORQUESTADOR v3.0 (AI Agent - Gemini) CREADO
+
+**Metodologia**: Nate Herk AI Systems Pyramid - Nivel 4 (AI Agent)
+
+- NUEVO workflow `Orquestador v3.0 (AI Agent - Gemini)` creado
+- **ID**: `68DDbpQzOEIweiBF`
+- **Webhook**: `/webhook/lead-events-v3` (testing)
+- **Nodos**: 9
+- **LLM**: Google Gemini 2.5 Pro (temperature 0.3)
+- **Arquitectura**:
+  - AI Agent Node con System Prompt completo
+  - Tool conectado: SUB-A (Lead Intake)
+  - Simple Memory (Window Buffer, 5 eventos)
+  - Logger Google Sheets (pendiente configurar)
+  - Error Handler + Notificacion Gmail
+
+**Cambios vs v1.0**:
+| Aspecto | v1.0 (Actual) | v3.0 (Nuevo) |
+|---------|---------------|--------------|
+| Logica routing | Code node (30 lineas) | AI Agent |
+| Escalabilidad | Modificar codigo | Agregar tools |
+| Observabilidad | Limitada | returnIntermediateSteps + Logger |
+| Costo por ejecucion | $0 | ~$0.003 USD |
+| Latencia | ~100ms | ~2-3 seg |
+
+**Estado**: INACTIVO - Requiere configuracion manual:
+1. [ ] Crear Google Sheet `MW1_Orchestrator_Logs`
+2. [ ] Configurar credencial Google Sheets OAuth2
+3. [ ] Testing manual con payload `new_lead`
+4. [ ] Activar despues de testing exitoso
+
+**Archivos generados**:
+- `artifacts/ORQUESTADOR_V3_DRAFT.json`
+- `artifacts/IMPLEMENTATION_NOTES_ORQUESTADOR_V3.md`
+- `artifacts/code_snippets/system_prompt_ai_agent.md`
+
+---
+
+### 2026-01-05 - TAREA 1: Callbacks Backend Agregados ✅
+- ✅ Agregados 3 nodos nuevos a SUB-A (ahora 16 nodos total)
+- ✅ **Nodo 7: Callback Lead Scored** - HTTP POST a `/webhook/lead-scored` (SIEMPRE ejecuta)
+- ✅ **Nodo 8: Es Lead HOT (Callback)?** - IF evalúa categoria === "HOT"
+- ✅ **Nodo 9: Callback Hot Lead Alert** - HTTP POST a `/webhook/lead-hot` (solo HOT)
+- ✅ Conexiones correctas: 6→7→8→9
+- ✅ Variable entorno `BACKEND_URL` configurada (fallback: localhost:8800)
+- ✅ Error handling con `onError: continueRegularOutput`
+- ⚠️ Warnings menores pre-existentes (typeVersions) - no bloquean
 
 ### 2026-01-04 - ACTIVACIÓN PRODUCCIÓN ✅
 - ✅ Corregido error webhook `onError: continueRegularOutput`

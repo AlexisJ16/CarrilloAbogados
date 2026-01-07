@@ -1,0 +1,263 @@
+{
+  "name": "WORKFLOW A: Lead Lifecycle Manager (Orquestador)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-events",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_main",
+      "name": "Webhook Principal Lead Events",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        304
+      ],
+      "webhookId": "1e6a8ef0-569c-401a-b729-ba06fab82333",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $input.first().json;\nconst payload = input.body || input;\nlet eventType = payload.event_type || 'unknown';\nlet targetWorkflowId = null;\n\nif (eventType === 'new_lead' || (payload.email && !payload.lead_id)) {\n  eventType = 'new_lead';\n  targetWorkflowId = 'RHj1TAqBazxNFriJ';\n} else if (eventType === 'email_opened') {\n  eventType = 'email_opened';\n}\n\nreturn {\n  json: {\n    ...payload,\n    event_type: eventType,\n    target_workflow_id: targetWorkflowId,\n    orchestrator_timestamp: new Date().toISOString(),\n    orchestrator_execution_id: $execution.id\n  }\n};"
+      },
+      "id": "identify_event",
+      "name": "Identify",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "RHj1TAqBazxNFriJ",
+          "mode": "id"
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "sub_a",
+      "name": "SubA",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "success",
+              "name": "success",
+              "type": "boolean",
+              "value": "={{ $json.success !== false }}"
+            },
+            {
+              "id": "result",
+              "name": "result",
+              "type": "object",
+              "value": "={{ $json }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "consolidate",
+      "name": "Consolidate",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        912,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { success: $json.success, result: $json.result } }}",
+        "options": {
+          "responseCode": "={{ $json.success ? 200 : 500 }}"
+        }
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1136,
+        304
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger-orq",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "workflow_name",
+              "name": "workflow_name",
+              "type": "string",
+              "value": "={{ $workflow.name }}"
+            },
+            {
+              "id": "execution_id",
+              "name": "execution_id",
+              "type": "string",
+              "value": "={{ $execution.id }}"
+            },
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            },
+            {
+              "id": "error_message",
+              "name": "error_message",
+              "type": "string",
+              "value": "Error en workflow - revisar logs en n8n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-error-data",
+      "name": "Preparar Datos Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "marketing@carrilloabgd.com",
+        "subject": "=🚨 [n8n ERROR] {{ $json.workflow_name }}",
+        "message": "=<h2>🚨 Error en Workflow</h2>\n<p><strong>Workflow:</strong> {{ $json.workflow_name }}</p>\n<p><strong>Execution ID:</strong> {{ $json.execution_id }}</p>\n<p><strong>Timestamp:</strong> {{ $json.timestamp }}</p>\n<p><strong>Mensaje:</strong> {{ $json.error_message }}</p>\n<hr>\n<p>Revisar logs en n8n Cloud para más detalles.</p>",
+        "options": {}
+      },
+      "id": "gmail-error-notify",
+      "name": "Notificar Error Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        512
+      ],
+      "webhookId": "dbbf014c-d8c2-477f-bc83-0e7988f30b8a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Principal Lead Events": {
+      "main": [
+        [
+          {
+            "node": "Identify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identify": {
+      "main": [
+        [
+          {
+            "node": "SubA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SubA": {
+      "main": [
+        [
+          {
+            "node": "Consolidate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidate": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Preparar Datos Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Datos Error": {
+      "main": [
+        [
+          {
+            "node": "Notificar Error Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "914fc27e-9405-49ae-923c-757f1ee5e69e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3d3321fa006456b860ee93414ff8ce34a43571ec656f012cc11bbaa4bceafb5c"
+  },
+  "id": "bva1Kc1USbbITEAw",
+  "tags": []
+}
