@@ -2,8 +2,9 @@
 
 **Fecha**: 7 de Enero, 2026
 **Workflow ID**: `68DDbpQzOEIweiBF`
-**Estado**: CREADO - INACTIVO (requiere configuracion manual)
+**Estado**: ✅ ACTIVO Y FUNCIONANDO
 **Arquitectura**: AI Agent (Nivel 4 - Metodologia Nate Herk)
+**Ultima Actualizacion**: 7 de Enero, 2026 - 08:30 COT
 
 ---
 
@@ -14,10 +15,11 @@
 | **Workflow ID** | `68DDbpQzOEIweiBF` |
 | **Nombre** | Orquestador v3.0 (AI Agent - Gemini) |
 | **Nodos Totales** | 9 |
-| **Estado** | Inactivo |
+| **Estado** | ✅ Activo |
 | **Webhook URL** | `https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3` |
 | **LLM** | Google Gemini 2.5 Pro |
 | **Temperature** | 0.3 (decisiones deterministas) |
+| **Primera Ejecucion Exitosa** | #178 - 7 Ene 2026 08:22 UTC |
 
 ---
 
@@ -277,14 +279,151 @@ Si el AI Agent falla consistentemente:
 
 ## Proximos Pasos
 
-1. [ ] Usuario: Crear Google Sheet para logging
-2. [ ] Usuario: Configurar credencial Google Sheets
-3. [ ] Usuario: Testing manual con payload new_lead
-4. [ ] Usuario: Verificar Logger captura datos
-5. [ ] Usuario: Activar workflow en produccion
+1. [x] Usuario: Crear Google Sheet para logging ✅
+2. [x] Usuario: Configurar credencial Google Sheets ✅
+3. [x] Usuario: Testing manual con payload new_lead ✅
+4. [x] Usuario: Verificar Logger captura datos ✅
+5. [x] Usuario: Activar workflow en produccion ✅
 6. [ ] Futuro: Implementar SUB-D (Nurturing)
 7. [ ] Futuro: Implementar SUB-E (Engagement)
 8. [ ] Futuro: Implementar SUB-F (Meeting)
+
+---
+
+## Fix Aplicado: SUB-A Input Parsing (7 Ene 2026)
+
+### Problema Detectado
+
+El AI Agent Tool envia los datos como un JSON string dentro del campo `input`:
+```json
+{"input": "{\"event_type\":\"new_lead\",\"nombre\":\"Juan\",\"email\":\"test@email.com\",...}"}
+```
+
+Pero el SUB-A esperaba los campos directamente (`$json.nombre`, `$json.email`).
+
+### Solucion Implementada
+
+Se modifico el nodo **"0. Mapear Input del Orquestador1"** en SUB-A de tipo `Set` a tipo `Code` con logica inteligente que detecta y parsea multiples formatos de entrada:
+
+```javascript
+// Parsear input que puede venir de diferentes fuentes:
+// 1. AI Agent Tool: { input: '{"nombre":"...", ...}' } - JSON string
+// 2. Execute Workflow: { nombre: "...", email: "..." } - objeto directo
+// 3. Webhook direct: { body: { nombre: "..." } }
+
+const raw = $input.first().json;
+let data = {};
+
+// Caso 1: AI Agent Tool envia 'input' como JSON string
+if (raw.input && typeof raw.input === 'string') {
+  try {
+    data = JSON.parse(raw.input);
+  } catch(e) {
+    data = raw;
+  }
+}
+// Caso 2: input es un objeto (ya parseado)
+else if (raw.input && typeof raw.input === 'object') {
+  data = raw.input;
+}
+// Caso 3: Datos vienen en body (webhook directo)
+else if (raw.body && typeof raw.body === 'object') {
+  data = raw.body;
+}
+// Caso 4: Datos vienen directamente en el json
+else if (raw.nombre || raw.email) {
+  data = raw;
+}
+// Caso 5: Fallback
+else {
+  for (const key of Object.keys(raw)) {
+    if (typeof raw[key] === 'string' && raw[key].startsWith('{')) {
+      try {
+        data = JSON.parse(raw[key]);
+        break;
+      } catch(e) {}
+    }
+  }
+  if (Object.keys(data).length === 0) {
+    data = raw;
+  }
+}
+
+return {
+  json: {
+    nombre: data.nombre || '',
+    email: data.email || '',
+    telefono: data.telefono || '',
+    empresa: data.empresa || '',
+    cargo: data.cargo || '',
+    servicio_interes: data.servicio_interes || data.servicio || '',
+    mensaje: data.mensaje || '',
+    utm_source: data.utm_source || '',
+    utm_campaign: data.utm_campaign || '',
+    event_type: data.event_type || 'new_lead',
+    _source: raw.input ? 'ai_agent_tool' : (raw.body ? 'webhook' : 'direct'),
+    _raw_keys: Object.keys(raw)
+  }
+};
+```
+
+### Compatibilidad
+
+Este cambio mantiene compatibilidad con:
+- ✅ Orquestador v1.0 (Execute Workflow node)
+- ✅ Orquestador v3.0 (AI Agent Tool)
+- ✅ Llamadas directas via webhook
+
+---
+
+## Resultados de Testing (7 Ene 2026)
+
+### Ejecucion #178 - EXITO
+
+| Metrica | Valor |
+|---------|-------|
+| **Execution ID** | 178 |
+| **Status** | ✅ success |
+| **Duracion Total** | 46.6 segundos |
+| **Nodos Ejecutados** | 7/7 |
+| **Tool Calls** | 1 (lead_intake) |
+| **Tokens Input** | 626 |
+| **Tokens Output** | 103 |
+
+### Lead Procesado
+
+```json
+{
+  "success": true,
+  "message": "Lead procesado exitosamente por SUB-A (AI Powered)",
+  "lead_id": "2026-01-07T08:22:55.696Z-juanjosegomeazagudelo21-at-gmail.com",
+  "score": 85,
+  "categoria": "HOT",
+  "email": "juanjosegomeazagudelo21@gmail.com",
+  "nombre": "Juan Jose Gomez",
+  "empresa": "Mi Empresa SAS",
+  "ai_analysis": {
+    "normalized_interest": "Marcas",
+    "is_spam": false,
+    "analysis_reason": "Lead de alta calidad proveniente de un CEO, con una necesidad clara y urgente...",
+    "calculated_score": 85,
+    "category": "HOT"
+  }
+}
+```
+
+### Flujo Completo Verificado
+
+1. ✅ Webhook recibe POST con datos del lead
+2. ✅ AI Agent identifica `event_type: new_lead`
+3. ✅ AI Agent llama tool `lead_intake` con datos JSON
+4. ✅ SUB-A parsea el `input` string correctamente
+5. ✅ Gemini analiza y calcula score (85 = HOT)
+6. ✅ Firestore guarda el lead
+7. ✅ Gmail notifica al equipo (marketing@carrilloabgd.com)
+8. ✅ Gmail envia respuesta al lead
+9. ✅ Logger registra en Google Sheets
+10. ✅ Webhook responde con resultado
 
 ---
 
@@ -297,6 +436,16 @@ Si el AI Agent falla consistentemente:
 
 ---
 
+## Historial de Cambios
+
+| Fecha | Cambio | Autor |
+|-------|--------|-------|
+| 7 Ene 2026 | Creacion inicial del Orquestador v3.0 | Agente Ingeniero |
+| 7 Ene 2026 | Fix: SUB-A input parsing para AI Agent Tool | Agente Ingeniero |
+| 7 Ene 2026 | Activacion y testing exitoso (#178) | Usuario + Agente |
+
+---
+
 **Implementado por**: Agente Ingeniero n8n
 **Metodologia**: Nate Herk AI Systems Pyramid
-**Validacion**: Todos los nodos validados individualmente
+**Validacion**: ✅ Testing E2E completado - Workflow en produccion
