@@ -1,8 +1,9 @@
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 5 de Enero, 2026  
-**Fase Actual**: FASE 8 - CI/CD Completamente Funcional  
-**Ramas**: `dev` y `main` sincronizadas
+**Última Actualización**: 8 de Enero, 2026  
+**Fase Actual**: FASE 9 - Infraestructura + Observabilidad Completa  
+**Ramas**: `dev` (commit `482de04`)  
+**Último Test**: 105 tests ✅ (8 Ene 2026)
 
 ---
 
@@ -190,16 +191,18 @@ foreach ($p in $ports) {
 
 ## 📊 OBSERVABILIDAD (Grafana LGTM Stack)
 
-| Servicio | Puerto | Propósito |
-|----------|--------|-----------|
-| Grafana | 3100 | Dashboards |
-| Loki | 3101 | Logs |
-| Tempo | 3102 | Tracing |
-| Mimir | 3103 | Métricas largo plazo |
-| Prometheus | 9090 | Métricas |
-| Alertmanager | 9093 | Alertas |
+| Servicio | Puerto | Propósito | Estado |
+|----------|--------|-----------|--------|
+| Grafana | 3100 | Dashboards | ✅ Operativo |
+| Loki | 3101 | Logs | ✅ Operativo |
+| Tempo | 3102 | Tracing | ✅ Operativo |
+| Mimir | 3103 | Métricas largo plazo | ✅ Operativo (healthcheck disabled - distroless) |
+| Prometheus | 9090 | Métricas | ✅ 13/13 targets UP |
+| Alertmanager | 9093 | Alertas | ✅ Operativo |
 
 **Credenciales Grafana**: admin / carrillo2025
+
+**Dashboard**: http://localhost:3100/d/carrillo-overview/carrillo-abogados-services-overview
 
 ```bash
 cd monitoring
@@ -280,8 +283,9 @@ main (producción) ← staging (pre-prod) ← dev (desarrollo)
 - **dev**: Desarrollo activo, CI/CD completo
 - **staging**: Pre-producción (futuro)
 
-### Ramas Actuales Sincronizadas
-- `main` = `dev` = commit `9860476`
+### Ramas Actuales
+- `dev`: commit `482de04` (desarrollo activo)
+- `main`: commit `9860476` (última sincronización)
 
 ---
 
@@ -290,6 +294,9 @@ main (producción) ← staging (pre-prod) ← dev (desarrollo)
 | Documento | Propósito |
 |-----------|-----------|
 | `PROYECTO_ESTADO.md` | Estado actual, hitos, próximos pasos |
+| `docs/development/SESSION_CONTEXT.md` | Contexto entre sesiones de desarrollo |
+| `docs/development/TEST_USERS.md` | Usuarios de prueba |
+| `docs/operations/OBSERVABILITY_GUIDE.md` | Guía stack observabilidad |
 | `.github/copilot-instructions.md` | Instrucciones detalladas para desarrollo |
 | `docs/business/` | Modelo de negocio, requerimientos, MVP roadmap |
 | `docs/architecture/` | ADRs y arquitectura técnica |
