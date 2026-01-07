@@ -94,6 +94,8 @@
         "javascriptreact": true
     },
     "github.copilot.editor.enableAutoCompletions": true,
+    "github.copilot.chat.localeOverride": "es",
+    "github.copilot.editor.enableCodeActions": true,
     
     // === REST CLIENT ===
     "rest-client.environmentVariables": {
@@ -176,5 +178,19 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "alexisj16",
         "projectKey": "AlexisJ16_CarrilloAbogados"
-    }
+    },
+    
+    // === ERROR LENS ===
+    "errorLens.enabledDiagnosticLevels": ["error", "warning"],
+    "errorLens.fontSize": "12",
+    "errorLens.fontWeight": "normal",
+    
+    // === TODO HIGHLIGHT ===
+    "todohighlight.keywords": [
+        { "text": "TODO:", "color": "#ff6b6b", "backgroundColor": "transparent" },
+        { "text": "FIXME:", "color": "#feca57", "backgroundColor": "transparent" },
+        { "text": "NOTE:", "color": "#48dbfb", "backgroundColor": "transparent" },
+        { "text": "HACK:", "color": "#ff9f43", "backgroundColor": "transparent" }
+    ],
+    "todohighlight.isEnable": true
 }
