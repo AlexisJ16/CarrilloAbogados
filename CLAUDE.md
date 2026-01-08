@@ -1,8 +1,8 @@
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 8 de Enero, 2026  
-**Fase Actual**: FASE 9 - Infraestructura + Observabilidad Completa  
-**Ramas**: `dev` (commit `482de04`)  
+**Última Actualización**: 11 de Enero, 2026  
+**Fase Actual**: FASE 10 - Autenticación Frontend Completa  
+**Ramas**: `dev` (sincronizado con `main`)  
 **Último Test**: 105 tests ✅ (8 Ene 2026)
 
 ---
@@ -17,7 +17,34 @@ Plataforma cloud-native de gestión legal con **8 microservicios Spring Boot** p
 
 ### Fechas Clave
 - **MVP Empresarial**: 27 Marzo 2026
-- **Estado Actual**: CI/CD Pipeline funcionando al 100%
+- **Estado Actual**: CI/CD Pipeline + Autenticación Frontend funcionando
+
+---
+
+## 🔐 AUTENTICACIÓN (CORREGIDO 11 Ene 2026)
+
+### CORS Configuración
+El API Gateway ahora permite requests desde el frontend:
+```yaml
+# api-gateway/src/main/resources/application.yml
+allowed-origins:
+  - "${CLIENT_HOST:http://localhost:3000}"
+  - "http://localhost:4200"
+  - "http://localhost:3000"
+```
+
+### Usuarios de Prueba
+| Rol | Email | Password |
+|-----|-------|----------|
+| Cliente | cliente.prueba@example.com | Cliente123! |
+| Abogado | abogado.prueba@carrilloabgd.com | Cliente123! |
+| Admin | admin.prueba@carrilloabgd.com | Cliente123! |
+
+### Header con Login
+El componente `Header.tsx` incluye:
+- Botón "Iniciar Sesión" para visitantes
+- Menú dropdown con nombre de usuario para autenticados
+- Link a dashboard y opción de logout
 
 ---
 

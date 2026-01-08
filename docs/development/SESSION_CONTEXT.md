@@ -1,7 +1,7 @@
 # 📋 CONTEXTO DE SESIONES - Carrillo Abogados
 
 **Propósito**: Documento para mantener contexto entre sesiones de desarrollo con IA.  
-**Última Actualización**: 8 de Enero, 2026
+**Última Actualización**: 11 de Enero, 2026
 
 ---
 
@@ -14,10 +14,11 @@
 | **Docker Compose** | ✅ 18 contenedores | Todos healthy |
 | **PostgreSQL** | ✅ Operativo | 7 schemas, 3 usuarios de prueba |
 | **NATS** | ✅ Operativo | Mensajería asíncrona |
-| **Frontend** | ✅ Next.js 14 | Puerto 3000, 15 páginas |
-| **API Gateway** | ✅ Spring Cloud Gateway | Puerto 8080 |
+| **Frontend** | ✅ Next.js 14 | Puerto 3000, 16 páginas |
+| **API Gateway** | ✅ Spring Cloud Gateway | Puerto 8080, CORS corregido |
 | **Microservicios** | ✅ 8 servicios | Puertos 8200-8800 |
 | **Observabilidad** | ✅ Grafana LGTM | Prometheus, Loki, Tempo, Mimir |
+| **Autenticación** | ✅ JWT + CORS | Login funcional desde frontend |
 
 ### Usuarios de Prueba Disponibles
 
@@ -107,6 +108,24 @@ $response.Content | ConvertFrom-Json
 ---
 
 ## 🚨 PROBLEMAS CONOCIDOS Y SOLUCIONES
+
+### CORS Frontend ↔ API Gateway (RESUELTO 11 Ene 2026)
+**Problema**: Login desde frontend retornaba "Network Error" - CORS bloqueando preflight.
+**Causa**: `application.yml` solo permitía `localhost:4200` (Angular legacy).
+**Solución**: Actualizado `api-gateway/src/main/resources/application.yml`:
+```yaml
+allowed-origins:
+  - "${CLIENT_HOST:http://localhost:3000}"
+  - "http://localhost:4200"
+  - "http://localhost:3000"
+```
+
+### Header sin botón de Login (RESUELTO 11 Ene 2026)
+**Problema**: El componente Header.tsx no tenía UI de autenticación.
+**Solución**: Reescrito `frontend/src/components/layout/Header.tsx` con:
+- Botón "Iniciar Sesión" para usuarios no autenticados
+- Menú dropdown con nombre de usuario para autenticados
+- Links a dashboard y opción de logout
 
 ### BCrypt en PowerShell
 **Problema**: El símbolo `$` en hashes BCrypt se escapa incorrectamente.

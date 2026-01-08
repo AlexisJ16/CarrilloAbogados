@@ -1,0 +1,39 @@
+# GitGuardian Configuration
+# https://docs.gitguardian.com/ggshield-docs/reference/gitguardian-yaml
+
+version: 2
+
+# Paths to ignore (contains test credentials only)
+secret:
+  ignored-paths:
+    # Documentation files with test credentials
+    - "docs/**/*.md"
+    - "CLAUDE.md"
+    - "PROYECTO_ESTADO.md"
+    - ".github/copilot-instructions.md"
+    
+    # Development configuration files
+    - "**/application-test.yml"
+    - "**/application-local.yml"
+    - "**/compose.yml"
+    - "**/docker-compose*.yml"
+    
+    # Test files
+    - "**/src/test/**"
+    
+  # Ignore specific detector types for documentation
+  ignored-detectors:
+    - generic_password  # Test passwords like "Cliente123!"
+    
+  # Known test credentials to ignore
+  ignored-matches:
+    # Test user passwords (development only)
+    - match: "Cliente123!"
+      name: "Test user password"
+    - match: "CarrilloAbogados2025!"
+      name: "Development password"
+    - match: "carrillo2025"
+      name: "Grafana dev password"
+
+# Show only high and critical severity
+minimum-severity: high
