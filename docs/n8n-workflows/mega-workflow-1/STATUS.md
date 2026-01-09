@@ -1,10 +1,11 @@
 # MEGA-WORKFLOW #1: Lead Lifecycle Manager
 
-## Estado: 🟡 EN REDISEÑO ARQUITECTÓNICO
+## Estado: 🚀 EN IMPLEMENTACIÓN ACTIVA - v3.0
 
-**Última actualización:** 2026-01-06
-**Versión:** 2.0.0 (En desarrollo - Metodología Nate Herk)
+**Última actualización:** 2026-01-07
+**Versión:** 3.0.0 (En implementación - Metodología Nate Herk)
 **Versión en Producción:** 1.0.0 (Funcional pero requiere mejoras)
+**Versión en Desarrollo:** 3.0.0 (AI Agent Orchestrator + SUB-D Nurturing)
 
 ---
 
@@ -116,67 +117,171 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ---
 
-## 🚨 REDISEÑO EN CURSO - v2.0.0
+## 🚨 ARQUITECTURA v3.0 - IMPLEMENTACIÓN EN CURSO
 
-### Cambios Arquitectónicos Planeados
+### 📋 Resumen Ejecutivo del Rediseño
 
+**Fecha de inicio:** 2026-01-07
 **Metodología aplicada:** Nate Herk AI Systems Pyramid
+**Aprobación:** ✅ Arquitectura completa por Arquitecto n8n
+**Equipo asignado:** @engineer (implementación), @qa-specialist (validación), @optimizer (optimización)
 
-#### 1. Orquestador v2.0 (CRÍTICO)
+#### Hallazgo Crítico Identificado
 
-**Problema identificado:**
-- Actual usa nodo `Code` para routing → lógica rígida, no escalable
-- Cada nuevo sub-workflow requiere modificar código manualmente
+El **Orquestador v1.0** usa nodo `Code` para routing estático → **NO escalable** según mejores prácticas Nate Herk para sistemas IA en n8n.
 
-**Solución v2.0:**
-- Reemplazar con **AI Agent Node** (Google Gemini 2.5 Pro)
-- Routing inteligente basado en razonamiento
-- Agregar nuevos workflows = solo editar System Prompt
-- Observabilidad completa (logs de decisiones)
+**Consecuencia:** Agregar SUB-E, SUB-F, etc. requiere modificar código manualmente en múltiples nodos → sistema frágil.
 
-**Estado:** 📋 Diseño completo - Pendiente implementación
-**Documentos:**
+#### Solución Aprobada: Opción A - Implementación Completa v3.0
+
+**Alcance total:** 13 horas estimadas
+1. **Orquestador v3.0** con AI Agent (4h)
+2. **SUB-D: Nurturing Engine** completo (6h)
+3. **Actualización SUB-A** con campos nurturing (2h)
+4. **Integración y testing** E2E (1h)
+
+**Beneficios clave:**
+- ✅ Sistema 100% escalable (agregar sub-workflows = editar prompt, no código)
+- ✅ Observabilidad completa (AI Agent registra razonamiento de decisiones)
+- ✅ Nurturing automático de leads WARM/COLD (300 emails/mes)
+- ✅ Base sólida para futuros sub-workflows (SUB-E, SUB-F)
+
+**Costos:**
+- ⚠️ Costo adicional: ~$0.90 USD/mes (300 leads × $0.003/ejecución)
+- ⚠️ Latencia: +2-3 segundos por ejecución (AI Agent razonamiento)
+
+### Componentes v3.0
+
+#### 1. Orquestador v3.0 con AI Agent (CRÍTICO)
+
+**Cambio fundamental:**
+- ❌ **v1.0:** Nodo `Code` con switch estático
+- ✅ **v3.0:** Nodo `AI Agent` con Google Gemini 2.5 Pro
+
+**Funcionalidad:**
+- Recibe payload webhook → AI Agent decide qué sub-workflow ejecutar
+- Logging automático de decisiones en Google Sheets
+- maxIterations=3 para evitar bucles
+- Error handling con fallback a routing estático
+
+**Estado:** 🔄 En implementación por @engineer
+**Documentos técnicos:**
 - [ARQUITECTURA_MW1_V3_NATE_HERK.md](../../automation/n8n-workflows/workflows/MEGA_WORKFLOW_1_LEAD_LIFECYCLE/ARQUITECTURA_MW1_V3_NATE_HERK.md)
 - [ADR_001_REDISENO_ORQUESTADOR_AI_AGENT.md](../../automation/n8n-workflows/workflows/MEGA_WORKFLOW_1_LEAD_LIFECYCLE/ADR_001_REDISENO_ORQUESTADOR_AI_AGENT.md)
 
 #### 2. SUB-D: Nurturing Sequence Engine (NUEVO)
 
-**Propósito:** Secuencia automatizada de 8-12 emails para leads WARM/COLD
+**Propósito:** Secuencia automatizada de 12 emails para leads WARM/COLD
 
-**Arquitectura:** AI Workflow (Nivel 3 - Gemini para personalización)
+**Clasificación:** Nivel 3 - AI Workflow (según Nate Herk)
 
-**Componentes:**
-- Schedule Trigger (cada 6 horas)
-- Query Firestore (leads para nurturing)
-- Calcular posición en secuencia (1-12)
-- Gemini personaliza contenido
-- Mailersend envía con tracking
-- Callback a backend
+**Arquitectura (16 nodos totales):**
+```
+Schedule (6h) → Query Firestore → Loop Leads → Calcular Posición →
+  Cargar Template → Gemini Personaliza → Mailersend Envía →
+  Actualizar BD → Callback Backend
+```
 
-**Estimado:** 16 nodos total
-**Estado:** 📋 Diseño completo - Pendiente implementación
-**Documentos:**
+**Templates de email:** 12 posiciones
+1. Bienvenida (día 0)
+2. Educativo - Por qué proteger marca (día 3)
+3. Case Study (día 7)
+4. Checklist gratuito (día 10)
+5. Urgencia - 3 riesgos (día 14)
+6. Autoridad - Dr. Carrillo SIC (día 21)
+7. Oferta - Consulta gratis (día 28)
+8. Re-engagement (día 35)
+9. Tendencias PI 2026 (día 42)
+10. Last chance (día 49)
+11. Break-up (día 56)
+12. Win-back (día 90)
+
+**Servicios externos requeridos:**
+- Google Gemini 2.5 Pro (ya configurado: `jk2FHcbAC71LuRl2`)
+- Google Firestore (ya configurado: `AAhdRNGzvsFnYN9O`)
+- **Mailersend** (NUEVO - requiere configuración):
+  - Free tier: 3,000 emails/mes
+  - Dominio verificado: carrilloabgd.com
+  - Tracking: opens, clicks
+  - API Key pendiente
+
+**Estado:** ✅ Implementado - Pendiente credenciales Mailersend
+**Workflow ID:** `PZboUEnAxm5A7Lub`
+**URL n8n:** https://carrilloabgd.app.n8n.cloud/workflow/PZboUEnAxm5A7Lub
+
+**Documentos técnicos:**
 - [WIREFRAME_MW1_V3.md](../../automation/n8n-workflows/workflows/MEGA_WORKFLOW_1_LEAD_LIFECYCLE/WIREFRAME_MW1_V3.md)
 - [HANDOFF_ENGINEER_SUB_D.md](../../automation/n8n-workflows/workflows/MEGA_WORKFLOW_1_LEAD_LIFECYCLE/HANDOFF_ENGINEER_SUB_D.md)
 
-#### 3. Actualización SUB-A (Modificación menor)
+**Artifacts generados:**
+- `artifacts/SUB-D/implementation_notes.md` - Documentación completa
+- `artifacts/SUB-D/SUB-D_WORKFLOW.json` - Export JSON
+- `artifacts/SUB-D/code_snippets/` - JavaScript (3 archivos)
+- `artifacts/SUB-D/MAILERSEND_CONFIG.md` - Guía configuración
+- `artifacts/SUB-D/TEST_RESULTS.md` - Resultados testing
 
-**Cambios requeridos:**
-- Agregar campos Firestore: `status`, `emails_sent`, `nurturing_position`, `next_email_date`, `created_at`
-- Calcular `next_email_date = now + 3 días` al guardar lead
+**BLOQUEANTES identificados:**
+1. ⚠️ **Mailersend NO configurado** - Requiere:
+   - Crear cuenta en https://mailersend.com (free tier)
+   - Verificar dominio carrilloabgd.com
+   - Obtener API Key
+   - Configurar credencial en n8n Cloud
+2. ⚠️ **Variable BACKEND_URL** - Configurar en n8n Settings > Variables
 
-**Estado:** ⏳ Pendiente después de SUB-D
+#### 3. Actualización SUB-A v2.0 (Modificación menor)
+
+**Cambios requeridos en nodo "Guardar en Firestore":**
+
+Agregar campos nuevos:
+```javascript
+{
+  // Campos existentes...
+  "status": "nuevo",               // NUEVO
+  "emails_sent": 0,                // NUEVO
+  "nurturing_position": 0,         // NUEVO
+  "next_email_date": "={{ new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString() }}",  // NUEVO: +3 días
+  "created_at": "={{ new Date().toISOString() }}"  // NUEVO
+}
+```
+
+**Impacto:** Mínimo (1 nodo modificado)
+**Dependencia:** Requiere que SUB-D esté implementado primero
+**Estado:** ⏳ Pendiente (después de SUB-D completado)
 
 ---
 
 ## Historial de Cambios
 
-### 2026-01-06 - Rediseño Arquitectónico v2.0 (En Curso)
-- 📋 Diseño completo aplicando metodología Nate Herk
-- 🎯 Orquestador v2.0: AI Agent con Gemini 2.5 Pro
-- 🎯 SUB-D: Nurturing Engine con 12 templates
-- 📚 Documentación técnica completa generada
-- ⏳ Pendiente aprobación e implementación
+### 2026-01-07 - SUB-D Implementado (v3.0 EN PROGRESO)
+- ✅ **SUB-D Completado:** Workflow `PZboUEnAxm5A7Lub` creado con 16 nodos
+- ✅ **Arquitectura:** Schedule + Query + Loop + AI Personalización + Mailersend
+- ✅ **Artifacts:** 5 documentos generados en `artifacts/SUB-D/`
+  - implementation_notes.md (documentación completa)
+  - SUB-D_WORKFLOW.json (export JSON)
+  - code_snippets/ (3 archivos JavaScript)
+  - MAILERSEND_CONFIG.md (guía configuración)
+  - TEST_RESULTS.md (resultados testing)
+- ⚠️ **Bloqueantes identificados:**
+  - Mailersend NO configurado (cuenta, dominio, API Key)
+  - Variable BACKEND_URL pendiente en n8n Cloud
+- 📊 **STATUS.md actualizado:** Estado v3.0 completo con SUB-D implementado
+- 🎯 **Plan de trabajo actualizado:**
+  - Fase 1: Orquestador v3.0 con AI Agent (4h) - PENDIENTE
+  - Fase 2: SUB-D Nurturing Engine (6h) - ✅ COMPLETADO
+  - Fase 3: Actualización SUB-A (2h) - PENDIENTE
+  - Fase 4: Integración E2E (1h) - PENDIENTE
+- ⏳ **Próximo:** Configurar Mailersend + Validación @qa-specialist
+
+### 2026-01-06 - Diseño Arquitectónico v3.0 Completo
+- 📋 Diseño completo aplicando metodología Nate Herk AI Systems Pyramid
+- 🎯 Orquestador v3.0: AI Agent con Gemini 2.5 Pro (spec completa)
+- 🎯 SUB-D: Nurturing Engine con 12 templates (spec completa)
+- 📚 Documentación técnica generada:
+  - ARQUITECTURA_MW1_V3_NATE_HERK.md
+  - WIREFRAME_MW1_V3.md
+  - ADR_001_REDISENO_ORQUESTADOR_AI_AGENT.md
+  - HANDOFF_ENGINEER_SUB_D.md
+  - RESUMEN_EJECUTIVO_ARQUITECTO.md
 
 ### 2025-12-21 - Debugging y Reparación Completa
 - ✅ Corregido mapeo de datos (eliminado optional chaining `?.`)
