@@ -3,5 +3,9 @@
     "allow": [
       "Bash(node -e \"const { execSync } = require\\(''child_process''\\); const result = execSync\\(''npx --yes @modelcontextprotocol/inspector --stdio mcp__n8n__get_node --args {\"\"node_type\"\":\"\"n8n-nodes-base.googleCloudFirestore\"\",\"\"detail\"\":\"\"full\"\",\"\"includeExamples\"\":true}'', {encoding: ''utf-8'', stdio: [''pipe'', ''pipe'', ''ignore'']}\\); console.log\\(result\\);\")"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "n8n"
+  ],
+  "enableAllProjectMcpServers": true
 }
