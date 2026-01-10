@@ -32,49 +32,87 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  # Carrillo Microservices (via Docker network)
-  - job_name: 'carrillo-services'
+  # API Gateway (no context-path)
+  - job_name: 'api-gateway'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets:
-          - 'api-gateway:8080'
-          - 'client-service:8200'
-          - 'case-service:8300'
-          - 'payment-service:8400'
-          - 'document-service:8500'
-          - 'calendar-service:8600'
-          - 'notification-service:8700'
-          - 'n8n-integration-service:8800'
+      - targets: ['api-gateway:8080']
         labels:
           group: 'carrillo-backend'
-    relabel_configs:
-      - source_labels: [__address__]
-        regex: '([^:]+):.*'
-        target_label: 'service'
-        replacement: '$1'
+          service: 'api-gateway'
 
-  # PostgreSQL metrics (if using postgres_exporter)
-  - job_name: 'postgresql'
+  # Client Service
+  - job_name: 'client-service'
+    metrics_path: '/client-service/actuator/prometheus'
     static_configs:
-      - targets: ['postgresql:5432']
+      - targets: ['client-service:8200']
         labels:
-          group: 'database'
-    metrics_path: '/metrics'
+          group: 'carrillo-backend'
+          service: 'client-service'
 
-  # NATS metrics
-  - job_name: 'nats'
+  # Case Service
+  - job_name: 'case-service'
+    metrics_path: '/case-service/actuator/prometheus'
     static_configs:
-      - targets: ['nats:8222']
+      - targets: ['case-service:8300']
         labels:
-          group: 'messaging'
-    metrics_path: '/metrics'
+          group: 'carrillo-backend'
+          service: 'case-service'
 
-  # Docker Engine metrics (if enabled)
-  - job_name: 'docker'
+  # Payment Service (no context-path)
+  - job_name: 'payment-service'
+    metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['host.docker.internal:9323']
+      - targets: ['payment-service:8400']
         labels:
-          group: 'infrastructure'
+          group: 'carrillo-backend'
+          service: 'payment-service'
+
+  # Document Service (no context-path)
+  - job_name: 'document-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['document-service:8500']
+        labels:
+          group: 'carrillo-backend'
+          service: 'document-service'
+
+  # Calendar Service (no context-path)
+  - job_name: 'calendar-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['calendar-service:8600']
+        labels:
+          group: 'carrillo-backend'
+          service: 'calendar-service'
+
+  # Notification Service (no context-path)
+  - job_name: 'notification-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['notification-service:8700']
+        labels:
+          group: 'carrillo-backend'
+          service: 'notification-service'
+
+  # N8N Integration Service
+  - job_name: 'n8n-integration-service'
+    metrics_path: '/n8n-integration-service/actuator/prometheus'
+    static_configs:
+      - targets: ['n8n-integration-service:8800']
+        labels:
+          group: 'carrillo-backend'
+          service: 'n8n-integration-service'
+
+  # NATS monitoring (uses /varz endpoint - JSON, not Prometheus format)
+  # Disabled because NATS /varz returns JSON, not Prometheus metrics
+  # To enable NATS metrics, use nats-exporter sidecar
+  # - job_name: 'nats'
+  #   metrics_path: '/varz'
+  #   static_configs:
+  #     - targets: ['nats:8222']
+  #       labels:
+  #         group: 'messaging'
 
   # Grafana LGTM Stack
   - job_name: 'grafana'

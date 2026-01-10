@@ -1,8 +1,11 @@
 # Arquitectura - Carrillo Abogados Legal Tech Platform
 
+**Última Actualización**: 11 de Enero, 2026  
+**Estado**: FASE 10 - Autenticación Frontend Completa
+
 ## Visión General
 
-Plataforma cloud-native de gestión legal empresarial construida con microservicios sobre Kubernetes.
+Plataforma cloud-native de gestión legal empresarial construida con microservicios sobre Docker/Kubernetes.
 
 ## Stack Tecnológico
 
@@ -17,21 +20,20 @@ Plataforma cloud-native de gestión legal empresarial construida con microservic
 ## Arquitectura de Microservicios
 
 ### Infraestructura
-- **api-gateway**: Spring Cloud Gateway, enrutamiento, OAuth2
-- **proxy-client**: Autenticación y proxy reverso
+- **api-gateway**: Spring Cloud Gateway, enrutamiento, CORS, circuit breaker (port 8080)
 
 ### Servicios de Negocio
-- **client-service**: Gestión de clientes (port 8700)
-- **case-service**: Gestión de casos legales (port 8300)
-- **payment-service**: Procesamiento de pagos (port 8400)
+- **client-service**: Gestión de clientes + Lead API + Autenticación JWT (port 8200)
+- **case-service**: Gestión de casos legales, timeline, contraparte (port 8300)
+- **payment-service**: Procesamiento de pagos gubernamentales (port 8400)
 - **document-service**: Gestión de documentos legales (port 8500)
 - **calendar-service**: Integración Google Calendar (port 8600)
 - **notification-service**: Email/SMS/Push (port 8700)
-- **n8n-integration-service**: Workflows y automatizaciones (port 8800)
+- **n8n-integration-service**: Workflows y automatizaciones n8n Cloud (port 8800)
 
-### Servicios Legacy (Migración)
-- **user-service**: Migrado a client-service
-- **order-service**: Migrado a case-service
+### Servicios Deprecados
+- ~~user-service~~: Migrado a client-service (eliminar en próxima versión)
+- ~~order-service~~: Nunca existió (era template e-commerce)
 
 ## Comunicación
 

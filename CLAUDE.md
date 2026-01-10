@@ -1,8 +1,9 @@
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 5 de Enero, 2026  
-**Fase Actual**: FASE 8 - CI/CD Completamente Funcional  
-**Ramas**: `dev` y `main` sincronizadas
+**Última Actualización**: 11 de Enero, 2026  
+**Fase Actual**: FASE 10 - Autenticación Frontend Completa  
+**Ramas**: `dev` (sincronizado con `main`)  
+**Último Test**: 105 tests ✅ (8 Ene 2026)
 
 ---
 
@@ -16,7 +17,34 @@ Plataforma cloud-native de gestión legal con **8 microservicios Spring Boot** p
 
 ### Fechas Clave
 - **MVP Empresarial**: 27 Marzo 2026
-- **Estado Actual**: CI/CD Pipeline funcionando al 100%
+- **Estado Actual**: CI/CD Pipeline + Autenticación Frontend funcionando
+
+---
+
+## 🔐 AUTENTICACIÓN (CORREGIDO 11 Ene 2026)
+
+### CORS Configuración
+El API Gateway ahora permite requests desde el frontend:
+```yaml
+# api-gateway/src/main/resources/application.yml
+allowed-origins:
+  - "${CLIENT_HOST:http://localhost:3000}"
+  - "http://localhost:4200"
+  - "http://localhost:3000"
+```
+
+### Usuarios de Prueba
+| Rol | Email | Password |
+|-----|-------|----------|
+| Cliente | cliente.prueba@example.com | Cliente123! |
+| Abogado | abogado.prueba@carrilloabgd.com | Cliente123! |
+| Admin | admin.prueba@carrilloabgd.com | Cliente123! |
+
+### Header con Login
+El componente `Header.tsx` incluye:
+- Botón "Iniciar Sesión" para visitantes
+- Menú dropdown con nombre de usuario para autenticados
+- Link a dashboard y opción de logout
 
 ---
 
@@ -190,16 +218,18 @@ foreach ($p in $ports) {
 
 ## 📊 OBSERVABILIDAD (Grafana LGTM Stack)
 
-| Servicio | Puerto | Propósito |
-|----------|--------|-----------|
-| Grafana | 3100 | Dashboards |
-| Loki | 3101 | Logs |
-| Tempo | 3102 | Tracing |
-| Mimir | 3103 | Métricas largo plazo |
-| Prometheus | 9090 | Métricas |
-| Alertmanager | 9093 | Alertas |
+| Servicio | Puerto | Propósito | Estado |
+|----------|--------|-----------|--------|
+| Grafana | 3100 | Dashboards | ✅ Operativo |
+| Loki | 3101 | Logs | ✅ Operativo |
+| Tempo | 3102 | Tracing | ✅ Operativo |
+| Mimir | 3103 | Métricas largo plazo | ✅ Operativo (healthcheck disabled - distroless) |
+| Prometheus | 9090 | Métricas | ✅ 13/13 targets UP |
+| Alertmanager | 9093 | Alertas | ✅ Operativo |
 
 **Credenciales Grafana**: admin / carrillo2025
+
+**Dashboard**: http://localhost:3100/d/carrillo-overview/carrillo-abogados-services-overview
 
 ```bash
 cd monitoring
@@ -280,8 +310,9 @@ main (producción) ← staging (pre-prod) ← dev (desarrollo)
 - **dev**: Desarrollo activo, CI/CD completo
 - **staging**: Pre-producción (futuro)
 
-### Ramas Actuales Sincronizadas
-- `main` = `dev` = commit `9860476`
+### Ramas Actuales
+- `dev`: commit `482de04` (desarrollo activo)
+- `main`: commit `9860476` (última sincronización)
 
 ---
 
@@ -290,6 +321,9 @@ main (producción) ← staging (pre-prod) ← dev (desarrollo)
 | Documento | Propósito |
 |-----------|-----------|
 | `PROYECTO_ESTADO.md` | Estado actual, hitos, próximos pasos |
+| `docs/development/SESSION_CONTEXT.md` | Contexto entre sesiones de desarrollo |
+| `docs/development/TEST_USERS.md` | Usuarios de prueba |
+| `docs/operations/OBSERVABILITY_GUIDE.md` | Guía stack observabilidad |
 | `.github/copilot-instructions.md` | Instrucciones detalladas para desarrollo |
 | `docs/business/` | Modelo de negocio, requerimientos, MVP roadmap |
 | `docs/architecture/` | ADRs y arquitectura técnica |
