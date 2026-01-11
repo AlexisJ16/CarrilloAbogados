@@ -1,26 +1,26 @@
 # MEGA-WORKFLOW #1: Lead Lifecycle Manager
 
-## Estado: ✅ ACTIVO EN PRODUCCION (v1.0) | ORQUESTADOR v3.0 EN TESTING
+## Estado: ✅ ACTIVO EN PRODUCCION (v3.0) | ORQUESTADOR v1.0 INACTIVO
 
-**Ultima actualizacion:** 2026-01-07 (Verificado con MCP n8n)
-**Version Produccion:** 1.1.0 (Orquestador v1.0 activo)
-**Version Testing:** 3.0.0 (Orquestador v3.0 AI Agent - NUEVO)
+**Ultima actualizacion:** 2026-01-11 (Verificado con test E2E completo)
+**Version Produccion:** 3.0.0 (Orquestador v3.0 AI Agent - ACTIVO)
+**Version Legacy:** 1.1.0 (Orquestador v1.0 - INACTIVO)
 **n8n Cloud:** v1.120.4
-**Webhook URL Produccion:** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
-**Webhook URL Testing (v3.0):** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3`
+**Webhook URL Produccion:** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3`
+**Webhook URL Legacy (v1.0):** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
 
 ---
 
-## 🔄 Estado Real (Verificado 2026-01-04)
+## 🔄 Estado Real (Verificado 2026-01-11)
 
-Datos obtenidos directamente de la API de n8n Cloud mediante MCP:
+Datos obtenidos directamente de la API de n8n Cloud mediante MCP y test E2E completo:
 
 ### Instancia n8n
 - **URL**: https://carrilloabgd.app.n8n.cloud
 - **Versión**: 1.120.4
 - **Usuario**: marketing@carrilloabgd.com
 - **Workflows totales**: 4
-- **Estado**: ✅ Orquestador ACTIVO, procesando leads
+- **Estado**: ✅ Orquestador v3.0 ACTIVO en producción, procesando leads con AI Agent
 
 ---
 
@@ -36,32 +36,34 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ## Workflows en n8n Cloud
 
-### Orquestador v1.0 (Hub - PRODUCCION)
+### Orquestador v1.0 (Hub - LEGACY)
 
 | Campo | Valor |
 |-------|-------|
 | **ID** | `bva1Kc1USbbITEAw` |
 | **Nombre** | WORKFLOW A: Lead Lifecycle Manager (Orquestador) |
-| **Estado** | ✅ **ACTIVO** |
+| **Estado** | ⚪ **INACTIVO** (reemplazado por v3.0) |
 | **Webhook** | `https://carrilloabgd.app.n8n.cloud/webhook/lead-events` |
 | **Nodos** | 8 (Webhook → Identify → SubA → Consolidate → Respond + Error Handler) |
 | **Ultima ejecucion** | 2026-01-04 (exito - Score 90 HOT) |
 | **Total ejecuciones** | 6+ |
 | **Validacion** | ✅ 0 errores |
 
-### Orquestador v3.0 (AI Agent - TESTING)
+### Orquestador v3.0 (AI Agent - PRODUCCION)
 
 | Campo | Valor |
 |-------|-------|
 | **ID** | `68DDbpQzOEIweiBF` |
 | **Nombre** | Orquestador v3.0 (AI Agent - Gemini) |
-| **Estado** | ⚠️ **INACTIVO** (testing) |
+| **Estado** | ✅ **ACTIVO** (producción) |
 | **Webhook** | `https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3` |
-| **Nodos** | 9 (Webhook → AI Agent → Respond → Logger + Error Handler) |
-| **LLM** | Google Gemini 2.5 Pro |
+| **Nodos** | 10 (Webhook → AI Agent → Respond → Prepare Logger Data → Logger + Error Handler) |
+| **LLM** | Google Gemini 2.0 Flash Experimental |
 | **Tools** | SUB-A (Lead Intake) |
 | **Arquitectura** | AI Agent (Nivel 4 - Metodologia Nate Herk) |
-| **Validacion** | ✅ Nodos validados individualmente |
+| **Ultima ejecucion** | 2026-01-11 (exito - Score 95 HOT, 38s latency) |
+| **Tokens promedio** | 718 total (562 input + 156 output) |
+| **Validacion** | ✅ Test E2E completo exitoso |
 
 ### SUB-A: Lead Intake (Spoke)
 
@@ -81,14 +83,17 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 ## Flujo de Datos
 
 ```
-[Webhook POST] 
+[Webhook POST /webhook/lead-events-v3]
     ↓
-[Orquestador] (8 nodos)
-    ├── Webhook Principal Lead Events
-    ├── Identify Event (Code)
-    ├── Execute SUB-A
-    ├── Consolidate Response
-    ├── Respond to Webhook
+[Orquestador v3.0] (10 nodos - AI Agent)
+    ├── Webhook Principal Lead Events v3
+    ├── AI Agent Orchestrator (Gemini 2.0 Flash)
+    │   ├── Language Model: Google Gemini
+    │   ├── Tool: lead_intake (SUB-A)
+    │   └── Memory: Simple Memory (3 context)
+    ├── Respond to Webhook (HTTP 200)
+    ├── Prepare Logger Data (Set - 8 campos)
+    ├── Logger: Google Sheets
     └── Error Handler → Preparar Datos Error → Notificar Error Email
          ↓
     [SUB-A] (16 nodos)
@@ -108,6 +113,121 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
         ├── FINAL. Resultado
         └── Error Handler → Preparar Error → Notificar Error
 ```
+
+---
+
+## Callbacks Backend
+
+SUB-A incluye un sistema de callbacks de dos niveles para notificar al backend de la plataforma Spring Boot sobre el procesamiento del lead:
+
+### Arquitectura de Callbacks
+
+```
+SUB-A (n8n)
+    ├── 1. Validar y Clasificar (IA) → Score + Categoría
+    ├── 2. Guardar en Firestore
+    ├── ...
+    ├── 7. Callback Lead Scored (HTTP POST) ← SIEMPRE ejecuta
+    ├── 8. Es Lead HOT (Callback)? (IF)
+    │   └── [HOT] → 9. Callback Hot Lead Alert (HTTP POST)
+    └── FINAL. Resultado
+         ↓
+    [Backend - n8n-integration-service]
+         ├── POST /webhook/lead-scored → Actualiza score en PostgreSQL
+         └── POST /webhook/lead-hot → Notificación urgente para equipo
+```
+
+### Callback 1: Lead Scored (Universal)
+
+**Propósito**: Notificar a la plataforma el score calculado por IA para TODOS los leads (HOT/WARM/COLD)
+
+**Nodo**: 7. Callback Lead Scored
+**Tipo**: HTTP Request v4.2
+**Método**: POST
+**URL Testing**: `https://eoc4ipe73sd9y75.m.pipedream.net`
+**URL Producción**: `${BACKEND_URL}/webhook/lead-scored`
+**Trigger**: SIEMPRE (se ejecuta para todos los leads)
+**Error Handling**: `onError: continueRegularOutput` (no falla el workflow si el callback falla)
+
+**Payload enviado**:
+```json
+{
+  "lead_id": "2026-01-11T02:08:10.022Z-laura.martinez-at-innovatech.com",
+  "score": 95,
+  "categoria": "HOT",
+  "ai_analysis": {
+    "normalized_interest": "Marcas",
+    "is_spam": false,
+    "analysis_reason": "El lead es un decision-maker clave (CEO)...",
+    "calculated_score": 95,
+    "category": "HOT"
+  },
+  "processed_at": "2026-01-11T02:08:10.022Z"
+}
+```
+
+**Acción esperada del backend**:
+- Actualizar tabla `leads` en PostgreSQL
+- Campos: `score`, `categoria`, `estado = QUALIFIED`
+- Endpoint: `PATCH /api/leads/{lead_id}/score`
+
+---
+
+### Callback 2: Hot Lead Alert (Condicional)
+
+**Propósito**: Notificación de urgencia para leads HOT (score ≥70) que requieren atención inmediata del equipo comercial
+
+**Nodo**: 9. Callback Hot Lead Alert
+**Tipo**: HTTP Request v4.2
+**Método**: POST
+**URL Testing**: `https://eoyvly7sjxiim05.m.pipedream.net`
+**URL Producción**: `${BACKEND_URL}/webhook/lead-hot`
+**Trigger**: SOLO leads HOT (evaluado por nodo 8 IF)
+**Error Handling**: `onError: continueRegularOutput`
+
+**Payload enviado**:
+```json
+{
+  "lead_id": "2026-01-11T02:08:10.022Z-laura.martinez-at-innovatech.com",
+  "score": 95,
+  "categoria": "HOT",
+  "notified_at": "2026-01-11T02:08:15.000Z",
+  "email_sent_to": "marketing@carrilloabgd.com"
+}
+```
+
+**Acción esperada del backend**:
+- Crear notificación en sistema (dashboard, email, Slack, etc.)
+- Alertar al equipo comercial
+- Registrar en tabla de notificaciones
+
+---
+
+### Configuración en n8n
+
+**Variable de Entorno**:
+- Nombre: `BACKEND_URL`
+- Valor Testing: URLs Pipedream individuales
+- Valor Producción: `http://n8n-integration-service:8800/n8n-integration-service` (Docker) o `https://api.carrilloabgd.com/n8n-integration-service` (GCP)
+
+**Estado Actual** (2026-01-11):
+- ✅ Callbacks implementados en SUB-A (nodos 7, 8, 9)
+- ✅ Testing con Pipedream exitoso (ambos callbacks reciben datos)
+- ⏳ Backend endpoints pendientes de implementación
+- ⏳ Variable BACKEND_URL pendiente de configurar en producción
+
+---
+
+### Testing de Callbacks
+
+**Verificar en Pipedream**:
+1. Lead Scored: https://pipedream.com/@username/eoc4ipe73sd9y75 (debe recibir TODOS los leads)
+2. Hot Lead: https://pipedream.com/@username/eoyvly7sjxiim05 (solo leads HOT)
+
+**Test E2E exitoso** (2026-01-11):
+- Lead: Laura Martinez (Score 95 HOT)
+- ✅ Callback 1 recibió payload completo con ai_analysis
+- ✅ Callback 2 recibió notificación HOT
 
 ---
 
@@ -152,6 +272,36 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ## Historial de Cambios
 
+### 2026-01-11 - ORQUESTADOR v3.0 ACTIVADO EN PRODUCCION ✅
+
+**Test E2E Completo Exitoso**
+
+- ✅ Orquestador v3.0 ACTIVADO en producción
+- ✅ Orquestador v1.0 DESACTIVADO (legacy)
+- ✅ Webhook producción cambiado a `/webhook/lead-events-v3`
+- ✅ Logger Google Sheets configurado y funcionando
+- ✅ Agregado nodo "Prepare Logger Data" (Set node) para estructurar datos
+- ✅ Test E2E completo con payload real:
+  - Lead: Laura Martinez (InnovaTech Solutions)
+  - Score: 95 (HOT)
+  - AI Agent identificó correctamente event_type: "new_lead"
+  - Ejecutó tool: "lead_intake" (SUB-A)
+  - Tokens consumidos: 718 (562 input + 156 output)
+  - Latency total: 38.143 segundos
+  - Lead ID generado: `2026-01-11T02:08:10.022Z-laura.martinez-at-innovatech.com`
+
+**Configuración final**:
+- ✅ Modelo IA: Gemini 2.0 Flash Experimental (no 2.5 Pro)
+- ✅ Credencial Gemini renovada (API expirada corregida manualmente)
+- ✅ Google Sheets OAuth2 configurado
+- ✅ Logger registra 8 campos estructurados: timestamp, event_type, tool_used, decision_reason, execution_status, latency_ms, error_message, output
+
+**Archivos actualizados**:
+- Workflow Orquestador v3.0 en n8n Cloud (ID: 68DDbpQzOEIweiBF)
+- STATUS.md (este archivo)
+
+---
+
 ### 2026-01-07 - ORQUESTADOR v3.0 (AI Agent - Gemini) CREADO
 
 **Metodologia**: Nate Herk AI Systems Pyramid - Nivel 4 (AI Agent)
@@ -177,11 +327,12 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 | Costo por ejecucion | $0 | ~$0.003 USD |
 | Latencia | ~100ms | ~2-3 seg |
 
-**Estado**: INACTIVO - Requiere configuracion manual:
-1. [ ] Crear Google Sheet `MW1_Orchestrator_Logs`
-2. [ ] Configurar credencial Google Sheets OAuth2
-3. [ ] Testing manual con payload `new_lead`
-4. [ ] Activar despues de testing exitoso
+**Estado v3.0** (2026-01-11): ✅ ACTIVO EN PRODUCCION
+1. ✅ Creado Google Sheet `MW1_Orchestrator_Logs`
+2. ✅ Configurada credencial Google Sheets OAuth2
+3. ✅ Testing manual con payload `new_lead` exitoso
+4. ✅ Activado en producción
+5. ✅ Agregado nodo "Prepare Logger Data" para estructurar logs
 
 **Archivos generados**:
 - `artifacts/ORQUESTADOR_V3_DRAFT.json`
@@ -364,7 +515,12 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ### Últimas Ejecuciones (Enero 2026)
 
-**Orquestador:**
+**Orquestador v3.0 (AI Agent):**
+| Fecha | Estado | Score | Categoría | Latency | Tokens |
+|-------|--------|-------|----------|---------|--------|
+| 2026-01-11 | ✅ Éxito | 95 | HOT | 38.1s | 718 |
+
+**Orquestador v1.0 (Legacy - Inactivo):**
 | Fecha | Estado | Score | Categoría |
 |-------|--------|-------|----------|
 | 2026-01-04 | ✅ Éxito | 90 | HOT |
@@ -374,6 +530,7 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 **SUB-A:**
 | Fecha | Estado | Notas |
 |-------|--------|-------|
+| 2026-01-11 | ✅ Éxito | Lead procesado via AI Agent v3.0 (Score 95 HOT) |
 | 2026-01-04 | ✅ Éxito | Lead procesado con Gemini AI |
 | 2026-01-04 | ✅ Éxito | Email enviado al equipo (HOT) |
 | 2026-01-04 | ✅ Éxito | Guardado en Firestore |
@@ -394,8 +551,10 @@ Sistema completo de captura y procesamiento de leads para Carrillo Abogados, uti
 
 ## 🧪 Comando de Prueba Directa
 
+### Webhook Producción (v3.0 - ACTIVO)
+
 ```bash
-curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events \
+curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3 \
   -H "Content-Type: application/json" \
   -d '{
     "event_type": "new_lead",
@@ -411,22 +570,33 @@ curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events \
   }'
 ```
 
-### Respuesta Esperada
+### Respuesta Esperada (v3.0)
 
 ```json
 {
   "success": true,
-  "message": "Lead procesado exitosamente por SUB-A (AI Powered)",
-  "score": 90,
+  "lead_id": "2026-01-11T02:08:10.022Z-laura.martinez-at-innovatech.com",
+  "score": 95,
   "categoria": "HOT",
   "ai_analysis": {
     "normalized_interest": "Marcas",
-    "analysis_reason": "Lead de alta calidad...",
-    "calculated_score": 90
-  }
+    "is_spam": false,
+    "analysis_reason": "El lead es un decision-maker clave (CEO) con una necesidad específica y urgente de registro de marca...",
+    "calculated_score": 95,
+    "category": "HOT"
+  },
+  "message": "Lead procesado exitosamente por SUB-A (AI Powered via AI Agent)"
 }
+```
+
+### Webhook Legacy (v1.0 - INACTIVO)
+
+```bash
+curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events \
+  -H "Content-Type: application/json" \
+  -d '{ "event_type": "new_lead", ... }'
 ```
 
 ---
 
-*Documento actualizado con datos de n8n MCP - 2026-01-04 - Sistema en producción*
+*Documento actualizado con datos reales de test E2E - 2026-01-11 - Orquestador v3.0 AI Agent en producción*

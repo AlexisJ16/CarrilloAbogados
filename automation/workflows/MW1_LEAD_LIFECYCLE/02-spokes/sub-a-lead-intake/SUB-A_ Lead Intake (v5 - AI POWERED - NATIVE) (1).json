@@ -5,14 +5,14 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "models/gemini-2.5-pro",
+          "cachedResultName": "models/gemini-2.5-pro",
           "mode": "list",
-          "cachedResultName": "models/gemini-2.5-pro"
+          "value": "models/gemini-2.5-pro"
         },
         "messages": {
           "values": [
             {
-              "content": "={{ \"Analiza este lead entrante para un bufete de abogados (Carrillo Abogados - PI y Marcas).\\n\\nDatos del Lead:\\n- Nombre: \" + $(\"0. Mapear Input del Orquestador1\").item.json.nombre + \"\\n- Empresa: \" + $(\"0. Mapear Input del Orquestador1\").item.json.empresa + \"\\n- Cargo: \" + $(\"0. Mapear Input del Orquestador1\").item.json.cargo + \"\\n- Interés declarado: \" + $(\"0. Mapear Input del Orquestador1\").item.json.servicio_interes + \"\\n- Mensaje: \" + $(\"0. Mapear Input del Orquestador1\").item.json.mensaje + \"\\n\\nTareas:\\n1. Normaliza el servicio de interés a una de estas categorías: [Marcas, Patentes, Litigio, Contratos, Corporativo, Otros].\\n2. Detecta si es SPAM (true/false).\\n3. Calcula un Score (0-100) basado en la calidad de la empresa, cargo y claridad de la necesidad.\\n4. Determina la categoría (HOT si score >= 70, WARM si >= 40, COLD si < 40).\\n\\nResponde ÚNICAMENTE con un JSON válido con esta estructura:\\n{\\n  \\\"normalized_interest\\\": \\\"...\\\",\\n  \\\"is_spam\\\": false,\\n  \\\"analysis_reason\\\": \\\"...\\\",\\n  \\\"calculated_score\\\": 85,\\n  \\\"category\\\": \\\"HOT\\\"\\n}\" }}"
+              "content": "={{ \"Analiza este lead entrante para un bufete de abogados (Carrillo Abogados - PI y Marcas).\\n\\nDatos del Lead:\\n- Nombre: \" + $(\"0. Mapear Input del Orquestador1\").item.json.nombre + \"\\n- Empresa: \" + $(\"0. Mapear Input del Orquestador1\").item.json.empresa + \"\\n- Cargo: \" + $(\"0. Mapear Input del Orquestador1\").item.json.cargo + \"\\n- Interes declarado: \" + $(\"0. Mapear Input del Orquestador1\").item.json.servicio_interes + \"\\n- Mensaje: \" + $(\"0. Mapear Input del Orquestador1\").item.json.mensaje + \"\\n\\nTareas:\\n1. Normaliza el servicio de interes a una de estas categorias: [Marcas, Patentes, Litigio, Contratos, Corporativo, Otros].\\n2. Detecta si es SPAM (true/false).\\n3. Calcula un Score (0-100) basado en la calidad de la empresa, cargo y claridad de la necesidad.\\n4. Determina la categoria (HOT si score >= 70, WARM si >= 40, COLD si < 40).\\n\\nResponde UNICAMENTE con un JSON valido con esta estructura:\\n{\\n  \\\"normalized_interest\\\": \\\"...\\\",\\n  \\\"is_spam\\\": false,\\n  \\\"analysis_reason\\\": \\\"...\\\",\\n  \\\"calculated_score\\\": 85,\\n  \\\"category\\\": \\\"HOT\\\"\\n}\" }}"
             }
           ]
         },
@@ -20,16 +20,16 @@
       },
       "id": "c01faa58-79fc-4f31-877f-134cc1fa1672",
       "name": "0.5. Analizar Lead (IA)",
+      "position": [
+        512,
+        480
+      ],
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
-      "position": [
-        -3760,
-        544
-      ],
       "credentials": {
         "googlePalmApi": {
-          "id": "jk2FHcbAC71LuRl2",
-          "name": "Google Gemini(PaLM) Api account"
+          "id": "7mPlpd3eLy4qngdl",
+          "name": "Google Gemini(PaLM) Api account 2"
         }
       }
     },
@@ -37,14 +37,14 @@
       "parameters": {
         "modelId": {
           "__rl": true,
-          "value": "models/gemini-2.5-pro",
+          "cachedResultName": "models/gemini-2.5-pro",
           "mode": "list",
-          "cachedResultName": "models/gemini-2.5-pro"
+          "value": "models/gemini-2.5-pro"
         },
         "messages": {
           "values": [
             {
-              "content": "={{ \"Genera un email de respuesta personalizado para este lead:\\n\\nNombre: \" + $json.nombre + \"\\nEmpresa: \" + $json.empresa + \"\\nInterés: \" + $json.servicio_interes + \"\\nMensaje: \" + $json.mensaje + \"\\n\\nEl email debe:\\n1. Agradecer el contacto\\n2. Confirmar que hemos recibido su consulta\\n3. Mencionar que el Dr. Omar Carrillo se pondrá en contacto pronto\\n4. Ser profesional pero cálido\\n5. Firma: Equipo Carrillo Abogados\\n\\nResponde SOLO con el texto del email, sin subject.\" }}"
+              "content": "={{ \"Genera un email de respuesta personalizado para este lead:\\n\\nNombre: \" + $json.nombre + \"\\nEmpresa: \" + $json.empresa + \"\\nInteres: \" + $json.servicio_interes + \"\\nMensaje: \" + $json.mensaje + \"\\n\\nEl email debe:\\n1. Agradecer el contacto\\n2. Confirmar que hemos recibido su consulta\\n3. Mencionar que el Dr. Omar Carrillo se pondra en contacto pronto\\n4. Ser profesional pero calido\\n5. Firma: Equipo Carrillo Abogados\\n\\nResponde SOLO con el texto del email, sin subject.\" }}"
             }
           ]
         },
@@ -52,89 +52,31 @@
       },
       "id": "58f49514-f559-45f7-b141-52173ec0244b",
       "name": "5. Generar Respuesta (Gemini)",
+      "position": [
+        1632,
+        496
+      ],
       "type": "@n8n/n8n-nodes-langchain.googleGemini",
       "typeVersion": 1,
-      "position": [
-        -2512,
-        544
-      ],
       "credentials": {
         "googlePalmApi": {
-          "id": "jk2FHcbAC71LuRl2",
-          "name": "Google Gemini(PaLM) Api account"
+          "id": "7mPlpd3eLy4qngdl",
+          "name": "Google Gemini(PaLM) Api account 2"
         }
       }
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "nombre",
-              "name": "nombre",
-              "type": "string",
-              "value": "={{ $json.nombre ? $json.nombre : ($json.body ? $json.body.nombre : '') }}"
-            },
-            {
-              "id": "email",
-              "name": "email",
-              "type": "string",
-              "value": "={{ $json.email ? $json.email : ($json.body ? $json.body.email : '') }}"
-            },
-            {
-              "id": "telefono",
-              "name": "telefono",
-              "type": "string",
-              "value": "={{ $json.telefono ? $json.telefono : ($json.body ? $json.body.telefono : '') }}"
-            },
-            {
-              "id": "empresa",
-              "name": "empresa",
-              "type": "string",
-              "value": "={{ $json.empresa ? $json.empresa : ($json.body ? $json.body.empresa : '') }}"
-            },
-            {
-              "id": "cargo",
-              "name": "cargo",
-              "type": "string",
-              "value": "={{ $json.cargo ? $json.cargo : ($json.body ? $json.body.cargo : '') }}"
-            },
-            {
-              "id": "servicio_interes",
-              "name": "servicio_interes",
-              "type": "string",
-              "value": "={{ $json.servicio_interes ? $json.servicio_interes : ($json.body ? $json.body.servicio_interes : '') }}"
-            },
-            {
-              "id": "mensaje",
-              "name": "mensaje",
-              "type": "string",
-              "value": "={{ $json.mensaje ? $json.mensaje : ($json.body ? $json.body.mensaje : '') }}"
-            },
-            {
-              "id": "utm_source",
-              "name": "utm_source",
-              "type": "string",
-              "value": "={{ $json.utm_source ? $json.utm_source : ($json.body ? $json.body.utm_source : '') }}"
-            },
-            {
-              "id": "utm_campaign",
-              "name": "utm_campaign",
-              "type": "string",
-              "value": "={{ $json.utm_campaign ? $json.utm_campaign : ($json.body ? $json.body.utm_campaign : '') }}"
-            }
-          ]
-        },
-        "options": {}
+        "jsCode": "// Parsear input que puede venir de diferentes fuentes:\n// 1. AI Agent Tool: { input: '{\"nombre\":\"...\", ...}' } - JSON string\n// 2. Execute Workflow: { nombre: \"...\", email: \"...\" } - objeto directo\n// 3. Webhook direct: { body: { nombre: \"...\" } }\n\nconst raw = $input.first().json;\nlet data = {};\n\n// Caso 1: AI Agent Tool envia 'input' como JSON string\nif (raw.input && typeof raw.input === 'string') {\n  try {\n    data = JSON.parse(raw.input);\n    console.log('Parseado desde AI Agent Tool input string');\n  } catch(e) {\n    console.log('Error parseando input string:', e.message);\n    data = raw;\n  }\n}\n// Caso 2: input es un objeto (ya parseado)\nelse if (raw.input && typeof raw.input === 'object') {\n  data = raw.input;\n  console.log('Usando AI Agent Tool input object');\n}\n// Caso 3: Datos vienen en body (webhook directo)\nelse if (raw.body && typeof raw.body === 'object') {\n  data = raw.body;\n  console.log('Usando body de webhook');\n}\n// Caso 4: Datos vienen directamente en el json\nelse if (raw.nombre || raw.email) {\n  data = raw;\n  console.log('Usando datos directos');\n}\n// Caso 5: Fallback - buscar en cualquier campo que sea JSON string\nelse {\n  for (const key of Object.keys(raw)) {\n    if (typeof raw[key] === 'string' && raw[key].startsWith('{')) {\n      try {\n        data = JSON.parse(raw[key]);\n        console.log('Parseado desde campo:', key);\n        break;\n      } catch(e) {}\n    }\n  }\n  if (Object.keys(data).length === 0) {\n    data = raw;\n    console.log('Fallback: usando raw data');\n  }\n}\n\nreturn {\n  json: {\n    nombre: data.nombre || '',\n    email: data.email || '',\n    telefono: data.telefono || '',\n    empresa: data.empresa || '',\n    cargo: data.cargo || '',\n    servicio_interes: data.servicio_interes || data.servicio || '',\n    mensaje: data.mensaje || '',\n    utm_source: data.utm_source || '',\n    utm_campaign: data.utm_campaign || '',\n    event_type: data.event_type || 'new_lead',\n    _source: raw.input ? 'ai_agent_tool' : (raw.body ? 'webhook' : 'direct'),\n    _raw_keys: Object.keys(raw)\n  }\n};"
       },
       "id": "c6821dac-8c27-4b06-bafb-61fbbb28100e",
       "name": "0. Mapear Input del Orquestador1",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
       "position": [
-        -3984,
-        544
-      ]
+        336,
+        480
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
     },
     {
       "parameters": {
@@ -142,12 +84,12 @@
       },
       "id": "e627be60-cd86-40ba-8763-beac05bde7c2",
       "name": "1. Validar y Clasificar1",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
       "position": [
-        -3408,
-        544
-      ]
+        784,
+        480
+      ],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
     },
     {
       "parameters": {
@@ -160,12 +102,12 @@
       },
       "id": "5d6463dc-d890-4a48-bbe0-c1067f520993",
       "name": "2. Guardar en Firestore1",
+      "position": [
+        992,
+        480
+      ],
       "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
       "typeVersion": 1.1,
-      "position": [
-        -3184,
-        544
-      ],
       "credentials": {
         "googleApi": {
           "id": "AAhdRNGzvsFnYN9O",
@@ -176,12 +118,7 @@
     {
       "parameters": {
         "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 1
-          },
+          "combinator": "and",
           "conditions": [
             {
               "id": "condition1",
@@ -193,34 +130,39 @@
               "rightValue": "HOT"
             }
           ],
-          "combinator": "and"
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
         },
         "options": {}
       },
       "id": "fd7ec1ef-d15c-491b-9e09-9a294a74c19e",
       "name": "3. Es Lead HOT? (If)1",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
       "position": [
-        -2960,
-        544
-      ]
+        1216,
+        480
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
     },
     {
       "parameters": {
         "sendTo": "marketing@carrilloabgd.com",
-        "subject": "={{ \"🔥 HOT LEAD: \" + $json.nombre }}",
-        "message": "={{ \"🔥 NUEVO LEAD HOT\\n\\nNombre: \" + $json.nombre + \"\\nEmail: \" + $json.email + \"\\nEmpresa: \" + $json.empresa + \"\\nScore: \" + $json.score + \"\\nInterés: \" + $json.servicio_interes + \"\\nMensaje: \" + $json.mensaje }}",
+        "subject": "={{ \"HOT LEAD: \" + $json.nombre }}",
+        "message": "={{ \"NUEVO LEAD HOT\\n\\nNombre: \" + $json.nombre + \"\\nEmail: \" + $json.email + \"\\nEmpresa: \" + $json.empresa + \"\\nScore: \" + $json.score + \"\\nInteres: \" + $json.servicio_interes + \"\\nMensaje: \" + $json.mensaje }}",
         "options": {}
       },
       "id": "d1231451-6125-4166-80a7-a94aa17209a0",
       "name": "4. Notificar Equipo (HOT)1",
+      "position": [
+        1424,
+        320
+      ],
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [
-        -2736,
-        472
-      ],
       "webhookId": "2125e449-695c-4e68-bd52-f9de4991c2a2",
       "credentials": {
         "gmailOAuth2": {
@@ -238,12 +180,12 @@
       },
       "id": "23df08e9-2164-4824-af6d-c21983b2f9a6",
       "name": "6. Enviar Respuesta Lead1",
+      "position": [
+        1952,
+        496
+      ],
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [
-        -2160,
-        544
-      ],
       "webhookId": "6ba4fd43-9d8f-41ed-856b-360d2c2fdfe7",
       "credentials": {
         "gmailOAuth2": {
@@ -316,36 +258,36 @@
       },
       "id": "ebb83788-cfb3-482d-89a8-25a53aed014b",
       "name": "FINAL. Resultado del Sub-Workflow1",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
       "position": [
-        -1936,
-        640
-      ]
+        2144,
+        496
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
     },
     {
       "parameters": {
         "inputSource": "passthrough"
       },
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        -4208,
-        544
-      ],
       "id": "5f4ec9be-0921-4db3-a81c-c06de46aa35f",
-      "name": "When Executed by Another Workflow"
+      "name": "When Executed by Another Workflow",
+      "position": [
+        160,
+        480
+      ],
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1
     },
     {
       "parameters": {},
       "id": "error-trigger-suba",
       "name": "Error Handler",
-      "type": "n8n-nodes-base.errorTrigger",
-      "typeVersion": 1,
       "position": [
-        -4208,
-        864
-      ]
+        112,
+        704
+      ],
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1
     },
     {
       "parameters": {
@@ -381,28 +323,28 @@
       },
       "id": "set-error-suba",
       "name": "Preparar Error",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
       "position": [
-        -3984,
-        864
-      ]
+        352,
+        704
+      ],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
     },
     {
       "parameters": {
         "sendTo": "ingenieria@carrilloabgd.com",
-        "subject": "=🚨 [n8n ERROR] {{ $json.workflow_name }}",
-        "message": "=<h2>🚨 Error en SUB-A</h2>\n<p><strong>Workflow:</strong> {{ $json.workflow_name }}</p>\n<p><strong>Execution ID:</strong> {{ $json.execution_id }}</p>\n<p><strong>Timestamp:</strong> {{ $json.timestamp }}</p>\n<p><strong>Error:</strong> {{ $json.error_message }}</p>",
+        "subject": "=[n8n ERROR] {{ $json.workflow_name }}",
+        "message": "=<h2>Error en SUB-A</h2>\n<p><strong>Workflow:</strong> {{ $json.workflow_name }}</p>\n<p><strong>Execution ID:</strong> {{ $json.execution_id }}</p>\n<p><strong>Timestamp:</strong> {{ $json.timestamp }}</p>\n<p><strong>Error:</strong> {{ $json.error_message }}</p>",
         "options": {}
       },
       "id": "gmail-error-suba",
       "name": "Notificar Error",
+      "position": [
+        608,
+        704
+      ],
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [
-        -3760,
-        864
-      ],
       "webhookId": "61815982-36bc-45d0-8c6f-2755b9c05b9f",
       "credentials": {
         "gmailOAuth2": {
@@ -414,120 +356,113 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://webhook.site/e859e2f7-bd8c-4d71-a534-843fc1611f5e",
+        "url": "https://eoc4ipe73sd9y75.m.pipedream.net",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ leadId: $('FINAL. Resultado del Sub-Workflow1').item.json.lead_id, email: $('FINAL. Resultado del Sub-Workflow1').item.json.email, nombre: $('FINAL. Resultado del Sub-Workflow1').item.json.nombre, score: $('FINAL. Resultado del Sub-Workflow1').item.json.score, categoria: $('FINAL. Resultado del Sub-Workflow1').item.json.categoria, empresa: $('FINAL. Resultado del Sub-Workflow1').item.json.empresa, scored_at: new Date().toISOString() }) }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          },
-          "timeout": 10000
-        }
+        "jsonBody": "={{ JSON.stringify({ lead_id: $('1. Validar y Clasificar1').item.json.lead_id, score: $('1. Validar y Clasificar1').item.json.score, categoria: $('1. Validar y Clasificar1').item.json.categoria, ai_analysis: $('1. Validar y Clasificar1').item.json.ai_analysis, processed_at: $('1. Validar y Clasificar1').item.json.processed_at }) }}",
+        "options": {}
       },
       "id": "callback_lead_scored",
       "name": "7. Callback Lead Scored",
+      "position": [
+        1424,
+        128
+      ],
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [
-        -1936,
-        448
-      ],
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://webhook.site/93220bcf-93e5-48ea-a8a5-b27c7099a1a8",
+        "url": "https://eo25wqdjm5k5tqk.m.pipedream.net",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ leadId: $('1. Validar y Clasificar1').item.json.lead_id, email: $('1. Validar y Clasificar1').item.json.email, nombre: $('1. Validar y Clasificar1').item.json.nombre, empresa: $('1. Validar y Clasificar1').item.json.empresa, telefono: $('1. Validar y Clasificar1').item.json.telefono, score: $('1. Validar y Clasificar1').item.json.score, categoria: $('1. Validar y Clasificar1').item.json.categoria, servicio_interes: $('1. Validar y Clasificar1').item.json.servicio_interes, mensaje: $('1. Validar y Clasificar1').item.json.mensaje, ai_analysis: $('1. Validar y Clasificar1').item.json.ai_analysis, alerted_at: new Date().toISOString(), urgency: 'IMMEDIATE' }) }}",
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "text"
-            }
-          },
-          "timeout": 10000
-        }
+        "jsonBody": "={{ JSON.stringify({ lead_id: $('1. Validar y Clasificar1').item.json.lead_id, score: $('1. Validar y Clasificar1').item.json.score, categoria: $('1. Validar y Clasificar1').item.json.categoria, notified_at: new Date().toISOString(), email_sent_to: 'marketing@carrilloabgd.com' }) }}",
+        "options": {}
       },
       "id": "callback_hot_lead",
       "name": "9. Callback Hot Lead Alert",
+      "position": [
+        1936,
+        112
+      ],
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [
-        -1488,
-        448
-      ],
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
         "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "b3b05f3a-801e-4976-b0ba-c248c2b5c03f",
+              "leftValue": "={{ $('1. Validar y Clasificar1').item.json.categoria }}",
+              "operator": {
+                "operation": "equals",
+                "type": "string"
+              },
+              "rightValue": "HOT"
+            }
+          ],
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict",
+            "typeValidation": "loose",
             "version": 1
-          },
-          "conditions": [
-            {
-              "leftValue": "={{ $('1. Validar y Clasificar1').item.json.categoria }}",
-              "rightValue": "HOT",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              },
-              "id": "b3b05f3a-801e-4976-b0ba-c248c2b5c03f"
-            }
-          ],
-          "combinator": "and"
+          }
         },
         "options": {}
       },
       "id": "if_hot_check",
       "name": "8. Es Lead HOT (Callback)?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
       "position": [
-        -1712,
-        448
-      ]
+        1680,
+        128
+      ],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
     }
   ],
   "pinData": {},
   "connections": {
-    "0.5. Analizar Lead (IA)": {
-      "main": [
-        [
-          {
-            "node": "1. Validar y Clasificar1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "5. Generar Respuesta (Gemini)": {
-      "main": [
-        [
-          {
-            "node": "6. Enviar Respuesta Lead1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "0. Mapear Input del Orquestador1": {
       "main": [
         [
           {
+            "index": 0,
             "node": "0.5. Analizar Lead (IA)",
-            "type": "main",
-            "index": 0
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "0.5. Analizar Lead (IA)": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "1. Validar y Clasificar1",
+            "type": "main"
           }
         ]
       ]
@@ -536,9 +471,14 @@
       "main": [
         [
           {
+            "index": 0,
             "node": "2. Guardar en Firestore1",
-            "type": "main",
-            "index": 0
+            "type": "main"
+          },
+          {
+            "index": 0,
+            "node": "7. Callback Lead Scored",
+            "type": "main"
           }
         ]
       ]
@@ -547,9 +487,9 @@
       "main": [
         [
           {
+            "index": 0,
             "node": "3. Es Lead HOT? (If)1",
-            "type": "main",
-            "index": 0
+            "type": "main"
           }
         ]
       ]
@@ -558,16 +498,16 @@
       "main": [
         [
           {
+            "index": 0,
             "node": "4. Notificar Equipo (HOT)1",
-            "type": "main",
-            "index": 0
+            "type": "main"
           }
         ],
         [
           {
+            "index": 0,
             "node": "5. Generar Respuesta (Gemini)",
-            "type": "main",
-            "index": 0
+            "type": "main"
           }
         ]
       ]
@@ -576,9 +516,20 @@
       "main": [
         [
           {
+            "index": 0,
             "node": "5. Generar Respuesta (Gemini)",
-            "type": "main",
-            "index": 0
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "5. Generar Respuesta (Gemini)": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "6. Enviar Respuesta Lead1",
+            "type": "main"
           }
         ]
       ]
@@ -587,47 +538,9 @@
       "main": [
         [
           {
+            "index": 0,
             "node": "FINAL. Resultado del Sub-Workflow1",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "7. Callback Lead Scored",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "When Executed by Another Workflow": {
-      "main": [
-        [
-          {
-            "node": "0. Mapear Input del Orquestador1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Error Handler": {
-      "main": [
-        [
-          {
-            "node": "Preparar Error",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Preparar Error": {
-      "main": [
-        [
-          {
-            "node": "Notificar Error",
-            "type": "main",
-            "index": 0
+            "type": "main"
           }
         ]
       ]
@@ -636,9 +549,9 @@
       "main": [
         [
           {
+            "index": 0,
             "node": "8. Es Lead HOT (Callback)?",
-            "type": "main",
-            "index": 0
+            "type": "main"
           }
         ]
       ]
@@ -647,9 +560,42 @@
       "main": [
         [
           {
+            "index": 0,
             "node": "9. Callback Hot Lead Alert",
-            "type": "main",
-            "index": 0
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Preparar Error",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Preparar Error": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Notificar Error",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "0. Mapear Input del Orquestador1",
+            "type": "main"
           }
         ]
       ]
@@ -665,7 +611,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
-  "versionId": "670a0f4d-02e1-420f-b74f-5661f30bcda9",
+  "versionId": "a2dcb614-678a-48f8-82d8-1c32b6ec37a9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3d3321fa006456b860ee93414ff8ce34a43571ec656f012cc11bbaa4bceafb5c"
