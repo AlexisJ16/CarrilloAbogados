@@ -1,6 +1,6 @@
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 11 de Enero, 2026  
+**Última Actualización**: 12 de Enero, 2026  
 **Fase Actual**: FASE 10 - Autenticación Frontend Completa  
 **Ramas**: `dev` (sincronizado con `main`)  
 **Último Test**: 105 tests ✅ (8 Ene 2026)
@@ -11,9 +11,8 @@
 
 Plataforma cloud-native de gestión legal con **8 microservicios Spring Boot** para el bufete **Carrillo ABGD SAS** de Cali, Colombia.
 
-### Propósito Dual
-1. **Académico**: Proyecto final Plataformas II
-2. **Empresarial**: Sistema real para bufete de 7 abogados
+### Propósito
+**100% Empresarial** - Sistema de producción para el bufete Carrillo Abogados (7 abogados + 2 administrativos).
 
 ### Fechas Clave
 - **MVP Empresarial**: 27 Marzo 2026
