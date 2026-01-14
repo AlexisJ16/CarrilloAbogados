@@ -38,3 +38,29 @@ build/
 !.vscode/*.http
 
 Output-CLI-DeTrabajo.txt
+
+### Sensitive Files ###
+# MCP configuration with API keys
+.mcp.json
+
+# Claude/AI local settings with permissions
+.claude/settings.local.json
+
+# Environment files with secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# API Keys and credentials
+**/secrets/
+*.pem
+*.key
+*.p12
+*.jks
+credentials.json
+service-account*.json
+
+# Google Cloud credentials
+gcloud-*.json
+application_default_credentials.json
