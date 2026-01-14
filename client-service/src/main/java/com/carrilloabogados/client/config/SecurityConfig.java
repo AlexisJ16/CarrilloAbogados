@@ -69,6 +69,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/leads").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/leads/contact").permitAll()
 
+                        // Integración con n8n-integration-service (callback scoring)
+                        .requestMatchers(HttpMethod.PATCH, "/api/leads/*/score").permitAll()
+
                         // Health checks y actuator
                         .requestMatchers("/actuator/**").permitAll()
 
