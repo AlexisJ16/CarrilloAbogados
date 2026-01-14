@@ -1,6 +1,6 @@
 # 🔄 n8n Workflows - Carrillo Abogados
 
-**Última Actualización**: 11 de Enero, 2026  
+**Última Actualización**: 14 de Enero, 2026  
 **Versión**: 1.1.0  
 **Estado**: ✅ MW#1 en Producción  
 **Fase Proyecto**: FASE 10 - Autenticación Frontend Completa
