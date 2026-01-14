@@ -23,8 +23,8 @@ services:
       - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
     networks:
       - observability
     healthcheck:
@@ -45,7 +45,7 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     volumes:
       - loki-data:/loki
-      - ./monitoring/loki/config.yaml:/etc/loki/local-config.yaml:ro
+      - ./loki/config.yaml:/etc/loki/local-config.yaml:ro
     networks:
       - observability
     healthcheck:
@@ -61,6 +61,7 @@ services:
     image: grafana/tempo:2.6.1
     container_name: carrillo-tempo
     restart: unless-stopped
+    user: "0"  # Run as root to avoid permission issues
     ports:
       - "3102:3200"   # Tempo API
       - "4317:4317"   # OTLP gRPC
@@ -68,7 +69,7 @@ services:
     command: -config.file=/etc/tempo/config.yaml
     volumes:
       - tempo-data:/tmp/tempo
-      - ./monitoring/tempo/config.yaml:/etc/tempo/config.yaml:ro
+      - ./tempo/config.yaml:/etc/tempo/config.yaml:ro
     networks:
       - observability
     healthcheck:
@@ -84,21 +85,22 @@ services:
     image: grafana/mimir:2.14.2
     container_name: carrillo-mimir
     restart: unless-stopped
+    user: "0"  # Run as root to avoid permission issues
     ports:
       - "3103:9009"
     command: 
       - --config.file=/etc/mimir/config.yaml
       - --target=all
+      - --activity-tracker.filepath=""
     volumes:
-      - mimir-data:/data
-      - ./monitoring/mimir/config.yaml:/etc/mimir/config.yaml:ro
+      - mimir-data:/data/mimir
+      - ./mimir/config.yaml:/etc/mimir/config.yaml:ro
     networks:
       - observability
+    # NOTE: Mimir uses distroless image (no wget/curl/sh available)
+    # Health is monitored via Prometheus scraping /ready endpoint
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9009/ready"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      disable: true
 
   # =========================================
   # 🚀 PROMTAIL - Log Collector for Loki
@@ -109,7 +111,7 @@ services:
     restart: unless-stopped
     volumes:
       - /var/log:/var/log:ro
-      - ./monitoring/promtail/config.yaml:/etc/promtail/config.yaml:ro
+      - ./promtail/config.yaml:/etc/promtail/config.yaml:ro
       # Mount Docker socket to collect container logs
       - /var/run/docker.sock:/var/run/docker.sock:ro
     command: -config.file=/etc/promtail/config.yaml
@@ -134,9 +136,10 @@ services:
       - --web.enable-remote-write-receiver
     volumes:
       - prometheus-data:/prometheus
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     networks:
       - observability
+      - carrillo-network
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy"]
       interval: 30s
@@ -156,7 +159,7 @@ services:
       - --config.file=/etc/alertmanager/alertmanager.yml
     volumes:
       - alertmanager-data:/alertmanager
-      - ./monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
     networks:
       - observability
     healthcheck:
@@ -169,6 +172,10 @@ networks:
   observability:
     driver: bridge
     name: carrillo-observability
+  # Connect to main application network
+  carrillo-network:
+    external: true
+    name: carrilloabogados_carrillo-network
 
 volumes:
   grafana-data:

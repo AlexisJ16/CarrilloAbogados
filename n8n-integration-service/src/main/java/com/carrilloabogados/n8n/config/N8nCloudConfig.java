@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "n8n.cloud")
 public class N8nCloudConfig {
 
-    private String baseUrl = "https://carrilloabgd.app.n8n.cloud";
+    private String baseUrl;
 
     private Webhooks webhooks = new Webhooks();
 
-    private int timeoutSeconds = 30;
+    private int timeoutSeconds;
 
     private Retry retry = new Retry();
 
@@ -65,9 +65,9 @@ public class N8nCloudConfig {
      * URLs de webhooks en n8n Cloud.
      */
     public static class Webhooks {
-        private String leadEvents = "/webhook/lead-events";
-        private String meetingEvents = "/webhook/meeting-events";
-        private String caseEvents = "/webhook/case-events";
+        private String leadEvents;
+        private String meetingEvents;
+        private String caseEvents;
 
         public String getLeadEvents() {
             return leadEvents;
@@ -102,8 +102,8 @@ public class N8nCloudConfig {
      * Configuración de reintentos.
      */
     public static class Retry {
-        private int maxAttempts = 3;
-        private int delayMillis = 1000;
+        private int maxAttempts;
+        private int delayMillis;
 
         public int getMaxAttempts() {
             return maxAttempts;

@@ -79,3 +79,13 @@ resilience4j:
     enabled: false
   ratelimiter:
     enabled: false
+
+# JWT Configuration for tests
+app:
+  jwt:
+    secret: CarrilloAbogadosTestSecretKey2025MustBeAtLeast256BitsLong!!
+    issuer: carrillo-abogados-test
+    access-token-expiration: 3600
+    refresh-token-expiration: 86400
+  cors:
+    allowed-origins: http://localhost:3000,http://localhost:4200

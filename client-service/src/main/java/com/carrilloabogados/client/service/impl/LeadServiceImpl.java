@@ -78,23 +78,34 @@ public class LeadServiceImpl implements LeadService {
     public LeadDto capture(LeadDto leadDto) {
         log.info("*** LeadDto, service; capturing new lead from form - email: {} *", leadDto.getEmail());
 
+        Lead leadToProcess;
+        boolean isNewLead = false;
+
         // Verificar si ya existe un lead con este email
         if (leadRepository.existsByEmail(leadDto.getEmail())) {
-            log.warn("*** Lead with email {} already exists, returning existing *", leadDto.getEmail());
-            return findByEmail(leadDto.getEmail());
+            log.info("*** Lead with email {} already exists, updating message and re-triggering automation *",
+                    leadDto.getEmail());
+            // Obtener el lead existente y actualizar el mensaje (nuevo contacto del mismo
+            // cliente)
+            leadToProcess = leadRepository.findByEmail(leadDto.getEmail())
+                    .orElseThrow(() -> new LeadNotFoundException("Lead not found"));
+            // Actualizar el mensaje con el nuevo contacto
+            leadToProcess.setMensaje(leadDto.getMensaje());
+            leadToProcess.setServicio(leadDto.getServicio());
+            leadToProcess = leadRepository.save(leadToProcess);
+        } else {
+            // Crear entidad desde DTO
+            Lead lead = LeadMappingHelper.map(leadDto);
+            leadToProcess = leadRepository.save(lead);
+            isNewLead = true;
+            log.info("*** Lead captured successfully with id: {} *", leadToProcess.getLeadId());
         }
 
-        // Crear entidad desde DTO
-        Lead lead = LeadMappingHelper.map(leadDto);
+        // SIEMPRE emitir evento "lead.capturado" a NATS para n8n
+        // Esto permite re-procesar leads existentes (ej: cliente envía segundo mensaje)
+        publishLeadCapturedEvent(leadToProcess);
 
-        // Guardar lead
-        Lead savedLead = leadRepository.save(lead);
-        log.info("*** Lead captured successfully with id: {} *", savedLead.getLeadId());
-
-        // Emitir evento "lead.capturado" a NATS para n8n
-        publishLeadCapturedEvent(savedLead);
-
-        return LeadMappingHelper.map(savedLead);
+        return LeadMappingHelper.map(leadToProcess);
     }
 
     /**

@@ -1,0 +1,627 @@
+{
+  "name": "SUB-D: Workflow-V3",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "9cc615a5-8843-452b-b6ae-314424b9ba22",
+      "name": "Schedule Trigger: Every 6h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -3696,
+        1312
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ts1",
+              "name": "now",
+              "type": "string",
+              "value": "={{ new Date().toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "96e469bf-7327-4e62-978a-2ba675eafc1b",
+      "name": "Calcular Timestamp Actual",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3472,
+        1312
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "getAll",
+        "projectId": "carrillo-marketing-core",
+        "database": "leads",
+        "collection": "leads",
+        "limit": 10
+      },
+      "id": "cf3d0b88-ec80-4e27-a6aa-06e53e8bee7e",
+      "name": "Query Firestore: Leads para Nurturing",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [
+        -3264,
+        1312
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "AAhdRNGzvsFnYN9O",
+          "name": "tuto yt"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond1",
+              "leftValue": "={{ $json.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "2cfa1307-776f-4612-b42e-259a21eb08e5",
+      "name": "IF: Hay Leads?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -3040,
+        1312
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "id": "07feb44e-c02c-4540-9012-fb5536ca60e6",
+      "name": "Loop: Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2816,
+        1216
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a1",
+              "name": "lead_id",
+              "type": "string",
+              "value": "={{ $json._id || $json.lead_id }}"
+            },
+            {
+              "id": "a2",
+              "name": "nombre",
+              "type": "string",
+              "value": "={{ $json.nombre }}"
+            },
+            {
+              "id": "a3",
+              "name": "email",
+              "type": "string",
+              "value": "={{ $json.email }}"
+            },
+            {
+              "id": "a4",
+              "name": "empresa",
+              "type": "string",
+              "value": "={{ $json.empresa || 'su empresa' }}"
+            },
+            {
+              "id": "a5",
+              "name": "servicio",
+              "type": "string",
+              "value": "={{ $json.servicio || 'servicios legales' }}"
+            },
+            {
+              "id": "a6",
+              "name": "emails_sent",
+              "type": "number",
+              "value": "={{ parseInt($json.emails_sent || '0') }}"
+            },
+            {
+              "id": "a7",
+              "name": "created_at",
+              "type": "string",
+              "value": "={{ $json.created_at || new Date().toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "73094874-a156-459e-9232-c13270816d79",
+      "name": "Extraer Datos Lead",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2608,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const lead = $input.item.json;\nconst createdAt = new Date(lead.created_at);\nconst now = new Date();\nconst diffMs = now - createdAt;\nconst daysSinceCapture = Math.floor(diffMs / (1000 * 60 * 60 * 24));\n\nconst emailSchedule = [\n  { position: 1, minDay: 0, maxDay: 2 },\n  { position: 2, minDay: 3, maxDay: 5 },\n  { position: 3, minDay: 7, maxDay: 9 },\n  { position: 4, minDay: 10, maxDay: 13 },\n  { position: 5, minDay: 14, maxDay: 17 },\n  { position: 6, minDay: 21, maxDay: 24 },\n  { position: 7, minDay: 28, maxDay: 31 },\n  { position: 8, minDay: 35, maxDay: 38 },\n  { position: 9, minDay: 42, maxDay: 45 },\n  { position: 10, minDay: 49, maxDay: 52 },\n  { position: 11, minDay: 56, maxDay: 59 },\n  { position: 12, minDay: 90, maxDay: 999 }\n];\n\nlet position = null;\nfor (const schedule of emailSchedule) {\n  if (daysSinceCapture >= schedule.minDay && daysSinceCapture <= schedule.maxDay) {\n    position = schedule.position;\n    break;\n  }\n}\n\nif (!position && daysSinceCapture >= 90 && lead.emails_sent < 12) {\n  position = 12;\n}\n\nconst shouldSend = position !== null && lead.emails_sent < position;\n\nconst nextEmailDelays = {\n  1: 3, 2: 4, 3: 3, 4: 4, 5: 7, 6: 7,\n  7: 7, 8: 7, 9: 7, 10: 7, 11: 34, 12: null\n};\n\nconst delay = nextEmailDelays[position];\nconst nextEmailDate = delay\n  ? new Date(Date.now() + delay * 24 * 60 * 60 * 1000).toISOString()\n  : null;\n\nreturn {\n  json: {\n    ...lead,\n    position: position || lead.emails_sent + 1,\n    days_since_capture: daysSinceCapture,\n    should_send: shouldSend,\n    next_email_date: nextEmailDate\n  }\n};"
+      },
+      "id": "d1427d40-bcf3-462b-8c91-696676ec37a7",
+      "name": "Calcular Posicion en Secuencia",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2400,
+        1120
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const position = $json.position;\nconst nombre = $json.nombre;\nconst empresa = $json.empresa;\n\nconst templates = {\n  1: {\n    subject: `Gracias por contactarnos, ${nombre}`,\n    objective: \"Bienvenida\",\n    structure: \"Saludo personalizado + Presentacion firma (15 anos SIC) + Valor que ofrecemos + CTA: Agendar llamada exploratoria\",\n    max_words: 200\n  },\n  2: {\n    subject: `Por que proteger tu marca ${empresa}?`,\n    objective: \"Educativo\",\n    structure: \"Riesgos de no registrar marca + Casos reales de perdida de marca + Beneficios del registro + CTA: Descargar checklist gratuito\",\n    max_words: 250\n  },\n  3: {\n    subject: `Como ayudamos a empresas como ${empresa}`,\n    objective: \"Case Study\",\n    structure: \"Historia de cliente similar (tech/startup) + Problema que tenian + Solucion Carrillo + Resultado cuantificable + CTA: Ver mas casos de exito\",\n    max_words: 300\n  },\n  4: {\n    subject: \"Checklist gratuito: Registro de marcas en Colombia\",\n    objective: \"Recurso de valor\",\n    structure: \"Introduccion del checklist + 5 pasos principales + Link descarga + CTA: Necesitas ayuda con algun paso?\",\n    max_words: 200\n  },\n  5: {\n    subject: `3 riesgos que enfrenta ${empresa} sin registro`,\n    objective: \"Urgencia\",\n    structure: \"Riesgo 1: Demandas + Riesgo 2: Perdida de mercado + Riesgo 3: Inversion perdida en branding + CTA: Protege tu marca ahora\",\n    max_words: 250\n  },\n  6: {\n    subject: \"Dr. Carrillo en la SIC: 15 anos de experiencia\",\n    objective: \"Autoridad\",\n    structure: \"Trayectoria Dr. Omar Carrillo + Experiencia en SIC + Casos ganados + Testimoniales + CTA: Agenda una consulta\",\n    max_words: 300\n  },\n  7: {\n    subject: `Consulta inicial GRATIS esta semana, ${nombre}`,\n    objective: \"Oferta\",\n    structure: \"Oferta exclusiva: 30 min consulta gratuita + Que cubrimos + Valor de la consulta + CTA: Agendar ahora\",\n    max_words: 200\n  },\n  8: {\n    subject: \"Sigues interesado en proteger tu marca?\",\n    objective: \"Re-engagement\",\n    structure: \"Recordar contacto inicial + Entender si sigue siendo prioridad + Ofrecer ayuda especifica + CTA: Responder este email\",\n    max_words: 150\n  },\n  9: {\n    subject: \"Propiedad Intelectual en 2026: Lo que debes saber\",\n    objective: \"Tendencias\",\n    structure: \"Cambios legislativos 2026 + Nuevas oportunidades PI + Riesgos emergentes + CTA: Mantente protegido\",\n    max_words: 300\n  },\n  10: {\n    subject: `Ultima oportunidad: Consulta gratuita para ${empresa}`,\n    objective: \"Last Chance\",\n    structure: \"Ultima oportunidad de agendar gratis + Recordar beneficios + Fecha limite + CTA urgente: Agendar hoy\",\n    max_words: 200\n  },\n  11: {\n    subject: \"Nos despedimos? (Por ahora)\",\n    objective: \"Break-up\",\n    structure: \"Reconocer que no ha habido respuesta + Respetar decision + Dejar puerta abierta + CTA: Si cambias de opinion, estamos aqui\",\n    max_words: 150\n  },\n  12: {\n    subject: `Han pasado 3 meses, ${nombre}... hablamos?`,\n    objective: \"Win-back\",\n    structure: \"Recordar contacto + Nueva oferta o recurso + Entender si situacion cambio + CTA: Reconectar\",\n    max_words: 200\n  }\n};\n\nreturn {\n  json: {\n    ...($json),\n    template: templates[position] || templates[1]\n  }\n};"
+      },
+      "id": "a6906574-a7e6-4c47-9e48-a6b5a737cd79",
+      "name": "Cargar Template Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2240,
+        1088
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ 'Eres un copywriter experto en email marketing legal para Carrillo Abogados, un bufete especializado en Propiedad Intelectual en Colombia.\\n\\nGenera un email de nurturing para el siguiente lead:\\n\\n**Datos del Lead:**\\n- Nombre: ' + $json.nombre + '\\n- Empresa: ' + $json.empresa + '\\n- Servicio de interes: ' + $json.servicio + '\\n- Posicion en secuencia: ' + $json.position + ' de 12\\n- Dias desde captura: ' + $json.days_since_capture + '\\n\\n**Template a seguir:**\\n- Subject: ' + $json.template.subject + '\\n- Objetivo: ' + $json.template.objective + '\\n- Estructura: ' + $json.template.structure + '\\n- Maximo palabras: ' + $json.template.max_words + '\\n\\n**Instrucciones:**\\n1. Personaliza el email usando el nombre y empresa del lead\\n2. Manten un tono profesional pero cercano\\n3. Incluye un CTA claro y accionable\\n4. NO uses emojis\\n5. Firma: Dr. Omar Carrillo - Carrillo Abogados - Tel: +57 2 XXX XXXX\\n\\nResponde UNICAMENTE con JSON valido (sin markdown):\\n{\\n  \"subject\": \"...\",\\n  \"body\": \"...\"\\n}' }}"
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {
+          "maxOutputTokens": 500,
+          "temperature": 0.7
+        }
+      },
+      "id": "a0fc1d63-7d2d-4bd2-8510-c91bf1ddcbe8",
+      "name": "Personalizar Email con Gemini",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2016,
+        1136
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "jk2FHcbAC71LuRl2",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const input = $input.item.json;\nconst previousData = $('Cargar Template Email').item.json;\n\nlet geminiOutput;\ntry {\n  // Con el nodo nativo y jsonOutput=true, la respuesta viene parseada\n  if (input.subject && input.body) {\n    geminiOutput = input;\n  } else if (input.text) {\n    // Si viene como texto, parsear\n    geminiOutput = JSON.parse(input.text);\n  } else {\n    throw new Error('Formato de respuesta no reconocido');\n  }\n} catch (e) {\n  geminiOutput = {\n    subject: previousData.template?.subject || 'Gracias por contactar a Carrillo Abogados',\n    body: `Estimado/a ${previousData.nombre},\\n\\nGracias por su interes en nuestros servicios legales.\\n\\nEn Carrillo Abogados contamos con mas de 15 anos de experiencia en Propiedad Intelectual.\\n\\nQuedamos a su disposicion.\\n\\nAtentamente,\\nDr. Omar Carrillo\\nCarrillo Abogados\\nTel: +57 2 XXX XXXX`\n  };\n}\n\nif (!geminiOutput.subject || geminiOutput.subject.trim() === '') {\n  geminiOutput.subject = previousData.template?.subject || 'Mensaje de Carrillo Abogados';\n}\n\nif (!geminiOutput.body || geminiOutput.body.trim() === '') {\n  geminiOutput.body = `Estimado/a ${previousData.nombre},\\n\\nGracias por su interes en nuestros servicios.\\n\\nAtentamente,\\nDr. Omar Carrillo\\nCarrillo Abogados`;\n}\n\nreturn {\n  json: {\n    lead_id: previousData.lead_id,\n    nombre: previousData.nombre,\n    email: previousData.email,\n    empresa: previousData.empresa,\n    servicio: previousData.servicio,\n    position: previousData.position,\n    emails_sent: previousData.emails_sent,\n    days_since_capture: previousData.days_since_capture,\n    next_email_date: previousData.next_email_date,\n    subject: geminiOutput.subject,\n    body: geminiOutput.body,\n    generated_by: 'gemini-native',\n    generated_at: new Date().toISOString()\n  }\n};"
+      },
+      "id": "770e4070-15a0-4bd7-900d-41ba489349fe",
+      "name": "Validar Output Gemini",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1712,
+        1136
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-gmail-success",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "19c3e588-57b0-423d-926c-2a4fa855a563",
+      "name": "IF: Envio Exitoso?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1264,
+        1200
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "upsert"
+      },
+      "id": "99727502-c1ce-4126-8136-721fa92005db",
+      "name": "Actualizar Firestore",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [
+        -1056,
+        1184
+      ],
+      "credentials": {
+        "googleApi": {
+          "id": "AAhdRNGzvsFnYN9O",
+          "name": "tuto yt"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.BACKEND_URL || 'http://localhost:8800' }}/webhook/nurturing-sent",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"lead_id\": \"{{ $('Validar Output Gemini').item.json.lead_id }}\",\n  \"position\": {{ $('Validar Output Gemini').item.json.position }},\n  \"sent_at\": \"{{ new Date().toISOString() }}\",\n  \"status\": \"sent\"\n}",
+        "options": {
+          "timeout": 5000
+        }
+      },
+      "id": "3758c250-b6bb-4d0b-b599-13e229a79718",
+      "name": "Callback: Nurturing Sent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -832,
+        1184
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "r1",
+              "name": "workflow",
+              "type": "string",
+              "value": "SUB-D: Nurturing Sequence Engine v3"
+            },
+            {
+              "id": "r2",
+              "name": "execution_time",
+              "type": "string",
+              "value": "={{ new Date().toISOString() }}"
+            },
+            {
+              "id": "r3",
+              "name": "success",
+              "type": "boolean",
+              "value": true
+            },
+            {
+              "id": "r4",
+              "name": "message",
+              "type": "string",
+              "value": "Nurturing sequence completed with native nodes"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d5df0124-0fdb-48d3-b7c0-0c48ec56b90b",
+      "name": "Consolidar Resultados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -688,
+        1408
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4e9c5ef1-91ba-44ac-bc1d-13dac6e53ab6",
+      "name": "Exit Workflow",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        1408
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "={{ $json.subject }}",
+        "message": "={{ $json.body.replace(/\\n/g, '<br>') }}",
+        "options": {
+          "senderName": "Dr. Omar Carrillo - Carrillo Abogados"
+        }
+      },
+      "id": "gmail-send-nurturing",
+      "name": "Enviar Email con Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1504,
+        1136
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 1000,
+      "webhookId": "458bd6e6-8485-4159-ba6a-d7560350a96f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger: Every 6h": {
+      "main": [
+        [
+          {
+            "node": "Calcular Timestamp Actual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular Timestamp Actual": {
+      "main": [
+        [
+          {
+            "node": "Query Firestore: Leads para Nurturing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Firestore: Leads para Nurturing": {
+      "main": [
+        [
+          {
+            "node": "IF: Hay Leads?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Hay Leads?": {
+      "main": [
+        [
+          {
+            "node": "Loop: Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Exit Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop: Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Extraer Datos Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Consolidar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer Datos Lead": {
+      "main": [
+        [
+          {
+            "node": "Calcular Posicion en Secuencia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular Posicion en Secuencia": {
+      "main": [
+        [
+          {
+            "node": "Cargar Template Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cargar Template Email": {
+      "main": [
+        [
+          {
+            "node": "Personalizar Email con Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Personalizar Email con Gemini": {
+      "main": [
+        [
+          {
+            "node": "Validar Output Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Envio Exitoso?": {
+      "main": [
+        [
+          {
+            "node": "Actualizar Firestore",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop: Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actualizar Firestore": {
+      "main": [
+        [
+          {
+            "node": "Callback: Nurturing Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Callback: Nurturing Sent": {
+      "main": [
+        [
+          {
+            "node": "Loop: Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar Resultados": {
+      "main": [
+        [
+          {
+            "node": "Exit Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Output Gemini": {
+      "main": [
+        [
+          {
+            "node": "Enviar Email con Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar Email con Gmail": {
+      "main": [
+        [
+          {
+            "node": "IF: Envio Exitoso?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Bogota",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "c849ac39-1f95-436b-aba4-814a80617b20",
+  "meta": {
+    "instanceId": "3d3321fa006456b860ee93414ff8ce34a43571ec656f012cc11bbaa4bceafb5c"
+  },
+  "id": "PZboUEnAxm5A7Lub",
+  "tags": []
+}

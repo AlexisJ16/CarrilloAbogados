@@ -1,14 +1,20 @@
 package com.carrilloabogados.n8n.controller;
 
-import com.carrilloabogados.n8n.dto.LeadHotAlertDto;
-import com.carrilloabogados.n8n.dto.LeadScoredDto;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.carrilloabogados.n8n.dto.LeadHotAlertDto;
+import com.carrilloabogados.n8n.dto.LeadScoredDto;
+import com.carrilloabogados.n8n.service.ClientServiceIntegration;
 
 /**
  * Controlador para recibir webhooks de n8n Cloud.
@@ -20,6 +26,12 @@ public class WebhookController {
 
     private static final Logger log = LoggerFactory.getLogger(WebhookController.class);
 
+    private final ClientServiceIntegration clientServiceIntegration;
+
+    public WebhookController(ClientServiceIntegration clientServiceIntegration) {
+        this.clientServiceIntegration = clientServiceIntegration;
+    }
+
     /**
      * Recibe callback cuando n8n calcula el score de un lead.
      * 
@@ -27,31 +39,38 @@ public class WebhookController {
      * Acción: Actualizar score en base de datos local
      */
     @PostMapping("/lead-scored")
-    public ResponseEntity<Map<String, Object>> handleLeadScored(@RequestBody LeadScoredDto dto) {
-        log.info("Received lead-scored callback from n8n. Lead ID: {}, Score: {}, Category: {}",
+    public ResponseEntity<Map<String, Object>> handleLeadScored(@RequestBody(required = false) LeadScoredDto dto) {
+        log.info("🔔 ==> WEBHOOK CALLBACK RECEIVED: /lead-scored");
+
+        if (dto == null) {
+            log.error("❌ Received null DTO in lead-scored callback");
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", "error");
+            error.put("message", "Request body is null or invalid");
+            return ResponseEntity.badRequest().body(error);
+        }
+
+        log.info("📨 Received lead-scored callback from n8n. Lead ID: {}, Score: {}, Category: {}",
                 dto.getLeadId(), dto.getScore(), dto.getCategory());
 
         try {
-            // TODO: Actualizar score en client-service via REST o NATS
-            // Por ahora solo logueamos
-            log.info("Lead {} scored as {} with {} points",
-                    dto.getLeadId(), dto.getCategory(), dto.getScore());
+            // Actualizar score en client-service
+            boolean updated = clientServiceIntegration.updateLeadScore(dto);
 
             if (dto.isHotLead()) {
                 log.warn("🔥 HOT LEAD detected! Lead ID: {}", dto.getLeadId());
-                // TODO: Trigger notificación interna
             }
 
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("lead_id", dto.getLeadId());
             response.put("score_received", dto.getScore());
-            response.put("processed", true);
+            response.put("updated_in_db", updated);
 
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            log.error("Error processing lead-scored callback: {}", e.getMessage(), e);
+            log.error("❌ Error processing lead-scored callback: {}", e.getMessage(), e);
 
             Map<String, Object> error = new HashMap<>();
             error.put("status", "error");
@@ -68,32 +87,42 @@ public class WebhookController {
      * Acción: Notificar abogado asignado
      */
     @PostMapping("/lead-hot")
-    public ResponseEntity<Map<String, Object>> handleHotLead(@RequestBody LeadHotAlertDto dto) {
+    public ResponseEntity<Map<String, Object>> handleHotLead(@RequestBody(required = false) LeadHotAlertDto dto) {
+        log.info("🔔 ==> WEBHOOK CALLBACK RECEIVED: /lead-hot");
+
+        if (dto == null) {
+            log.error("❌ Received null DTO in lead-hot callback");
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", "error");
+            error.put("message", "Request body is null or invalid");
+            return ResponseEntity.badRequest().body(error);
+        }
+
         log.warn("🔥 HOT LEAD ALERT from n8n! Lead ID: {}, Score: {}, Urgency: {}",
                 dto.getLeadId(), dto.getScore(), dto.getUrgency());
 
         try {
             // Log datos del lead para acción inmediata
             if (dto.getLeadData() != null) {
-                log.warn("HOT Lead Details: {} ({}) - {} - {}",
+                log.warn("🔥 HOT Lead Details: {} ({}) - {} - {}",
                         dto.getLeadData().getNombre(),
                         dto.getLeadData().getEmail(),
                         dto.getLeadData().getEmpresa(),
                         dto.getLeadData().getServicio());
             }
 
-            // TODO: Enviar notificación a notification-service
-            // Por ahora registramos en log
+            // Crear notificación en client-service
+            boolean notified = clientServiceIntegration.createHotLeadNotification(dto);
 
             Map<String, Object> response = new HashMap<>();
             response.put("status", "success");
             response.put("lead_id", dto.getLeadId());
-            response.put("notification_sent", true);
+            response.put("notification_created", notified);
 
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            log.error("Error processing hot-lead alert: {}", e.getMessage(), e);
+            log.error("❌ Error processing hot-lead alert: {}", e.getMessage(), e);
 
             Map<String, Object> error = new HashMap<>();
             error.put("status", "error");
@@ -144,5 +173,23 @@ public class WebhookController {
         health.put("timestamp", java.time.Instant.now());
 
         return ResponseEntity.ok(health);
+    }
+
+    /**
+     * Endpoint de prueba para verificar conectividad desde n8n Cloud.
+     * n8n puede llamar este endpoint para confirmar que el servidor es accesible.
+     */
+    @PostMapping("/test")
+    public ResponseEntity<Map<String, Object>> testWebhook(@RequestBody(required = false) Map<String, Object> payload) {
+        log.info("🧪 TEST WEBHOOK RECEIVED");
+        log.info("🧪 Payload: {}", payload);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Webhook endpoint is reachable");
+        response.put("received_payload", payload);
+        response.put("timestamp", java.time.Instant.now());
+
+        return ResponseEntity.ok(response);
     }
 }

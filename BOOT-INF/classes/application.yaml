@@ -1,0 +1,89 @@
+spring:
+  application:
+    name: N8N-INTEGRATION-SERVICE
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=${POSTGRES_SCHEMA_N8N:n8n_integration}
+    username: ${POSTGRES_USER:carrillo}
+    password: ${POSTGRES_PASSWORD:CarrilloAbogados2025!}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_schema: n8n_integration
+  
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
+    schemas: n8n_integration
+  cloud:
+    kubernetes:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+
+server:
+  port: 8800
+  servlet:
+    context-path: /n8n-integration-service
+
+# Client Service Integration
+client-service:
+  base-url: ${CLIENT_SERVICE_URL:http://localhost:8200/client-service}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+    mail:
+      enabled: false
+
+# n8n Cloud Configuration (Production)
+n8n:
+  cloud:
+    base-url: ${N8N_CLOUD_URL:https://carrilloabgd.app.n8n.cloud}
+    enabled: ${N8N_ENABLED:true}
+    webhooks:
+      # Webhook Orquestador v3.0 (AI Agent - PRODUCCION)
+      lead-events: ${N8N_WEBHOOK_LEAD_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook-test/lead-events-v3}
+      meeting-events: ${N8N_WEBHOOK_MEETING_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook/meeting-events}
+      case-events: ${N8N_WEBHOOK_CASE_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook/case-events}
+    timeout-seconds: ${N8N_TIMEOUT:120}
+    retry:
+      max-attempts: 3
+      delay-ms: 2000
+
+# NATS Configuration
+nats:
+  enabled: ${NATS_ENABLED:true}
+  server: ${NATS_SERVER:nats://localhost:4222}
+  subjects:
+    lead-created: carrillo.events.lead.capturado
+    case-closed: carrillo.events.case.closed
+    appointment-scheduled: carrillo.events.appointment.scheduled
+    client-inactive: carrillo.events.client.inactive
+
+logging:
+  level:
+    org.springframework.cloud.kubernetes: WARN
+    com.carrilloabogados.n8n: DEBUG
+    io.nats: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

@@ -1,5 +1,8 @@
 # OPS README - Carrillo Abogados DevOps
 
+**Última Actualización**: 11 de Enero, 2026  
+**Estado**: FASE 10 - Autenticación Frontend Completa
+
 ## 📋 Índice
 
 1. [Arquitectura de Puertos](#arquitectura-de-puertos)
@@ -14,26 +17,31 @@
 
 ### Microservicios
 
-| Servicio | Puerto | Descripción |
-|----------|--------|-------------|
-| api-gateway | 8080 | Gateway principal, punto de entrada |
-| proxy-client | 8900 | Proxy de autenticación |
-| user-service | 8700 | Gestión de usuarios |
-| order-service | 8300 | Gestión de órdenes |
-| payment-service | 8400 | Procesamiento de pagos |
-| client-service | 8700 | Gestión de clientes legales |
-| case-service | 8300 | Gestión de casos legales |
-| document-service | 8500 | Gestión de documentos |
-| calendar-service | 8600 | Integración con Google Calendar |
-| notification-service | 8700 | Notificaciones (Email/SMS) |
-| n8n-integration-service | 8800 | Workflows con N8N |
+| Servicio | Puerto | Descripción | Estado |
+|----------|--------|-------------|--------|
+| api-gateway | 8080 | Gateway principal, CORS, Circuit Breaker | ✅ Activo |
+| client-service | 8200 | Clientes, Leads, Autenticación JWT | ✅ Activo |
+| case-service | 8300 | Gestión de casos legales | ✅ Activo |
+| payment-service | 8400 | Procesamiento de pagos gubernamentales | ✅ Activo |
+| document-service | 8500 | Gestión de documentos legales | ✅ Activo |
+| calendar-service | 8600 | Integración con Google Calendar | ✅ Activo |
+| notification-service | 8700 | Notificaciones (Email/SMS/Push) | ✅ Activo |
+| n8n-integration-service | 8800 | Bridge con n8n Cloud | ✅ Activo |
+
+### Servicios Deprecados (No usar)
+
+| Servicio | Razón |
+|----------|-------|
+| ~~user-service~~ | Migrado a client-service |
+| ~~order-service~~ | Nunca existió (template e-commerce) |
+| ~~proxy-client~~ | Nunca existió |
 
 ### Infraestructura
 
 | Servicio | Puerto | Namespace |
 |----------|--------|-----------|
 | PostgreSQL | 5432 | databases |
-| NATS | 4222 | messaging |
+| NATS | 4222/8222 | messaging |
 
 ---
 

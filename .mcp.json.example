@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "n8n": {
+      "type": "stdio",
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": ["C:\\MCP\\n8n\\mcp-wrapper.js"],
+      "env": {
+        "N8N_API_KEY": "your-n8n-api-key-here",
+        "N8N_API_URL": "https://your-instance.app.n8n.cloud"
+      }
+    }
+  }
+}
