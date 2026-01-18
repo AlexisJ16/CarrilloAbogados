@@ -23,7 +23,11 @@
         <maven.compiler.target>21</maven.compiler.target>
         <spring-cloud.version>2023.0.6</spring-cloud.version>
         <testcontainers.version>1.20.4</testcontainers.version>
+        <!-- springdoc 2.6.0 is compatible with Spring Boot 3.3.x (2.8.x requires Spring Boot 3.4.x) -->
         <springdoc.version>2.6.0</springdoc.version>
+        <!-- Dependency versions managed for security updates -->
+        <jjwt.version>0.13.0</jjwt.version>
+        <jnats.version>2.24.1</jnats.version>
     </properties>
 
     <dependencies>

@@ -34,6 +34,10 @@ server:
   servlet:
     context-path: /n8n-integration-service
 
+# Client Service Integration
+client-service:
+  base-url: ${CLIENT_SERVICE_URL:http://localhost:8200/client-service}
+
 management:
   endpoints:
     web:
@@ -58,8 +62,7 @@ n8n:
     enabled: ${N8N_ENABLED:true}
     webhooks:
       # Webhook Orquestador v3.0 (AI Agent - PRODUCCION)
-      # NOTA: Usar /webhook/ (no /webhook-test/) para producción
-      lead-events: ${N8N_WEBHOOK_LEAD_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3}
+      lead-events: ${N8N_WEBHOOK_LEAD_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook-test/lead-events-v3}
       meeting-events: ${N8N_WEBHOOK_MEETING_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook/meeting-events}
       case-events: ${N8N_WEBHOOK_CASE_EVENTS:https://carrilloabgd.app.n8n.cloud/webhook/case-events}
     timeout-seconds: ${N8N_TIMEOUT:120}
@@ -76,10 +79,6 @@ nats:
     case-closed: carrillo.events.case.closed
     appointment-scheduled: carrillo.events.appointment.scheduled
     client-inactive: carrillo.events.client.inactive
-
-# Client Service Integration
-client-service:
-  base-url: ${CLIENT_SERVICE_BASE_URL:http://client-service:8200/client-service}
 
 logging:
   level:

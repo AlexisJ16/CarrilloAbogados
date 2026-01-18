@@ -24,7 +24,6 @@ spring:
             allowed-origins: 
               - "${CLIENT_HOST:http://localhost:3000}"
               - "http://localhost:4200"
-              - "http://localhost:3000"
             allowed-headers: "*"
             exposed-headers: "*"
             allow-credentials: true

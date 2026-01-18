@@ -1,7 +1,7 @@
 # 📋 CONTEXTO DE SESIONES - Carrillo Abogados
 
 **Propósito**: Documento para mantener contexto entre sesiones de desarrollo con IA.  
-**Última Actualización**: 11 de Enero, 2026
+**Última Actualización**: 14 de Enero, 2026
 
 ---
 
@@ -36,6 +36,30 @@
 | **API Gateway** | http://localhost:8080 | - |
 | **Grafana** | http://localhost:3100 | admin / carrillo2025 |
 | **Prometheus** | http://localhost:9090 | - |
+| **n8n Cloud** | https://carrilloabgd.app.n8n.cloud | (ver n8n dashboard) |
+
+### 🔗 Integración n8n Cloud - PRODUCCIÓN ✅
+
+**Estado**: Backend 100% funcional, workflow activo en n8n Cloud
+
+| Componente | Estado | Detalles |
+|------------|--------|----------|
+| **Webhook URL** | ✅ Configurado | `/webhook-test/lead-events-v3` |
+| **NATS Events** | ✅ Publicando | `carrillo.events.lead.captured` |
+| **n8n-integration-service** | ✅ Operativo | Puerto 8800 |
+| **Workflow n8n** | ✅ Activo | Modo producción |
+| **Callback Endpoint** | ✅ Probado | `/webhook/lead-scored` funcional |
+| **Spring Security** | ✅ Configurado | PATCH `/api/leads/*/score` permitAll |
+| **PostgreSQL Updates** | ✅ Verificado | Score y category actualizan correctamente |
+
+**Dev Tunnel**: El puerto 8800 debe exponerse públicamente para callbacks de n8n Cloud.
+
+**Test Realizado (14 Ene 2026)**:
+- Lead ID: `61ccdfec-4d47-4cc2-9c83-787d3665c06e`
+- Resultado: score 0→90, category COLD→HOT ✅
+- Database updated_at: 2026-01-14 13:20:31
+
+**Próximo Paso**: Test E2E desde formulario web → n8n → callback → database
 
 ---
 

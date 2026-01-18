@@ -1,138 +1,126 @@
-# 🤖 Copilot Agents Index - Carrillo Abogados
+# 🤖 Copilot Agents - Carrillo Abogados
 
-## Agentes Disponibles
-
-Este directorio contiene **agentes especializados** para diferentes áreas del proyecto. Cada agente tiene conocimiento profundo de su dominio y puede ser invocado según la tarea.
-
----
-
-## 📋 Lista de Agentes
-
-### 1. [Backend Agent](./backend-agent.md)
-**Especialización**: Spring Boot, Microservicios, Java 21
-- Desarrollo de servicios REST
-- Patrones de código
-- Configuraciones Spring
-- Tests unitarios e integración
-
-### 2. [Frontend Agent](./frontend-agent.md)
-**Especialización**: React, Next.js, TypeScript, Tailwind
-- Desarrollo UI/UX
-- Integración con APIs
-- Componentes reutilizables
-- Estado y formularios
-
-### 3. [DevOps Agent](./devops-agent.md)
-**Especialización**: Docker, Kubernetes, CI/CD
-- Configuración de contenedores
-- Helm charts
-- GitHub Actions
-- Troubleshooting de infraestructura
-
-### 4. [Testing Agent](./testing-agent.md)
-**Especialización**: Tests exhaustivos y seguridad
-- Tests unitarios (JUnit 5)
-- Tests de integración (MockMvc)
-- Tests de seguridad (OWASP)
-- Cobertura de código
-
-### 5. [Documentation Agent](./documentation-agent.md) ⭐
-**Especialización**: Gestión integral de documentación + Auditoría
-- Auditar toda la documentación del repositorio
-- Control absoluto de archivos .md y textos
-- Detectar documentos obsoletos, duplicados o inconsistentes
-- Actualizar PROYECTO_ESTADO.md, CLAUDE.md, copilot-instructions.md
-- Mantener consistencia y calidad documental
-- Limpiar documentación basura
-
-### 6. [Project Manager Agent](./project-manager-agent.md)
-**Especialización**: Gestión y tracking
-- Estado del proyecto
-- Priorización de tareas
-- Timeline y milestones
-- Métricas de progreso
-
-### 7. [QA & Quality Agent](./qa-quality-agent.md)
-**Especialización**: Control de calidad y depuración
-- Análisis profundo del proyecto
-- Depuración y limpieza de código
-- Validación E2E de Docker y APIs
-- Monitoreo de Snyk, SonarCloud y VSCode
-- Asegurar cero errores en herramientas de calidad
-- Tests unitarios e integración
-
-### 8. [Business Product Agent](./business-product-agent.md)
-**Especialización**: Investigación, Gerencia de Producto y Planificación de Negocio
-- Gestión completa de la carpeta `docs/business/`
-- Definición de requerimientos y prioridades del MVP
-- Investigación del contexto legal colombiano
-- Traducción de necesidades de negocio a requerimientos técnicos
-- Coordinación de estrategia Flywheel + n8n
-- Roadmap del producto y timeline
-- Definición de los 4 tipos de usuario y sus funcionalidades
-
-### 9. [Branch Sync Agent](./branch-sync-agent.md) 🆕
-**Especialización**: Sincronización de ramas y gestión de integración
-- Mantener sincronizadas las ramas main, dev y automation
-- Integrar cambios de automation a dev de forma segura
-- Revisar y resolver conflictos de merge
-- Mantener historial de git limpio y ordenado
-- Coordinación entre equipo de desarrollo y marketing
+**Última Actualización**: 12 de Enero, 2026 - 11:00 COT  
+**Versión**: 3.0
 
 ---
 
-## 🎯 Cómo Usar los Agentes
+## 📋 Resumen
 
-### Opción 1: Referenciar en el Chat
+Este directorio contiene **4 agentes especializados** con conocimiento profundo del proyecto. Cada agente se enfoca en un dominio específico para proporcionar asistencia precisa y eficiente.
+
+---
+
+## 🎯 Agentes Disponibles
+
+| Agente | Archivo | Especialización |
+|--------|---------|-----------------|
+| **Backend** | [backend-agent.md](./backend-agent.md) | Java 21, Spring Boot, APIs REST, JPA |
+| **Frontend** | [frontend-agent.md](./frontend-agent.md) | Next.js 14, React, TypeScript, Tailwind |
+| **DevOps** | [devops-agent.md](./devops-agent.md) | Docker, Kubernetes, CI/CD, WSL |
+| **Documentation** | [documentation-agent.md](./documentation-agent.md) | Docs, timestamps, auditoría |
+
+---
+
+## 🔄 Cuándo Usar Cada Agente
+
+### Por Tipo de Archivo
+
+| Archivos | Agente |
+|----------|--------|
+| `*.java`, `pom.xml`, `*-service/` | Backend Agent |
+| `*.tsx`, `*.ts`, `frontend/` | Frontend Agent |
+| `Dockerfile`, `*.yml`, `helm-charts/`, `.github/workflows/` | DevOps Agent |
+| `*.md`, `docs/`, `README` | Documentation Agent |
+
+### Por Tipo de Tarea
+
+| Tarea | Agente |
+|-------|--------|
+| Crear endpoint REST, validaciones, JPA | Backend |
+| Componentes UI, hooks, formularios | Frontend |
+| Deploy, troubleshooting K8s, Docker | DevOps |
+| Actualizar docs, crear ADRs | Documentation |
+
+---
+
+## 💡 Cómo Invocar un Agente
+
+### Opción 1: Referencia Explícita
 ```
-@workspace Usando el conocimiento del backend-agent, 
-crea un nuevo endpoint para gestión de audiencias en calendar-service
+"Siguiendo backend-agent, implementa el endpoint de pagos..."
+"Actúa como devops-agent y resuelve el error de pod..."
 ```
 
-### Opción 2: Contextualizar la Tarea
-```
-Estoy trabajando en frontend. Necesito crear un formulario de contacto 
-que se integre con la Lead API del backend.
-```
+### Opción 2: Adjuntar el Archivo
+Adjunta el agente como contexto en tu chat de Copilot.
 
-### Opción 3: Pedir Actualización de Documentación
+### Opción 3: Detección Automática
+El AI debería detectar automáticamente el agente apropiado basándose en el contexto de la tarea y los archivos involucrados.
+
+---
+
+## 📁 Estructura
+
 ```
-Acabo de completar la implementación de calendar-service.
-Actualiza la documentación del proyecto usando el documentation-agent.
+.github/copilot-agents/
+├── INDEX.md                  # Este archivo
+├── backend-agent.md          # Java/Spring Boot (~450 líneas)
+├── frontend-agent.md         # Next.js/React (~500 líneas)
+├── devops-agent.md           # Docker/K8s (~500 líneas)
+├── documentation-agent.md    # Docs/Trazabilidad (~400 líneas)
+└── archive/                  # Agentes deprecados (no usar)
 ```
 
 ---
 
-## 📁 Estructura de Archivos
+## ⚡ Contenido Clave por Agente
 
-```
-.github/
-├── copilot-instructions.md       # Instrucciones principales de Copilot
-├── copilot-agents/
-│   ├── INDEX.md                  # Este archivo
-│   ├── backend-agent.md          # Desarrollo Spring Boot
-│   ├── frontend-agent.md         # Desarrollo React/Next.js
-│   ├── devops-agent.md           # Docker, K8s, CI/CD
-│   ├── testing-agent.md          # Tests y seguridad
-│   ├── documentation-agent.md    # Mantenimiento de docs
-│   ├── project-manager-agent.md  # Gestión de proyecto
-│   ├── qa-quality-agent.md       # Control de calidad
-│   ├── business-product-agent.md # Producto y negocio
-│   └── branch-sync-agent.md      # Sincronización de ramas 🆕
-└── workflows/                    # GitHub Actions
+### Backend Agent
+- ✅ 5 patrones obligatorios con código completo
+- ✅ Mapa de microservicios (puertos, schemas, estado)
+- ✅ Convenciones de naming
+- ✅ Estructura de paquetes estándar
+- ✅ Patrones de testing (Mockito, MockMvc)
+
+### Frontend Agent
+- ✅ Tipos TypeScript sincronizados con backend
+- ✅ API client con manejo de auth
+- ✅ Patrones React Query (hooks)
+- ✅ Formularios con React Hook Form + Zod
+- ✅ Sistema de diseño (CSS variables, Tailwind)
+
+### DevOps Agent
+- ⚠️ **CRÍTICO**: Comandos K8s vía WSL obligatorio
+- ✅ Arquitectura Docker Compose completa
+- ✅ Comandos Helm y kubectl
+- ✅ Stack de observabilidad (Grafana LGTM)
+- ✅ Troubleshooting común
+
+### Documentation Agent
+- 🕐 **Sistema de timestamps obligatorio**
+- ✅ Formato de header estándar
+- ✅ Plantillas (ADR, README, Documento técnico)
+- ✅ Flujos de actualización
+- ✅ Checklists de auditoría
+
+---
+
+## 📚 Regla Fundamental
+
+> **"Documentación sin fecha es documentación sin valor"**
+
+Todo archivo `.md` modificado debe incluir:
+```markdown
+**Última Actualización**: DD de Mes, AAAA - HH:MM COT
 ```
 
 ---
 
-## 🔄 Mantenimiento
+## 🗄️ Agentes Archivados
 
-Estos agentes deben actualizarse cuando:
-
-1. **Cambia la arquitectura** → Actualizar backend-agent, devops-agent
-2. **Nuevos endpoints API** → Actualizar frontend-agent
-3. **Nuevas convenciones de código** → Actualizar todos los agentes relevantes
-4. **Nuevas herramientas** → Actualizar devops-agent
+La carpeta `archive/` contiene agentes consolidados o deprecados. **No usar** - su contenido fue integrado en los 4 agentes principales.
 
 ---
 
-*Última actualización: 11 de Enero, 2026 - FASE 10: Autenticación Frontend Completa*
+*Índice actualizado: 12 de Enero 2026, 11:00 COT*

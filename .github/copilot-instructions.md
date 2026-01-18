@@ -1,639 +1,215 @@
-# AI Coding Agent Instructions - Carrillo Abogados Legal Tech Platform
-
-## Project Overview
-
-Cloud-native legal management platform with 8 Spring Boot microservices on Kubernetes. **Dual purpose**: Academic project (Plataformas II) + Real production system for 7-lawyer firm in Cali, Colombia. Built with zero vendor lock-in using Spring Cloud Kubernetes instead of Eureka/Config Server.
-
-**MVP Target Date**: 27 Marzo 2026  
-**Current Phase**: FASE 10 - Frontend Authentication Complete
-
-## Critical Architecture Decisions
-
-### Database Strategy (ADR-005)
-
-- **Single PostgreSQL** with separate schemas per service (not databases)
-- Schema names: `clients`, `cases`, `documents`, `payments`, `calendar`, `notifications`
-- Connect via: `kubectl exec -it postgresql-0 -n databases -- psql -U carrillo -d carrillo_legal_tech`
-- Switch schemas: `SET search_path TO clients;`
-- Managed by Flyway (check migrations in each service's `src/main/resources/db/migration/`)
-
-### Service Discovery
-
-- **Kubernetes DNS** native (no Eureka)
-- Services call via `lb://SERVICE-NAME` in Spring Cloud Gateway
-- Check API Gateway routes: [api-gateway/src/main/resources/application.yml](../api-gateway/src/main/resources/application.yml) lines 36-55
-
-### Messaging
-
-- Dev/Staging: **NATS** (`nats://nats.messaging.svc.cluster.local:4222`)
-- Production: **Google Pub/Sub** (not yet configured)
-- Event-driven architecture for N8N integration
-
-### Authentication
-
-- OAuth2 via Google Workspace (`@carrilloabgd.com`)
-- Legal traceability requirement: every action logged with user email
-- Configured in API Gateway (not in individual services)
-
-## Core Microservices
-
-| Service                 | Port | Purpose                                         | Status     |
-| ----------------------- | ---- | ----------------------------------------------- | ---------- |
-| api-gateway             | 8080 | Spring Cloud Gateway + OAuth2                   | Active     |
-| client-service          | 8200 | Client management (replacing user-service)      | Active     |
-| case-service            | 8300 | Legal case management (replacing order-service) | Active     |
-| payment-service         | 8400 | Government payment processing                   | Active     |
-| document-service        | 8500 | Legal document storage                          | Active     |
-| calendar-service        | 8600 | Google Calendar integration                     | Active     |
-| notification-service    | 8700 | Email/SMS via Gmail API                         | Active     |
-| n8n-integration-service | 8800 | N8N Pro workflow bridge                         | Active     |
-| user-service            | 8100 | Legacy - migrate to client-service              | Deprecated |
-
-## Essential Development Workflows
-
-### Daily Dev Setup
-
-```bash
-./scripts/dev-up.sh  # Smart startup - detects state, only rebuilds what's needed
-```
-
-This script:
-
-- Starts Minikube if down
-- Creates namespaces (`carrillo-dev`, `databases`, `messaging`)
-- Deploys PostgreSQL, NATS if missing
-- Builds/deploys changed microservices only
-- Port-forwards API Gateway to localhost:8080
-
-### Building Services
-
-```bash
-# Parallel build all services (fastest)
-./mvnw clean verify -T 1C
-
-# Build without tests (quick iteration)
-./mvnw clean package -DskipTests -T 1C
-
-# Build single service
-cd client-service && ../mvnw clean package -DskipTests
-```
-
-### After Code Changes
-
-1. Build service: `./mvnw -pl <service-name> clean package -DskipTests`
-2. Connect to Minikube Docker: `eval $(minikube docker-env)` (Windows: `minikube docker-env --shell powershell | Invoke-Expression`)
-3. Build image: `docker build -t carrillo/<service>:0.1.0 -f <service>/Dockerfile <service>/`
-4. Helm upgrade: `helm upgrade --install carrillo-dev helm-charts/carrillo-abogados/ -n carrillo-dev`
-
-### Kubernetes Commands
-
-```bash
-# Check deployment status
-kubectl get pods -n carrillo-dev
-kubectl logs -f deployment/client-service -n carrillo-dev
-
-# Database access
-kubectl port-forward svc/postgresql 5432:5432 -n databases
-
-# NATS testing
-kubectl exec -n messaging deployment/nats-box -- nats pub test "Hello"
-
-# Gateway access
-kubectl port-forward svc/api-gateway 8080:8080 -n carrillo-dev
-```
-
-## Project Conventions
-
-### Package Structure
-
-```
-com.carrilloabogados.<service>/
-├── controller/     # REST endpoints
-├── service/        # Business logic
-├── repository/     # JPA repositories
-├── model/          # JPA entities
-├── dto/            # Request/Response objects
-└── config/         # Spring configurations
-```
-
-### Application Configuration Pattern
-
-Each service has:
-
-- `application.yml`: Base config with Spring app name, circuit breakers, logging patterns
-- `application-dev.yml`: Local development (H2 or Docker PostgreSQL)
-- `application-k8s.yml`: Kubernetes config (activated by Helm chart)
-
-**Check service name**: Always uppercase with dashes in `application.yml` (e.g., `CLIENT-SERVICE`), used in Gateway routing
-
-### Docker Images
-
-- Naming: `carrillo/<service-name>:0.1.0`
-- Built in Minikube's Docker (use `eval $(minikube docker-env)`)
-- Dockerfiles use multi-stage builds with JDK 21
-- Base image: `eclipse-temurin:21-jre-jammy`
-
-### Helm Charts
-
-- Umbrella chart: [helm-charts/carrillo-abogados/](../helm-charts/carrillo-abogados/)
-- Service flags in [values.yaml](../helm-charts/carrillo-abogados/values.yaml) lines 7-39
-- Disable legacy services for new deployments:
-  ```yaml
-  user-service:
-    enabled: false
-  ```
-
-## Common Integration Points
-
-### Adding a New Microservice Route
-
-1. Add route in [api-gateway/src/main/resources/application.yml](../api-gateway/src/main/resources/application.yml)
-2. Use `lb://<SERVICE-NAME>` format (Kubernetes load balancing)
-3. Path predicate: `/service-name/**`
-4. Service name MUST match `spring.application.name` in target service
-
-### Database Migrations
-
-- Use Flyway: `src/main/resources/db/migration/V1__initial_schema.sql`
-- Naming: `V{version}__{description}.sql`
-- Set schema in service's `application-k8s.yml`: `spring.flyway.schemas: <schema_name>`
-- View applied migrations: `SELECT * FROM flyway_schema_history;`
-
-### Event Publishing (NATS)
-
-```java
-@Autowired
-private NatsTemplate natsTemplate;
-
-natsTemplate.publish("carrillo.events.client.created", clientDto);
-```
-
-Topic pattern: `carrillo.events.<domain>.<action>`
-
-## ⚠️ CRITICAL: Windows + WSL Development Environment
-
-### Environment Configuration
-
-- **Host OS**: Windows 11
-- **WSL Distribution**: Ubuntu-24.04 (default)
-- **Minikube**: Runs inside WSL with Docker driver
-- **kubectl**: Installed in WSL, NOT in Windows native
-
-### How to Execute Commands from PowerShell
-
-**ALL Kubernetes/Minikube/Helm commands MUST be executed through WSL:**
-
-```powershell
-# ✅ CORRECT - Use wsl bash -c "command"
-wsl bash -c "kubectl get pods -n carrillo-dev"
-wsl bash -c "minikube status"
-wsl bash -c "helm list -n carrillo-dev"
-wsl bash -c "./scripts/deploy.sh"
-
-# ❌ WRONG - Do NOT run kubectl directly in PowerShell
-kubectl get pods  # This fails - Windows kubectl has no config for Minikube
-```
-
-### Restarting WSL (Fixes Most Stability Issues)
-
-```powershell
-# Run as Administrator in PowerShell:
-wsl --shutdown
-
-# Wait 10 seconds, then:
-wsl bash -c "minikube start"
-wsl bash -c "kubectl get pods -A"
-```
-
-### Available WSL Distributions
-
-```powershell
-wsl --list  # Shows: Ubuntu-24.04 (Default), docker-desktop
-```
-
-### Port Forwarding (Access Services from Windows)
-
-```powershell
-# Start port-forward in background
-wsl bash -c "kubectl port-forward svc/carrillo-dev-api-gateway 8080:8080 -n carrillo-dev &"
-
-# Then access from Windows browser: http://localhost:8080
-```
-
-## Troubleshooting
-
-### Minikube Keeps Stopping
-
-This is usually a cgroups issue in WSL. Solution:
-
-```powershell
-wsl --shutdown
-# Wait 10 seconds
-wsl bash -c "minikube start"
-```
-
-### Pod CrashLoopBackOff
-
-```bash
-kubectl describe pod <pod-name> -n carrillo-dev
-kubectl logs <pod-name> -n carrillo-dev --previous
-```
-
-Common causes: Database schema missing, incorrect service name in Gateway
-
-### Service Not Reachable
-
-1. Check pod status: `kubectl get pods -n carrillo-dev`
-2. Verify service registration: `kubectl get svc -n carrillo-dev`
-3. Check Gateway routes: Access `http://localhost:8080/actuator/gateway/routes`
-
-### Build Failures
-
-- Clean Maven cache: `./mvnw clean`
-- Remove target dirs: `find . -name "target" -type d -exec rm -rf {} +`
-- Check Java version: `java -version` (must be 21)
-
-### Full Environment Reset
-
-```powershell
-wsl --shutdown
-wsl bash -c "minikube delete && minikube start"
-wsl bash -c "./scripts/deploy.sh"
-```
-
-## Tech Stack Reference
-
-- **Java**: 21 LTS (required)
-- **Spring Boot**: 3.3.13
-- **Spring Cloud**: 2023.0.6
-- **Spring Cloud Kubernetes**: 3.1.3 (replaces Eureka)
-- **Kubernetes**: 1.34.0
-- **PostgreSQL**: 16.2 (Bitnami Helm chart 15.5.38)
-- **NATS**: 2.10.22
-- **Maven**: 3.8+ (use included `./mvnw`)
-
-## Documentation References
-
-- Architecture deep-dive: [docs/architecture/ARCHITECTURE.md](../docs/architecture/ARCHITECTURE.md)
-- Database rationale: [docs/architecture/ADR-005-database-strategy.md](../docs/architecture/ADR-005-database-strategy.md)
-- Operations guide: [docs/operations/OPERATIONS.md](../docs/operations/OPERATIONS.md)
-- Full context: [CLAUDE.md](../CLAUDE.md) (comprehensive developer reference)
-- Project status: [PROYECTO_ESTADO.md](../PROYECTO_ESTADO.md) (current state)
-
-## Git Workflow
-
-- `main`: Production-ready (protected)
-- `staging`: Pre-production testing
-- `dev`: Active development (current working branch)
-
-Always create feature branches from `dev`, not `main`.
-
-## 🚀 FASE 8: CI/CD COMPLETAMENTE FUNCIONAL (5 Enero 2026)
-
-### GitHub Actions - Estado Actual
-
-| Workflow             | Trigger               | Estado                  |
-| -------------------- | --------------------- | ----------------------- |
-| `ci-cd-pipeline.yml` | push dev/staging/main | ✅ 100%                 |
-| `security-scan.yml`  | push main, schedule   | ⚠️ SonarCloud config    |
-| `deploy-gcp.yml`     | push main             | ⚠️ Requiere secrets GCP |
-
-### Jobs del CI/CD Pipeline
-
-1. **🔨 Build & Test** (~2 min) - Maven build + 105 tests
-2. **🔐 Security Scan** (~1.5 min) - Trivy + CodeQL v4
-3. **📊 Pipeline Summary** - Resumen de resultados
-4. **🐳 Docker Build** (8 servicios paralelos) - Push a ghcr.io
-
-### Imágenes Docker Publicadas
-
-```
-ghcr.io/alexisj16/api-gateway:dev
-ghcr.io/alexisj16/client-service:dev
-ghcr.io/alexisj16/case-service:dev
-ghcr.io/alexisj16/payment-service:dev
-ghcr.io/alexisj16/document-service:dev
-ghcr.io/alexisj16/calendar-service:dev
-ghcr.io/alexisj16/notification-service:dev
-ghcr.io/alexisj16/n8n-integration-service:dev
-```
-
-### Workflow Permissions (Corregidos 5 Ene 2026)
-
-```yaml
-permissions:
-  contents: read
-  security-events: write # Para CodeQL SARIF upload
-  actions: read # Para GitHub Actions
-  packages: write # Para push a ghcr.io
-```
-
-## Recent Fixes Applied
-
-### Jan 5, 2026 - FASE 8 CI/CD
-
-1. **CodeQL Action** - Upgraded v3 → v4 (v3 deprecated Dec 2026)
-2. **Workflow Permissions** - Added security-events, packages write
-3. **Docker Registry** - All 8 images now push to ghcr.io
-4. **Branches Synced** - dev and main at commit `9860476`
-
-### Dec 18-19, 2025 - Core Fixes
-
-1. **PostgreSQL DATEDIFF query** - Changed to PostgreSQL syntax in LegalCaseRepository
-2. **Health probes** - Added context-path prefix (/case-service/, /client-service/)
-3. **RBAC** - Created service-discovery-role for Kubernetes service discovery
-4. **Schemas** - Created 7 PostgreSQL schemas for all services
-5. **compose.yml** - Completely rewritten for legal tech (removed e-commerce legacy)
-6. **test.sh** - Improved with context-path aware health checks
-
-## Marketing Automation Integration (Dec 19, 2025)
-
-### n8n Cloud Integration
-
-The platform integrates with n8n Cloud for marketing automation through 3 MEGA-WORKFLOWS:
-
-| MEGA-WORKFLOW   | Purpose                          | Workflows | Nodes |
-| --------------- | -------------------------------- | --------- | ----- |
-| MW#1: Captura   | Lead → Client (<1 min response)  | 7         | 108   |
-| MW#2: Retención | Client → Recompra (Flywheel)     | 5         | 72    |
-| MW#3: SEO       | Traffic → Lead (Content Factory) | 5         | 60    |
-
-### n8n-integration-service Key Endpoints
-
-**Webhooks to expose (n8n → Platform):**
-
-- `POST /webhook/lead-scored` - Receive lead score from n8n
-- `POST /webhook/lead-hot` - Notify lawyer of hot lead (≥70 pts)
-- `POST /webhook/upsell-detected` - Create upsell opportunity
-
-**Events to emit (Platform → n8n via NATS):**
-
-- `lead.capturado` → MW#1 SUB-A (scoring)
-- `cita.agendada` → MW#1 SUB-F (confirmation)
-- `caso.cerrado` → MW#2 (follow-up)
-- `cliente.inactivo` → MW#2 (reactivation)
-
-### Lead Scoring (calculated by n8n)
-
-```
-Base: 30 pts
-+ Service "marca"/"litigio": +20 pts
-+ Message > 50 chars: +10 pts
-+ Has phone: +10 pts
-+ Has company: +10 pts
-+ Corporate email: +10 pts
-+ C-Level role: +20 pts
-────────────────────────────
-HOT:  ≥70 pts → Immediate notification
-WARM: 40-69 pts → AI nurturing
-COLD: <40 pts → Generic response
-```
-
-### Business Documentation
-
-- [MODELO_NEGOCIO.md](../docs/business/MODELO_NEGOCIO.md) - Business context & metrics
-- [REQUERIMIENTOS.md](../docs/business/REQUERIMIENTOS.md) - 76 functional + 23 non-functional requirements
-- [ESTRATEGIA_AUTOMATIZACION.md](../docs/business/ESTRATEGIA_AUTOMATIZACION.md) - n8n integration strategy
-- [ARQUITECTURA_FUNCIONAL.md](../docs/business/ARQUITECTURA_FUNCIONAL.md) - Microservice mapping
-
-## 🚨 LESSONS LEARNED - Avoid These Errors (Dec 19, 2025)
-
-### 1. Jackson Instant/LocalDateTime Serialization
-
-**Problem**: `InvalidDefinitionException: Java 8 date/time type 'java.time.Instant' not supported`
-**Cause**: Jackson no tiene soporte nativo para java.time.Instant sin configuración explícita
-**Solution**: SIEMPRE crear JacksonConfig.java al iniciar cualquier microservicio:
-
-```java
-@Configuration
-public class JacksonConfig {
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        return mapper;
-    }
-}
-```
-
-### 2. NATS EventPublisher con Nullable Connection
-
-**Problem**: NullPointerException cuando NATS no está disponible
-**Cause**: @Autowired falla silenciosamente cuando bean no existe
-**Solution**: Usar @Nullable y verificar null antes de operar:
-
-```java
-public class NatsEventPublisher implements EventPublisher {
-    private final Connection natsConnection;
-
-    public NatsEventPublisher(@Nullable Connection natsConnection) {
-        this.natsConnection = natsConnection;
-    }
-
-    public void publish(String topic, Object event) {
-        if (natsConnection == null) {
-            log.warn("NATS not available, skipping event");
-            return;
-        }
-        // publicar evento
-    }
-}
-```
-
-### 3. Flyway + PostgreSQL 16 Incompatibilidad
-
-**Problem**: Flyway 10.10.0 no soporta PostgreSQL 16.11
-**Solution temporal**: `spring.flyway.enabled: false` + `hibernate.ddl-auto: update`
-**Solution permanente**: Añadir `flyway-database-postgresql` dependency
-
-### 4. Health Check Paths con Context-Path
-
-**Problem**: Health checks fallan con 404
-**Cause**: Servicios con context-path `/service-name/` necesitan ruta completa
-**Solution**: En Dockerfiles usar:
-
-```dockerfile
-HEALTHCHECK --start-period=60s CMD curl -f http://localhost:8200/client-service/actuator/health || exit 1
-```
-
-### 5. Docker Compose Variables de Entorno
-
-**Problem**: Servicios no conectan a PostgreSQL/NATS en Docker Compose
-**Cause**: Variables de entorno no propagadas al contenedor
-**Solution**: SIEMPRE verificar que compose.yml incluya:
-
-```yaml
-environment:
-  - POSTGRES_HOST=postgresql
-  - POSTGRES_PORT=5432
-  - NATS_ENABLED=true
-  - NATS_SERVER=nats://nats:4222
-```
-
-## 📋 CHECKLIST PARA NUEVOS MICROSERVICIOS
-
-Antes de considerar un microservicio "completo", verificar:
-
-### Configuración Básica
-
-- [ ] JacksonConfig.java con JavaTimeModule
-- [ ] application.yml con spring.application.name en MAYÚSCULAS
-- [ ] application-local.yml para Docker Compose
-- [ ] application-k8s.yml para Kubernetes
-- [ ] Hibernate ddl-auto: validate (producción) o update (desarrollo)
-
-### Entidades y Persistencia
-
-- [ ] Entities con @Id UUID
-- [ ] Repository con queries custom necesarias
-- [ ] Migración Flyway V{N}\__create_{entity}\_table.sql
-
-### API REST
-
-- [ ] Resource/Controller con todos los endpoints
-- [ ] DTOs con validaciones @NotNull, @Email, @Size
-- [ ] Mapper Entity ↔ DTO
-
-### Eventos NATS
-
-- [ ] EventPublisher interface
-- [ ] NatsEventPublisher con @Nullable
-- [ ] Event classes con datos pre-calculados
-
-### Tests
-
-- [ ] \*ServiceTest.java (unitarios con Mockito)
-- [ ] \*ResourceTest.java (integración con MockMvc)
-- [ ] E2E manual con curl/Invoke-RestMethod
-
-### Documentación
-
-- [ ] OpenAPI spec exportada
-- [ ] Frontend types generados
-- [ ] README actualizado
-
-## 🔧 RECOMMENDED TOOLS & EXTENSIONS
-
-### VS Code Extensions (Recomendadas)
-
-- `vscjava.vscode-java-pack` - Java Extension Pack
-- `pivotal.vscode-spring-boot` - Spring Boot Tools
-- `vscjava.vscode-maven` - Maven for Java
-- `ms-azuretools.vscode-docker` - Docker
-- `ms-kubernetes-tools.vscode-kubernetes-tools` - Kubernetes
-- `redhat.vscode-yaml` - YAML support
-- `humao.rest-client` - REST Client (para probar APIs)
-
-### MCPs Disponibles (ya activados)
-
-- **GitHub MCP**: Gestión de repos, PRs, issues
-- **Docker MCP**: Gestión de contenedores, imágenes
-- **Octopus Deploy MCP**: Para deployments (futuro)
-
-### Tips para Desarrollo Eficiente
-
-1. Usar `docker-compose logs -f service-name` para debugging
-2. Mantener PROYECTO_ESTADO.md actualizado después de cada sesión
-3. Ejecutar tests antes de commit: `./mvnw test -pl service-name`
-4. Usar semantic_search para encontrar patrones existentes en el código
+# Carrillo Abogados - AI Agent Instructions
+
+**Última Actualización**: 12 de Enero, 2026  
+**Fase**: FASE 10 - Autenticación Frontend Completa  
+**MVP**: 27 Marzo 2026
 
 ---
 
-## 🤖 SISTEMA DE AGENTES ESPECIALIZADOS
+## 🎯 Proyecto
 
-Este proyecto utiliza un sistema de agentes especializados organizados en dos dominios:
+Plataforma legal cloud-native con **8 microservicios Spring Boot** sobre Kubernetes para bufete de 7 abogados en Cali, Colombia. Propósito dual: académico (Plataformas II) + producción real.
 
-### Dominios de Agentes
+---
 
-| Dominio            | Ubicación                         | Propósito                 |
-| ------------------ | --------------------------------- | ------------------------- |
-| **Web Platform**   | `.github/copilot-instructions.md` | Backend, Frontend, DevOps |
-| **n8n Automation** | `automation/.claude/agents/`      | Workflows n8n, Marketing  |
+## 🛠️ Stack Tecnológico
 
-### Agente Orquestador (Principal)
+| Capa                | Tecnologías                                                      |
+| ------------------- | ---------------------------------------------------------------- |
+| **Backend**         | Java 21, Spring Boot 3.3.13, Spring Cloud Kubernetes 3.1.3       |
+| **Frontend**        | Next.js 14, React 18, TypeScript 5, Tailwind CSS, TanStack Query |
+| **Base de Datos**   | PostgreSQL 16.2 (schemas separados por servicio)                 |
+| **Mensajería**      | NATS 2.10 (dev/staging), Google Pub/Sub (prod)                   |
+| **Infraestructura** | Docker, Minikube (WSL), Helm, GKE Autopilot                      |
+| **CI/CD**           | GitHub Actions → ghcr.io                                         |
 
-**Invocar con**: "Actúa como orquestador" o cuando se necesite visión global
+---
 
-El **Orquestador** tiene visión completa del proyecto y puede:
+## 📦 Microservicios
 
-- Analizar impacto cross-domain (web ↔ n8n)
-- Delegar tareas a agentes especializados
-- Coordinar trabajo paralelo
-- Validar integración entre componentes
+| Servicio                | Puerto | Propósito                     |
+| ----------------------- | ------ | ----------------------------- |
+| api-gateway             | 8080   | Spring Cloud Gateway + OAuth2 |
+| client-service          | 8200   | Clientes + Leads + Auth JWT   |
+| case-service            | 8300   | Casos legales + Timeline      |
+| payment-service         | 8400   | Pagos gubernamentales         |
+| document-service        | 8500   | Documentos legales            |
+| calendar-service        | 8600   | Google Calendar               |
+| notification-service    | 8700   | Email/SMS/Push                |
+| n8n-integration-service | 8800   | Bridge n8n Cloud              |
 
-### Agentes de n8n Automation
+---
 
-**Ubicación**: `automation/.claude/agents/`
+## ⚠️ REGLA CRÍTICA: Windows + WSL
 
-| Agente            | Archivo            | Rol                 | Cuándo usar                     |
-| ----------------- | ------------------ | ------------------- | ------------------------------- |
-| **Architect**     | `architect.md`     | Diseño de workflows | Nuevos workflows, planificación |
-| **Engineer**      | `engineer.md`      | Implementación      | Construir workflows             |
-| **QA Specialist** | `qa-specialist.md` | Testing             | Validar y probar                |
-| **Optimizer**     | `optimizer.md`     | Optimización        | Mejorar performance             |
-| **Validator**     | `validator.md`     | Deploy              | Documentar y desplegar          |
+**TODOS los comandos de Kubernetes/Minikube/Helm deben ejecutarse vía WSL:**
 
-**Invocar con**: "Actúa como el subagente [nombre]"
+```powershell
+# ✅ CORRECTO
+wsl bash -c "kubectl get pods -n carrillo-dev"
+wsl bash -c "minikube status"
+wsl bash -c "helm list -n carrillo-dev"
 
-### Flujo de Trabajo con Agentes
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ORQUESTADOR                                  │
-│    (Visión global: Web + Automatizaciones)                      │
-├─────────────────────────────────────────────────────────────────┤
-│                           │                                     │
-│         ┌─────────────────┴─────────────────┐                  │
-│         ▼                                   ▼                  │
-│  ┌──────────────┐                   ┌──────────────┐           │
-│  │ WEB PLATFORM │                   │ N8N AUTOMATION│          │
-│  │              │                   │              │           │
-│  │ • Backend    │                   │ • Architect  │           │
-│  │ • Frontend   │                   │ • Engineer   │           │
-│  │ • DevOps     │                   │ • QA         │           │
-│  │ • Tests      │                   │ • Optimizer  │           │
-│  │              │                   │ • Validator  │           │
-│  └──────────────┘                   └──────────────┘           │
-│         │                                   │                  │
-│         └─────────────────┬─────────────────┘                  │
-│                           ▼                                     │
-│              ┌──────────────────────┐                          │
-│              │ n8n-integration-svc  │                          │
-│              │   (Bridge/Puente)    │                          │
-│              └──────────────────────┘                          │
-└─────────────────────────────────────────────────────────────────┘
+# ❌ INCORRECTO - Falla en PowerShell nativo
+kubectl get pods
 ```
 
-### Documentación de Automatizaciones
+**Reiniciar WSL si hay problemas:**
 
-| Documento           | Ubicación                                                        | Contenido                |
-| ------------------- | ---------------------------------------------------------------- | ------------------------ |
-| Estado Workflows    | `automation/n8n-workflows/workflows/*/STATUS.md`                 | Estado actual n8n Cloud  |
-| Acciones Pendientes | `automation/n8n-workflows/workflows/*/ACCION_REQUERIDA.md`       | Tareas priorizadas       |
-| Integración Web     | `automation/n8n-workflows/WEB_INTEGRATION.md`                    | Arquitectura de conexión |
-| Contexto n8n MCP    | `automation/n8n-workflows/02-context/technical/n8n_mcp_guide.md` | Guía de tools MCP        |
-
-### n8n Cloud - Datos Clave
-
-| Campo              | Valor                              |
-| ------------------ | ---------------------------------- |
-| **URL**            | https://carrilloabgd.app.n8n.cloud |
-| **Versión**        | v1.120.4                           |
-| **Orquestador ID** | `bva1Kc1USbbITEAw`                 |
-| **SUB-A ID**       | `RHj1TAqBazxNFriJ`                 |
-| **Webhook**        | `/webhook/lead-events`             |
-
-### Integración Web ↔ n8n
-
-```
-Frontend → API Gateway → client-service → NATS → n8n-integration-service → n8n Cloud
-                                                            ↑
-n8n Cloud → callbacks → n8n-integration-service → client-service (actualiza BD)
+```powershell
+wsl --shutdown
+wsl bash -c "minikube start"
 ```
 
-**Eventos NATS**:
+---
 
-- `carrillo.events.lead.created` → Trigger MW#1
-- `carrillo.events.case.closed` → Trigger MW#2
-- `carrillo.events.appointment.scheduled` → Confirmación
+## 🏗️ Convenciones del Proyecto
+
+### Nombres de Servicios
+
+- En `application.yml`: MAYÚSCULAS con guiones → `CLIENT-SERVICE`
+- En Gateway routes: `lb://CLIENT-SERVICE`
+- En URLs: minúsculas → `/client-service/**`
+
+### Estructura de Paquetes
+
+```
+com.carrilloabogados.<servicio>/
+├── controller/   # REST endpoints
+├── service/      # Lógica de negocio
+├── repository/   # JPA repositories
+├── model/        # Entidades JPA
+├── dto/          # Request/Response
+└── config/       # Configuraciones
+```
+
+### Base de Datos
+
+- **Una PostgreSQL** con schemas separados: `clients`, `cases`, `documents`, `payments`, `calendar`, `notifications`
+- Migraciones: Flyway en `src/main/resources/db/migration/`
+
+### Eventos NATS
+
+- Patrón: `carrillo.events.<dominio>.<acción>`
+- Ejemplo: `carrillo.events.lead.created`
+
+---
+
+## 🤖 AGENTES ESPECIALIZADOS
+
+Para tareas complejas, **consulta el agente apropiado** en `.github/copilot-agents/`:
+
+| Contexto                            | Agente                     | Qué contiene                                            |
+| ----------------------------------- | -------------------------- | ------------------------------------------------------- |
+| Código Java, Spring Boot, APIs REST | **backend-agent.md**       | Patrones obligatorios, ejemplos de código, convenciones |
+| Código TypeScript, React, Next.js   | **frontend-agent.md**      | Tipos sincronizados, hooks, componentes, diseño         |
+| Docker, K8s, Helm, CI/CD, WSL       | **devops-agent.md**        | Comandos, troubleshooting, arquitectura infra           |
+| Documentación, READMEs, ADRs        | **documentation-agent.md** | Plantillas, timestamps, auditoría                       |
+
+### Cómo Usar los Agentes
+
+1. **Por contexto de archivo**:
+
+   - Editando `*.java` → Consulta `backend-agent.md`
+   - Editando `*.tsx` → Consulta `frontend-agent.md`
+   - Editando `Dockerfile`, `*.yml` → Consulta `devops-agent.md`
+   - Editando `*.md` en `docs/` → Consulta `documentation-agent.md`
+
+2. **Por invocación explícita**:
+   ```
+   "Siguiendo backend-agent, implementa un nuevo endpoint..."
+   "Como devops-agent, resuelve este error de Kubernetes..."
+   ```
+
+### Regla de Documentación
+
+> **"Documentación sin fecha es documentación sin valor"**
+
+Todo archivo `.md` modificado debe incluir:
+
+```markdown
+**Última Actualización**: DD de Mes, AAAA - HH:MM COT
+```
+
+---
+
+## 📂 Documentación Clave
+
+| Documento                                   | Propósito                                      |
+| ------------------------------------------- | ---------------------------------------------- |
+| [PROYECTO_ESTADO.md](../PROYECTO_ESTADO.md) | Estado actual, hitos, próximos pasos           |
+| [CLAUDE.md](../CLAUDE.md)                   | Contexto completo para AI                      |
+| [docs/business/](../docs/business/)         | Modelo de negocio, requerimientos, MVP roadmap |
+| [docs/architecture/](../docs/architecture/) | ADRs, arquitectura técnica                     |
+| [docs/operations/](../docs/operations/)     | Guías de deploy y operaciones                  |
+
+---
+
+## 🔧 Comandos Frecuentes
+
+### Build
+
+```bash
+./mvnw clean package -DskipTests -T 1C     # Build rápido paralelo
+./mvnw clean verify -T 1C                   # Build + tests
+./mvnw -pl client-service package           # Un servicio
+```
+
+### Docker Compose (desarrollo local)
+
+```powershell
+docker-compose up -d                        # Levantar stack
+docker-compose ps                           # Ver estado
+docker-compose logs -f client-service       # Logs
+```
+
+### Kubernetes (vía WSL)
+
+```powershell
+wsl bash -c "kubectl get pods -n carrillo-dev"
+wsl bash -c "kubectl logs -f deployment/client-service -n carrillo-dev"
+wsl bash -c "helm upgrade --install carrillo-dev helm-charts/carrillo-abogados/ -n carrillo-dev"
+```
+
+---
+
+## 🔀 Git Workflow
+
+| Rama      | Propósito                           |
+| --------- | ----------------------------------- |
+| `main`    | Producción (protegida)              |
+| `staging` | Pre-producción                      |
+| `dev`     | Desarrollo activo ← **rama actual** |
+
+Crear feature branches desde `dev`, no desde `main`.
+
+---
+
+## 📋 CI/CD
+
+| Workflow             | Trigger               | Estado                  |
+| -------------------- | --------------------- | ----------------------- |
+| `ci-cd-pipeline.yml` | push dev/staging/main | ✅ Funcional            |
+| `security-scan.yml`  | push main, schedule   | ✅ Funcional            |
+| `deploy-gcp.yml`     | push main             | ⏳ Requiere secrets GCP |
+
+Imágenes publicadas en: `ghcr.io/alexisj16/<servicio>:dev`
+
+---
+
+## 🔗 Integraciones
+
+### n8n Cloud
+
+- URL: `https://carrilloabgd.app.n8n.cloud`
+- Webhook: `/webhook/lead-events`
+- 3 MEGA-WORKFLOWS: Captura (MW#1), Retención (MW#2), SEO (MW#3)
+
+### Google Workspace
+
+- Autenticación OAuth2: `@carrilloabgd.com`
+- Calendar API, Gmail API integrados
+
+---
+
+_Para contexto detallado, consulta los agentes especializados en `.github/copilot-agents/`_

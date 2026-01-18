@@ -23,13 +23,15 @@
 
 **Carrillo Abogados Legal Tech** es una plataforma integral de gestión legal diseñada para el bufete **Carrillo ABGD SAS** de Cali, Colombia. Construida con arquitectura de microservicios sobre Kubernetes, ofrece una solución moderna y escalable para la gestión de casos legales, clientes y automatización de procesos.
 
-### Propósito Dual
+### Propósito
 
-| 🎓 Académico | 🏢 Empresarial |
-|-------------|----------------|
-| Proyecto final curso Plataformas II | Sistema en producción para bufete real |
-| Demostración de competencias DevOps | Gestión de 7 abogados + 2 administrativos |
-| Arquitectura cloud-native | 5 áreas de práctica legal |
+**100% Empresarial** - Sistema de producción para el bufete Carrillo Abogados.
+
+| 🏢 Empresarial |
+|----------------|
+| Gestión de 7 abogados + 2 administrativos |
+| 5 áreas de práctica legal |
+| Automatización de marketing con n8n |
 
 ### Funcionalidades Principales
 

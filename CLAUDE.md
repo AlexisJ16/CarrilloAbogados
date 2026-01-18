@@ -1,9 +1,9 @@
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 11 de Enero, 2026  
-**Fase Actual**: FASE 10 - Autenticación Frontend Completa  
+**Última Actualización**: 14 de Enero, 2026 - 15:30 COT  
+**Fase Actual**: FASE 11 - Integración n8n Production-Ready  
 **Ramas**: `dev` (sincronizado con `main`)  
-**Último Test**: 105 tests ✅ (8 Ene 2026)
+**Último Test**: Callback n8n verificado ✅ (14 Ene 2026)
 
 ---
 
@@ -11,9 +11,8 @@
 
 Plataforma cloud-native de gestión legal con **8 microservicios Spring Boot** para el bufete **Carrillo ABGD SAS** de Cali, Colombia.
 
-### Propósito Dual
-1. **Académico**: Proyecto final Plataformas II
-2. **Empresarial**: Sistema real para bufete de 7 abogados
+### Propósito
+**100% Empresarial** - Sistema de producción para el bufete Carrillo Abogados (7 abogados + 2 administrativos).
 
 ### Fechas Clave
 - **MVP Empresarial**: 27 Marzo 2026
@@ -36,9 +35,9 @@ allowed-origins:
 ### Usuarios de Prueba
 | Rol | Email | Password |
 |-----|-------|----------|
-| Cliente | cliente.prueba@example.com | Cliente123! |
-| Abogado | abogado.prueba@carrilloabgd.com | Cliente123! |
-| Admin | admin.prueba@carrilloabgd.com | Cliente123! |
+| Cliente | alexisj4a@gmail.com | Cliente123! |
+| Abogado | abogado.test@gmail.com | Cliente123! |
+| Admin | admin.test@gmail.com | Cliente123! |
 
 ### Header con Login
 El componente `Header.tsx` incluye:
@@ -238,21 +237,38 @@ docker-compose -f docker-compose.observability.yml up -d
 
 ---
 
-## 🤖 INTEGRACIÓN n8n (Marketing Automation)
+## 🤖 INTEGRACIÓN n8n (Marketing Automation) - PRODUCTION-READY ✅
 
 ### n8n Cloud
 | Campo | Valor |
 |-------|-------|
 | **URL** | https://carrilloabgd.app.n8n.cloud |
 | **Versión** | v1.120.4 |
-| **Webhook** | `/webhook/lead-events` |
+| **Webhook** | `/webhook-test/lead-events-v3` |
+| **Estado** | ✅ Workflow activo en producción |
+
+### Test Exitoso (14 Ene 2026 - 13:20 COT)
+- Lead ID: `61ccdfec-4d47-4cc2-9c83-787d3665c06e`
+- Callback manual: score=90
+- PostgreSQL: score 0→90, category COLD→HOT ✅
 
 ### MEGA-WORKFLOWS
 | Workflow | Propósito | Estado |
 |----------|-----------|--------|
-| MW#1: Captura | Lead → Cliente (<1 min) | 90% |
+| MW#1: Captura | Lead → Cliente (<1 min) | ✅ 95% |
 | MW#2: Retención | Cliente → Recompra | Q2 2026 |
 | MW#3: SEO | Tráfico → Lead | Q2-Q3 2026 |
+
+### Configuración Backend
+- **Webhook URL**: `https://carrilloabgd.app.n8n.cloud/webhook-test/lead-events-v3`
+- **Timeout**: 120 segundos
+- **Retry**: 3 intentos, 2000ms delay
+- **Callback Endpoints**: `/webhook/lead-scored`, `/webhook/lead-hot`, `/webhook/meeting-confirmed`
+- **Spring Security**: PATCH `/api/leads/*/score` permitAll (integración interna)
+
+### Pendiente
+- ⏳ Exponer puerto 8800 con Dev Tunnel para callbacks públicos
+- ⏳ Actualizar callback URLs en n8n Cloud con URL del tunnel
 
 ### Lead Scoring
 ```

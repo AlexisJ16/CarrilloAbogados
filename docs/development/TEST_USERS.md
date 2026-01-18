@@ -1,6 +1,6 @@
 # 🧪 Usuarios de Prueba E2E - Carrillo Abogados
 
-**Última Actualización**: 7 de Enero, 2026  
+**Última Actualización**: 14 de Enero, 2026  
 **Estado**: ✅ Todos los usuarios verificados y funcionando
 
 ---
