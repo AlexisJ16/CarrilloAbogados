@@ -1,7 +1,7 @@
 # 📋 CONTEXTO DE SESIONES - Carrillo Abogados
 
 **Propósito**: Documento para mantener contexto entre sesiones de desarrollo con IA.  
-**Última Actualización**: 14 de Enero, 2026
+**Última Actualización**: 21 de Enero, 2026
 
 ---
 
@@ -24,9 +24,9 @@
 
 | Rol | Email | Password | Permisos |
 |-----|-------|----------|----------|
-| **Cliente** | cliente.prueba@example.com | Cliente123! | 5 permisos básicos |
-| **Abogado** | abogado.prueba@carrilloabgd.com | Cliente123! | 10 permisos, isStaff=true |
-| **Admin** | admin.prueba@carrilloabgd.com | Cliente123! | 9 wildcard permisos |
+| **Cliente** | alexisj4a@gmail.com | Cliente123! | 5 permisos básicos |
+| **Abogado** | abogado.test@gmail.com | Cliente123! | 10 permisos, isStaff=true |
+| **Admin** | admin.test@gmail.com | Cliente123! | 9 wildcard permisos |
 
 ### URLs de Acceso
 
