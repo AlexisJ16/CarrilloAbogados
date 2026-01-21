@@ -1,0 +1,450 @@
+{
+  "validation_timestamp": "2026-01-07T12:00:00Z",
+  "workflow_id": "PZboUEnAxm5A7Lub",
+  "workflow_name": "SUB-D: Nurturing Sequence Engine",
+  "validator": "QA Specialist Agent",
+  "validation_profile": "ai-friendly",
+
+  "summary": {
+    "status": "APPROVED_WITH_WARNINGS",
+    "total_nodes": 16,
+    "nodes_validated": 16,
+    "connections_validated": 15,
+    "critical_errors": 0,
+    "warnings": 5,
+    "suggestions": 4,
+    "ready_for_production": false,
+    "blocking_issues": [
+      "CRED-001: Mailersend credential not configured",
+      "CRED-002: Google API credentials not verified",
+      "ENV-001: BACKEND_URL not configured"
+    ]
+  },
+
+  "node_validation": {
+    "nodes": [
+      {
+        "id": "schedule_trigger",
+        "name": "Schedule Trigger: Every 6h",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "version": 1.2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "configuration": {
+          "interval": "6 hours",
+          "timezone": "America/Bogota (inherited)"
+        }
+      },
+      {
+        "id": "calcular_timestamp",
+        "name": "Calcular Timestamp Actual",
+        "type": "n8n-nodes-base.set",
+        "version": 3.4,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "expressions_validated": [
+          "={{ new Date().toISOString() }}"
+        ]
+      },
+      {
+        "id": "query_firestore",
+        "name": "Query Firestore: Leads para Nurturing",
+        "type": "n8n-nodes-base.httpRequest",
+        "version": 4.2,
+        "status": "WARNING",
+        "errors": [],
+        "warnings": [
+          "WARNING-001: next_email_date filter not included in query"
+        ],
+        "configuration": {
+          "method": "POST",
+          "url": "https://firestore.googleapis.com/v1/projects/carrillo-marketing-core/databases/(default)/documents:runQuery",
+          "authentication": "googleApi",
+          "onError": "continueRegularOutput",
+          "timeout": 30000
+        },
+        "filters_implemented": {
+          "status_in_nuevo_nurturing": true,
+          "emails_sent_lt_12": true,
+          "next_email_date_lte_now": false,
+          "order_by_next_email_date_asc": true,
+          "limit_10": true
+        }
+      },
+      {
+        "id": "if_hay_leads",
+        "name": "IF: Hay Leads?",
+        "type": "n8n-nodes-base.if",
+        "version": 2.2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "condition": "$json.length > 0"
+      },
+      {
+        "id": "loop_batch",
+        "name": "Loop: Split In Batches",
+        "type": "n8n-nodes-base.splitInBatches",
+        "version": 3,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "configuration": {
+          "batchSize": 1,
+          "reset": false
+        }
+      },
+      {
+        "id": "extraer_datos",
+        "name": "Extraer Datos Lead",
+        "type": "n8n-nodes-base.set",
+        "version": 3.4,
+        "status": "WARNING",
+        "errors": [],
+        "warnings": [
+          "WARNING-003: Uses optional chaining (?.) in expressions - works in Set node context"
+        ],
+        "fields_extracted": [
+          "lead_id",
+          "nombre",
+          "email",
+          "empresa",
+          "servicio",
+          "emails_sent",
+          "created_at"
+        ]
+      },
+      {
+        "id": "calcular_posicion",
+        "name": "Calcular Posicion en Secuencia",
+        "type": "n8n-nodes-base.code",
+        "version": 2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "javascript_validated": true,
+        "logic_validated": {
+          "positions_defined": 12,
+          "days_mapping_correct": true,
+          "should_send_logic": true,
+          "next_email_delays": true
+        }
+      },
+      {
+        "id": "cargar_template",
+        "name": "Cargar Template Email",
+        "type": "n8n-nodes-base.code",
+        "version": 2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "javascript_validated": true,
+        "templates_validated": {
+          "count": 12,
+          "all_have_subject": true,
+          "all_have_objective": true,
+          "all_have_structure": true,
+          "all_have_max_words": true,
+          "fallback_implemented": true
+        }
+      },
+      {
+        "id": "gemini_personalizar",
+        "name": "Personalizar Email con Gemini",
+        "type": "n8n-nodes-base.httpRequest",
+        "version": 4.2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [
+          "WARNING-005: Credential googlePalmApi referenced but not verified"
+        ],
+        "configuration": {
+          "model": "gemini-2.0-flash",
+          "temperature": 0.7,
+          "maxOutputTokens": 500,
+          "responseMimeType": "application/json",
+          "timeout": 60000,
+          "retryOnFail": true,
+          "maxTries": 2
+        }
+      },
+      {
+        "id": "validar_gemini",
+        "name": "Validar Output Gemini",
+        "type": "n8n-nodes-base.code",
+        "version": 2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "javascript_validated": true,
+        "validation_logic": {
+          "json_parse": true,
+          "markdown_cleanup": true,
+          "fallback_template": true,
+          "subject_validation": true,
+          "body_validation": true
+        }
+      },
+      {
+        "id": "enviar_mailersend",
+        "name": "Enviar Email con Mailersend",
+        "type": "n8n-nodes-base.httpRequest",
+        "version": 4.2,
+        "status": "WARNING",
+        "errors": [],
+        "warnings": [
+          "WARNING-002: body.replace() assumes body is not null",
+          "WARNING-004: httpHeaderAuth credential not configured"
+        ],
+        "configuration": {
+          "method": "POST",
+          "url": "https://api.mailersend.com/v1/email",
+          "authentication": "httpHeaderAuth",
+          "timeout": 30000,
+          "retryOnFail": true,
+          "maxTries": 3,
+          "tracking": {
+            "track_clicks": true,
+            "track_opens": true
+          }
+        }
+      },
+      {
+        "id": "if_envio_exitoso",
+        "name": "IF: Envio Exitoso?",
+        "type": "n8n-nodes-base.if",
+        "version": 2.2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "condition": "statusCode <= 299"
+      },
+      {
+        "id": "actualizar_firestore",
+        "name": "Actualizar Firestore",
+        "type": "n8n-nodes-base.httpRequest",
+        "version": 4.2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "fields_updated": [
+          "emails_sent",
+          "last_contact",
+          "status",
+          "nurturing_position",
+          "next_email_date",
+          "updated_at"
+        ]
+      },
+      {
+        "id": "callback_backend",
+        "name": "Callback: Nurturing Sent",
+        "type": "n8n-nodes-base.httpRequest",
+        "version": 4.2,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "configuration": {
+          "url": "BACKEND_URL/webhook/nurturing-sent",
+          "onError": "continueRegularOutput",
+          "timeout": 5000
+        }
+      },
+      {
+        "id": "consolidar_resultados",
+        "name": "Consolidar Resultados",
+        "type": "n8n-nodes-base.set",
+        "version": 3.4,
+        "status": "VALID",
+        "errors": [],
+        "warnings": [],
+        "fields_set": [
+          "workflow",
+          "execution_time",
+          "success",
+          "message"
+        ]
+      },
+      {
+        "id": "exit_workflow",
+        "name": "Exit Workflow",
+        "type": "n8n-nodes-base.noOp",
+        "version": 1,
+        "status": "VALID",
+        "errors": [],
+        "warnings": []
+      }
+    ]
+  },
+
+  "connection_validation": {
+    "total_connections": 15,
+    "valid_connections": 15,
+    "invalid_connections": 0,
+    "connections": [
+      { "from": "Schedule Trigger: Every 6h", "to": "Calcular Timestamp Actual", "status": "VALID" },
+      { "from": "Calcular Timestamp Actual", "to": "Query Firestore: Leads para Nurturing", "status": "VALID" },
+      { "from": "Query Firestore: Leads para Nurturing", "to": "IF: Hay Leads?", "status": "VALID" },
+      { "from": "IF: Hay Leads? (true)", "to": "Loop: Split In Batches", "status": "VALID" },
+      { "from": "IF: Hay Leads? (false)", "to": "Exit Workflow", "status": "VALID" },
+      { "from": "Loop: Split In Batches (item)", "to": "Extraer Datos Lead", "status": "VALID" },
+      { "from": "Loop: Split In Batches (done)", "to": "Consolidar Resultados", "status": "VALID" },
+      { "from": "Extraer Datos Lead", "to": "Calcular Posicion en Secuencia", "status": "VALID" },
+      { "from": "Calcular Posicion en Secuencia", "to": "Cargar Template Email", "status": "VALID" },
+      { "from": "Cargar Template Email", "to": "Personalizar Email con Gemini", "status": "VALID" },
+      { "from": "Personalizar Email con Gemini", "to": "Validar Output Gemini", "status": "VALID" },
+      { "from": "Validar Output Gemini", "to": "Enviar Email con Mailersend", "status": "VALID" },
+      { "from": "Enviar Email con Mailersend", "to": "IF: Envio Exitoso?", "status": "VALID" },
+      { "from": "IF: Envio Exitoso? (true)", "to": "Actualizar Firestore", "status": "VALID" },
+      { "from": "IF: Envio Exitoso? (false)", "to": "Loop: Split In Batches", "status": "VALID" },
+      { "from": "Actualizar Firestore", "to": "Callback: Nurturing Sent", "status": "VALID" },
+      { "from": "Callback: Nurturing Sent", "to": "Loop: Split In Batches", "status": "VALID" },
+      { "from": "Consolidar Resultados", "to": "Exit Workflow", "status": "VALID" }
+    ]
+  },
+
+  "error_handling_validation": {
+    "nodes_with_error_handling": 9,
+    "nodes_requiring_error_handling": 9,
+    "coverage": "100%",
+    "details": [
+      { "node": "Query Firestore", "onError": "continueRegularOutput", "retry": false },
+      { "node": "Calcular Posicion", "onError": "continueRegularOutput", "retry": false },
+      { "node": "Cargar Template", "onError": "continueRegularOutput", "retry": false },
+      { "node": "Gemini", "onError": "continueRegularOutput", "retry": true, "maxTries": 2 },
+      { "node": "Validar Gemini", "onError": "continueRegularOutput", "retry": false },
+      { "node": "Mailersend", "onError": "continueRegularOutput", "retry": true, "maxTries": 3 },
+      { "node": "IF: Envio Exitoso?", "onError": "N/A", "retry": false },
+      { "node": "Actualizar Firestore", "onError": "continueRegularOutput", "retry": false },
+      { "node": "Callback Backend", "onError": "continueRegularOutput", "retry": false }
+    ]
+  },
+
+  "javascript_validation": {
+    "nodes_with_javascript": 3,
+    "all_valid": true,
+    "details": [
+      {
+        "node": "Calcular Posicion en Secuencia",
+        "lines_of_code": 45,
+        "syntax_errors": 0,
+        "uses_external_libs": false,
+        "complexity": "medium"
+      },
+      {
+        "node": "Cargar Template Email",
+        "lines_of_code": 95,
+        "syntax_errors": 0,
+        "uses_external_libs": false,
+        "complexity": "low"
+      },
+      {
+        "node": "Validar Output Gemini",
+        "lines_of_code": 55,
+        "syntax_errors": 0,
+        "uses_external_libs": false,
+        "complexity": "medium"
+      }
+    ]
+  },
+
+  "expression_validation": {
+    "total_expressions": 27,
+    "valid_expressions": 27,
+    "invalid_expressions": 0,
+    "details": {
+      "use_equals_prefix": true,
+      "no_invalid_optional_chaining": true,
+      "node_references_valid": true
+    }
+  },
+
+  "warnings": [
+    {
+      "code": "WARNING-001",
+      "severity": "MEDIUM",
+      "node": "Query Firestore: Leads para Nurturing",
+      "message": "next_email_date filter not included in query",
+      "impact": "May process leads before their scheduled date",
+      "recommendation": "Add filter in query OR add IF node after Extraer Datos to check date"
+    },
+    {
+      "code": "WARNING-002",
+      "severity": "LOW",
+      "node": "Enviar Email con Mailersend",
+      "message": "body.replace() assumes body is not null",
+      "impact": "Potential error if previous node fails silently",
+      "recommendation": "Use ($json.body || '').replace(...)"
+    },
+    {
+      "code": "WARNING-003",
+      "severity": "INFO",
+      "node": "Extraer Datos Lead",
+      "message": "Uses optional chaining (?.) in expressions",
+      "impact": "None (works in Set node JavaScript context)",
+      "recommendation": "Document that this works only in Set/Code nodes"
+    },
+    {
+      "code": "WARNING-004",
+      "severity": "BLOCKING",
+      "node": "Enviar Email con Mailersend",
+      "message": "httpHeaderAuth credential not configured",
+      "impact": "Workflow will fail on execution",
+      "recommendation": "Configure Mailersend API key credential"
+    },
+    {
+      "code": "WARNING-005",
+      "severity": "BLOCKING",
+      "node": "Personalizar Email con Gemini",
+      "message": "Credential googlePalmApi referenced but not verified",
+      "impact": "Potential authentication failure",
+      "recommendation": "Verify Google API credentials before activation"
+    }
+  ],
+
+  "suggestions": [
+    {
+      "code": "SUGG-001",
+      "priority": "HIGH",
+      "description": "Add should_send filter after Calcular Posicion",
+      "benefit": "Avoid processing leads that shouldn't receive email today"
+    },
+    {
+      "code": "SUGG-002",
+      "priority": "MEDIUM",
+      "description": "Add structured logging to Google Sheets",
+      "benefit": "Track leads_processed, emails_sent, latency_avg"
+    },
+    {
+      "code": "SUGG-003",
+      "priority": "MEDIUM",
+      "description": "Add Error Trigger with notification",
+      "benefit": "Alert ingenieria@carrilloabgd.com on failures"
+    },
+    {
+      "code": "SUGG-004",
+      "priority": "LOW",
+      "description": "Add explicit rate limiting (Wait node)",
+      "benefit": "Avoid Mailersend rate limiting on large batches"
+    }
+  ],
+
+  "test_data_generated": false,
+  "test_execution_performed": false,
+  "test_notes": "Testing requires configured credentials. Recommend creating test lead in Firestore after credential setup.",
+
+  "approval": {
+    "status": "APPROVED_WITH_WARNINGS",
+    "approved_by": "QA Specialist Agent",
+    "approved_at": "2026-01-07T12:00:00Z",
+    "conditions": [
+      "Configure Mailersend credential",
+      "Verify Google API credentials",
+      "Configure BACKEND_URL environment variable",
+      "Run manual test before activating schedule"
+    ],
+    "next_step": "OPTIMIZER or CREDENTIAL_CONFIGURATION"
+  }
+}

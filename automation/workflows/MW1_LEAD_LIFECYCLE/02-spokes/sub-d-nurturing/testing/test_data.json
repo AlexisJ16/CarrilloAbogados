@@ -1,0 +1,276 @@
+{
+  "test_cases": [
+    {
+      "name": "TC-001: Lead Nuevo - Primer Email",
+      "description": "Lead que nunca ha recibido emails, debe recibir email de bienvenida",
+      "input": {
+        "lead_id": "test-nurturing-001",
+        "nombre": "Juan Prueba",
+        "email": "marketing@carrilloabgd.com",
+        "empresa": "Empresa Test",
+        "servicio": "Registro de Marcas",
+        "emails_sent": 0,
+        "created_at": "2026-01-11T10:00:00.000Z",
+        "nurturing_status": "active",
+        "category": "WARM",
+        "last_email_sent": null,
+        "last_email_position": 0
+      },
+      "expected": {
+        "should_send": true,
+        "next_email_position": 1,
+        "email_subject": "Bienvenido a Carrillo Abogados",
+        "email_day": 0,
+        "firestore_updates": {
+          "emails_sent": 1,
+          "last_email_position": 1,
+          "nurturing_status": "active"
+        }
+      },
+      "priority": "HIGH"
+    },
+    {
+      "name": "TC-002: Lead en Secuencia - Email #5 (Día 14)",
+      "description": "Lead que ya recibió 4 emails, debe recibir el quinto (urgencia)",
+      "input": {
+        "lead_id": "test-nurturing-002",
+        "nombre": "María Empresaria",
+        "email": "maria.test@techstartup.co",
+        "empresa": "Tech Startup SAS",
+        "servicio": "Patentes",
+        "emails_sent": 4,
+        "created_at": "2026-01-01T10:00:00.000Z",
+        "nurturing_status": "active",
+        "category": "HOT",
+        "last_email_sent": "2026-01-01T10:00:00.000Z",
+        "last_email_position": 4
+      },
+      "expected": {
+        "should_send": true,
+        "next_email_position": 5,
+        "email_subject": "3 riesgos de no proteger su PI",
+        "email_day": 14,
+        "days_since_last": 10,
+        "firestore_updates": {
+          "emails_sent": 5,
+          "last_email_position": 5,
+          "nurturing_status": "active"
+        }
+      },
+      "priority": "HIGH"
+    },
+    {
+      "name": "TC-003: Lead Completado - No Enviar",
+      "description": "Lead que completó la secuencia de 12 emails, no debe recibir más",
+      "input": {
+        "lead_id": "test-nurturing-003",
+        "nombre": "Pedro Completo",
+        "email": "pedro.test@example.com",
+        "empresa": "Empresa XYZ",
+        "servicio": "Litigio",
+        "emails_sent": 12,
+        "created_at": "2025-10-01T10:00:00.000Z",
+        "nurturing_status": "completed",
+        "category": "WARM",
+        "last_email_sent": "2026-01-01T10:00:00.000Z",
+        "last_email_position": 12
+      },
+      "expected": {
+        "query_result": "NOT_FOUND",
+        "should_send": false,
+        "reason": "Lead con nurturing_status='completed' debe ser filtrado por query de Firestore"
+      },
+      "priority": "HIGH"
+    },
+    {
+      "name": "TC-004: Lead Unsubscribed - No Enviar",
+      "description": "Lead que se dio de baja, no debe recibir más emails",
+      "input": {
+        "lead_id": "test-nurturing-004",
+        "nombre": "Ana Unsubscribed",
+        "email": "ana.test@example.com",
+        "empresa": "No Interesada Corp",
+        "servicio": "Corporativo",
+        "emails_sent": 3,
+        "created_at": "2026-01-05T10:00:00.000Z",
+        "nurturing_status": "unsubscribed",
+        "category": "COLD",
+        "last_email_sent": "2026-01-08T10:00:00.000Z",
+        "last_email_position": 3
+      },
+      "expected": {
+        "query_result": "NOT_FOUND",
+        "should_send": false,
+        "reason": "Lead con nurturing_status='unsubscribed' debe ser filtrado por query de Firestore"
+      },
+      "priority": "CRITICAL"
+    },
+    {
+      "name": "TC-005: Lead con Timing Incorrecto - Skip",
+      "description": "Lead que recibió email recientemente, debe esperar días requeridos",
+      "input": {
+        "lead_id": "test-nurturing-005",
+        "nombre": "Luis Reciente",
+        "email": "luis.test@example.com",
+        "empresa": "Nueva Empresa",
+        "servicio": "Registro de Marcas",
+        "emails_sent": 2,
+        "created_at": "2026-01-01T10:00:00.000Z",
+        "nurturing_status": "active",
+        "category": "WARM",
+        "last_email_sent": "2026-01-11T09:00:00.000Z",
+        "last_email_position": 2
+      },
+      "expected": {
+        "query_result": "FOUND",
+        "should_send": false,
+        "next_email_position": 3,
+        "required_days": 4,
+        "days_since_last": 0,
+        "reason": "Debe esperar 4 días desde último email (día 3 → día 7)",
+        "firestore_updates": "NONE"
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "TC-006: Lead Paused - No Enviar Pero Aparecer en Query",
+      "description": "Lead pausado temporalmente, aparece en query pero no debe enviar",
+      "input": {
+        "lead_id": "test-nurturing-006",
+        "nombre": "Carlos Pausado",
+        "email": "carlos.test@example.com",
+        "empresa": "Paused Corp",
+        "servicio": "Litigio",
+        "emails_sent": 5,
+        "created_at": "2026-01-01T10:00:00.000Z",
+        "nurturing_status": "paused",
+        "category": "HOT",
+        "last_email_sent": "2026-01-10T10:00:00.000Z",
+        "last_email_position": 5
+      },
+      "expected": {
+        "query_result": "FOUND",
+        "should_send": false,
+        "reason": "nurturing_status='paused' debe aparecer en query pero no enviar email",
+        "note": "Este caso depende de la lógica del Code node 'Calculate Email Position'"
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "TC-007: Lead HOT - Personalización Mejorada",
+      "description": "Lead HOT debe recibir personalización más agresiva de Gemini",
+      "input": {
+        "lead_id": "test-nurturing-007",
+        "nombre": "Sofia CEO",
+        "email": "sofia.ceo@bigcorp.co",
+        "empresa": "Big Corp International",
+        "servicio": "Patentes",
+        "emails_sent": 0,
+        "created_at": "2026-01-11T10:00:00.000Z",
+        "nurturing_status": "active",
+        "category": "HOT",
+        "last_email_sent": null,
+        "last_email_position": 0
+      },
+      "expected": {
+        "should_send": true,
+        "next_email_position": 1,
+        "gemini_personalization": {
+          "tone": "executive",
+          "urgency": "high",
+          "examples": "corporate-level"
+        },
+        "firestore_updates": {
+          "emails_sent": 1,
+          "last_email_position": 1,
+          "nurturing_status": "active"
+        }
+      },
+      "priority": "MEDIUM"
+    },
+    {
+      "name": "TC-008: Lead Email #12 - Completar Secuencia",
+      "description": "Lead recibiendo último email, debe marcar como completed",
+      "input": {
+        "lead_id": "test-nurturing-008",
+        "nombre": "Roberto Último",
+        "email": "roberto.test@example.com",
+        "empresa": "Final Corp",
+        "servicio": "Corporativo",
+        "emails_sent": 11,
+        "created_at": "2025-10-01T10:00:00.000Z",
+        "nurturing_status": "active",
+        "category": "COLD",
+        "last_email_sent": "2025-12-30T10:00:00.000Z",
+        "last_email_position": 11
+      },
+      "expected": {
+        "should_send": true,
+        "next_email_position": 12,
+        "email_subject": "¿Necesita ayuda legal ahora?",
+        "email_day": 90,
+        "firestore_updates": {
+          "emails_sent": 12,
+          "last_email_position": 12,
+          "nurturing_status": "completed"
+        }
+      },
+      "priority": "HIGH"
+    }
+  ],
+  "firestore_setup": {
+    "collection": "leads",
+    "required_indexes": [
+      {
+        "fields": [
+          {"field": "nurturing_status", "order": "ASCENDING"},
+          {"field": "last_email_sent", "order": "ASCENDING"}
+        ],
+        "query_scope": "COLLECTION"
+      }
+    ],
+    "sample_insert_script": "firebase_insert_test_leads.js"
+  },
+  "email_sequence_schedule": [
+    {"position": 1, "day": 0, "subject": "Bienvenido a Carrillo Abogados"},
+    {"position": 2, "day": 3, "subject": "Por qué proteger su marca es crítico"},
+    {"position": 3, "day": 7, "subject": "Caso de éxito: Marca registrada"},
+    {"position": 4, "day": 10, "subject": "Checklist gratuito: Registro de marca"},
+    {"position": 5, "day": 14, "subject": "3 riesgos de no proteger su PI"},
+    {"position": 6, "day": 21, "subject": "Conozca al Dr. Omar Carrillo (SIC)"},
+    {"position": 7, "day": 28, "subject": "Oferta: Consulta gratuita"},
+    {"position": 8, "day": 35, "subject": "¿Sigue interesado?"},
+    {"position": 9, "day": 42, "subject": "Tendencias PI 2026"},
+    {"position": 10, "day": 49, "subject": "Última oportunidad"},
+    {"position": 11, "day": 56, "subject": "Nos despedimos"},
+    {"position": 12, "day": 90, "subject": "¿Necesita ayuda legal ahora?"}
+  ],
+  "validation_rules": {
+    "lead_id": "string, non-empty, unique",
+    "nombre": "string, non-empty, max 100 chars",
+    "email": "string, valid email format",
+    "empresa": "string, optional, max 150 chars",
+    "servicio": "string, enum: [Registro de Marcas, Patentes, Litigio, Contratos, Corporativo, Otros]",
+    "emails_sent": "number, integer, >= 0, <= 12",
+    "nurturing_status": "enum: [active, paused, completed, unsubscribed]",
+    "category": "enum: [HOT, WARM, COLD]",
+    "last_email_sent": "timestamp | null",
+    "last_email_position": "number, integer, >= 0, <= 12"
+  },
+  "test_execution_notes": {
+    "prerequisites": [
+      "Firestore collection 'leads' debe existir",
+      "Credenciales configuradas en n8n Cloud",
+      "WARNING-001 debe estar resuelto (query con operador 'in')",
+      "Workflow debe estar INACTIVO para testing manual"
+    ],
+    "execution_method": "Manual execution via n8n Cloud UI (Test Workflow button)",
+    "expected_duration": "~4 seconds per lead",
+    "monitoring": [
+      "Check n8n execution logs",
+      "Verify Firestore updates",
+      "Confirm email received in marketing@carrilloabgd.com",
+      "Review Gemini API usage"
+    ]
+  }
+}

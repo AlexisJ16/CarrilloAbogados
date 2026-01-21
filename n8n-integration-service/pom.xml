@@ -58,11 +58,11 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
 
-        <!-- NATS Messaging -->
+        <!-- NATS Messaging - Updated for security (SNYK-JAVA-NETI2PCRYPTO-9402849) -->
         <dependency>
             <groupId>io.nats</groupId>
             <artifactId>jnats</artifactId>
-            <version>2.20.5</version>
+            <version>${jnats.version}</version>
         </dependency>
 
         <!-- Jackson for JSON processing -->

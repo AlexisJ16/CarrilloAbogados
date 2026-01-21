@@ -196,11 +196,17 @@ services:
       # NATS Configuration
       NATS_ENABLED: "true"
       NATS_SERVER: nats://nats:4222
-      # n8n Cloud Configuration
-      N8N_CLOUD_URL: https://carrilloabgd.app.n8n.cloud
-      N8N_WEBHOOK_LEAD_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/lead-events
-      N8N_WEBHOOK_MEETING_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/meeting-events
-      N8N_WEBHOOK_CASE_EVENTS: https://carrilloabgd.app.n8n.cloud/webhook/case-events
+      # Client Service Integration
+      CLIENT_SERVICE_BASE_URL: http://client-service:8200/client-service
+      # n8n Cloud Configuration (formato Spring Boot: property.path -> PROPERTY_PATH)
+      N8N_CLOUD_BASEURL: https://carrilloabgd.app.n8n.cloud
+      # IMPORTANTE: Usar /webhook/ (no /webhook-test/) para producción
+      N8N_CLOUD_WEBHOOKS_LEADEVENTS: https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3
+      N8N_CLOUD_WEBHOOKS_MEETINGEVENTS: https://carrilloabgd.app.n8n.cloud/webhook/meeting-events
+      N8N_CLOUD_WEBHOOKS_CASEEVENTS: https://carrilloabgd.app.n8n.cloud/webhook/case-events
+      N8N_CLOUD_TIMEOUTSECONDS: 120
+      N8N_CLOUD_RETRY_MAXATTEMPTS: 3
+      N8N_CLOUD_RETRY_DELAYMILLIS: 2000
     depends_on:
       postgresql:
         condition: service_healthy

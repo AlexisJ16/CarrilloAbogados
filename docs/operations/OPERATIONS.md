@@ -1,5 +1,10 @@
 # Guía de Operaciones
 
+**Última Actualización**: 11 de Enero, 2026  
+**Fase Proyecto**: FASE 10 - Autenticación Frontend Completa
+
+---
+
 ## Despliegue Local (Minikube)
 
 ### Prerrequisitos

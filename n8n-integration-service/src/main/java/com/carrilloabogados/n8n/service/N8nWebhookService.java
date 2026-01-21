@@ -44,8 +44,9 @@ public class N8nWebhookService {
             return false;
         }
 
-        String url = config.getBaseUrl() + config.getWebhooks().getLeadEvents();
+        String url = config.getWebhooks().getLeadEvents();
 
+        log.info("🔍 DEBUG - URL from config: {}", url);
         log.info("Sending lead event to n8n: {} for lead {}",
                 leadEvent.getEventType(),
                 leadEvent.getPayload().getLeadId());
@@ -65,7 +66,7 @@ public class N8nWebhookService {
             return false;
         }
 
-        String url = config.getBaseUrl() + config.getWebhooks().getMeetingEvents();
+        String url = config.getWebhooks().getMeetingEvents();
 
         log.info("Sending meeting event to n8n: {}", meetingData.get("event_type"));
 
@@ -84,7 +85,7 @@ public class N8nWebhookService {
             return false;
         }
 
-        String url = config.getBaseUrl() + config.getWebhooks().getCaseEvents();
+        String url = config.getWebhooks().getCaseEvents();
 
         log.info("Sending case event to n8n: {}", caseData.get("event_type"));
 

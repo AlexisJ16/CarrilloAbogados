@@ -1,0 +1,274 @@
+{
+  "name": "Orquestador v3.0 (AI Agent - Gemini)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-events-v3",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_principal",
+      "name": "Webhook Principal",
+      "position": [256, 304],
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "webhookId": "lead-events-v3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ JSON.stringify($json.body || $json) }}",
+        "options": {
+          "systemMessage": "# Rol\nEres el Lead Lifecycle Orchestrator de Carrillo Abogados.\n\n# Tu Unica Funcion\nIdentificar el tipo de evento y ejecutar la herramienta correspondiente.\n\n# Herramientas Disponibles\n\n## lead_intake\nProcesa nuevo lead desde formulario web. Realiza scoring con IA, guardado en Firestore, notificacion si es HOT.\n**USAR cuando**: event_type es 'new_lead' O el payload contiene email + nombre + mensaje.\n\n# Reglas\n1. Analiza el campo event_type del JSON\n2. Si event_type = 'new_lead', EJECUTA lead_intake inmediatamente\n3. Pasa TODO el payload JSON como input al tool\n4. Retorna el resultado del tool\n\n# IMPORTANTE\n- SIEMPRE ejecuta el tool lead_intake cuando recibes un new_lead\n- NO respondas con texto, ejecuta el tool directamente",
+          "maxIterations": 3,
+          "returnIntermediateSteps": true
+        }
+      },
+      "id": "ai_agent_orchestrator",
+      "maxTries": 2,
+      "name": "AI Agent Orchestrator",
+      "position": [528, 304],
+      "retryOnFail": true,
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "name": "lead_intake",
+        "description": "Procesa nuevo lead desde formulario. Ejecutar SIEMPRE cuando event_type='new_lead'. Input: JSON con nombre, email, empresa, servicio_interes, mensaje.",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "RHj1TAqBazxNFriJ"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        }
+      },
+      "id": "tool_sub_a",
+      "name": "Tool: SUB-A Lead Intake",
+      "position": [768, 528],
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "orchestrator_v3_memory_v4",
+        "contextWindowLength": 3
+      },
+      "id": "memory_buffer",
+      "name": "Simple Memory",
+      "position": [608, 528],
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond_webhook",
+      "name": "Respond to Webhook",
+      "position": [800, 304],
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "cachedResultName": "MW1_Orchestrator_Logs",
+          "mode": "list",
+          "value": "1J9K8GEhxqvT6qD5xlWc391lmdwHK0DVUC23Cr2T0Ntw"
+        },
+        "sheetName": {
+          "__rl": true,
+          "cachedResultName": "MW1_Orchestrator_Logs",
+          "mode": "list",
+          "value": "gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {}
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "logger_sheets",
+      "name": "Logger: Google Sheets",
+      "position": [1152, 304],
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "EiAQ3c7D8E2fCalN",
+          "name": "Google Sheets account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {},
+      "id": "error_trigger",
+      "name": "Error Trigger",
+      "position": [240, 704],
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "message": "=Se produjo un error en el Orquestador v3.0\n\nExecution ID: {{ $execution.id }}\nTimestamp: {{ new Date().toISOString() }}\n\nError: {{ JSON.stringify($json, null, 2) }}",
+        "options": {},
+        "sendTo": "ingenieria@carrilloabgd.com",
+        "subject": "=ERROR Orquestador v3.0"
+      },
+      "id": "error_notification",
+      "name": "Error Notification",
+      "position": [528, 704],
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "webhookId": "8a9839b6-9ac7-42a9-8485-d04652a25414",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "vr0xHa1bIOD0lWqe",
+          "name": "Gmail Carrillo"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "timestamp",
+              "name": "timestamp",
+              "type": "string",
+              "value": "={{ new Date().toISOString() }}"
+            },
+            {
+              "id": "event_type",
+              "name": "event_type",
+              "type": "string",
+              "value": "={{ $('Webhook Principal').item.json.body.event_type || 'unknown' }}"
+            },
+            {
+              "id": "tool_used",
+              "name": "tool_used",
+              "type": "string",
+              "value": "={{ $json.intermediateSteps && $json.intermediateSteps.length > 0 ? $json.intermediateSteps[0].action.tool : 'none' }}"
+            },
+            {
+              "id": "decision_reason",
+              "name": "decision_reason",
+              "type": "string",
+              "value": "={{ $json.intermediateSteps && $json.intermediateSteps.length > 0 ? ($json.intermediateSteps[0].action.toolInput ? JSON.stringify($json.intermediateSteps[0].action.toolInput).substring(0, 100) : 'N/A') : 'N/A' }}"
+            },
+            {
+              "id": "execution_status",
+              "name": "execution_status",
+              "type": "string",
+              "value": "={{ $json.error ? 'error' : 'success' }}"
+            },
+            {
+              "id": "latency_ms",
+              "name": "latency_ms",
+              "type": "number",
+              "value": 0
+            },
+            {
+              "id": "error_message",
+              "name": "error_message",
+              "type": "string",
+              "value": "={{ $json.error || '' }}"
+            },
+            {
+              "id": "output",
+              "name": "output",
+              "type": "string",
+              "value": "={{ $json.output ? (typeof $json.output === 'string' ? $json.output.substring(0, 200) : JSON.stringify($json.output).substring(0, 200)) : '' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "prepare_logger_data",
+      "name": "Prepare Logger Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [960, 304]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-09-2025",
+        "options": {
+          "maxOutputTokens": 4096,
+          "temperature": 0.1
+        }
+      },
+      "id": "gemini_model",
+      "name": "Google Gemini 2.5 flash",
+      "position": [448, 528],
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7mPlpd3eLy4qngdl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "AI Agent Orchestrator": {
+      "main": [[{"index": 0, "node": "Respond to Webhook", "type": "main"}]]
+    },
+    "Error Trigger": {
+      "main": [[{"index": 0, "node": "Error Notification", "type": "main"}]]
+    },
+    "Simple Memory": {
+      "ai_memory": [[{"index": 0, "node": "AI Agent Orchestrator", "type": "ai_memory"}]]
+    },
+    "Tool: SUB-A Lead Intake": {
+      "ai_tool": [[{"index": 0, "node": "AI Agent Orchestrator", "type": "ai_tool"}]]
+    },
+    "Webhook Principal": {
+      "main": [[{"index": 0, "node": "AI Agent Orchestrator", "type": "main"}]]
+    },
+    "Respond to Webhook": {
+      "main": [[{"node": "Prepare Logger Data", "type": "main", "index": 0}]]
+    },
+    "Prepare Logger Data": {
+      "main": [[{"node": "Logger: Google Sheets", "type": "main", "index": 0}]]
+    },
+    "Google Gemini 2.5 flash": {
+      "ai_languageModel": [[{"index": 0, "node": "AI Agent Orchestrator", "type": "ai_languageModel"}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Bogota",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "id": "68DDbpQzOEIweiBF",
+  "versionId": "cd4952ce-ec7a-412f-b739-c04417d10bb3",
+  "active": true,
+  "tags": [],
+  "meta": {
+    "instanceId": "carrilloabgd.app.n8n.cloud",
+    "templateCredsSetupCompleted": true
+  }
+}
