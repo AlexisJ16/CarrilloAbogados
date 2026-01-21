@@ -1,12 +1,14 @@
 package com.carrilloabogados.n8n.dto;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * DTO para alerta de lead HOT enviada por n8n.
+ * 
+ * NOTA: lead_id es String (formato: "2026-01-11T02:08:10.022Z-email-at-domain.com")
+ * NO es UUID porque n8n genera IDs basados en timestamp + email.
  */
 public class LeadHotAlertDto {
 
@@ -16,7 +18,7 @@ public class LeadHotAlertDto {
     private Instant timestamp;
 
     @JsonProperty("lead_id")
-    private UUID leadId;
+    private String leadId;  // Cambiado de UUID a String
 
     private Integer score;
 
@@ -27,6 +29,9 @@ public class LeadHotAlertDto {
 
     @JsonProperty("notification_channels")
     private String[] notificationChannels;
+
+    @JsonProperty("email_sent_to")  // Nuevo campo
+    private String emailSentTo;
 
     // Getters and Setters
     public String getEventType() {
@@ -45,11 +50,11 @@ public class LeadHotAlertDto {
         this.timestamp = timestamp;
     }
 
-    public UUID getLeadId() {
+    public String getLeadId() {
         return leadId;
     }
 
-    public void setLeadId(UUID leadId) {
+    public void setLeadId(String leadId) {
         this.leadId = leadId;
     }
 
@@ -83,6 +88,14 @@ public class LeadHotAlertDto {
 
     public void setNotificationChannels(String[] notificationChannels) {
         this.notificationChannels = notificationChannels;
+    }
+
+    public String getEmailSentTo() {
+        return emailSentTo;
+    }
+
+    public void setEmailSentTo(String emailSentTo) {
+        this.emailSentTo = emailSentTo;
     }
 
     /**

@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "n8n": {
+      "type": "stdio",
+      "command": "C:\\Program Files\\nodejs\\node.exe",
+      "args": ["C:\\MCP\\n8n\\mcp-wrapper-secure.js"],
+      "env": {}
+    }
+  }
+}
