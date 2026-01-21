@@ -3,8 +3,10 @@
 **Última Actualización**: 21 de Enero, 2026 - 11:30 COT  
 **Estado General**: 🚀 **FASE 13: PRODUCCIÓN SINCRONIZADA** | dev + main actualizados ✅  
 **Rama Actual**: `dev` (sincronizada con `main`)  
-**Último Merge**: dev → main completado (commit c61b3c3)  
+**Último Merge**: automation → dev completado (21 Ene 2026)  
 **Siguiente Fase**: 🎯 **DESARROLLO DE NUEVAS FEATURES**
+
+> ⚠️ **NOTA IMPORTANTE**: Toda la documentación de n8n está en `/automation/` (fuente de verdad única)
 
 ---
 
@@ -410,13 +412,21 @@ CarrilloAbogados/
 
 ## 🔄 INTEGRACIÓN n8n (Marketing Automation)
 
+> ⚠️ **FUENTE DE VERDAD**: Toda la documentación de n8n está en `/automation/`
+
 ### 3 MEGA-WORKFLOWS Planificados
 
 | MEGA-WORKFLOW | Propósito | Workflows | Estado |
 |---------------|-----------|-----------|--------|
-| MW#1: Captura | Lead → Cliente (< 1 min) | 7 | 28% |
+| MW#1: Captura | Lead → Cliente (< 1 min) | 7 | ✅ 95% |
 | MW#2: Retención | Cliente → Recompra | 5 | Q2 2026 |
 | MW#3: SEO | Tráfico → Lead | 5 | Q2-Q3 2026 |
+
+### Documentación Completa
+- **README Principal**: [/automation/README.md](automation/README.md)
+- **Índice Completo**: [/automation/docs/00_INDEX.md](automation/docs/00_INDEX.md)
+- **Protocolos Agentes**: [/automation/docs/01_AGENT_PROTOCOLS.md](automation/docs/01_AGENT_PROTOCOLS.md)
+- **Status MW1**: [/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md)
 
 ### Eventos NATS Implementados
 - `lead.capturado` → Trigger MW#1 scoring

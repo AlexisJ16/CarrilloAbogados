@@ -1,7 +1,7 @@
 # Carrillo Abogados - AI Agent Instructions
 
-**Última Actualización**: 12 de Enero, 2026  
-**Fase**: FASE 10 - Autenticación Frontend Completa  
+**Última Actualización**: 21 de Enero, 2026  
+**Fase**: FASE 13 - Producción Sincronizada  
 **MVP**: 27 Marzo 2026
 
 ---
@@ -109,7 +109,6 @@ Para tareas complejas, **consulta el agente apropiado** en `.github/copilot-agen
 ### Cómo Usar los Agentes
 
 1. **Por contexto de archivo**:
-
    - Editando `*.java` → Consulta `backend-agent.md`
    - Editando `*.tsx` → Consulta `frontend-agent.md`
    - Editando `Dockerfile`, `*.yml` → Consulta `devops-agent.md`
@@ -199,16 +198,27 @@ Imágenes publicadas en: `ghcr.io/alexisj16/<servicio>:dev`
 
 ## 🔗 Integraciones
 
-### n8n Cloud
+### n8n Cloud (Automatizaciones)
+
+> ⚠️ **FUENTE DE VERDAD**: Toda la documentación de n8n está en `/automation/`
 
 - URL: `https://carrilloabgd.app.n8n.cloud`
 - Webhook: `/webhook/lead-events`
 - 3 MEGA-WORKFLOWS: Captura (MW#1), Retención (MW#2), SEO (MW#3)
+- Documentación: [/automation/README.md](../automation/README.md)
+- Índice: [/automation/docs/00_INDEX.md](../automation/docs/00_INDEX.md)
 
 ### Google Workspace
 
 - Autenticación OAuth2: `@carrilloabgd.com`
 - Calendar API, Gmail API integrados
+
+### Rama automation
+
+- **Propósito**: Desarrollo de workflows n8n y documentación de automatización
+- **Responsable**: Juan José Gómez Agudelo (Marketing Tech)
+- **Integración**: Cambios en `automation/` se integran periódicamente a `dev` vía merge
+- **Regla**: Solo modificar contenido dentro de `/automation/` en esta rama
 
 ---
 

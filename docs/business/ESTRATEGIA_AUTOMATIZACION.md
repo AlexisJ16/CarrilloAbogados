@@ -1,8 +1,10 @@
 # 🔄 ESTRATEGIA DE AUTOMATIZACIÓN - Integración Plataforma + n8n
 
-**Versión**: 1.0  
-**Fecha**: 19 de Diciembre, 2025  
-**Estado**: ✅ Integrado con documentación de marketing
+**Versión**: 2.0  
+**Fecha**: 21 de Enero, 2026  
+**Estado**: ✅ Integrado con carpeta /automation/ (fuente de verdad)
+
+> ⚠️ **NOTA IMPORTANTE**: La documentación técnica detallada de workflows n8n se encuentra en `/automation/`. Este documento proporciona el contexto de negocio de la integración.
 
 ---
 
@@ -403,14 +405,21 @@ public class Lead {
 
 ## 📚 DOCUMENTOS RELACIONADOS
 
+> ⚠️ **FUENTE DE VERDAD**: Todos los documentos técnicos de n8n están en `/automation/`
+
 | Documento | Ubicación | Descripción |
 |-----------|-----------|-------------|
-| Arquitectura General n8n | `Analizar_Ya/00_ARQUITECTURA_GENERAL.md` | Visión completa automatización |
-| MW#1 Captura | `Analizar_Ya/01_MEGA_WORKFLOW_1_CAPTURA.md` | Detalle técnico captura leads |
-| MW#2 Retención | `Analizar_Ya/02_MEGA_WORKFLOW_2_RETENCION.md` | Detalle Flywheel |
-| MW#3 SEO | `Analizar_Ya/03_MEGA_WORKFLOW_3_SEO.md` | Fábrica de contenido |
-| Arquitectura Funcional | `ARQUITECTURA_FUNCIONAL.md` | Mapeo microservicios |
+| **Punto de Entrada** | [/automation/README.md](../../automation/README.md) | Inicio documentación automation |
+| **Índice Completo** | [/automation/docs/00_INDEX.md](../../automation/docs/00_INDEX.md) | Navegación completa |
+| **Arquitectura General** | [/automation/docs/technical/arquitectura/00_ARQUITECTURA_GENERAL.md](../../automation/docs/technical/arquitectura/00_ARQUITECTURA_GENERAL.md) | Visión completa 3 MEGA-WORKFLOWS |
+| **MW#1 Captura** | [/automation/docs/technical/arquitectura/01_MEGA_WORKFLOW_1_CAPTURA.md](../../automation/docs/technical/arquitectura/01_MEGA_WORKFLOW_1_CAPTURA.md) | Lead Lifecycle detallado |
+| **MW#2 Retención** | [/automation/docs/technical/arquitectura/02_MEGA_WORKFLOW_2_RETENCION.md](../../automation/docs/technical/arquitectura/02_MEGA_WORKFLOW_2_RETENCION.md) | Cliente a recompra |
+| **MW#3 SEO** | [/automation/docs/technical/arquitectura/03_MEGA_WORKFLOW_3_SEO.md](../../automation/docs/technical/arquitectura/03_MEGA_WORKFLOW_3_SEO.md) | Fábrica de contenido |
+| **Status MW1** | [/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](../../automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md) | Estado actual desarrollo |
+| Arquitectura Funcional | [ARQUITECTURA_FUNCIONAL.md](ARQUITECTURA_FUNCIONAL.md) | Mapeo microservicios |
+| Guía Integración | [../development/GUIA_INTEGRACION_MARKETING.md](../development/GUIA_INTEGRACION_MARKETING.md) | Para desarrollador marketing |
 
 ---
 
+**Última Actualización**: 21 de Enero, 2026 - 11:30 COT  
 *Documento de integración entre plataforma web y sistema de automatización n8n*

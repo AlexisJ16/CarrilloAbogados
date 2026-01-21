@@ -389,8 +389,10 @@ W1      W2      W3      W4    W1      W2      W3      W4     W1      W2      W3 
 | Modelo de Negocio | [docs/business/MODELO_NEGOCIO.md](../business/MODELO_NEGOCIO.md) |
 | Requerimientos | [docs/business/REQUERIMIENTOS.md](../business/REQUERIMIENTOS.md) |
 | Deploy GCP | [docs/operations/DEPLOY_GCP.md](../operations/DEPLOY_GCP.md) |
-| Guía Marketing | [docs/n8n-workflows/GUIA_INTEGRACION_MARKETING.md](../n8n-workflows/GUIA_INTEGRACION_MARKETING.md) |
+| Guía Marketing | [docs/development/GUIA_INTEGRACION_MARKETING.md](GUIA_INTEGRACION_MARKETING.md) |
+| Automation n8n | [automation/README.md](../../automation/README.md) |
 
 ---
 
-*Documento creado: 3 de Enero, 2026*
+*Documento creado: 3 de Enero, 2026*  
+*Última actualización: 21 de Enero, 2026*

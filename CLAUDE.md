@@ -239,6 +239,8 @@ docker-compose -f docker-compose.observability.yml up -d
 
 ## 🤖 INTEGRACIÓN n8n (Marketing Automation) - PRODUCTION-READY ✅
 
+> ⚠️ **FUENTE DE VERDAD**: Toda la documentación de n8n está en `/automation/`
+
 ### n8n Cloud
 | Campo | Valor |
 |-------|-------|
@@ -246,6 +248,12 @@ docker-compose -f docker-compose.observability.yml up -d
 | **Versión** | v1.120.4 |
 | **Webhook** | `/webhook-test/lead-events-v3` |
 | **Estado** | ✅ Workflow activo en producción |
+
+### Documentación Completa
+- **README Principal**: [/automation/README.md](automation/README.md)
+- **Índice Completo**: [/automation/docs/00_INDEX.md](automation/docs/00_INDEX.md)
+- **Protocolos Agentes**: [/automation/docs/01_AGENT_PROTOCOLS.md](automation/docs/01_AGENT_PROTOCOLS.md)
+- **Status MW1**: [/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md)
 
 ### Test Exitoso (14 Ene 2026 - 13:20 COT)
 - Lead ID: `61ccdfec-4d47-4cc2-9c83-787d3665c06e`

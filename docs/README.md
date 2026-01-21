@@ -1,8 +1,8 @@
 # 📚 Índice Maestro de Documentación
 
 **Proyecto**: Carrillo Abogados Legal Tech Platform  
-**Última Actualización**: 14 de Enero, 2026  
-**Estado**: ✅ FASE 10 - Autenticación Frontend Completa
+**Última Actualización**: 21 de Enero, 2026  
+**Estado**: ✅ FASE 13 - Producción Sincronizada
 
 ---
 
@@ -14,8 +14,9 @@ docs/
 ├── 🏗️ architecture/     → Decisiones arquitectónicas
 ├── 💻 development/      → Guías de desarrollo
 ├── ⚙️ operations/       → Deployment y operaciones
-├── 🔒 security/         → Políticas de seguridad
-└── 🔄 n8n-workflows/    → Documentación técnica n8n
+└── 🔒 security/         → Políticas de seguridad
+
+⚠️ NOTA: Documentación n8n → Ver carpeta /automation/ (fuente de verdad)
 ```
 
 ---
@@ -93,18 +94,45 @@ Políticas y configuraciones de seguridad.
 
 ---
 
-## 🔄 N8N-WORKFLOWS (Automatizaciones)
+## 🤖 AUTOMATION (Automatizaciones n8n)
 
-Documentación técnica de workflows n8n.
+> **⚠️ FUENTE DE VERDAD**: Toda la documentación y workflows de n8n se encuentran en la carpeta `/automation/` en la raíz del proyecto.
 
-| Documento | Descripción | Estado |
-|-----------|-------------|--------|
-| [README.md](n8n-workflows/README.md) | Índice de workflows n8n | ✅ |
-| [NODE_STANDARDS.md](n8n-workflows/NODE_STANDARDS.md) | Estándares de nodos n8n | ✅ |
-| [n8n_mcp_guide.md](n8n-workflows/n8n_mcp_guide.md) | Guía de Model Context Protocol | ✅ |
-| [mega-workflow-1/](n8n-workflows/mega-workflow-1/) | MW#1: Lead Lifecycle Manager | ✅ |
+**Estructura de Automation:**
 
-> **Nota**: El desarrollo activo de workflows n8n está en la carpeta `automation/` (ver PR #32)
+```text
+automation/
+├── README.md                    → Punto de entrada principal
+├── docs/
+│   ├── 00_INDEX.md             → Índice completo de documentación
+│   ├── 01_AGENT_PROTOCOLS.md   → Protocolos para agentes IA
+│   ├── business/               → Documentación estratégica
+│   └── technical/              → Especificaciones técnicas
+│       ├── arquitectura/       → Arquitectura de 3 MEGA-WORKFLOWS
+│       ├── n8n_mcp_guide.md    → Guía Model Context Protocol
+│       └── NODE_STANDARDS.md   → Estándares de nodos n8n
+├── workflows/
+│   └── MW1_LEAD_LIFECYCLE/     → Mega-Workflow #1
+│       ├── STATUS.md           → Estado actual de desarrollo
+│       ├── 01-orchestrator/    → Workflow orquestador
+│       └── 02-spokes/          → Sub-workflows especializados
+└── archive/                     → Archivos deprecados
+```
+
+**Documentos Clave:**
+
+| Documento | Ubicación | Descripción |
+|-----------|-----------|-------------|
+| **README Principal** | [/automation/README.md](../automation/README.md) | Punto de entrada |
+| **Índice Completo** | [/automation/docs/00_INDEX.md](../automation/docs/00_INDEX.md) | Navegación completa |
+| **Protocolos Agentes** | [/automation/docs/01_AGENT_PROTOCOLS.md](../automation/docs/01_AGENT_PROTOCOLS.md) | Reglas para IAs |
+| **Arquitectura MW1** | [/automation/docs/technical/arquitectura/01_MEGA_WORKFLOW_1_CAPTURA.md](../automation/docs/technical/arquitectura/01_MEGA_WORKFLOW_1_CAPTURA.md) | Lead Lifecycle |
+| **Status MW1** | [/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](../automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md) | Estado actual |
+
+**Workflows Activos:**
+- ✅ **MW#1 - Lead Lifecycle**: Captura y gestión de leads (7 sub-workflows)
+- 📋 **MW#2 - Retención**: Cliente a recompra (Q2 2026)
+- 📋 **MW#3 - SEO Content**: Tráfico a lead (Q2-Q3 2026)
 
 ---
 
@@ -142,4 +170,4 @@ Documentación técnica de workflows n8n.
 
 ---
 
-*Última actualización: 14 de Enero, 2026*
+*Última actualización: 21 de Enero, 2026*
