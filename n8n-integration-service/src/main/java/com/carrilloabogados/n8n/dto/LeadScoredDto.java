@@ -2,12 +2,14 @@ package com.carrilloabogados.n8n.dto;
 
 import java.time.Instant;
 import java.util.Map;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * DTO para recibir callback de score calculado por n8n.
+ * 
+ * NOTA: lead_id es String (formato: "2026-01-11T02:08:10.022Z-email-at-domain.com")
+ * NO es UUID porque n8n genera IDs basados en timestamp + email.
  */
 public class LeadScoredDto {
 
@@ -17,11 +19,14 @@ public class LeadScoredDto {
     private Instant timestamp;
 
     @JsonProperty("lead_id")
-    private UUID leadId;
+    private String leadId;  // Cambiado de UUID a String
 
     private Integer score;
 
     private String category;
+
+    @JsonProperty("ai_analysis")
+    private Map<String, Object> aiAnalysis;  // Nuevo campo para recibir análisis completo de IA
 
     @JsonProperty("score_breakdown")
     private Map<String, Integer> scoreBreakdown;
@@ -49,11 +54,11 @@ public class LeadScoredDto {
         this.timestamp = timestamp;
     }
 
-    public UUID getLeadId() {
+    public String getLeadId() {
         return leadId;
     }
 
-    public void setLeadId(UUID leadId) {
+    public void setLeadId(String leadId) {
         this.leadId = leadId;
     }
 
@@ -71,6 +76,14 @@ public class LeadScoredDto {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Map<String, Object> getAiAnalysis() {
+        return aiAnalysis;
+    }
+
+    public void setAiAnalysis(Map<String, Object> aiAnalysis) {
+        this.aiAnalysis = aiAnalysis;
     }
 
     public Map<String, Integer> getScoreBreakdown() {

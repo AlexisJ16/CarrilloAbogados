@@ -10,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "n8n.cloud")
 public class N8nCloudConfig {
 
-    private String baseUrl;
+    private String baseUrl = "https://carrilloabgd.app.n8n.cloud";
 
     private Webhooks webhooks = new Webhooks();
 
-    private int timeoutSeconds;
+    private int timeoutSeconds = 30;
 
     private Retry retry = new Retry();
 
@@ -65,9 +65,11 @@ public class N8nCloudConfig {
      * URLs de webhooks en n8n Cloud.
      */
     public static class Webhooks {
-        private String leadEvents;
-        private String meetingEvents;
-        private String caseEvents;
+        // IMPORTANTE: Usar Orquestador v3.0 (AI Agent) - ACTIVO en producción
+        // v1.0 legacy está INACTIVO: /webhook/lead-events
+        private String leadEvents = "/webhook/lead-events-v3";
+        private String meetingEvents = "/webhook/meeting-events";
+        private String caseEvents = "/webhook/case-events";
 
         public String getLeadEvents() {
             return leadEvents;
@@ -100,10 +102,13 @@ public class N8nCloudConfig {
 
     /**
      * Configuración de reintentos.
+     * IMPORTANTE: maxAttempts = 1 desactiva reintentos para evitar duplicados.
+     * n8n Cloud responde 200 OK inmediatamente (modo async), por lo que el retry
+     * causaba que el mismo lead se procesara múltiples veces.
      */
     public static class Retry {
-        private int maxAttempts;
-        private int delayMillis;
+        private int maxAttempts = 1;  // Cambiado de 3 a 1 para evitar duplicados
+        private int delayMillis = 1000;
 
         public int getMaxAttempts() {
             return maxAttempts;

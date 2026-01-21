@@ -1,13 +1,22 @@
 # MEGA-WORKFLOW #1: Lead Lifecycle Manager
 
-## Estado: ✅ ACTIVO EN PRODUCCION (v3.0) | ORQUESTADOR v1.0 INACTIVO
+## Estado: ✅ OPERATIVO - Bug Mapeo Resuelto
 
-**Ultima actualizacion:** 2026-01-11 (Arquitectura SUB-D documentada)
+**Ultima actualizacion:** 2026-01-21 (Bug mapeo RESUELTO, archivos reorganizados)
 **Version Produccion:** 3.0.0 (Orquestador v3.0 AI Agent - ACTIVO)
-**Version Legacy:** 1.1.0 (Orquestador v1.0 - INACTIVO)
+**Version Legacy:** 1.1.0 (Orquestador v1.0 - **DEBE DESACTIVARSE**)
 **n8n Cloud:** v1.120.4
 **Webhook URL Produccion:** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3`
 **Webhook URL Legacy (v1.0):** `https://carrilloabgd.app.n8n.cloud/webhook/lead-events`
+
+### ✅ BUG RESUELTO (21-Ene-2026)
+
+**Workflow Afectado**: SUB-A Lead Intake (v5)
+**Nodo Afectado**: "0. Mapear Input del Orquestador1"
+**Problema**: Los datos del AI Agent llegaban en campo `query` como JSON string con `payload` anidado, pero el código no lo parseaba correctamente
+**Solución**: ✅ **APLICADA EN n8n CLOUD** - Código actualizado para parsear `raw.query` → `parsed.payload`
+**Archivo Local**: `02-spokes/sub-a-lead-intake/SUB-A_Lead_Intake_v5.json` (sincronizado con producción)
+**Análisis Histórico**: Ver `archive/deprecated_mds/2026-01-14_ANALISIS_ERROR_MAPEO_SUB-A.md`
 
 ---
 
@@ -355,11 +364,12 @@ SUB-A (n8n)
 - Valor Testing: URLs Pipedream individuales
 - Valor Producción: `http://n8n-integration-service:8800/n8n-integration-service` (Docker) o `https://api.carrilloabgd.com/n8n-integration-service` (GCP)
 
-**Estado Actual** (2026-01-11):
+**Estado Actual** (2026-01-14):
 - ✅ Callbacks implementados en SUB-A (nodos 7, 8, 9)
 - ✅ Testing con Pipedream exitoso (ambos callbacks reciben datos)
 - ⏳ Backend endpoints pendientes de implementación
 - ⏳ Variable BACKEND_URL pendiente de configurar en producción
+- 🔴 **PROBLEMA DETECTADO**: Backend envía eventos a `/webhook/lead-events` (v1.0 LEGACY) en lugar de `/webhook/lead-events-v3` (v3.0 ACTIVO)
 
 ---
 
@@ -417,6 +427,41 @@ SUB-A (n8n)
 ---
 
 ## Historial de Cambios
+
+### 2026-01-21 - Bug Mapeo RESUELTO + Reorganización Documentación
+
+**Agente**: Orquestador (coordinando Documentation, QA-Specialist, Explore, Engineer)
+
+**Bug Resuelto**:
+- ✅ Fix aplicado en n8n Cloud (nodo "0. Mapear Input del Orquestador1")
+- ✅ Código ahora parsea `raw.query` → `parsed.payload` correctamente
+- ✅ Archivo JSON local sincronizado: `SUB-A_Lead_Intake_v5.json`
+
+**Reorganización según Agent Protocols**:
+- ✅ 7 archivos movidos a `archive/deprecated_mds/`:
+  - `2026-01-14_ANALISIS_ERROR_MAPEO_SUB-A.md`
+  - `2026-01-14_GUIA_APLICAR_FIX_SUB-A.md`
+  - `2026-01-14_FIXED_MAPEAR_INPUT_SUB-A.js`
+  - `2026-01-14_FIXED_MAPEAR_INPUT_V2_SUB-A.js`
+  - `2026-01-14_TEST_REPORT_V1_SUB-A.md`
+  - `2026-01-14_VALIDATION_REPORT_QA_SUB-A.md`
+  - `2026-01-14_VALIDATION_RESULTS_SUB-A.json`
+- ✅ Carpeta `testing/` eliminada (contenido archivado)
+- ✅ Estructura conforme a Agent Protocols
+
+**Estructura final sub-a-lead-intake/**:
+```
+sub-a-lead-intake/
+├── SUB-A_Lead_Intake_v5.json  (sincronizado con producción)
+└── test-data/
+    └── *.json
+```
+
+**Pendientes identificados**:
+- ⚠️ Desactivar Orquestador v1.0 legacy (`bva1Kc1USbbITEAw`) manualmente en n8n Cloud
+- ⚠️ Verificar backend envía a `/webhook/lead-events-v3` (no v1.0)
+
+---
 
 ### 2026-01-11 - SUB-D: Documentación Arquitectura Completa
 
@@ -653,6 +698,20 @@ lead_id, nombre, email, empresa, telefono, servicio, mensaje, score, categoria, 
 5. ✅ **Campos Nurturing SUB-A** - 5 campos agregados a Firestore
 6. ✅ **Arquitectura SUB-D documentada** - STATUS.md actualizado
 
+### 🔴 P0 - BLOQUEADOR CRÍTICO (2026-01-14)
+
+**PROBLEMA IDENTIFICADO**: Backend envía eventos al Orquestador v1.0 (legacy inactivo) en lugar del v3.0 (activo)
+
+**Causa raíz**: `N8nCloudConfig.java` tiene hardcodeado `/webhook/lead-events` (v1.0) pero el Orquestador activo es v3.0 con webhook `/webhook/lead-events-v3`
+
+**Impacto**: 
+- ✅ SUB-A se ejecuta correctamente (recibe datos)
+- ❌ Orquestador v3.0 NO se ejecuta (no recibe tráfico)
+- ⚠️ No hay logs del Orquestador en Google Sheets
+- ⚠️ AI Agent no está procesando decisiones
+
+**Solución inmediata**: Actualizar `N8nCloudConfig.java`
+
 ### 🟡 P1 - En Progreso
 
 7. **Configurar Mailersend (SUB-D)**
@@ -806,6 +865,168 @@ curl -X POST https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3 \
 
 ```json
 {
+  "status": "success",
+  "lead_id": "2026-01-11T02:08:10.022Z-laura.martinez-at-innovatech.com",
+  "score": 95,
+  "categoria": "HOT"
+}
+```
+
+---
+
+## 🔍 TROUBLESHOOTING
+
+### Problema: SUB-A se ejecuta pero Orquestador no
+
+**Síntoma**: Al enviar formulario desde web, SUB-A registra ejecuciones pero el Orquestador v3.0 no aparece en historial.
+
+**Causa raíz**: El backend (`n8n-integration-service`) está enviando eventos al webhook incorrecto:
+- ❌ Enviaba a: `/webhook/lead-events` (Orquestador v1.0 INACTIVO)
+- ✅ Debe enviar a: `/webhook/lead-events-v3` (Orquestador v3.0 ACTIVO)
+
+**¿Por qué SUB-A se ejecutaba?**:
+El Orquestador v1.0 (aunque inactivo) aún tiene configurado llamar a SUB-A mediante "Execute Workflow". Cuando recibía eventos, los reenviaba a SUB-A sin procesar.
+
+**Solución aplicada** (2026-01-14):
+1. ✅ Actualizado `N8nCloudConfig.java`: `leadEvents = "/webhook/lead-events-v3"`
+2. ⏳ Rebuild `n8n-integration-service`: `./mvnw clean package -DskipTests -pl n8n-integration-service`
+3. ⏳ Restart Docker: `docker-compose restart n8n-integration-service`
+4. ⏳ Verificar con curl:
+   ```bash
+   # Este es el webhook correcto ahora:
+   curl -X POST http://localhost:8800/n8n-integration-service/api/test-lead-event
+   
+   # Debe enviar a:
+   https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3
+   ```
+
+**Validación post-fix**:
+1. Enviar formulario desde frontend
+2. ✅ Verificar ejecución en Orquestador v3.0 (n8n UI → Executions)
+3. ✅ Verificar log en Google Sheets `MW1_Orchestrator_Logs`
+4. ✅ Verificar ejecución de SUB-A llamada como Tool (no independiente)
+
+---
+
+## 🎯 DIFERENCIAS ORQUESTADOR v1.0 vs v3.0
+
+| Aspecto | v1.0 (INACTIVO) | v3.0 (ACTIVO) |
+|---------|----------------|---------------|
+| **Webhook URL** | `/webhook/lead-events` | `/webhook/lead-events-v3` |
+| **Arquitectura** | Code Node routing | AI Agent + Tools |
+| **Cómo llama SUB-A** | Execute Workflow node | AI Agent Tool |
+| **Observabilidad** | Sin logs estructurados | Logger en Google Sheets |
+| **Estado** | ⚪ Inactivo | ✅ Activo |
+| **Última ejecución** | 2026-01-04 | 2026-01-11 |
+
+**⚠️ IMPORTANTE**: Ambos workflows pueden estar activos en n8n Cloud, pero solo v3.0 debe recibir tráfico de producción.
+
+---
+
+### Problema: Ejecuciones Duplicadas (3x el mismo lead)
+
+**Síntoma**: El mismo lead aparece procesado 3 veces en n8n con timestamps casi idénticos.
+
+**Causa raíz**: El backend (`N8nWebhookService.java`) tiene configurado un **mecanismo de retry automático**:
+
+```java
+public static class Retry {
+    private int maxAttempts = 3;  // 🔴 ESTO causa las 3 ejecuciones
+    private int delayMillis = 1000;
+}
+```
+
+**¿Por qué reintenta 3 veces?**
+
+El código del backend tiene esta lógica en `sendWithRetry()`:
+
+1. **Intento 1**: Envía evento a n8n → n8n responde 200 OK → ❌ Backend NO detecta el éxito correctamente
+2. **Espera 1 segundo** (delayMillis = 1000)
+3. **Intento 2**: Reenvía el mismo evento → n8n responde 200 OK → ❌ Backend NO detecta el éxito
+4. **Espera 1 segundo**
+5. **Intento 3**: Reenvía el mismo evento → n8n responde 200 OK → ❌ Backend NO detecta el éxito
+6. **Fallo después de 3 intentos**
+
+**¿Por qué no detecta el éxito?**
+
+Posibles causas:
+- n8n Cloud responde **antes** de que el webhook termine de ejecutarse
+- El backend verifica `response.getStatusCode().is2xxSuccessful()` pero n8n puede estar respondiendo con un redirect o código no estándar
+- Timeout muy corto (30 segundos) vs latencia del workflow (38+ segundos)
+
+**Soluciones**:
+
+**Opción 1: Desactivar reintentos** (recomendado para desarrollo)
+```yaml
+# application.yml
+n8n:
+  cloud:
+    retry:
+      max-attempts: 1  # Sin reintentos
+```
+
+**Opción 2: Aumentar timeout y validar respuesta**
+```java
+// N8nCloudConfig.java
+private int timeoutSeconds = 60;  // De 30s a 60s
+
+// N8nWebhookService.java - Mejorar detección de éxito
+if (response.getStatusCode().is2xxSuccessful() || 
+    response.getStatusCode().is3xxRedirection()) {
+    log.info("Successfully sent event to n8n");
+    return true;  // 🔴 Asegurar que retorna true
+}
+```
+
+**Opción 3: Idempotencia en n8n** (solución a largo plazo)
+- Agregar nodo en Orquestador que verifique si el lead_id ya existe en Firestore
+- Si existe, retornar 200 OK sin procesar
+- Implementar caché de 5 minutos con Redis
+
+**Solución inmediata aplicada** (2026-01-14):
+Desactivar reintentos cambiando `maxAttempts` de 3 a 1 en `N8nCloudConfig.java`
+
+---
+
+### Problema: AI Agent alcanza límite de 3 iteraciones (Max iterations reached)
+
+**Síntoma**: Error en n8n "Max iterations (3) reached. The agent could not complete the task within the allowed number of iterations."
+
+**Causa raíz REAL** (14 Ene 2026 - 13:15): El Tool **SÍ está llamando a SUB-A** correctamente, pero **SUB-A está fallando con validación de email**:
+
+```json
+{
+  "response": "There was an error: \"Invalid email address (item 0)\""
+}
+```
+
+**Flujo del error real**:
+1. AI Agent recibe payload del webhook ✅
+2. AI Agent ejecuta tool `lead_intake` ✅
+3. Tool llama a SUB-A **con payload completo** ✅
+4. **SUB-A valida el email** ❌ FALLA aquí
+5. SUB-A retorna error "Invalid email address"
+6. AI Agent reintenta (iteración 2) → mismo error
+7. AI Agent reintenta (iteración 3) → mismo error
+8. AI Agent agota iteraciones → "Max iterations reached"
+
+**Problema específico**:
+SUB-A tiene un nodo de validación de email que rechaza:
+- `alexisj4a@gmail.com` → ❌ "Invalid email address"
+- `verify@production.test` → ❌ "Invalid email address"
+
+**Posibles causas del error de validación**:
+1. El nodo Gmail en SUB-A tiene validación estricta de email
+2. El formato del email en el payload no coincide con lo que espera SUB-A
+3. Hay un nodo de validación de email que está mal configurado
+4. El campo `email` está llegando con espacios extra o encoding especial
+
+**Solución**:
+Necesitas revisar SUB-A (workflow ID: `RHj1TAqBazxNFriJ`) en n8n Cloud y buscar:
+- Nodo de validación de email
+- Nodo Gmail que pueda estar validando
+- Expresiones que verifiquen el formato del email
+- Configuración incorrecta que rechace emails válidos como `@gmail.com`
   "success": true,
   "lead_id": "2026-01-11T02:08:10.022Z-test-at-example.com",
   "score": 85,
