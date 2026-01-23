@@ -1,9 +1,10 @@
 # 🔍 MEGA-WORKFLOW #3: FÁBRICA DE CONTENIDO SEO
 
-**Versión:** 2.0  
-**Última actualización:** 2025-12-19  
-**Estado:** ⚪ PLANIFICADO (Q2-Q3 2026)  
-**Prioridad:** ALTO - Tráfico Orgánico (Inbound)
+**Versión:** 3.0
+**Última actualización:** 2026-01-21
+**Estado:** 🟡 EN DESARROLLO (Fase 0 - Setup)
+**Prioridad:** CRÍTICO - Habilitador de Pipeline de Contenido
+**Status Tracking:** [STATUS.md](../../../workflows/MW3_SEO_CONTENT_FACTORY/STATUS.md)
 
 ---
 
@@ -19,6 +20,118 @@
 8. [Flujo de Datos](#8-flujo-de-datos)
 9. [Plan de Implementación](#9-plan-de-implementación)
 10. [Métricas de Éxito](#10-métricas-de-éxito)
+
+---
+
+## 0. CAMBIOS CRÍTICOS v3.0 (2026-01-21)
+
+> [!IMPORTANT]
+> Esta sección documenta cambios de arquitectura aprobados el 21 Ene 2026.
+
+### 0.1 API de Keywords: DataForSEO (NO SEMrush)
+
+**Problema identificado:**
+- SEMrush Pro ($5.75M COP/año) NO incluye acceso API
+- SEMrush Business con API cuesta ~$500 USD/mes
+- Esto excede el presupuesto total de marketing
+
+**Solución aprobada:**
+| Uso | Herramienta | Costo |
+|-----|-------------|-------|
+| Humano (investigación manual) | SEMrush Pro | $5.75M/año |
+| Robot n8n (automatización) | DataForSEO API | $50-100 USD total |
+
+### 0.2 Arquitectura: AI Agent Orchestrator
+
+**Cambio de Hub clásico a AI Agent** (metodología Nate Herk):
+- Orquestador ahora es AI Agent con Tools (como MW#1 v3.0)
+- Permite agregar SUB-workflows editando solo el System Prompt
+- Mejor observabilidad y logging
+
+### 0.3 SUB-M Publisher: BLOQUEADO
+
+**Dependencia:** Requiere decisión de backend
+- Opción A: blog-service (Spring Boot) - Requiere Alexis
+- Opción B: WordPress REST API - Backup plan
+
+**Status:** Esperando decisión de Don Omar + Alexis
+
+### 0.4 Mejoras Metodología Nate Herk (AI Systems Pyramid)
+
+> Basado en documento "Automatización y Agentes de IA con n8n" (Nate Herk)
+
+#### Principio 1: Prompting Reactivo > Prompting Proactivo
+- **NO** escribir prompts masivos desde el inicio
+- **SÍ** empezar con prompt mínimo, probar, iterar
+- Agregar guardarraíles SOLO donde el sistema falle
+
+#### Principio 2: Workflow vs Agente
+| Tipo | Cuándo usar | Ejemplo MW#3 |
+|------|-------------|--------------|
+| Workflow | Proceso predecible, secuencia fija | SUB-K, SUB-M, SUB-N |
+| Agente | Necesita razonamiento, decisiones | SUB-L (Content Writer) |
+
+#### Principio 3: Sistemas Multiagente
+- Un agente orquestador delega a subagentes especializados
+- Cada subagente tiene un único propósito
+- Permite usar diferentes LLMs por costo/calidad
+
+#### Principio 4: Human in the Loop (Ya implementado)
+```
+[Generar borrador] → [COLA REVISIÓN] → [Humano aprueba] → [Publicar]
+```
+
+#### Principio 5: Observabilidad LLM
+- Activar "Return Intermediate Steps" en AI Agent nodes
+- Registrar tokens + costos en Google Sheets
+- Analizar para optimizar modelos
+
+### 0.5 SUB-L: Evolución a Sistema Multiagente
+
+#### Fase 0 (Semana 1): Workflow Simple
+```
+[Get keyword] → [Gemini 2.0 Flash genera artículo] → [Guardar draft]
+```
+- 1 solo agente IA
+- Prompt básico
+- Iterar basado en calidad de output
+
+#### Fase 1 (Semana 2-3): Sistema Multiagente
+```
+┌─────────────────────────────────────────────────────────────┐
+│     AGENTE ORQUESTADOR: "Content Creation Manager"          │
+│     (Decide qué subagente ejecutar según contexto)          │
+└─────────────────────────────────────────────────────────────┘
+                            │
+    ┌───────────┬───────────┼───────────┬───────────┐
+    ▼           ▼           ▼           ▼           ▼
+┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐
+│Planner │ │Research│ │ Writer │ │ Editor │ │Evaluate│
+│        │ │        │ │        │ │        │ │        │
+│Gemini  │ │Perplex-│ │Gemini  │ │Claude  │ │Gemini  │
+│Flash   │ │ity API │ │2.0Flash│ │3.5     │ │Flash   │
+│        │ │        │ │        │ │Sonnet  │ │        │
+│$0.001  │ │$0.005  │ │$0.001  │ │$0.003  │ │$0.001  │
+└────────┘ └────────┘ └────────┘ └────────┘ └────────┘
+    │           │           │           │           │
+    ▼           ▼           ▼           ▼           ▼
+ Define      Busca       Genera     Revisa      Califica
+ estructura  datos       texto      tono/SEO    calidad
+ del post    actuales    completo   gramática   (0-100)
+```
+
+**Flujo Multiagente:**
+1. **Planner** (Gemini Flash): Lee keyword → Define estructura (guía/checklist/FAQ)
+2. **Researcher** (Perplexity API): Busca datos actualizados (costos SIC 2026, tiempos)
+3. **Writer** (Gemini 2.0 Flash): Genera borrador basado en plan + research
+4. **Editor** (Claude 3.5 Sonnet): Revisa tono, gramática, SEO on-page
+5. **Evaluator** (Gemini Flash): Califica según criterios → Si score <80 → volver a Writer
+
+**Beneficios del sistema multiagente:**
+- Cada agente especializado = mejor calidad
+- Modelos diferentes por costo (Flash para tareas simples)
+- Ciclo de auto-mejora antes de revisión humana
+- Depuración más fácil (identificar qué agente falló)
 
 ---
 
