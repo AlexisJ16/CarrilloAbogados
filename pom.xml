@@ -8,7 +8,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.13</version>
-        <relativePath /> <!-- lookup parent from repository -->
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.carrilloabogados</groupId>
     <artifactId>carrillo-legal-tech</artifactId>
@@ -27,7 +27,7 @@
         <springdoc.version>2.6.0</springdoc.version>
         <!-- Dependency versions managed for security updates -->
         <jjwt.version>0.13.0</jjwt.version>
-        <jnats.version>2.24.1</jnats.version>
+        <jnats.version>2.25.0</jnats.version>
     </properties>
 
     <dependencies>
