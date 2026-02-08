@@ -44,3 +44,10 @@ Output-CLI-DeTrabajo.txt
 .n8n-mcp.env
 **/mcp-credentials.json
 **/.mcp-secrets/
+
+### Debug & artifacts ###
+firebase-debug.log
+nul
+
+### Claude Code local settings ###
+.claude/settings.local.json

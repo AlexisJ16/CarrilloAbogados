@@ -2,7 +2,7 @@
 
 > Welcome to the central documentation hub for the Carrillo Abogados Automation Project.
 
-**Last Updated**: January 10, 2026
+**Last Updated**: February 7, 2026
 
 ---
 
@@ -27,13 +27,19 @@
 | [NODE_STANDARDS](technical/NODE_STANDARDS.md) | n8n node coding standards |
 | [BACKEND_DEV_TASKS](technical/BACKEND_DEV_TASKS.md) | Backend integration tasks |
 
+### Business Context
+| Document | Description |
+|----------|-------------|
+| [MAES_INTEGRATION](business/MAES_INTEGRATION.md) | MAES strategy ↔ MW#3 integration |
+| [WEB_DEV_INTEGRATION_GUIDE](technical/WEB_DEV_INTEGRATION_GUIDE.md) | Web platform ↔ n8n guide |
+
 ### Architecture (per MW)
 | Document | Description |
 |----------|-------------|
 | [00_ARQUITECTURA_GENERAL](technical/arquitectura/00_ARQUITECTURA_GENERAL.md) | High-level system design |
 | [01_MEGA_WORKFLOW_1](technical/arquitectura/01_MEGA_WORKFLOW_1.md) | MW1 Lead Lifecycle architecture |
 | [02_MEGA_WORKFLOW_2](technical/arquitectura/02_MEGA_WORKFLOW_2.md) | MW2 Retention (future) |
-| [03_MEGA_WORKFLOW_3](technical/arquitectura/03_MEGA_WORKFLOW_3.md) | MW3 SEO Content (future) |
+| [03_MEGA_WORKFLOW_3_SEO](technical/arquitectura/03_MEGA_WORKFLOW_3_SEO.md) | MW3 SEO Content Factory (v5.0) |
 
 ---
 
@@ -45,6 +51,13 @@
 | **Status & Progress** | [STATUS.md](../workflows/MW1_LEAD_LIFECYCLE/STATUS.md) |
 | **Orchestrator** | [01-orchestrator/](../workflows/MW1_LEAD_LIFECYCLE/01-orchestrator/) |
 | **Spokes** | [02-spokes/](../workflows/MW1_LEAD_LIFECYCLE/02-spokes/) |
+
+### MW3: SEO Content Factory
+| Resource | Location |
+|----------|----------|
+| **Status & Progress** | [STATUS.md](../workflows/MW3_SEO_CONTENT_FACTORY/STATUS.md) |
+| **Orchestrator** | [01-orchestrator/](../workflows/MW3_SEO_CONTENT_FACTORY/01-orchestrator/) |
+| **Spokes** | [02-spokes/](../workflows/MW3_SEO_CONTENT_FACTORY/02-spokes/) |
 
 ---
 

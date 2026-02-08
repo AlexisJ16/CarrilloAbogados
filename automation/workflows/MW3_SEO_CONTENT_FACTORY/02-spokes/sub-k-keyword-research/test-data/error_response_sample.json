@@ -1,0 +1,73 @@
+{
+  "_description": "Sample error responses from DataForSEO API for testing error handling",
+
+  "unauthorized_error": {
+    "version": "0.1.20260123",
+    "status_code": 40100,
+    "status_message": "Unauthorized. Check your API login and password.",
+    "time": "0.0012 sec.",
+    "cost": 0,
+    "tasks_count": 0,
+    "tasks_error": 0,
+    "tasks": []
+  },
+
+  "payment_required_error": {
+    "version": "0.1.20260123",
+    "status_code": 40200,
+    "status_message": "Payment Required. Your account balance is insufficient.",
+    "time": "0.0015 sec.",
+    "cost": 0,
+    "tasks_count": 0,
+    "tasks_error": 0,
+    "tasks": []
+  },
+
+  "bad_request_error": {
+    "version": "0.1.20260123",
+    "status_code": 40000,
+    "status_message": "Bad Request. Check your request parameters.",
+    "time": "0.0010 sec.",
+    "cost": 0,
+    "tasks_count": 1,
+    "tasks_error": 1,
+    "tasks": [
+      {
+        "id": "error-task-001",
+        "status_code": 40000,
+        "status_message": "Invalid location_code. Please provide a valid location code.",
+        "time": "0.0008 sec.",
+        "cost": 0,
+        "result_count": 0,
+        "path": ["v3", "dataforseo_labs", "google", "keyword_ideas", "live"],
+        "data": {
+          "api": "dataforseo_labs",
+          "function": "keyword_ideas"
+        },
+        "result": null
+      }
+    ]
+  },
+
+  "rate_limit_error": {
+    "version": "0.1.20260123",
+    "status_code": 42900,
+    "status_message": "Too Many Requests. Rate limit exceeded.",
+    "time": "0.0005 sec.",
+    "cost": 0,
+    "tasks_count": 0,
+    "tasks_error": 0,
+    "tasks": []
+  },
+
+  "server_error": {
+    "version": "0.1.20260123",
+    "status_code": 50000,
+    "status_message": "Internal Server Error. Please try again later.",
+    "time": "0.5000 sec.",
+    "cost": 0,
+    "tasks_count": 0,
+    "tasks_error": 0,
+    "tasks": []
+  }
+}

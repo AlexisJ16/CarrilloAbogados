@@ -1,0 +1,17 @@
+{
+  "keyword_id": "kw_test_001",
+  "keyword_text": "como registrar marca software colombia",
+  "volume": 320,
+  "kd": 22,
+  "cpc": 2.50,
+  "priority_score": 85,
+  "category": "registro de marca",
+  "source": "dataforseo",
+  "status": "pendiente",
+  "created_at": "2026-01-21T07:00:00Z",
+  "metadata": {
+    "search_intent": "informational",
+    "competition_level": "low",
+    "word_count": 5
+  }
+}

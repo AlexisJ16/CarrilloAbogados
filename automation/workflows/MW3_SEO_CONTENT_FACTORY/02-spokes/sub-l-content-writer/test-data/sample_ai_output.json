@@ -1,0 +1,52 @@
+{
+  "input": {
+    "keyword_text": "como registrar marca software colombia",
+    "category": "registro de marca",
+    "volume": 320
+  },
+  "expected_output_structure": {
+    "metadata_block": "---\nTITLE: Cómo Registrar una Marca de Software en Colombia 2026: Guía Completa\nMETA_DESCRIPTION: Descubre el proceso completo para registrar tu marca de software en Colombia. Costos, requisitos y tiempos actualizados 2026 por expertos SIC.\nSLUG: registrar-marca-software-colombia\n---",
+    "content_structure": {
+      "sections": [
+        "H1: Title principal con keyword",
+        "Introducción (150-200 palabras)",
+        "H2: ¿Qué es el registro de marca y por qué importa?",
+        "H2: Requisitos para registrar marca de software",
+        "H3: Documentación necesaria",
+        "H3: Clasificación internacional (Niza)",
+        "H2: Proceso paso a paso",
+        "H3: Paso 1 - Búsqueda de antecedentes",
+        "H3: Paso 2 - Solicitud en línea SIC",
+        "H3: Paso 3 - Pago de tasas",
+        "H3: Paso 4 - Examen de forma",
+        "H3: Paso 5 - Publicación en Gaceta",
+        "H3: Paso 6 - Concesión del registro",
+        "H2: Costos actualizados 2026",
+        "H2: Errores comunes al registrar marca",
+        "H2: Preguntas Frecuentes (FAQ)",
+        "H3: Pregunta 1...",
+        "H3: Pregunta 2...",
+        "H2: Conclusión + CTA"
+      ]
+    }
+  },
+  "expected_fields_after_parsing": {
+    "title": "Cómo Registrar una Marca de Software en Colombia 2026: Guía Completa",
+    "meta_description": "Descubre el proceso completo para registrar tu marca de software en Colombia. Costos, requisitos y tiempos actualizados 2026 por expertos SIC.",
+    "slug": "registrar-marca-software-colombia",
+    "content_markdown": "[Full article content in markdown format]",
+    "word_count": 2150,
+    "estimated_generation_time_seconds": 45
+  },
+  "validation_checklist": {
+    "has_metadata_block": true,
+    "has_h1": true,
+    "has_introduction": true,
+    "has_h2_sections": true,
+    "has_faq_section": true,
+    "has_conclusion_cta": true,
+    "word_count_in_range": true,
+    "keyword_in_title": true,
+    "keyword_in_meta": true
+  }
+}

@@ -1,46 +1,81 @@
 # MW#3: SEO Content Factory - STATUS
 
-**Version:** 1.0
-**Last Updated:** 2026-01-21
-**Overall Status:** PLANNING (Phase 0)
-**Target Completion:** Phase 0 - 24 January 2026
+**Version:** 4.0
+**Last Updated:** 2026-02-07 (Documentation Agent - Reality Sync)
+**Overall Status:** IMPLEMENTATION IN PROGRESS (45% Complete)
+**Phase:** Phase 0 ~55% + FASE 1 Investigation Started
 
 ---
 
 ## QUICK REFERENCE
 
-| Component | Status | n8n Workflow ID | Notes |
-|-----------|--------|-----------------|-------|
-| Orchestrator v2.0 (AI Agent) | NOT STARTED | - | Must use AI Agent architecture |
-| SUB-K: Keyword Research | NOT STARTED | - | DataForSEO API (NOT SEMrush) |
-| SUB-L: Content Writer AI | NOT STARTED | - | Gemini 2.0 Flash |
-| SUB-M: Publisher | BLOCKED | - | Requires blog-service or CMS |
-| SUB-N: SEO Tracker | NOT STARTED | - | Google Search Console API |
+| Component | Design Status | Implementation Status | n8n Workflow ID | Notes |
+|-----------|---------------|----------------------|-----------------|-------|
+| **Orchestrator v2.0** | DESIGNED ✅ | NOT IMPLEMENTED ❌ | - | 80 pages specs ready |
+| **SUB-K v2.0** | DESIGNED ✅ | NOT IMPLEMENTED ❌ | - | **DUAL MODE: Investigation + Production** |
+| **SUB-L v2.0** | DESIGNED ✅ | **DEPLOYED ✅** | `ZcaEG8VDm1IcG3LF` | **ACTIVE in n8n, 16 nodes, Google Workspace** |
+| **SUB-M** | BLOCKED ❌ | NOT STARTED ❌ | - | Awaiting blog-service decision |
+| **SUB-N** | NOT STARTED ❌ | NOT STARTED ❌ | - | Planned for Q2 2026 |
 
 ---
 
-## CRITICAL DECISIONS (2026-01-21)
+## SETUP STATUS (External Dependencies)
 
-### DECISION 1: SEMrush API is NOT viable
+| Component | Status | Location/ID | Notes |
+|-----------|--------|-------------|-------|
+| **Google Drive folder "MW3_Drafts"** | ✅ CREATED | Google Drive | Used by SUB-L v2.0 |
+| **Google Sheet "MW3_ContentWriter_Logs"** | ⚠️ PARTIAL | Google Drive | Only "Errors" tab created, missing "Logs" tab |
+| **Google Sheet "Keywords_Master"** | ✅ CREATED | `15RmVB34VnwxdJ9Ne-HX4WU54yv0kUn7WOvcjWdUL6to` | **21 columns (A-U), 6 tabs, formulas + validaciones** |
+| **Google Sheet "MAES_Research"** | ✅ CREATED | `155udZF7WtMsyDaSGCJZ3_7e4xZXpQm9p-oZGqve_VN8` | **4 tabs: Competitor_Keywords, Top_Pages, Keyword_Gap, Our_Opportunities** |
+| **Google Sheet "MW3_Orchestrator_Logs"** | ⏳ PENDING | - | Required for Orchestrator v2.0 |
+| **Firestore Index (keywords_pipeline)** | ⏳ PENDING | - | Required: (status ASC, priority_score DESC) |
 
-**Problem:**
-- SEMrush Pro ($5.75M COP/year) does NOT include API access
-- SEMrush Business with API costs ~$500 USD/month
-- This exceeds our entire marketing budget
+---
+
+## IMPLEMENTATION REALITY CHECK (2026-01-26)
+
+### What Is ACTUALLY Deployed in n8n
+
+**SUB-L Content Writer v2.0:**
+- Workflow ID: `ZcaEG8VDm1IcG3LF` (ACTIVE)
+- Version: 2.0 (Google Workspace migration)
+- Nodes: 16
+- Status: DEPLOYED and FUNCTIONAL
+- Changes from v1.0:
+  - REMOVED Firestore for draft storage
+  - ADDED Google Drive for documents
+  - ADDED Google Docs for content editing
+  - ADDED Google Sheets for tracking (Content_Pipeline)
+  - Email notifications include direct Google Doc links
+
+### What Is Designed But NOT Implemented
+
+**Orchestrator v2.0 (AI Agent):**
+- Design: 100% complete (80 pages documentation)
+- Implementation: 0%
+- Blocker: None (ready for implementation)
+
+**SUB-K Keyword Research v2.0 (DUAL MODE):**
+- Design: 100% complete
+- Implementation: 0%
+- Innovation: **Two purposes (Investigation for MAES + Production for SUB-L)**
+- Blocker: DataForSEO API budget not approved ($50-100 USD)
+
+---
+
+## CRITICAL DECISIONS (History)
+
+### DECISION 1: SEMrush API is NOT viable (2026-01-21)
+**Problem:** SEMrush Pro ($5.75M COP/year) does NOT include API access
 
 **Solution Approved:**
-- **Human use:** SEMrush Pro (manual research, site audits)
-- **Robot use (n8n):** DataForSEO API (pay-as-you-go)
+- Human use: SEMrush Pro (manual research, site audits)
+- Robot use (n8n): DataForSEO API (pay-as-you-go)
   - Cost: $50-100 USD = thousands of queries
   - Same data: Volume, KD, SERP analysis
-  - n8n integration: HTTP Request node
 
-### DECISION 2: blog-service depends on Alexis
-
-**Problem:**
-- Current frontend has hardcoded blog (`/blog` page)
-- No backend API exists for blog posts
-- SUB-M (Publisher) has nowhere to publish
+### DECISION 2: blog-service depends on Alexis (2026-01-21)
+**Status:** PENDING
 
 **Options:**
 | Option | Pros | Cons | Decision |
@@ -51,279 +86,416 @@
 
 **Action:** Escalate to Don Omar for decision with Alexis availability.
 
-### DECISION 3: Architecture must match MW#1 v3.0
-
+### DECISION 3: Architecture must match MW#1 v3.0 (2026-01-22)
 **Requirement:** Orchestrator must be AI Agent with Tools (Nate Herk methodology)
 - NOT code-based Hub & Spoke (outdated)
 - AI Agent decides which SUB-workflow to execute
 - Easier to add new SUB-workflows in the future
 
----
+### DECISION 4: Google Sheets as Source of Truth (2026-01-23)
+**Innovation:** Use Google Sheets for keyword pipeline control
 
-## ARCHITECTURE v2.0 (APPROVED)
+**Rationale:**
+- Juan needs manual control over which keywords to process
+- Google Sheets is familiar interface (vs Firestore Console)
+- Easy rollback with version history
+- Transparent workflow
 
+**Flow:**
 ```
-                    ┌─────────────────────────────────┐
-                    │  ORCHESTRATOR: AI Agent         │
-                    │  (Gemini 2.0 Flash)             │
-                    │                                 │
-                    │  Tools:                         │
-                    │  - execute_keyword_research     │
-                    │  - execute_content_writer       │
-                    │  - execute_publisher            │
-                    │  - execute_tracker              │
-                    └─────────────┬───────────────────┘
-                                  │
-        ┌─────────────────────────┼─────────────────────────┐
-        │                         │                         │
-        ▼                         ▼                         ▼
-┌───────────────┐         ┌───────────────┐         ┌───────────────┐
-│    SUB-K      │         │    SUB-L      │         │    SUB-M      │
-│   Keyword     │         │   Content     │         │   Content     │
-│  Research    │         │  Writer AI    │         │  Publisher    │
-│               │         │               │         │               │
-│ DataForSEO   │    →    │ Gemini 2.0    │    →    │ blog-service  │
-│ API          │         │ Flash         │         │ API           │
-└───────────────┘         └───────────────┘         └───────────────┘
-        │                         │                         │
-        └─────────────────────────┼─────────────────────────┘
-                                  │
-                                  ▼
-                          ┌───────────────┐
-                          │    SUB-N      │
-                          │ SEO Tracker   │
-                          │               │
-                          │ GSC + GA4 API │
-                          └───────────────┘
+DataForSEO API
+    ↓
+SUB-K saves to Google Sheets "Keywords_Master"
+    ↓
+Juan marks enabled=TRUE/FALSE manually
+    ↓
+SUB-K syncs ONLY enabled=TRUE to Firestore
+    ↓
+SUB-L reads from Firestore
 ```
 
+### DECISION 5: SUB-L migrates to Google Workspace (2026-01-24)
+**Problem:**
+- SUB-L v1.0 stored drafts in Firestore
+- Firebase Console not user-friendly for content editing
+- Juan needs collaborative editing
+
+**Solution Approved:**
+- REMOVE Firestore for content storage
+- USE Google Drive + Docs for drafts
+- USE Google Sheets for tracking
+- Email with direct link to Google Doc
+
+**Architecture v2.0:**
+```
+Google Sheets "Content_Pipeline" (tab Keywords)
+    |
+    v
+SUB-L Content Writer v2.0
+    |
+    +---> Google Drive: Creates document
+    +---> Google Sheets: Tracking in Drafts tab
+    +---> Gmail: Notification with Doc link
+```
+
+**Benefits:**
+- WYSIWYG editing in Google Docs
+- Native collaboration (comments, suggestions)
+- Automatic version history
+- Mobile-friendly via Google Docs app
+
+### DECISION 6: SUB-K has dual purpose (2026-01-26)
+
+**Architecture:** Un solo workflow SUB-K con dos configuraciones (Investigation + Production)
+
+**Propósito 1 - Investigation (para MAES):**
+- **Trigger:** Manual (ad-hoc durante MAES)
+- **Input:** Seed keywords + competidores
+- **Output:** Google Sheets "MAES_Research" (200+ keywords raw)
+- **Uso:** Alimentar análisis estratégico en Notion (Fases 4-6 de MAES)
+- **Frecuencia:** Durante MAES + revisiones trimestrales
+- **Filtros:** Mínimos (exploración amplia: volumen >= 50, KD <= 50)
+
+**Propósito 2 - Production (para SUB-L):**
+- **Trigger:** Schedule semanal (lunes 8:00 AM)
+- **Input:** Keywords_Master (enabled=TRUE, status=pendiente)
+- **Output:** Firestore keywords_pipeline + trigger SUB-L
+- **Uso:** Ejecutar contenido según estrategia definida por MAES
+- **Frecuencia:** Automático (semanal)
+- **Filtros:** Estrictos (solo keywords validadas por MAES)
+
+**Beneficio clave:** Maximiza ROI de DataForSEO API ($50-100 USD) en ambas fases (investigación + producción). MAES toma decisiones estratégicas informadas por datos de API, no por intuición.
+
+**Ciclo completo:**
+```
+[DataForSEO API]
+    ↓
+[SUB-K Investigation] → MAES_Research Sheet (200+ keywords)
+    ↓
+[MAES: Fases 4-6] → Análisis humano + Claude AI
+    ↓
+[Keywords_Master Sheet] → Juan marca enabled=TRUE (50-100 keywords)
+    ↓
+[SUB-K Production] → Firestore (enabled=TRUE only)
+    ↓
+[SUB-L] → Contenido alineado con estrategia MAES
+```
+
+**Integración con MAES:**
+- MAES (Metodología Ágil Estrategia SEO): 8 fases en Notion
+- SUB-K Investigation enriquece Fases 4-6 con datos de competencia
+- Keywords_Master es el "contrato" entre MAES (estrategia) y MW#3 (ejecución)
+- Retroalimentación trimestral: SUB-N → MAES (ajustar estrategia según performance)
+
+**Documentación detallada:** Ver `docs/business/MAES_INTEGRATION.md` y `docs/technical/arquitectura/03_MEGA_WORKFLOW_3_SEO.md` (v5.0)
+
 ---
 
-## PHASE 0 TASKS (Due: 24 January 2026)
+## ARCHITECTURE v2.0 (CURRENT - Updated v5.0)
+
+```
+    ┌─────────────────────────────────────────────────────────┐
+    │        CAPA ESTRATÉGICA (Fuera de n8n)                  │
+    │   ┌──────────────────────────────────────────────┐     │
+    │   │  MAES (Notion) - 8 fases SEO                 │     │
+    │   │  Ejecutado por Juan + Claude AI              │     │
+    │   └─────────────────┬────────────────────────────┘     │
+    │                     │ Alimenta/Consume                  │
+    └─────────────────────┼───────────────────────────────────┘
+                          │
+           ┌──────────────┴──────────────┐
+           │                             │
+           ▼                             ▼
+    ┌─────────────┐             ┌─────────────┐
+    │  SUB-K      │◄────────────│ Keywords_   │
+    │  INVESTIG.  │  ad-hoc     │ Master      │
+    │ (DataForSEO)│             │ (Sheets)    │
+    │             │─────────────►│ Source of   │
+    │ Output:     │  raw data   │ Truth       │
+    │ MAES_Research│             │             │
+    └─────────────┘             └──────┬──────┘
+                                       │
+    ┌─────────────────────────────────────────────────────────────┐
+    │            CAPA OPERATIVA (n8n automatizado)                │
+    │                    ┌─────────────────────────────────┐     │
+    │                    │  ORCHESTRATOR v2.0 (AI Agent)   │     │
+    │                    │  NOT IMPLEMENTED ⏳              │     │
+    │                    └───────────────┬─────────────────┘     │
+    │        ┌───────────────────────────┼──────────────┐        │
+    │        ▼                           ▼              ▼        │
+    │ ┌───────────────┐           ┌───────────────┐ ┌────────┐  │
+    │ │    SUB-K      │           │    SUB-L      │ │ SUB-M  │  │
+    │ │  PRODUCCIÓN   │     →     │ DEPLOYED ✅   │→│BLOCKED❌│ │
+    │ │ NOT IMPL ⏳   │           │ Google Docs   │ │        │  │
+    │ └───────────────┘           └───────────────┘ └────────┘  │
+    │                                     ▼                      │
+    │                            ┌───────────────┐               │
+    │                            │    SUB-N      │               │
+    │                            │ NOT STARTED ❌│               │
+    │                            └───────┬───────┘               │
+    └────────────────────────────────────┼───────────────────────┘
+                                         │
+                                         ▼
+                                ┌─────────────────┐
+                                │ Retroalimenta   │
+                                │ a MAES          │
+                                │ (Trimestral)    │
+                                └─────────────────┘
+```
+
+---
+
+## TICKETS STATUS
+
+| Ticket ID | Component | Design | Implementation | Status |
+|-----------|-----------|--------|----------------|--------|
+| TICKET-MW3-001 | DataForSEO Integration Spec | ✅ COMPLETED | N/A | APPROVED |
+| TICKET-MW3-002 | SUB-K v1.0 Design | ✅ COMPLETED | ❌ NOT IMPL | NEEDS UPDATE to v2.0 (dual mode) |
+| TICKET-MW3-003 | SUB-L v2.0 Design & Impl | ✅ COMPLETED | ✅ DEPLOYED | **PRODUCTION READY** |
+| TICKET-MW3-004 | Orchestrator v2.0 Design | ✅ COMPLETED | ❌ NOT IMPL | READY FOR HANDOFF |
+| TICKET-MW3-005 | SUB-L Multiagente (Fase 1) | ⏳ NOT STARTED | ⏳ NOT STARTED | FUTURE |
+| TICKET-MW3-006 | MAES Integration Documentation | ✅ COMPLETED | N/A | Architecture v5.0 updated |
+
+---
+
+## SUB-L v2.0: GOOGLE WORKSPACE IMPLEMENTATION (DEPLOYED)
+
+### Key Information
+- **Workflow ID:** `ZcaEG8VDm1IcG3LF`
+- **Status:** ACTIVE in n8n Cloud
+- **Version:** 2.0 (Google Workspace migration)
+- **Nodes:** 16
+- **Implementation Date:** 2026-01-24
+
+### Architecture Changes (v1.0 → v2.0)
+| Aspect | v1.0 (Firestore) | v2.0 (Google Workspace) |
+|--------|------------------|-------------------------|
+| Draft Storage | Firestore `content_drafts` | Google Docs |
+| Keyword Tracking | Firestore `keywords_pipeline` | Google Sheets |
+| Editing UX | Firebase Console (JSON) | Google Docs (WYSIWYG) |
+| Collaboration | None | Native (comments, suggestions) |
+| Notification | Link to Firebase | Link to Google Doc |
+| Mobile Access | Firebase app | Google Docs app |
+
+### Google Workspace Components
+1. **Google Drive Folder:** "MW3_Drafts" (CREATED ✅)
+   - Purpose: Store generated articles as Google Docs
+
+2. **Google Sheet:** "MW3_ContentWriter_Logs" (PARTIAL ⚠️)
+   - Tab "Errors": CREATED ✅
+   - Tab "Logs": MISSING ❌ (needs creation)
+
+3. **Google Sheet:** "Content_Pipeline" (PENDING ⏳)
+   - Tab "Keywords": Input source (keyword_id, keyword_text, status, etc.)
+   - Tab "Drafts": Output tracking (content_id, google_doc_url, status, etc.)
+   - **NOTE:** May consolidate with "Keywords_Master" for Orchestrator v2.0
+
+### Workflow Flow (v2.0)
+```
+Execute Workflow Trigger
+    ↓
+Read Next Keyword (Google Sheets "Content_Pipeline" tab Keywords)
+    ↓
+Check Keyword Exists (IF)
+    ↓ [TRUE]
+Set Variables
+    ↓
+Content Generator Agent (Gemini 2.0 Flash)
+    ↓ [SUCCESS]
+Parse AI Output
+    ↓
+Create Google Doc (in "MW3_Drafts" folder)
+    ↓
+Add to Content Pipeline (Google Sheets tab "Drafts")
+    ↓
+Update Keyword Status (Google Sheets tab "Keywords")
+    ↓
+Log Metrics to Sheets (MW3_ContentWriter_Logs)
+    ↓
+Notify Juan - Success (Gmail with Google Doc link)
+```
+
+### Pending Setup Tasks for SUB-L v2.0
+- [ ] Create "Logs" tab in "MW3_ContentWriter_Logs" sheet
+- [ ] Create "Content_Pipeline" Google Sheet with tabs "Keywords" and "Drafts"
+- [ ] Populate "Keywords" tab with test keyword data
+- [ ] Test E2E flow with real keyword
+
+---
+
+## ORCHESTRATOR v2.0 - DESIGN COMPLETE (NOT IMPLEMENTED)
+
+### Documentation Generated (80 pages total)
+| File | Pages | Purpose | Location |
+|------|-------|---------|----------|
+| DESIGN_SPEC.md | 45 | Complete Orchestrator specification | docs/technical/arquitectura/ (MOVED) |
+| workflow_diagram.mermaid | 1 | Flow diagram | 01-orchestrator/ (consolidated in DESIGN_SPEC) |
+| GOOGLE_SHEETS_KEYWORDS_MASTER.md | 18 | Google Sheets structure | docs/technical/arquitectura/ (MOVED) |
+| CHANGES_REQUIRED_SUB-K.md | 12 | SUB-K v2.0 upgrade guide | ARCHIVED |
+| HANDOFF_SUMMARY.md | 4 | Executive summary for handoff | ARCHIVED |
+
+### Innovation: Google Sheets as Human Control Layer
+**Sheet Name:** "Keywords_Master"
+
+**Key Columns (21 total: A-U):**
+- Column I: `enabled` (TRUE/FALSE) - **Juan manually controls**
+- Column J: `status` (pendiente/en_progreso/publicado)
+- Column E: `priority_score` (auto-calculated formula)
+- Column C: `keyword_text` (from DataForSEO or manual)
+
+**Human Workflow:**
+1. SUB-K Investigation executes → adds keywords to MAES_Research Sheet
+2. Juan analyzes in MAES (Notion Fases 4-6)
+3. Juan transfers validated keywords to Keywords_Master
+4. Juan marks `enabled=TRUE` for approved keywords
+5. Juan marks `enabled=FALSE` for rejected keywords
+6. SUB-K Production syncs only `enabled=TRUE` to Firestore
+7. SUB-L reads from Firestore to generate content
+
+### System Prompt (~2,500 words)
+- 4 Tools definitions
+- Decision rules (when to execute each tool)
+- Validations (avoid duplicates, check availability)
+- Examples (4 scenarios)
+- Error handling
+
+### Pending Implementation
+- [x] Create Google Sheets "Keywords_Master" (21 columns, 6 tabs) - ✅ DONE 7 Feb
+- [x] Create Google Sheets "MAES_Research" (4 tabs) - ✅ DONE 7 Feb
+- [ ] Create Google Sheets "MW3_Orchestrator_Logs"
+- [ ] Implement Orchestrator v2.0 in n8n (13 nodes)
+- [ ] Update SUB-K v1.0 → v2.0 (dual mode: investigation + production)
+
+**Estimated Time:** 15 hours total
+- Google Sheets setup: 2 hours (Keywords_Master + MAES_Research + Logs)
+- SUB-K v2.0 (dual mode): 5-6 hours
+- Orchestrator v2.0: 4-5 hours
+- E2E testing: 3-4 hours
+
+---
+
+## SUB-K v2.0: KEYWORD RESEARCH (DUAL MODE - NOT IMPLEMENTED)
+
+### Status
+- **Design:** ✅ COMPLETE (updated to dual mode)
+- **Implementation:** ❌ NOT STARTED
+- **Blocker:** DataForSEO API budget ($50-100 USD) pending approval
+
+### Key Innovation: Dual Purpose Architecture
+
+**TWO MODES in one workflow:**
+
+| Aspect | Mode 1: INVESTIGATION | Mode 2: PRODUCTION |
+|--------|----------------------|-------------------|
+| **Consumer** | MAES (Notion) | SUB-L (n8n) |
+| **Trigger** | Manual (webhook) | Schedule (weekly) |
+| **Input** | Seed keywords + competitors | Keywords_Master (enabled=TRUE) |
+| **Output** | MAES_Research Sheet | Firestore + trigger SUB-L |
+| **Purpose** | Enrich strategic analysis | Execute defined strategy |
+| **Filters** | Minimal (explore broadly) | Strict (MAES-validated only) |
+| **Frequency** | Ad-hoc during MAES | Automated (weekly) |
+
+### Changes from v1.0
+
+| Change | Description | Reason |
+|--------|-------------|--------|
+| 1. Add mode parameter | "investigation" or "production" | Support dual purpose |
+| 2. Add trigger | Webhook for investigation mode | Manual execution during MAES |
+| 3. Add node | Google Sheets "Save to MAES_Research" | Investigation output |
+| 4. Add node | Google Sheets "Read Keywords_Master" | Production input |
+| 5. Modify filters | Different filters per mode | Investigation = broad, Production = strict |
+| 6. Update notifications | Different email templates per mode | Clarity on what was executed |
+
+**Nodes:** 11 (v1.0) → 15-17 (v2.0 dual mode)
+
+### DataForSEO Integration
+**API:** DataForSEO (NOT SEMrush - cost approved)
+
+**Endpoints:**
+- `/v3/dataforseo_labs/google/keyword_ideas/live`
+- `/v3/dataforseo_labs/google/keywords_for_site/live`
+- `/v3/dataforseo_labs/google/related_keywords/live`
+- `/v3/dataforseo_labs/google/bulk_keyword_difficulty/live`
+
+**Cost:** ~$1.50/month regular use, $50-100 USD covers 2-3 years
+
+---
+
+## PHASE 0 TASKS (Current Priority)
 
 ### TRACK A: Documentation & Structure (Marketing - Juan)
 
-| ID | Task | Status | Owner | Notes |
-|----|------|--------|-------|-------|
-| A1 | Create folder structure per Agent Protocols | DONE | Juan | MW3_SEO_CONTENT_FACTORY/ |
-| A2 | Create STATUS.md (this file) | DONE | Juan | Following protocols |
-| A3 | Update CLAUDE.md with MW#3 info | NOT STARTED | Juan | Add to global memory |
-| A4 | Create DataForSEO integration spec | DONE | Juan | [DATAFORSEO_INTEGRATION.md](../../docs/technical/DATAFORSEO_INTEGRATION.md) |
-| A5 | Design SUB-K workflow (diagram + nodes) | NOT STARTED | Juan | JSON spec |
-| A6 | Design SUB-L workflow (diagram + nodes) | NOT STARTED | Juan | JSON spec |
-| A7 | Design Orchestrator v2.0 (AI Agent) | NOT STARTED | Juan | Copy MW#1 pattern |
+| ID | Task | Status | Notes |
+|----|------|--------|-------|
+| A1 | Create folder structure per Agent Protocols | ✅ DONE | MW3_SEO_CONTENT_FACTORY/ |
+| A2 | Create STATUS.md (this file) | ✅ DONE | Updated 2026-01-26 |
+| A3 | Update CLAUDE.md with MW#3 info | ⏳ PENDING | Add SUB-L v2.0 deployment info |
+| A4 | Create DataForSEO integration spec | ✅ DONE | docs/technical/DATAFORSEO_INTEGRATION.md |
+| A5 | Design SUB-K workflow | ✅ DONE | v2.0 dual mode spec complete |
+| A6 | Design SUB-L workflow | ✅ DONE | v2.0 DEPLOYED |
+| A7 | Design Orchestrator v2.0 | ✅ DONE | 80 pages documentation |
+| A8 | Design Google Sheets "Keywords_Master" | ✅ DONE | 16 columns structure spec |
+| A9 | Design SUB-K v2.0 dual mode | ✅ DONE | Investigation + Production |
+| A10 | **Create Google Sheets (all required)** | ✅ **DONE** | **Keywords_Master + MAES_Research created 7 Feb** |
+| A11 | **Audit & reorganize documentation** | ✅ **DONE** | **Documentation Agent (2026-01-24)** |
+| A12 | **Create MAES_INTEGRATION.md** | ✅ **DONE** | **docs/business/MAES_INTEGRATION.md** |
+| A13 | **Update architecture to v5.0** | ✅ **DONE** | **03_MEGA_WORKFLOW_3_SEO.md updated** |
 
 ### TRACK B: External Decisions (Requires Don Omar)
 
 | ID | Task | Status | Owner | Notes |
 |----|------|--------|-------|-------|
-| B1 | Pay SEMrush Pro ($5.75M COP) | PENDING | Don Omar | Manual research only |
-| B2 | Approve DataForSEO budget ($50-100 USD) | PENDING | Don Omar | For n8n automation |
-| B3 | Decide blog backend (blog-service vs WordPress) | PENDING | Don Omar + Alexis | Blocking SUB-M |
+| B1 | Pay SEMrush Pro ($5.75M COP) | ✅ DONE | Don Omar | Paid monthly (not annual) |
+| B2 | Approve DataForSEO budget ($50-100 USD) | ⏳ PENDING | Don Omar | For n8n automation |
+| B3 | Decide blog backend (blog-service vs WordPress) | ⏳ PENDING | Don Omar + Alexis | Blocking SUB-M |
+| B4 | Review MAES integration approach | ⏳ PENDING | Don Omar | Validate SUB-K dual purpose |
 
-### TRACK C: Backend Development (Requires Alexis)
+### TRACK C: Implementation (n8n workflows)
 
 | ID | Task | Status | Owner | Notes |
 |----|------|--------|-------|-------|
-| C1 | Create blog-service skeleton | BLOCKED | Alexis | Depends on B3 decision |
-| C2 | BlogPost entity + CRUD API | BLOCKED | Alexis | Depends on C1 |
-| C3 | Connect frontend /blog to API | BLOCKED | Alexis | Depends on C2 |
+| C1 | **Setup Google Sheets** | ✅ **DONE** | Juan | Keywords_Master + MAES_Research created 7 Feb |
+| C2 | Implement SUB-K v2.0 (dual mode) | ⏳ WAITING | Engineer Agent | Depends on C1 |
+| C3 | Implement Orchestrator v2.0 | ⏳ WAITING | Engineer Agent | Depends on C1, C2 |
+| C4 | E2E testing | ⏳ WAITING | QA Agent | Depends on C3 |
 
 ---
 
-## SUB-WORKFLOW SPECS
+## NEXT STEPS (IMMEDIATE PRIORITY - S4: 6-13 Feb)
 
-### SUB-K: Keyword Research
+### For Juan (This Week)
 
-**Trigger:** Schedule (1st of month) or Manual
-**API:** DataForSEO (NOT SEMrush)
-**Output:** Firestore `keywords_pipeline` collection
+**PRIORITY 1: FASE 1 Investigation (Track Marketing)**
 
-**DataForSEO Endpoints to Use:**
-```
-POST /v3/dataforseo_labs/google/keyword_ideas/live
-POST /v3/dataforseo_labs/google/bulk_keyword_difficulty/live
-POST /v3/serp/google/organic/live/advanced
-```
+1. [ ] Complete MAES Phase 4 (Competition Analysis) with SEMrush Pro
+   - Populate MAES_Research Sheet (Competitor_Keywords, Top_Pages, Keyword_Gap)
+   - Benchmark 5 direct competitors
+   - **Time:** 3-4h
 
-**Filtering Criteria:**
-- Volume >= 100/month
-- Keyword Difficulty <= 30
-- Words >= 3 (long-tail)
-- Intent: informational OR transactional
+2. [ ] Expand Keyword Research (1.1.1)
+   - Manual research with SEMrush Pro
+   - Load keywords into Keywords_Master Sheet
+   - Target: 100+ keywords with volume and difficulty
+   - **Time:** 2-3h
 
-**Priority Score Formula:**
-```javascript
-priority_score = (volume / 10) - kd + (cpc * 5)
-```
+3. [ ] Complete "MW3_ContentWriter_Logs" - Add missing "Logs" tab (5 min)
 
-### SUB-L: Content Writer AI
+4. [ ] Create "MW3_Orchestrator_Logs" (10 min)
 
-**Trigger:** Called by Orchestrator when keywords available
-**Output:** Firestore `content_drafts` collection with status `pending_revision`
+**PRIORITY 2: Test SUB-L v2.0**
+5. [ ] Add test keyword to Keywords_Master
+6. [ ] Execute SUB-L manually in n8n
+7. [ ] Verify Google Doc created, logs written, email received
 
-#### EVOLUCIÓN PLANIFICADA (Metodología Nate Herk)
+### For Agente Ingeniero (After Google Sheets Setup)
 
-**Fase 0 (Semana 1) - Workflow Simple:**
-```
-[Get next keyword] → [Gemini 2.0 Flash genera artículo] → [Save draft] → [Notify Juan]
-```
-- 1 solo agente IA
-- Prompt básico (prompting reactivo)
-- Iterar basado en calidad de output
+**Implementation Phase:**
+1. Import SUB-K v2.0 dual mode (5-6 hours)
+2. Import Orchestrator v2.0 (4-5 hours)
+3. E2E testing (3-4 hours)
+4. Deploy to n8n Cloud
 
-**Fase 1 (Semana 2-3) - Sistema Multiagente:**
-```
-┌─────────────────────────────────────────────────────┐
-│  AGENTE ORQUESTADOR: "Content Creation Manager"    │
-└─────────────────────────────────────────────────────┘
-                        │
-    ┌───────────────────┼───────────────────┐
-    ▼                   ▼                   ▼
-┌────────┐        ┌────────┐         ┌────────┐
-│Planner │   →    │ Writer │    →    │Evaluate│
-│Gemini  │        │Gemini  │         │Gemini  │
-│Flash   │        │2.0Flash│         │Flash   │
-└────────┘        └────────┘         └────────┘
-                        │
-                        ▼
-                  ┌────────┐
-                  │Research│ (opcional - Perplexity API)
-                  └────────┘
-```
-
-**Subagentes y sus roles:**
-| Subagente | LLM | Costo/1K tokens | Función |
-|-----------|-----|-----------------|---------|
-| Planner | Gemini Flash | $0.001 | Define estructura (guía/checklist/FAQ) |
-| Researcher | Perplexity API | $0.005 | Busca datos actuales (costos SIC 2026) |
-| Writer | Gemini 2.0 Flash | $0.001 | Genera texto completo |
-| Editor | Claude 3.5 Sonnet | $0.003 | Revisa tono/gramática/SEO |
-| Evaluator | Gemini Flash | $0.001 | Califica (0-100), si <80 → retry |
-
-**Criterio de transición Fase 0 → Fase 1:**
-- Fase 0 funciona y genera borradores
-- Tiempo de revisión humana > 30 min/artículo
-- Calidad de primeros borradores < 70% aceptable
-
-### SUB-M: Publisher
-
-**Trigger:** When content_drafts.status = "aprobado"
-**Destination:** blog-service API OR WordPress REST API
-**Output:** Published URL + GSC indexing request
-
-**BLOCKED:** Waiting for backend decision (B3)
-
-### SUB-N: SEO Tracker
-
-**Trigger:** Daily 6:00 AM
-**APIs:** Google Search Console, Google Analytics 4
-**Output:** Firestore `content_performance` + Google Sheets alerts
-
----
-
-## FIRESTORE COLLECTIONS
-
-### keywords_pipeline
-```json
-{
-  "keyword_id": "kw_001",
-  "keyword_text": "como registrar marca software colombia",
-  "volume": 320,
-  "kd": 22,
-  "cpc": 2.50,
-  "priority_score": 85,
-  "category": "registro de marca",
-  "source": "dataforseo",
-  "status": "pendiente | en_progreso | publicado",
-  "created_at": "2026-01-21T07:00:00Z"
-}
-```
-
-### content_drafts
-```json
-{
-  "content_id": "draft_001",
-  "keyword_id": "kw_001",
-  "title": "Como Registrar una Marca de Software en Colombia 2026",
-  "meta_description": "Guia completa para registrar tu marca...",
-  "slug": "registrar-marca-software-colombia",
-  "content_markdown": "...",
-  "word_count": 2150,
-  "status": "pendiente_revision | aprobado | rechazado | publicado",
-  "reviewer_notes": "",
-  "published_url": null,
-  "created_at": "2026-01-21T08:00:00Z",
-  "approved_at": null,
-  "approved_by": null
-}
-```
-
-### content_performance
-```json
-{
-  "performance_id": "perf_001",
-  "content_id": "draft_001",
-  "date": "2026-02-15",
-  "position_avg": 8.5,
-  "impressions": 1200,
-  "clicks": 95,
-  "ctr": 7.9,
-  "position_change": -2,
-  "alerts": ["Subio a Top 10"]
-}
-```
-
----
-
-## INTEGRATION POINTS
-
-### With MW#1 (Lead Capture)
-```
-Blog Article (MW#3)
-    → CTA "Consulta Gratis"
-    → Contact Form
-    → MW#1 Lead Intake (SUB-A)
-```
-
-### With Backend Platform
-```
-SUB-M Publisher
-    → HTTP POST /api/blog/posts
-    → blog-service
-    → PostgreSQL (blog schema)
-    → Frontend fetches via API Gateway
-```
-
-### With Google APIs
-```
-SUB-N Tracker
-    → Google Search Console API (rankings)
-    → Google Analytics 4 API (traffic)
-    → Firestore (store metrics)
-    → Google Sheets (alerts dashboard)
-```
-
----
-
-## COST ANALYSIS
-
-### Option A: DataForSEO (RECOMMENDED)
-
-| Item | Cost | Frequency |
-|------|------|-----------|
-| Keyword Ideas API | ~$0.05 per 100 keywords | Monthly |
-| Keyword Difficulty | ~$0.02 per keyword | Monthly |
-| SERP Analysis | ~$0.01 per query | As needed |
-| **Estimated Monthly** | **$20-50 USD** | - |
-
-### Option B: SEMrush Business (NOT VIABLE)
-
-| Item | Cost | Notes |
-|------|------|-------|
-| Business Plan | $499.95 USD/month | Required for API |
-| API Units | Additional cost | Per-query charges |
-| **Total** | **$500+ USD/month** | Exceeds budget |
+**Total estimated time:** 15 hours
 
 ---
 
@@ -331,168 +503,41 @@ SUB-N Tracker
 
 | Risk | Probability | Impact | Mitigation |
 |------|-------------|--------|------------|
+| ~~Google Sheets setup delayed~~ | - | - | ✅ RESOLVED (created 7 Feb 2026) |
+| SUB-K dual mode complexity | Medium | Medium | Well-documented architecture, single workflow with mode switch |
 | DataForSEO data quality | Low | Medium | Compare with SEMrush manual for validation |
 | blog-service delayed | Medium | High | Fallback to WordPress REST API |
-| Content quality issues | Medium | Medium | Human review mandatory before publish |
-| API rate limits | Low | Low | Implement backoff and queuing |
+| Content quality issues | Medium | Medium | Human review mandatory before publish + MAES briefs guide AI |
+| Orchestrator AI Agent wrong decisions | Medium | High | System Prompt iterative refinement |
+| Google Sheets API fails | Low | High | Error handling + notification |
+| MAES strategy not followed | Medium | High | Keywords_Master enabled column + SUB-K only processes enabled=TRUE |
 
 ---
 
-## DELEGATION TICKETS (Para otros chats)
+## FILES REORGANIZATION (Documentation Agent - 2026-01-24)
 
-> [!NOTE]
-> Estas tareas están listas para ser delegadas a chats separados.
-> Cada ticket tiene contexto completo para trabajar de forma independiente.
+### Moved to docs/technical/arquitectura/
+- `01-orchestrator/DESIGN_SPEC.md` → `MW3_ORCHESTRATOR_V2_SPEC.md`
+- `01-orchestrator/GOOGLE_SHEETS_KEYWORDS_MASTER.md` → `MW3_GOOGLE_SHEETS_KEYWORDS_MASTER.md`
+- `02-spokes/sub-l-content-writer/DESIGN_SPEC.md` → `MW3_SUB-L_V2_SPEC.md`
 
-### TICKET-MW3-001: DataForSEO Integration Spec - COMPLETED
+### Archived to archive/deprecated_mds/MW3/
+- `01-orchestrator/HANDOFF_SUMMARY.md`
+- `01-orchestrator/CHANGES_REQUIRED_SUB-K.md`
+- `01-orchestrator/workflow_diagram.mermaid`
+- `02-spokes/sub-l-content-writer/IMPLEMENTATION_NOTES.md`
+- `02-spokes/sub-l-content-writer/IMPLEMENTATION_SUMMARY.md`
+- `02-spokes/sub-l-content-writer/QA_REPORT.md`
+- `02-spokes/sub-l-content-writer/MIGRATION_TO_WORKSPACE.md`
+- `02-spokes/sub-l-content-writer/workflow_diagram.mermaid`
+- `02-spokes/sub-k-keyword-research/ENV_VARIABLES.md`
+- `DOCUMENTATION_AUDIT.md`
+- `FIRESTORE_SETUP_GUIDE.md`
+- `GOOGLE_SHEETS_SETUP_GUIDE.md` (outdated - replaced by specs in docs/technical)
+- `ANALISIS_INTEGRACION_MAES_MW3.md` (to be replaced by MAES_INTEGRATION.md)
 
-**Prioridad:** P0 - Bloqueante para SUB-K
-**Estado:** COMPLETADO (2026-01-22)
-**Documento:** [DATAFORSEO_INTEGRATION.md](../../docs/technical/DATAFORSEO_INTEGRATION.md)
-
-**Entregables completados:**
-- [x] Documento tecnico `DATAFORSEO_INTEGRATION.md` en `docs/technical/`
-- [x] Endpoints especificos documentados:
-  - `POST /v3/dataforseo_labs/google/keyword_ideas/live`
-  - `POST /v3/dataforseo_labs/google/bulk_keyword_difficulty/live`
-  - `POST /v3/serp/google/organic/live/advanced`
-- [x] Configuracion HTTP Request node para n8n (3 nodos JSON completos)
-- [x] Mapping de response JSON a estructura Firestore
-- [x] Ejemplos de request/response para cada endpoint
-- [x] Estimacion de costos: ~$0.12/mes conservador, $50-100 USD cubre 6-12 meses
-- [x] Code node para transformacion y calculo de priority_score
-- [x] Checklist de implementacion
-
-**Resumen de costos:**
-| Endpoint | Costo estimado |
-|----------|----------------|
-| Keyword Ideas | ~$0.01-0.02/request |
-| Bulk KD | ~$0.01/100 keywords |
-| SERP Analysis | ~$0.002/query |
-
-**Siguiente paso:** TICKET-MW3-002 (SUB-K Workflow Design)
-
----
-
-### TICKET-MW3-002: SUB-K Workflow Design
-
-**Prioridad:** P0 - Primera pieza del pipeline
-**Dependencia:** TICKET-MW3-001 (DataForSEO spec)
-**Entregables:**
-- [ ] JSON del workflow para n8n Cloud
-- [ ] Nodos requeridos:
-  - Schedule Trigger (1st of month)
-  - HTTP Request (DataForSEO API)
-  - Code node (filtrar y calcular priority_score)
-  - Firestore node (guardar en keywords_pipeline)
-  - Gmail node (notificar resultados)
-- [ ] Test data samples en `02-spokes/sub-k-keyword-research/test-data/`
-- [ ] Documentar variables de entorno requeridas
-
-**Lógica de filtrado:**
-```javascript
-// Criterios de filtrado
-volume >= 100 AND kd <= 30 AND words >= 3
-
-// Priority score
-priority_score = (volume / 10) - kd + (cpc * 5)
-```
-
----
-
-### TICKET-MW3-003: SUB-L Workflow Design (Fase 0)
-
-**Prioridad:** P1 - Después de SUB-K
-**Contexto:** Implementar versión SIMPLE primero (prompting reactivo)
-**Entregables:**
-- [ ] JSON del workflow para n8n Cloud
-- [ ] Nodos requeridos:
-  - Execute Workflow Trigger (llamado por Orchestrator)
-  - Firestore node (obtener siguiente keyword pendiente)
-  - AI Agent node (Gemini 2.0 Flash)
-  - Firestore node (guardar draft con status pending_revision)
-  - Gmail node (notificar a Juan)
-- [ ] System Prompt BÁSICO para Gemini (no masivo)
-- [ ] Estructura de output esperada
-
-**Prompt inicial (prompting reactivo):**
-```
-Eres experto en propiedad intelectual colombiana.
-Escribe un artículo SEO de 2000+ palabras sobre: [KEYWORD]
-Incluye: introducción, pasos/requisitos, costos, errores comunes, FAQ, conclusión con CTA.
-Audiencia: dueños de PyMEs tecnológicas en Colombia.
-```
-
-**Evolución futura documentada en:** Sección 0.5 de `03_MEGA_WORKFLOW_3_SEO.md`
-
----
-
-### TICKET-MW3-004: Orchestrator v2.0 Design
-
-**Prioridad:** P1 - Integra todos los SUB-workflows
-**Dependencia:** TICKET-MW3-002, TICKET-MW3-003
-**Referencia:** Copiar patrón de MW#1 v3.0 (workflow ID: `68DDbpQzOEIweiBF`)
-**Entregables:**
-- [ ] JSON del workflow para n8n Cloud
-- [ ] Arquitectura AI Agent con Tools:
-  - Tool: execute_keyword_research → SUB-K
-  - Tool: execute_content_writer → SUB-L
-  - Tool: execute_publisher → SUB-M (placeholder)
-  - Tool: execute_tracker → SUB-N (placeholder)
-- [ ] System Prompt del orquestador
-- [ ] Google Sheets logger (como MW#1)
-- [ ] Webhook trigger path: `/webhook/content-factory`
-
-**System Prompt base:**
-```
-Eres el Content Factory Manager de Carrillo Abogados.
-Tu trabajo es coordinar la producción de contenido SEO.
-
-Tienes estas herramientas:
-- execute_keyword_research: Ejecuta investigación de keywords (1x/mes)
-- execute_content_writer: Genera borradores de artículos
-- execute_publisher: Publica contenido aprobado (NO DISPONIBLE AÚN)
-- execute_tracker: Monitorea rendimiento SEO (NO DISPONIBLE AÚN)
-
-Decide qué herramienta usar según el contexto del mensaje recibido.
-```
-
----
-
-### TICKET-MW3-005: SUB-L Multiagente Design (Fase 1)
-
-**Prioridad:** P2 - Mejora futura
-**Dependencia:** TICKET-MW3-003 funcionando en producción
-**Criterio de inicio:**
-- Fase 0 genera borradores
-- Tiempo revisión humana > 30 min/artículo
-- Calidad < 70% aceptable
-
-**Entregables:**
-- [ ] Arquitectura de 5 subagentes documentada
-- [ ] JSON de cada subagente workflow
-- [ ] Integración con Perplexity API (Researcher)
-- [ ] Lógica de retry si Evaluator score < 80
-- [ ] Comparativa de costos vs Fase 0
-
-**Subagentes:**
-| Subagente | LLM | Función |
-|-----------|-----|---------|
-| Planner | Gemini Flash | Define estructura del artículo |
-| Researcher | Perplexity API | Busca datos actualizados |
-| Writer | Gemini 2.0 Flash | Genera texto completo |
-| Editor | Claude 3.5 Sonnet | Revisa tono/gramática/SEO |
-| Evaluator | Gemini Flash | Califica calidad (0-100) |
-
----
-
-## NEXT STEPS (Immediate)
-
-1. **Juan (Hoy):** Delegar TICKET-MW3-001 a chat separado
-2. **Juan (Hoy):** Delegar TICKET-MW3-002 a chat separado
-3. **Don Omar (Esta semana):** Aprobar presupuesto DataForSEO ($50-100 USD)
-4. **Don Omar + Alexis (Esta semana):** Decidir blog backend
-5. **Juan (Post-aprobación):** Implementar SUB-K en n8n Cloud
+### Kept in Root MW3 (Single Source of Truth)
+- `STATUS.md` (this file) ✅
 
 ---
 
@@ -500,9 +545,17 @@ Decide qué herramienta usar según el contexto del mensaje recibido.
 
 | Date | Version | Changes |
 |------|---------|---------|
-| 2026-01-22 | 1.1 | TICKET-MW3-001 completed: DataForSEO integration spec |
+| 2026-02-07 | 4.0 | **REALITY SYNC**: Google Sheets created (Keywords_Master 21 cols + MAES_Research 4 tabs), SEMrush Pro active (monthly), MAES_RawData renamed to MAES_Research, Phase 0 55% |
+| 2026-01-26 | 3.0 | **MAJOR ARCHITECTURE UPDATE**: SUB-K dual purpose (Investigation + Production), MAES integration documented, DECISION 6 added, architecture diagram updated to v5.0 |
+| 2026-01-24 | 2.0 | Documentation audit, reality check on implementation status, consolidate SUB-L v2.0 deployment info, reorganize files per Agent Protocols |
+| 2026-01-24 | 1.3 | SUB-L v2.0: Migrated to Google Workspace (Drive/Docs/Sheets), 16 nodes |
+| 2026-01-23 | 1.2 | TICKET-MW3-004: Orchestrator v2.0 design (80 pages) |
+| 2026-01-23 | 1.1 | TICKET-MW3-003: SUB-L Content Writer AI design spec |
+| 2026-01-22 | 1.0 | TICKET-MW3-001: DataForSEO integration spec |
 | 2026-01-21 | 1.0 | Initial STATUS.md created following Agent Protocols |
 
 ---
 
-**Next Review:** 2026-01-24 (End of Phase 0)
+**Next Review:** 2026-02-14
+**Phase 0 Progress:** 55% Complete (SUB-L deployed, Sheets created, SEMrush active, MAES Fases 1-3 done)
+**Critical Path:** DataForSEO approval → SUB-K v2.0 dual mode → Orchestrator v2.0 → E2E testing

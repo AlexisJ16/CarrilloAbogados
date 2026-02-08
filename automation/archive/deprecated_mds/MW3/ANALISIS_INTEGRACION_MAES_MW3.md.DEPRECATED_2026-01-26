@@ -1,0 +1,702 @@
+# DOCUMENTO DEPRECADO - 2026-01-26
+
+Este documento ha sido reemplazado por: `docs/business/MAES_INTEGRATION.md`
+
+**Razón:** El análisis original contenía confusión sobre el propósito de SUB-K. 
+La nueva versión refleja correctamente la arquitectura bidireccional:
+- SUB-K Modo 1 (Investigación): Para MAES
+- SUB-K Modo 2 (Producción): Para SUB-L
+
+El análisis era extenso (687 líneas) pero mezclaba propuestas técnicas con 
+contexto de negocio. El nuevo documento MAES_INTEGRATION.md es más conciso 
+y enfocado en la integración estratégica.
+
+---
+
+
+# ANÁLISIS DE INTEGRACIÓN: MAES + MW#3
+
+**Fecha:** 2026-01-26  
+**Autor:** Consultor SEO (Claude AI)  
+**Para revisión de:** Agente Orquestador  
+**Proyecto:** Carrillo Abogados - Plan de Marketing Digital 2026  
+
+---
+
+## 1. CONTEXTO Y PROBLEMA A RESOLVER
+
+### 1.1 Situación Actual
+
+El proyecto de marketing digital de Carrillo Abogados cuenta con dos sistemas diseñados para SEO:
+
+1. **MAES (Metodología Ágil de Estrategia SEO):** Framework estratégico en Notion con 8 fases documentadas, actualmente con plantilla vacía para Carrilloabgd y un proyecto completado (Kaizen) como referencia.
+
+2. **MW#3 (MEGA-WORKFLOW #3: Fábrica de Contenido SEO):** Sistema de automatización en n8n con 4 sub-workflows diseñados (SUB-K, SUB-L, SUB-M, SUB-N).
+
+### 1.2 Pregunta del Director de Marketing
+
+> "¿Debería mapear MAES directamente a los sub-workflows del MW#3, o debería manejarlo yo (complementado con IA) y que para el MW#3 solo utilicemos el Excel Keyword Master como lo concluido de esa metodología?"
+
+### 1.3 Pregunta Adicional sobre SUB-K
+
+> "SUB-K está pensado para extraer información con la API de DataForSEO, ¿no puede esto enriquecer el análisis de MAES?"
+
+---
+
+## 2. ANÁLISIS COMPARATIVO
+
+### 2.1 Naturaleza de Cada Sistema
+
+| Dimensión | MAES | MW#3 |
+|-----------|------|------|
+| **Tipo** | Framework de pensamiento estratégico | Sistema de producción automatizada |
+| **Frecuencia de uso** | Una vez inicial + revisiones trimestrales | Continuo (diario/semanal) |
+| **Input principal** | Análisis cualitativo, entrevistas, contexto de negocio | Datos estructurados (APIs, Excel) |
+| **Output principal** | Documentos estratégicos, decisiones, prioridades | Contenido publicable, métricas |
+| **Tipo de decisiones** | Estratégicas (QUÉ hacer y POR QUÉ) | Tácticas (CÓMO ejecutar) |
+| **Automatizable** | ❌ No - requiere juicio humano | ✅ Sí - proceso repetible |
+| **Tiempo humano** | 10-15 horas (una vez) | 4 horas/mes (revisión de borradores) |
+
+### 2.2 Estructura de MAES (8 Fases)
+
+Basado en el proyecto MAES: Kaizen completado en Notion:
+
+| # | Fase | Propósito | Output |
+|---|------|-----------|--------|
+| 1 | Kick-off | Entender ADN del negocio, prioridades, recursos | Objetivos alineados con negocio |
+| 2 | Estrategia SEO | Definir visión, tipo de SEO, priorización | Plan estratégico |
+| 3 | Objetivos y Audiencia | SMART goals + buyer personas detallados | Targets medibles + perfiles |
+| 4 | Análisis Competencia | Gap analysis, métricas competidores, oportunidades | Keyword gaps, quick wins |
+| 5 | Posicionamiento Actual | Auditoría del sitio, fortalezas, "mangos bajitos" | Lista de optimizaciones |
+| 6 | Planeación Estratégica | Arquitectura web, ejes temáticos, roadmap | Estructura URLs + clusters |
+| 7 | Planeación Contenidos | Calendario editorial, briefs | Prioridades de contenido |
+| 8 | Verificación SEO | Checklist on-page, guía para redactores | Estándares de calidad |
+
+### 2.3 Estructura de MW#3 (4 Sub-workflows)
+
+Basado en documento `03_MEGA_WORKFLOW_3_SEO.md`:
+
+| Sub-WF | Función | Automatización | Intervención Humana |
+|--------|---------|----------------|---------------------|
+| **SUB-K** | Keyword Research | DataForSEO API → Firestore | Validación inicial |
+| **SUB-L** | Content Writer AI | Gemini genera borradores | Revisión OBLIGATORIA |
+| **SUB-M** | Publisher | Publica en CMS via API | Post-aprobación |
+| **SUB-N** | Performance Tracker | GSC → Dashboard | Análisis semanal |
+
+---
+
+## 3. EVALUACIÓN DE OPCIONES
+
+### 3.1 Opción A: Fusionar MAES en Sub-workflows de MW#3
+
+**Descripción:** Intentar automatizar las fases de MAES dentro de los sub-workflows.
+
+**Problemas identificados:**
+
+1. **Incompatibilidad de frecuencia:** MAES es un ejercicio único/trimestral; MW#3 es continuo.
+
+2. **Pérdida de valor estratégico:** Automatizar el análisis de competencia o la definición de audiencia destruye el valor del pensamiento humano contextual.
+
+3. **Complejidad excesiva:** Los workflows de n8n se volverían inmanejables con lógica estratégica embebida.
+
+4. **Debugging imposible:** Si falla algo, ¿es problema de estrategia o de ejecución?
+
+5. **Violación del principio de Nate Herk:** "Workflow para procesos predecibles, Agente para razonamiento" - MAES requiere razonamiento, no es predecible.
+
+**Evaluación:** ❌ NO RECOMENDADO
+
+### 3.2 Opción B: Solo MW#3 sin MAES
+
+**Descripción:** Ignorar MAES y alimentar MW#3 directamente con keywords de APIs.
+
+**Problemas identificados:**
+
+1. **Contenido sin estrategia:** Keywords seleccionadas por volumen/KD sin contexto de negocio.
+
+2. **Desalineación con objetivos:** El contenido generado podría no servir al "Motor Futuro" (PyMEs tech).
+
+3. **Desperdicio de inversión:** SEMrush Pro ($5.75M COP/año) subutilizado.
+
+4. **Sin diferenciación:** Contenido genérico similar al de competidores.
+
+**Evaluación:** ⚠️ SUBÓPTIMO
+
+### 3.3 Opción C: MAES Paralelo + Excel Keyword Master + MW#3
+
+**Descripción:** Mantener MAES como proceso estratégico humano que produce un Excel Keyword Master, el cual alimenta MW#3.
+
+**Ventajas:**
+
+1. **Separación de responsabilidades:** Estrategia (humano) vs Ejecución (máquina).
+
+2. **Control de calidad:** Don Omar puede aprobar estrategia ANTES de automatizar.
+
+3. **Debugging simple:** Problemas de estrategia → revisar MAES; Problemas de ejecución → revisar MW#3.
+
+4. **Escalabilidad:** Agregar keywords al Excel no requiere modificar workflows.
+
+5. **Trazabilidad:** Excel documenta el "por qué" de cada keyword.
+
+**Evaluación:** ✅ RECOMENDADO
+
+---
+
+## 4. PROPUESTA DE INTEGRACIÓN
+
+### 4.1 Modelo de Arquitectura: Dos Capas con Puente
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           ARQUITECTURA PROPUESTA                            │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ╔═══════════════════════════════════════════════════════════════════════╗  │
+│  ║                    CAPA 1: ESTRATÉGICA (MAES)                         ║  │
+│  ║                         Responsable: Juan + Claude AI                  ║  │
+│  ║                                                                        ║  │
+│  ║  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐    ║  │
+│  ║  │ Kick-off │→│Estrategia│→│Objetivos │→│Competenc.│→│Planeación│    ║  │
+│  ║  │          │ │   SEO    │ │+Audiencia│ │ +Gaps    │ │+Contenido│    ║  │
+│  ║  └──────────┘ └──────────┘ └──────────┘ └──────────┘ └──────────┘    ║  │
+│  ║                                                                        ║  │
+│  ║  Herramientas: Notion (MAES), SEMrush Pro (manual), Claude AI         ║  │
+│  ║  Frecuencia: Una vez inicial + revisión trimestral                    ║  │
+│  ║  Tiempo: 10-15 horas (única vez)                                      ║  │
+│  ╚═══════════════════════════════════════════════════════════════════════╝  │
+│                                    │                                        │
+│                                    ▼                                        │
+│  ╔═══════════════════════════════════════════════════════════════════════╗  │
+│  ║                    PUENTE: EXCEL KEYWORD MASTER                       ║  │
+│  ║                         Fuente única de verdad                         ║  │
+│  ║                                                                        ║  │
+│  ║  Contenido:                                                           ║  │
+│  ║  • Keywords validadas y priorizadas (50-100 iniciales)                ║  │
+│  ║  • Clusters temáticos definidos                                       ║  │
+│  ║  • Briefs estratégicos por cluster                                    ║  │
+│  ║  • URLs target asignadas                                              ║  │
+│  ║  • Status de cada keyword                                             ║  │
+│  ║                                                                        ║  │
+│  ║  Formato: Google Sheets (sincronizable) o Excel en Drive              ║  │
+│  ╚═══════════════════════════════════════════════════════════════════════╝  │
+│                                    │                                        │
+│                                    ▼                                        │
+│  ╔═══════════════════════════════════════════════════════════════════════╗  │
+│  ║                    CAPA 2: OPERATIVA (MW#3)                           ║  │
+│  ║                         Responsable: n8n (automatizado)                ║  │
+│  ║                                                                        ║  │
+│  ║  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐                 ║  │
+│  ║  │  SUB-K   │→│  SUB-L   │→│  SUB-M   │→│  SUB-N   │                 ║  │
+│  ║  │ Keyword  │ │ Content  │ │Publisher │ │ Tracker  │                 ║  │
+│  ║  │ Research │ │Writer AI │ │          │ │          │                 ║  │
+│  ║  └──────────┘ └──────────┘ └──────────┘ └──────────┘                 ║  │
+│  ║       │                          │              │                     ║  │
+│  ║       │    ┌─────────────────────┘              │                     ║  │
+│  ║       │    │                                    │                     ║  │
+│  ║       ▼    ▼                                    ▼                     ║  │
+│  ║  ┌─────────────────┐                    ┌─────────────────┐          ║  │
+│  ║  │ REVISIÓN HUMANA │                    │   DASHBOARD     │          ║  │
+│  ║  │  (Juan 4h/mes)  │                    │   PERFORMANCE   │          ║  │
+│  ║  └─────────────────┘                    └─────────────────┘          ║  │
+│  ║                                                │                      ║  │
+│  ╚════════════════════════════════════════════════│══════════════════════╝  │
+│                                                   │                         │
+│                                                   ▼                         │
+│                              ┌─────────────────────────────┐                │
+│                              │  RETROALIMENTACIÓN A MAES   │                │
+│                              │  (Revisión trimestral)      │                │
+│                              └─────────────────────────────┘                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 4.2 Rediseño de SUB-K: Dos Modos de Operación
+
+**Hallazgo clave:** El SUB-K actual está diseñado solo para "producción". Se propone agregar un modo "discovery" que enriquezca el análisis MAES.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         SUB-K: DISEÑO DUAL                                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────────────────────────┐                                   │
+│  │         MODO 1: DISCOVERY           │                                   │
+│  │         (Enriquece MAES)            │                                   │
+│  ├─────────────────────────────────────┤                                   │
+│  │                                     │                                   │
+│  │  Trigger: Manual (botón/webhook)    │                                   │
+│  │                                     │                                   │
+│  │  Input:                             │                                   │
+│  │  • Seed keywords de SEMrush         │                                   │
+│  │  • Competidores a analizar          │                                   │
+│  │  • Parámetros de búsqueda           │                                   │
+│  │                                     │                                   │
+│  │  Proceso:                           │                                   │
+│  │  1. Llamar DataForSEO API           │                                   │
+│  │     - Keywords relacionadas         │                                   │
+│  │     - Volumen actualizado           │                                   │
+│  │     - KD preciso                    │                                   │
+│  │     - SERP features                 │                                   │
+│  │     - Keyword gaps vs competidores  │                                   │
+│  │                                     │                                   │
+│  │  2. Enriquecer datos existentes     │                                   │
+│  │                                     │                                   │
+│  │  3. Exportar a Google Sheets        │                                   │
+│  │     (borrador para revisión MAES)   │                                   │
+│  │                                     │                                   │
+│  │  Output:                            │                                   │
+│  │  • Sheet "Datos Crudos API"         │                                   │
+│  │  • Métricas frescas para análisis   │                                   │
+│  │                                     │                                   │
+│  │  Frecuencia: Bajo demanda           │                                   │
+│  │  (durante fase MAES o quarterly)    │                                   │
+│  │                                     │                                   │
+│  └─────────────────────────────────────┘                                   │
+│                                                                             │
+│  ┌─────────────────────────────────────┐                                   │
+│  │         MODO 2: PRODUCTION          │                                   │
+│  │         (Alimenta SUB-L)            │                                   │
+│  ├─────────────────────────────────────┤                                   │
+│  │                                     │                                   │
+│  │  Trigger: Schedule (semanal)        │                                   │
+│  │           o cuando hay keywords     │                                   │
+│  │           con status="pendiente"    │                                   │
+│  │                                     │                                   │
+│  │  Input:                             │                                   │
+│  │  • Excel Keyword Master             │                                   │
+│  │    (keywords YA validadas por MAES) │                                   │
+│  │                                     │                                   │
+│  │  Proceso:                           │                                   │
+│  │  1. Leer keywords con               │                                   │
+│  │     status="pendiente" y            │                                   │
+│  │     prioridad="alta"                │                                   │
+│  │                                     │                                   │
+│  │  2. Verificar datos aún válidos     │                                   │
+│  │     (opcional: refresh con API)     │                                   │
+│  │                                     │                                   │
+│  │  3. Preparar payload para SUB-L:    │                                   │
+│  │     - Keyword principal             │                                   │
+│  │     - Keywords secundarias          │                                   │
+│  │     - Brief del cluster             │                                   │
+│  │     - URL target                    │                                   │
+│  │                                     │                                   │
+│  │  4. Actualizar status a             │                                   │
+│  │     "en_progreso"                   │                                   │
+│  │                                     │                                   │
+│  │  Output:                            │                                   │
+│  │  • Trigger a SUB-L con datos        │                                   │
+│  │  • Firestore actualizado            │                                   │
+│  │                                     │                                   │
+│  │  Frecuencia: Automático (semanal)   │                                   │
+│  │                                     │                                   │
+│  └─────────────────────────────────────┘                                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 4.3 Estructura del Excel Keyword Master
+
+El Excel Keyword Master es el **contrato** entre MAES (estrategia) y MW#3 (ejecución).
+
+**Hoja 1: Keyword Master (Lista plana)**
+
+| Campo | Tipo | Descripción | Fuente | Usado por |
+|-------|------|-------------|--------|-----------|
+| `cluster_id` | String | Identificador único del cluster | MAES | SUB-K, SUB-L |
+| `cluster_name` | String | Nombre descriptivo | MAES | Reportes |
+| `keyword` | String | Keyword específica | SEMrush/API | SUB-L |
+| `tipo` | Enum | Head / Long-tail | MAES | Priorización |
+| `intencion` | Enum | Informacional / Transaccional / Comercial / Navegacional | MAES | SUB-L (tono) |
+| `volumen` | Integer | Búsquedas mensuales | DataForSEO | Priorización |
+| `kd` | Integer | Keyword Difficulty (0-100) | DataForSEO | Priorización |
+| `cpc` | Float | Costo por clic USD | DataForSEO | Valor comercial |
+| `prioridad` | Enum | Alta / Media / Baja | MAES (calculada) | SUB-K (filtro) |
+| `status` | Enum | Pendiente / En_progreso / Borrador / Aprobado / Publicado | MW#3 | Control |
+| `url_target` | String | URL donde vivirá el contenido | MAES | SUB-M |
+| `brief` | Text | Descripción corta del enfoque | MAES | SUB-L |
+| `notas` | Text | Observaciones adicionales | MAES | Contexto |
+| `fecha_creacion` | Date | Cuándo se agregó | Sistema | Auditoría |
+| `fecha_publicacion` | Date | Cuándo se publicó | SUB-M | Tracking |
+
+**Hoja 2: Clusters (Resumen agregado)**
+
+| Campo | Descripción |
+|-------|-------------|
+| `cluster_id` | Identificador |
+| `cluster_name` | Nombre |
+| `num_keywords` | Cantidad de keywords en el cluster |
+| `total_volumen` | Suma de volúmenes |
+| `avg_kd` | Promedio de dificultad |
+| `prioridad_cluster` | Alta / Media / Baja |
+| `status_cluster` | % completado |
+| `url_pilar` | URL del contenido pilar |
+| `responsable` | Quién revisa este cluster |
+
+**Hoja 3: Briefs (Instrucciones para SUB-L)**
+
+| Campo | Descripción |
+|-------|-------------|
+| `cluster_id` | Referencia al cluster |
+| `keyword_principal` | Keyword head del cluster |
+| `titulo_propuesto` | Título sugerido para el artículo |
+| `h2_sugeridos` | Estructura de subtítulos |
+| `cta` | Call-to-action recomendado |
+| `palabras_target` | Rango de palabras (ej: 2000-2500) |
+| `fuentes_referencia` | Fuentes oficiales a citar |
+| `tono` | Profesional / Educativo / Comercial |
+| `evitar` | Qué NO incluir |
+
+**Hoja 4: Changelog (Trazabilidad)**
+
+| Campo | Descripción |
+|-------|-------------|
+| `fecha` | Timestamp |
+| `accion` | Creación / Actualización / Eliminación |
+| `cluster_keyword` | Qué se modificó |
+| `cambio` | Descripción del cambio |
+| `responsable` | Quién (Juan / SUB-K / SUB-N) |
+| `fuente` | De dónde viene el dato |
+
+---
+
+## 5. FLUJO DE TRABAJO PROPUESTO
+
+### 5.1 Fase Inicial: Setup MAES (Una vez, ~15 horas)
+
+```
+Semana 1-2: Fundamentos
+├── Día 1-2: Kick-off en Notion
+│   ├── Copiar info existente (Propuesta de valor, Buyer personas)
+│   ├── Definir prioridades SEO alineadas con "Motor Futuro"
+│   └── Documentar recursos disponibles
+│
+├── Día 3-4: Estrategia SEO + Objetivos
+│   ├── Definir tipo de SEO: Editorial (contenido educativo PI)
+│   ├── Objetivos SMART para SEO
+│   └── Audiencia: PyMEs tech sin protección IP
+│
+└── Día 5: Ejecutar SUB-K Modo Discovery
+    ├── Input: Seed keywords de SEMrush
+    ├── Proceso: DataForSEO enriquece datos
+    └── Output: Sheet con datos crudos para análisis
+
+Semana 3: Análisis y Planeación
+├── Día 1-2: Análisis Competencia (con datos de SUB-K)
+│   ├── Completar sección en Notion
+│   ├── Identificar gaps y oportunidades
+│   └── Marcar quick wins
+│
+├── Día 3-4: Planeación Estratégica
+│   ├── Definir clusters temáticos
+│   ├── Diseñar arquitectura URLs
+│   └── Priorizar clusters
+│
+└── Día 5: Crear Excel Keyword Master
+    ├── Consolidar keywords validadas
+    ├── Asignar clusters y briefs
+    └── Calcular prioridades
+
+Semana 4: Validación y Activación
+├── Día 1-2: Revisión con Don Omar
+│   ├── Presentar estrategia MAES
+│   ├── Mostrar Excel Keyword Master
+│   └── Obtener aprobación
+│
+└── Día 3: Activar MW#3 Modo Production
+    ├── Cargar Excel en sistema (Firestore/GSheets)
+    ├── Configurar SUB-K para leer del Excel
+    └── Primera ejecución de prueba
+```
+
+### 5.2 Fase Operativa: Ciclo Continuo
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    CICLO SEMANAL MW#3                           │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  LUNES (Automático)                                            │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ SUB-K (Production Mode)                                  │   │
+│  │ • Lee Excel: keywords status="pendiente", prioridad="alta"│  │
+│  │ • Selecciona 2-3 keywords para la semana                 │   │
+│  │ • Prepara payloads con briefs                            │   │
+│  │ • Trigger a SUB-L                                        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              │                                  │
+│                              ▼                                  │
+│  LUNES-MARTES (Automático)                                     │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ SUB-L (Content Writer AI)                                │   │
+│  │ • Recibe keyword + brief + contexto                      │   │
+│  │ • Sistema multiagente genera borrador                    │   │
+│  │ • Guarda en Firestore: status="borrador"                 │   │
+│  │ • Notifica a Juan                                        │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              │                                  │
+│                              ▼                                  │
+│  MIÉRCOLES-JUEVES (Manual - Juan)                              │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ REVISIÓN HUMANA                                          │   │
+│  │ • Juan revisa borradores (~30 min cada uno)              │   │
+│  │ • Aprueba o solicita cambios                             │   │
+│  │ • Actualiza status="aprobado"                            │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              │                                  │
+│                              ▼                                  │
+│  VIERNES (Automático)                                          │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ SUB-M (Publisher)                                        │   │
+│  │ • Detecta contenido status="aprobado"                    │   │
+│  │ • Publica en CMS via API                                 │   │
+│  │ • Actualiza status="publicado"                           │   │
+│  │ • Registra URL final en Excel                            │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              │                                  │
+│                              ▼                                  │
+│  DIARIO (Automático)                                           │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │ SUB-N (Performance Tracker)                              │   │
+│  │ • Query Google Search Console                            │   │
+│  │ • Actualiza métricas en dashboard                        │   │
+│  │ • Genera alertas si hay cambios significativos           │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 5.3 Fase de Retroalimentación: Ciclo Trimestral
+
+```
+CADA 3 MESES: Revisión MAES
+├── Input: Dashboard de SUB-N (performance 3 meses)
+│
+├── Análisis:
+│   ├── ¿Qué clusters performaron mejor?
+│   ├── ¿Qué keywords lograron Top 10?
+│   ├── ¿Cuántos leads generó SEO?
+│   └── ¿Qué contenido tiene alto CTR bajo ranking? (oportunidad)
+│
+├── Ajustes en MAES:
+│   ├── Actualizar prioridades de clusters
+│   ├── Agregar nuevas keywords descubiertas
+│   ├── Deprecar keywords que no funcionaron
+│   └── Refinar briefs basado en lo que funciona
+│
+├── Ejecutar SUB-K Discovery:
+│   └── Buscar nuevas oportunidades con datos frescos
+│
+└── Output: Excel Keyword Master actualizado para siguiente trimestre
+```
+
+---
+
+## 6. ESPECIFICACIONES TÉCNICAS PARA SUB-K
+
+### 6.1 Configuración del Workflow n8n
+
+**Nombre:** `SUB-K: Keyword Research (Dual Mode)`
+
+**Variables de entorno requeridas:**
+
+```
+DATAFORSEO_LOGIN=<login>
+DATAFORSEO_PASSWORD=<password>
+GOOGLE_SHEETS_ID=<id del Excel Keyword Master>
+FIRESTORE_COLLECTION=keywords_pipeline
+```
+
+### 6.2 Modo Discovery - Nodos Principales
+
+```yaml
+Nodo 1: Webhook Trigger
+  - Path: /subk/discovery
+  - Method: POST
+  - Body esperado:
+    {
+      "seed_keywords": ["registro de marca", "propiedad intelectual"],
+      "competitors": ["sura.co", "segurosbolivar.com"],
+      "location_code": 2170,  # Colombia
+      "language_code": "es"
+    }
+
+Nodo 2: DataForSEO - Keywords for Site
+  - Endpoint: /v3/dataforseo_labs/google/keywords_for_site/live
+  - Propósito: Obtener keywords de competidores
+
+Nodo 3: DataForSEO - Related Keywords
+  - Endpoint: /v3/dataforseo_labs/google/related_keywords/live
+  - Propósito: Expandir seed keywords
+
+Nodo 4: DataForSEO - Keyword Ideas
+  - Endpoint: /v3/dataforseo_labs/google/keyword_ideas/live
+  - Propósito: Descubrir nuevas oportunidades
+
+Nodo 5: Merge & Deduplicate
+  - Combinar resultados de los 3 endpoints
+  - Eliminar duplicados por keyword
+
+Nodo 6: Google Sheets - Append
+  - Spreadsheet: Excel Keyword Master
+  - Sheet: "Datos Crudos API"
+  - Append: Todos los resultados con timestamp
+
+Nodo 7: Respond to Webhook
+  - Return: { "status": "success", "keywords_found": <count> }
+```
+
+### 6.3 Modo Production - Nodos Principales
+
+```yaml
+Nodo 1: Schedule Trigger
+  - Cron: 0 8 * * 1  # Lunes 8:00 AM
+
+Nodo 2: Google Sheets - Read
+  - Spreadsheet: Excel Keyword Master
+  - Sheet: "Keyword Master"
+  - Filter: status="pendiente" AND prioridad="alta"
+  - Limit: 3  # Keywords por semana
+
+Nodo 3: Loop - For Each Keyword
+  
+  Nodo 3.1: Google Sheets - Read Brief
+    - Sheet: "Briefs"
+    - Filter: cluster_id = current.cluster_id
+  
+  Nodo 3.2: Build Payload for SUB-L
+    {
+      "keyword_id": "...",
+      "keyword": "...",
+      "cluster_name": "...",
+      "brief": {
+        "titulo_propuesto": "...",
+        "h2_sugeridos": [...],
+        "palabras_target": "...",
+        "tono": "...",
+        "cta": "..."
+      },
+      "keywords_secundarias": [...],
+      "url_target": "..."
+    }
+  
+  Nodo 3.3: Update Status
+    - Sheet: "Keyword Master"
+    - Set: status = "en_progreso"
+  
+  Nodo 3.4: Trigger SUB-L
+    - HTTP Request to SUB-L webhook
+    - Body: payload construido
+
+Nodo 4: Firestore - Log Execution
+  - Collection: workflow_logs
+  - Document: { timestamp, keywords_processed, status }
+```
+
+### 6.4 Estimación de Costos API (DataForSEO)
+
+| Endpoint | Costo por request | Uso estimado/mes | Costo/mes |
+|----------|-------------------|------------------|-----------|
+| Keywords for Site | $0.05 | 4 (quarterly) | $0.20 |
+| Related Keywords | $0.02 | 20 | $0.40 |
+| Keyword Ideas | $0.02 | 20 | $0.40 |
+| SERP | $0.01 | 50 | $0.50 |
+| **TOTAL** | - | - | **~$1.50/mes** |
+
+**Nota:** El presupuesto aprobado es $50-100 USD total, suficiente para ~3 años de uso normal.
+
+---
+
+## 7. CRITERIOS DE ÉXITO Y VALIDACIÓN
+
+### 7.1 Para el Agente Orquestador: Checklist de Validación
+
+**Coherencia Arquitectónica:**
+
+- [ ] ¿La separación MAES (estratégico) / MW#3 (operativo) es clara?
+- [ ] ¿El Excel Keyword Master tiene todos los campos necesarios para SUB-L?
+- [ ] ¿Los dos modos de SUB-K están bien diferenciados?
+- [ ] ¿El flujo de datos es unidireccional (evita loops)?
+
+**Viabilidad Técnica:**
+
+- [ ] ¿DataForSEO API soporta los endpoints requeridos?
+- [ ] ¿El costo estimado está dentro del presupuesto ($50-100 USD total)?
+- [ ] ¿Google Sheets puede manejar el volumen de datos (50-100 keywords)?
+- [ ] ¿Los triggers (webhook, schedule) son factibles en n8n?
+
+**Optimización de Recursos:**
+
+- [ ] ¿El tiempo de Juan (5h/semana) se respeta?
+  - MAES: 15h una vez = 4 semanas a 4h/semana ✓
+  - Revisión: 4h/mes = 1h/semana ✓
+- [ ] ¿Se maximiza la automatización sin perder calidad?
+- [ ] ¿Hay redundancia innecesaria?
+
+**Alineación con Objetivos:**
+
+- [ ] ¿El modelo soporta el objetivo de 300 leads/mes?
+- [ ] ¿El contenido generado estará alineado con "Motor Futuro" (PyMEs tech)?
+- [ ] ¿Se puede escalar agregando más keywords sin modificar workflows?
+
+### 7.2 KPIs de Validación Post-Implementación
+
+| Métrica | Target Mes 1 | Target Mes 3 | Target Mes 12 |
+|---------|--------------|--------------|---------------|
+| Keywords en Excel Master | 50+ | 100+ | 200+ |
+| Artículos publicados | 4 | 12 | 50+ |
+| Tiempo revisión/artículo | <45 min | <30 min | <15 min |
+| Keywords en Top 10 | 1 | 5 | 25+ |
+| Leads desde SEO | 2 | 10 | 50+ |
+
+---
+
+## 8. RIESGOS Y MITIGACIONES
+
+| Riesgo | Probabilidad | Impacto | Mitigación |
+|--------|--------------|---------|------------|
+| Excel se desincroniza con Firestore | Media | Alto | Usar Google Sheets como fuente única, Firestore solo como caché |
+| SUB-K Discovery genera demasiados datos irrelevantes | Media | Bajo | Filtrar por KD < 30 y volumen > 100 antes de guardar |
+| Juan no tiene tiempo para completar MAES | Alta | Crítico | Usar Claude AI para asistir en redacción, priorizar secciones esenciales |
+| Don Omar no aprueba la estrategia | Baja | Crítico | Involucrar temprano con checkpoints semanales |
+| DataForSEO cambia precios/endpoints | Baja | Medio | Documentar endpoints usados, tener backup con SEMrush manual |
+
+---
+
+## 9. CONCLUSIÓN Y RECOMENDACIÓN
+
+### 9.1 Resumen de la Propuesta
+
+1. **NO fusionar MAES en MW#3:** Son sistemas con propósitos diferentes que deben permanecer separados.
+
+2. **Excel Keyword Master como puente:** Documento vivo que traduce decisiones estratégicas (MAES) en inputs operativos (MW#3).
+
+3. **SUB-K con dos modos:**
+   - **Discovery:** Enriquece MAES con datos frescos de DataForSEO (manual, bajo demanda)
+   - **Production:** Alimenta SUB-L con keywords validadas del Excel (automático, semanal)
+
+4. **Flujo de datos unidireccional:**
+   ```
+   SEMrush (ideas) → SUB-K Discovery (datos) → MAES (decisiones) → Excel (contrato) → MW#3 (ejecución) → SUB-N (métricas) → MAES (ajustes)
+   ```
+
+### 9.2 Solicitud al Agente Orquestador
+
+Se solicita evaluación de:
+
+1. **Viabilidad técnica** de los dos modos de SUB-K propuestos
+2. **Coherencia** con la arquitectura existente de MW#3
+3. **Optimización** del uso de recursos (tiempo Juan, costos API)
+4. **Identificación de gaps** o inconsistencias no detectadas
+
+### 9.3 Próximos Pasos Recomendados (Pendiente Aprobación)
+
+1. Completar MAES: Carrilloabgd en Notion (Semanas 1-3)
+2. Crear Excel Keyword Master con datos existentes (Semana 3)
+3. Implementar SUB-K Modo Discovery en n8n (Semana 4)
+4. Validar con Don Omar (Semana 4)
+5. Activar ciclo operativo MW#3 (Semana 5+)
+
+---
+
+**Documento preparado para revisión del Agente Orquestador**  
+**Versión:** 1.0  
+**Estado:** Pendiente validación

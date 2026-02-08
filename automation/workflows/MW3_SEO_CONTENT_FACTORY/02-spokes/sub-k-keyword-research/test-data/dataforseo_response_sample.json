@@ -1,0 +1,311 @@
+{
+  "version": "0.1.20260123",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "time": "2.5432 sec.",
+  "cost": 0.0105,
+  "tasks_count": 1,
+  "tasks_error": 0,
+  "tasks": [
+    {
+      "id": "01231544-0696-0392-0000-f2ae21b8a66e",
+      "status_code": 20000,
+      "status_message": "Ok.",
+      "time": "2.4521 sec.",
+      "cost": 0.0105,
+      "result_count": 1,
+      "path": ["v3", "dataforseo_labs", "google", "keyword_ideas", "live"],
+      "data": {
+        "api": "dataforseo_labs",
+        "function": "keyword_ideas",
+        "se": "google",
+        "keywords": ["registrar marca colombia", "propiedad intelectual colombia"],
+        "location_code": 2170,
+        "language_code": "es"
+      },
+      "result": [
+        {
+          "se_type": "google",
+          "seed_keywords": ["registrar marca colombia", "propiedad intelectual colombia"],
+          "location_code": 2170,
+          "language_code": "es",
+          "total_count": 523,
+          "items_count": 15,
+          "offset": 0,
+          "items": [
+            {
+              "keyword": "como registrar una marca en colombia",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.15,
+                "cpc": 2.35,
+                "search_volume": 480,
+                "categories": [12345, 67890],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 520},
+                  {"year": 2025, "month": 12, "search_volume": 450},
+                  {"year": 2025, "month": 11, "search_volume": 470}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "registrar marca colombia",
+                "keyword_difficulty": 25
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=como+registrar+una+marca+en+colombia",
+                "serp_item_types": ["organic", "people_also_ask", "related_searches"],
+                "se_results_count": "1,250,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "registro de marca ante la sic colombia",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.12,
+                "cpc": 3.10,
+                "search_volume": 320,
+                "categories": [12345],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 340},
+                  {"year": 2025, "month": 12, "search_volume": 310},
+                  {"year": 2025, "month": 11, "search_volume": 290}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "registro marca sic",
+                "keyword_difficulty": 22
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=registro+de+marca+ante+la+sic+colombia",
+                "serp_item_types": ["organic", "featured_snippet", "people_also_ask"],
+                "se_results_count": "890,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "cuanto cuesta registrar una marca en colombia 2026",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.08,
+                "cpc": 1.95,
+                "search_volume": 260,
+                "categories": [12345],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 290},
+                  {"year": 2025, "month": 12, "search_volume": 250},
+                  {"year": 2025, "month": 11, "search_volume": 220}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "costo registrar marca",
+                "keyword_difficulty": 18
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=cuanto+cuesta+registrar+una+marca+en+colombia+2026",
+                "serp_item_types": ["organic", "people_also_ask"],
+                "se_results_count": "650,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "requisitos para registrar marca en colombia",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.10,
+                "cpc": 2.50,
+                "search_volume": 390,
+                "categories": [12345],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 410},
+                  {"year": 2025, "month": 12, "search_volume": 380},
+                  {"year": 2025, "month": 11, "search_volume": 370}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "requisitos registro marca",
+                "keyword_difficulty": 20
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=requisitos+para+registrar+marca+en+colombia",
+                "serp_item_types": ["organic", "people_also_ask", "related_searches"],
+                "se_results_count": "980,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "tiempo de registro de marca en colombia",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.05,
+                "cpc": 1.80,
+                "search_volume": 180,
+                "categories": [12345],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 190},
+                  {"year": 2025, "month": 12, "search_volume": 175},
+                  {"year": 2025, "month": 11, "search_volume": 170}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "tiempo registro marca",
+                "keyword_difficulty": 15
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=tiempo+de+registro+de+marca+en+colombia",
+                "serp_item_types": ["organic", "people_also_ask"],
+                "se_results_count": "520,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "abogado registro de marcas colombia",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.25,
+                "cpc": 4.50,
+                "search_volume": 140,
+                "categories": [12345],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 150},
+                  {"year": 2025, "month": 12, "search_volume": 135},
+                  {"year": 2025, "month": 11, "search_volume": 140}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "abogado marcas",
+                "keyword_difficulty": 28
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=abogado+registro+de+marcas+colombia",
+                "serp_item_types": ["organic", "local_pack", "people_also_ask"],
+                "se_results_count": "450,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "patente de software en colombia como registrar",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.06,
+                "cpc": 3.20,
+                "search_volume": 110,
+                "categories": [12345, 78901],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 120},
+                  {"year": 2025, "month": 12, "search_volume": 105},
+                  {"year": 2025, "month": 11, "search_volume": 100}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "patente software",
+                "keyword_difficulty": 12
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=patente+de+software+en+colombia+como+registrar",
+                "serp_item_types": ["organic", "people_also_ask"],
+                "se_results_count": "280,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "derechos de autor software colombia",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.07,
+                "cpc": 2.80,
+                "search_volume": 150,
+                "categories": [78901],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 160},
+                  {"year": 2025, "month": 12, "search_volume": 145},
+                  {"year": 2025, "month": 11, "search_volume": 140}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "derechos autor software",
+                "keyword_difficulty": 19
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=derechos+de+autor+software+colombia",
+                "serp_item_types": ["organic", "people_also_ask", "related_searches"],
+                "se_results_count": "420,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "proteger nombre de empresa en colombia",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.09,
+                "cpc": 2.10,
+                "search_volume": 210,
+                "categories": [12345],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 220},
+                  {"year": 2025, "month": 12, "search_volume": 200},
+                  {"year": 2025, "month": 11, "search_volume": 195}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "proteger nombre empresa",
+                "keyword_difficulty": 21
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=proteger+nombre+de+empresa+en+colombia",
+                "serp_item_types": ["organic", "people_also_ask"],
+                "se_results_count": "780,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            },
+            {
+              "keyword": "diferencia entre marca y patente colombia",
+              "location_code": 2170,
+              "language_code": "es",
+              "keyword_info": {
+                "last_updated_time": "2026-01-15 12:00:00 +00:00",
+                "competition": 0.04,
+                "cpc": 1.50,
+                "search_volume": 170,
+                "categories": [12345],
+                "monthly_searches": [
+                  {"year": 2026, "month": 1, "search_volume": 180},
+                  {"year": 2025, "month": 12, "search_volume": 165},
+                  {"year": 2025, "month": 11, "search_volume": 160}
+                ]
+              },
+              "keyword_properties": {
+                "core_keyword": "diferencia marca patente",
+                "keyword_difficulty": 14
+              },
+              "serp_info": {
+                "check_url": "https://www.google.com/search?q=diferencia+entre+marca+y+patente+colombia",
+                "serp_item_types": ["organic", "featured_snippet", "people_also_ask"],
+                "se_results_count": "590,000",
+                "last_updated_time": "2026-01-20 08:00:00 +00:00"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
