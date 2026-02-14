@@ -1,5 +1,6 @@
 # Carrillo Abogados Legal Tech Platform
 # Docker Compose para desarrollo local
+# Imágenes Java construidas con Google Jib: mvn jib:dockerBuild
 # Para Kubernetes, usar Helm charts en ./helm-charts/carrillo-abogados/
 
 services:
@@ -7,15 +8,24 @@ services:
   postgresql:
     image: postgres:16-alpine
     container_name: carrillo-postgresql
+    env_file: .env
     environment:
-      POSTGRES_DB: carrillo_legal_tech
-      POSTGRES_USER: carrillo
-      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-schemas.sql:/docker-entrypoint-initdb.d/init-schemas.sql
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.50'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U carrillo -d carrillo_legal_tech"]
       interval: 10s
@@ -31,6 +41,14 @@ services:
       - "4222:4222"
       - "8222:8222"
     command: ["-js", "-m", "8222"]
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '0.25'
+        reservations:
+          memory: 64M
+          cpus: '0.10'
     healthcheck:
       test: ["CMD", "nats-server", "--help"]
       interval: 10s
@@ -41,172 +59,290 @@ services:
 
   # ===== GATEWAY =====
   api-gateway:
-    build: ./api-gateway
+    image: carrilloabogados/api-gateway:${DOCKER_IMAGE_TAG:-dev}
+    # build: ./api-gateway  # Fallback: descomentar para usar Dockerfile
     container_name: carrillo-api-gateway
     ports:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: local
-    depends_on:
-      postgresql:
-        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 640M
+          cpus: '0.50'
+        reservations:
+          memory: 320M
+          cpus: '0.25'
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     networks:
       - carrillo-network
 
   # ===== SERVICIOS DE NEGOCIO =====
   client-service:
-    build: ./client-service
+    image: carrilloabogados/client-service:${DOCKER_IMAGE_TAG:-dev}
+    # build: ./client-service  # Fallback: descomentar para usar Dockerfile
     container_name: carrillo-client-service
     ports:
       - "8200:8200"
+    env_file: .env
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
-      POSTGRES_DB: carrillo_legal_tech
-      POSTGRES_USER: carrillo
-      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_SCHEMA: clients
       POSTGRES_SCHEMA_CLIENTS: clients
       # NATS Configuration
       NATS_ENABLED: "true"
       NATS_SERVER: nats://nats:4222
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.50'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
     depends_on:
       postgresql:
         condition: service_healthy
       nats:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8200/client-service/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     networks:
       - carrillo-network
 
   case-service:
-    build: ./case-service
+    image: carrilloabogados/case-service:${DOCKER_IMAGE_TAG:-dev}
+    # build: ./case-service  # Fallback: descomentar para usar Dockerfile
     container_name: carrillo-case-service
     ports:
       - "8300:8300"
+    env_file: .env
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
-      POSTGRES_DB: carrillo_legal_tech
-      POSTGRES_USER: carrillo
-      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_SCHEMA: cases
+      POSTGRES_SCHEMA_CASES: cases
+      # NATS Configuration
+      NATS_ENABLED: "true"
+      NATS_SERVER: nats://nats:4222
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.50'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
     depends_on:
       postgresql:
         condition: service_healthy
       nats:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8300/case-service/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     networks:
       - carrillo-network
 
   payment-service:
-    build: ./payment-service
+    image: carrilloabogados/payment-service:${DOCKER_IMAGE_TAG:-dev}
+    # build: ./payment-service  # Fallback: descomentar para usar Dockerfile
     container_name: carrillo-payment-service
     ports:
       - "8400:8400"
+    env_file: .env
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
-      POSTGRES_DB: carrillo_legal_tech
-      POSTGRES_USER: carrillo
-      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_SCHEMA: payments
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.50'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
     depends_on:
       postgresql:
         condition: service_healthy
-      nats:
-        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8400/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     networks:
       - carrillo-network
 
   document-service:
-    build: ./document-service
+    image: carrilloabogados/document-service:${DOCKER_IMAGE_TAG:-dev}
+    # build: ./document-service  # Fallback: descomentar para usar Dockerfile
     container_name: carrillo-document-service
     ports:
       - "8500:8500"
+    env_file: .env
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
-      POSTGRES_DB: carrillo_legal_tech
-      POSTGRES_USER: carrillo
-      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_SCHEMA: documents
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.50'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
     depends_on:
       postgresql:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8500/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     networks:
       - carrillo-network
 
   calendar-service:
-    build: ./calendar-service
+    image: carrilloabogados/calendar-service:${DOCKER_IMAGE_TAG:-dev}
+    # build: ./calendar-service  # Fallback: descomentar para usar Dockerfile
     container_name: carrillo-calendar-service
     ports:
       - "8600:8600"
+    env_file: .env
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
-      POSTGRES_DB: carrillo_legal_tech
-      POSTGRES_USER: carrillo
-      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_SCHEMA: calendar
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.50'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
     depends_on:
       postgresql:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8600/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     networks:
       - carrillo-network
 
   notification-service:
-    build: ./notification-service
+    image: carrilloabogados/notification-service:${DOCKER_IMAGE_TAG:-dev}
+    # build: ./notification-service  # Fallback: descomentar para usar Dockerfile
     container_name: carrillo-notification-service
     ports:
       - "8700:8700"
+    env_file: .env
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
-      POSTGRES_DB: carrillo_legal_tech
-      POSTGRES_USER: carrillo
-      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_SCHEMA: notifications
       POSTGRES_SCHEMA_NOTIFICATIONS: notifications
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.50'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
     depends_on:
       postgresql:
         condition: service_healthy
-      nats:
-        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8700/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
     networks:
       - carrillo-network
 
   n8n-integration-service:
-    build: ./n8n-integration-service
+    image: carrilloabogados/n8n-integration-service:${DOCKER_IMAGE_TAG:-dev}
+    # build: ./n8n-integration-service  # Fallback: descomentar para usar Dockerfile
     container_name: carrillo-n8n-integration-service
     ports:
       - "8800:8800"
+    env_file: .env
     environment:
       SPRING_PROFILES_ACTIVE: local
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: 5432
-      POSTGRES_DB: carrillo_legal_tech
-      POSTGRES_USER: carrillo
-      POSTGRES_PASSWORD: CarrilloAbogados2025!
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_SCHEMA_N8N: n8n_integration
       # NATS Configuration
       NATS_ENABLED: "true"
       NATS_SERVER: nats://nats:4222
       # Client Service Integration
       CLIENT_SERVICE_BASE_URL: http://client-service:8200/client-service
-      # n8n Cloud Configuration (formato Spring Boot: property.path -> PROPERTY_PATH)
+      # n8n Cloud Configuration
       N8N_CLOUD_BASEURL: https://carrilloabgd.app.n8n.cloud
-      # IMPORTANTE: Usar /webhook/ (no /webhook-test/) para producción
       N8N_CLOUD_WEBHOOKS_LEADEVENTS: https://carrilloabgd.app.n8n.cloud/webhook/lead-events-v3
       N8N_CLOUD_WEBHOOKS_MEETINGEVENTS: https://carrilloabgd.app.n8n.cloud/webhook/meeting-events
       N8N_CLOUD_WEBHOOKS_CASEEVENTS: https://carrilloabgd.app.n8n.cloud/webhook/case-events
       N8N_CLOUD_TIMEOUTSECONDS: 120
       N8N_CLOUD_RETRY_MAXATTEMPTS: 3
       N8N_CLOUD_RETRY_DELAYMILLIS: 2000
+    deploy:
+      resources:
+        limits:
+          memory: 768M
+          cpus: '0.50'
+        reservations:
+          memory: 384M
+          cpus: '0.25'
     depends_on:
       postgresql:
         condition: service_healthy
@@ -233,6 +369,14 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.25'
+        reservations:
+          memory: 128M
+          cpus: '0.10'
     depends_on:
       api-gateway:
         condition: service_healthy

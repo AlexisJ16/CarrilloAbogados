@@ -1,9 +1,9 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 21 de Enero, 2026 - 11:30 COT  
-**Estado General**: 🚀 **FASE 13: PRODUCCIÓN SINCRONIZADA** | dev + main actualizados ✅  
-**Rama Actual**: `dev` (sincronizada con `main`)  
-**Último Merge**: automation → dev completado (21 Ene 2026)  
+**Última Actualización**: 14 de Febrero, 2026 - 09:00 COT  
+**Estado General**: 🚀 **FASE 14: INFRAESTRUCTURA DEPURADA** | Limpieza profunda + Docker Jib ✅  
+**Rama Actual**: `dev`  
+**Último Cambio**: Auditoría exhaustiva de código, configuraciones y Docker (14 Feb 2026)  
 **Siguiente Fase**: 🎯 **DESARROLLO DE NUEVAS FEATURES**
 
 > ⚠️ **NOTA IMPORTANTE**: Toda la documentación de n8n está en `/automation/` (fuente de verdad única)
@@ -118,6 +118,16 @@ c61b3c3 (HEAD -> main, origin/main) merge: integrate session documentation and p
 | **3 Roles Validated (Cliente, Abogado, Admin)** | **14 Ene 2026** | - | ✅ |
 | **FASE 12: Sistema 100% Funcional para Demo** | **14 Ene 2026** | - | ✅ |
 | **FASE 13: Merge dev → main + Sincronización** | **21 Ene 2026** | `c61b3c3` | ✅ |
+| **Docker Jib Migration (8 servicios)** | **14 Feb 2026** | - | ✅ |
+| **.dockerignore + Resource Limits + JVM Tuning** | **14 Feb 2026** | - | ✅ |
+| **Security: BOOT-INF/ + Credentials Removed** | **14 Feb 2026** | - | ✅ |
+| **user-service Eliminado (deprecado)** | **14 Feb 2026** | - | ✅ |
+| **Config Consolidation (.yml/.yaml dedup)** | **14 Feb 2026** | - | ✅ |
+| **Flyway/DDL Fix (payment/doc/calendar)** | **14 Feb 2026** | - | ✅ |
+| **Springdoc → dependencyManagement** | **14 Feb 2026** | - | ✅ |
+| **notification-service: validation dep added** | **14 Feb 2026** | - | ✅ |
+| **Docs Archived (5 MDs → docs/archive/)** | **14 Feb 2026** | - | ✅ |
+| **FASE 14: Infraestructura Depurada (11/11 healthy)** | **14 Feb 2026** | - | ✅ |
 | MVP Empresarial | 27 Mar 2026 | - | 📋 Planificado |
 
 ---

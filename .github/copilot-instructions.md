@@ -1,7 +1,7 @@
 # Carrillo Abogados - AI Agent Instructions
 
-**Última Actualización**: 21 de Enero, 2026  
-**Fase**: FASE 13 - Producción Sincronizada  
+**Última Actualización**: 14 de Febrero, 2026  
+**Fase**: FASE 14 - Infraestructura Depurada  
 **MVP**: 27 Marzo 2026
 
 ---

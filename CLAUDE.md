@@ -1,9 +1,9 @@
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 21 de Enero, 2026 - 11:30 COT  
-**Fase Actual**: FASE 13 - Producción Sincronizada  
-**Ramas**: `dev` y `main` sincronizadas (commit c61b3c3)  
-**Último Test**: Sistema 100% funcional + Merge completado (21 Ene 2026)
+**Última Actualización**: 14 de Febrero, 2026 - 09:00 COT  
+**Fase Actual**: FASE 14 - Infraestructura Depurada  
+**Rama Activa**: `dev`  
+**Último Test**: 11/11 contenedores healthy + 9/9 HTTP endpoints UP (14 Feb 2026)
 
 ---
 
@@ -16,7 +16,7 @@ Plataforma cloud-native de gestión legal con **8 microservicios Spring Boot** p
 
 ### Fechas Clave
 - **MVP Empresarial**: 27 Marzo 2026
-- **Estado Actual**: CI/CD Pipeline + Autenticación Frontend funcionando
+- **Estado Actual**: CI/CD Pipeline + Docker Jib + Autenticación Frontend funcionando
 
 ---
 
@@ -81,9 +81,44 @@ wsl bash -c "minikube start"
 | notification-service | 8700 | Email/SMS notifications | ✅ 80% |
 | n8n-integration-service | 8800 | Bridge con n8n Cloud | ✅ 95% |
 
-### Servicios Deprecados
-- ~~user-service~~ → Migrado a client-service
+### Servicios Deprecados (Eliminados)
+- ~~user-service~~ → Migrado a client-service (código eliminado en FASE 14)
 - ~~order-service~~ → Nunca existió (template e-commerce)
+
+---
+
+## 🐳 DOCKER & JIB (FASE 14 - Feb 2026)
+
+### Estrategia de Build
+- **Google Jib 3.4.4**: Build sin Docker daemon, configurado en parent POM `pluginManagement`
+- **Formato**: Docker (NO OCI) — compatibilidad con `docker load`
+- **Base Image**: `eclipse-temurin:21-jre-alpine`
+- **JVM Flags**: `-XX:+UseG1GC -XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport`
+
+### Pipeline de Build Local
+```powershell
+# 1. Build Maven + Jib tarballs
+mvn clean package jib:buildTar -DskipTests -T 1C
+
+# 2. Cargar imágenes en Docker
+$services = @("api-gateway","client-service","case-service","payment-service","document-service","calendar-service","notification-service","n8n-integration-service")
+foreach ($svc in $services) { docker load -i ".\$svc\target\jib-image.tar" }
+
+# 3. Levantar stack
+docker compose up -d --pull never
+```
+
+### Imágenes Locales
+```
+carrilloabogados/api-gateway:dev         (~428MB)
+carrilloabogados/client-service:dev      (~505MB)
+carrilloabogados/case-service:dev        (~484MB)
+carrilloabogados/payment-service:dev     (~474MB)
+carrilloabogados/document-service:dev    (~474MB)
+carrilloabogados/calendar-service:dev    (~471MB)
+carrilloabogados/notification-service:dev (~475MB)
+carrilloabogados/n8n-integration-service:dev (~499MB)
+```
 
 ---
 
@@ -99,6 +134,7 @@ wsl bash -c "minikube start"
 | **Mensajería** | NATS (dev/staging) | 2.10.22 |
 | | Google Pub/Sub (prod) | - |
 | **Container** | Docker | 29.x |
+| | Google Jib | 3.4.4 |
 | **Orquestación** | Kubernetes | 1.34.0 |
 | **Local** | Minikube | Latest |
 
@@ -301,7 +337,7 @@ COLD: <40 pts → Respuesta genérica
 CarrilloAbogados/
 ├── .github/
 │   ├── workflows/          # CI/CD pipelines
-│   ├── copilot-agents/     # 16 agentes especializados
+│   ├── copilot-agents/     # Agentes especializados
 │   └── copilot-instructions.md
 ├── api-gateway/            # Spring Cloud Gateway
 ├── client-service/         # Lead API + Clientes
@@ -315,8 +351,14 @@ CarrilloAbogados/
 ├── helm-charts/            # Kubernetes Helm
 ├── infrastructure/         # Terraform, K8s manifests
 ├── monitoring/             # Grafana LGTM stack
-├── docs/                   # Documentación
-├── scripts/                # Shell scripts
+├── automation/             # n8n workflows docs
+├── docs/
+│   ├── architecture/       # ADRs
+│   ├── business/           # Modelo de negocio
+│   ├── development/        # Guías desarrollo
+│   ├── operations/         # Guías deploy
+│   └── archive/            # Docs históricos
+├── scripts/                # Shell + PS1 scripts
 ├── compose.yml             # Docker Compose
 ├── CLAUDE.md               # Este archivo
 └── PROYECTO_ESTADO.md      # Estado detallado
@@ -335,8 +377,8 @@ main (producción) ← staging (pre-prod) ← dev (desarrollo)
 - **staging**: Pre-producción (futuro)
 
 ### Ramas Actuales
-- `dev`: commit `7d2af00` (sincronizado con main)
-- `main`: commit `c61b3c3` (última sincronización 21 Ene 2026)
+- `dev`: Rama activa (FASE 14 - Infraestructura Depurada)
+- `main`: Producción (pendiente merge desde dev)
 
 ---
 

@@ -1,18 +1,16 @@
+# =============================================================================
+# API Gateway - Spring Cloud Gateway
+# =============================================================================
+# Default profile: Kubernetes (lb:// service discovery)
+# Docker Compose: Use SPRING_PROFILES_ACTIVE=local (see application-local.yml)
+# =============================================================================
 
 server:
-  servlet:
-    context-path: /
+  port: 8080
 
 spring:
-  zipkin:
-    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
-  config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
   application:
     name: API-GATEWAY
-  profiles:
-    active:
-    - dev
   cloud:
     gateway:
       default-filters:
@@ -21,13 +19,14 @@ spring:
         add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
-            allowed-origins: 
+            allowed-origins:
               - "${CLIENT_HOST:http://localhost:3000}"
               - "http://localhost:4200"
+              - "http://localhost:3000"
             allowed-headers: "*"
             exposed-headers: "*"
             allow-credentials: true
-            allowed-methods: 
+            allowed-methods:
               - GET
               - POST
               - PUT
@@ -35,39 +34,36 @@ spring:
               - PATCH
               - OPTIONS
       routes:
-      - id: USER-SERVICE
-        uri: lb://USER-SERVICE
-        predicates:
-        - Path=/user-service/**
-      - id: CLIENT-SERVICE
-        uri: lb://CLIENT-SERVICE
-        predicates:
-        - Path=/client-service/**
-      - id: CASE-SERVICE
-        uri: lb://CASE-SERVICE
-        predicates:
-        - Path=/case-service/**
-      - id: PAYMENT-SERVICE
-        uri: lb://PAYMENT-SERVICE
-        predicates:
-        - Path=/payment-service/**
-      - id: DOCUMENT-SERVICE
-        uri: lb://DOCUMENT-SERVICE
-        predicates:
-        - Path=/document-service/**
-      - id: CALENDAR-SERVICE
-        uri: lb://CALENDAR-SERVICE
-        predicates:
-        - Path=/calendar-service/**
-      - id: NOTIFICATION-SERVICE
-        uri: lb://NOTIFICATION-SERVICE
-        predicates:
-        - Path=/notification-service/**
-      - id: N8N-INTEGRATION-SERVICE
-        uri: lb://N8N-INTEGRATION-SERVICE
-        predicates:
-        - Path=/n8n-integration-service/**
+        - id: CLIENT-SERVICE
+          uri: lb://CLIENT-SERVICE
+          predicates:
+            - Path=/client-service/**
+        - id: CASE-SERVICE
+          uri: lb://CASE-SERVICE
+          predicates:
+            - Path=/case-service/**
+        - id: PAYMENT-SERVICE
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payment-service/**
+        - id: DOCUMENT-SERVICE
+          uri: lb://DOCUMENT-SERVICE
+          predicates:
+            - Path=/document-service/**
+        - id: CALENDAR-SERVICE
+          uri: lb://CALENDAR-SERVICE
+          predicates:
+            - Path=/calendar-service/**
+        - id: NOTIFICATION-SERVICE
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notification-service/**
+        - id: N8N-INTEGRATION-SERVICE
+          uri: lb://N8N-INTEGRATION-SERVICE
+          predicates:
+            - Path=/n8n-integration-service/**
 
+# Resilience4j Circuit Breaker
 resilience4j:
   circuitbreaker:
     instances:
@@ -82,25 +78,29 @@ resilience4j:
         wait-duration-in-open-state: 5s
         sliding-window-type: COUNT_BASED
 
+# Actuator & Observability
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
   health:
     circuitbreakers:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
       enabled: true
   endpoint:
     health:
       show-details: always
 
-
-
-
-
-
-
-
- 
- 
-
 logging:
+  level:
+    org.springframework.cloud.gateway: INFO
   pattern:
-    # Logging pattern containing traceId and spanId; no longer provided through Sleuth by default
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"

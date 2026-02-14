@@ -37,10 +37,26 @@ build/
 !.vscode/extensions.json
 !.vscode/*.http
 
+### Generated Artifacts ###
+**/dependency-tree.txt
+BOOT-INF/
 Output-CLI-DeTrabajo.txt
+*.log
 
 ### MCP Security ###
 # IMPORTANT: Never commit MCP credentials
 .n8n-mcp.env
 **/mcp-credentials.json
 **/.mcp-secrets/
+
+### Docker Environment ###
+.env
+.env.local
+.env.*.local
+
+### Jib Build Artifacts ###
+jib-*.log
+**/jib-image.tar
+
+### System Properties (Heroku format - not used) ###
+system.properties

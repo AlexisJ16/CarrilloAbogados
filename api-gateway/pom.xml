@@ -79,6 +79,19 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!-- Google Jib - Container image builder -->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <configuration>
+                    <container>
+                        <ports>
+                            <port>8080</port>
+                        </ports>
+                        <mainClass>com.carrilloabogados.gateway.ApiGatewayApplication</mainClass>
+                    </container>
+                </configuration>
+            </plugin>
         </plugins>
         <finalName>${project.artifactId}-v${project.version}</finalName>
     </build>

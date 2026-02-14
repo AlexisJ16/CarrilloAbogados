@@ -1,19 +1,35 @@
+# =============================================================================
+# Case Service - Gestión de Casos Legales
+# =============================================================================
 
 server:
+  port: 8300
   servlet:
     context-path: /case-service
 
 spring:
-  zipkin:
-    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
-  config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
   application:
     name: CASE-SERVICE
-  profiles:
-    active:
-    - dev
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=${POSTGRES_SCHEMA_CASES:cases}
+    username: ${POSTGRES_USER:carrillo}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_schema: ${POSTGRES_SCHEMA_CASES:cases}
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
+    schemas: ${POSTGRES_SCHEMA_CASES:cases}
 
+# Resilience4j Circuit Breaker
 resilience4j:
   circuitbreaker:
     instances:
@@ -28,24 +44,29 @@ resilience4j:
         wait-duration-in-open-state: 5s
         sliding-window-type: COUNT_BASED
 
+# Actuator & Observability
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
   health:
     circuitbreakers:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
       enabled: true
   endpoint:
     health:
       show-details: always
 
-
-
-
-
-
-
-
-
-
 logging:
+  level:
+    com.carrilloabogados: INFO
   pattern:
-    # Logging pattern containing traceId and spanId; no longer provided through Sleuth by default
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"

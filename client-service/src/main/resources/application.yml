@@ -1,27 +1,52 @@
+# =============================================================================
+# Client Service - Gestión de Clientes, Leads y Autenticación
+# =============================================================================
 
 server:
+  port: 8200
   servlet:
     context-path: /client-service
 
 spring:
-  zipkin:
-    base-url: ${SPRING_ZIPKIN_BASE_URL:http://localhost:9411/}
-  config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:9296}
   application:
     name: CLIENT-SERVICE
-  profiles:
-    active:
-    - dev
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:carrillo_legal_tech}?currentSchema=${POSTGRES_SCHEMA_CLIENTS:clients}
+    username: ${POSTGRES_USER:carrillo}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_schema: ${POSTGRES_SCHEMA_CLIENTS:clients}
+  flyway:
+    enabled: false
+    baseline-on-migrate: true
+    schemas: ${POSTGRES_SCHEMA_CLIENTS:clients}
 
 # JWT Configuration
 app:
   jwt:
-    secret: ${JWT_SECRET:CarrilloAbogadosSecretKey2025PlatformasII-Cali-Colombia!!}
+    secret: ${JWT_SECRET:change-me-in-production-min-64-chars-required-for-hs512}
     issuer: ${JWT_ISSUER:carrillo-abogados}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:4200}
 
+# NATS Messaging
+nats:
+  enabled: ${NATS_ENABLED:false}
+  server: ${NATS_SERVER:nats://localhost:4222}
+  connection-name: client-service
+  reconnect:
+    max-attempts: 60
+    wait-seconds: 2
+
+# Resilience4j Circuit Breaker
 resilience4j:
   circuitbreaker:
     instances:
@@ -36,23 +61,29 @@ resilience4j:
         wait-duration-in-open-state: 5s
         sliding-window-type: COUNT_BASED
 
+# Actuator & Observability
 management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
   health:
     circuitbreakers:
+      enabled: true
+    livenessState:
+      enabled: true
+    readinessState:
       enabled: true
   endpoint:
     health:
       show-details: always
 
-
-
-
-
-
-
-
-
 logging:
+  level:
+    com.carrilloabogados: INFO
   pattern:
-    # Logging pattern containing traceId and spanId; no longer provided through Sleuth by default
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
