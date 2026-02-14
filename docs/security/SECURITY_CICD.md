@@ -1,6 +1,6 @@
 # 🔐 Guía de Seguridad - CI/CD Pipeline
 
-**Última Actualización**: 30 de Diciembre, 2025  
+**Última Actualización**: 14 de Febrero, 2026  
 **Estado**: ✅ Integrado con GitHub Actions
 
 ---
@@ -197,7 +197,7 @@ En SonarCloud:
 | case-service | 0 | 8 | 4 | 1 |
 | document-service | 0 | 8 | 4 | 1 |
 | payment-service | 0 | 8 | 4 | 1 |
-| user-service | 0 | 8 | 4 | 1 |
+| client-service | 0 | 8 | 4 | 1 |
 | **TOTAL** | **1** | **80** | **83** | **62** |
 
 ### SonarCloud (según captura)

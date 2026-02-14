@@ -4,7 +4,7 @@
 **Fecha**: 21 de Enero, 2026  
 **Autor**: Equipo de Desarrollo  
 **Para**: Juan José Gómez Agudelo (Marketing Tech)  
-**Fase Proyecto**: FASE 13 - Producción Sincronizada
+**Fase Proyecto**: FASE 14 - Infraestructura Depurada
 
 > ⚠️ **ACTUALIZACIÓN IMPORTANTE**: Toda la documentación y workflows de n8n ahora se encuentran en `/automation/` (fuente de verdad única)
 
@@ -413,7 +413,7 @@ $json.contact ? $json.contact.email : ''
 
 ---
 
-**Última Actualización**: 21 de Enero, 2026 - 11:30 COT
+**Última Actualización**: 14 de Febrero, 2026 - 09:00 COT
 
 ---
 

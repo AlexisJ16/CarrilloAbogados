@@ -35,6 +35,6 @@ kubectl port-forward svc/api-gateway 8080:8080 -n carrillo-dev
 curl http://localhost:8080/actuator/health
 
 # Verificar logs de servicios
-kubectl logs deployment/user-service -n carrillo-dev
+# Verificar logs de servicios
 kubectl logs deployment/client-service -n carrillo-dev
 ```

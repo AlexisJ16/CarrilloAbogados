@@ -9,7 +9,7 @@
 
 ## Propósito
 
-Este agente es el **experto en desarrollo frontend** para la plataforma web de Carrillo Abogados. Domina Next.js 14+ con App Router, React 18, TypeScript, Tailwind CSS, y las mejores prácticas modernas de desarrollo web. Conoce la integración con el backend Spring Boot y mantiene consistencia con el sistema de diseño.
+Este agente es el **experto en desarrollo frontend** para la plataforma web de Carrillo Abogados. Domina Next.js 16+ con App Router, React 18, TypeScript, Tailwind CSS, y las mejores prácticas modernas de desarrollo web. Conoce la integración con el backend Spring Boot y mantiene consistencia con el sistema de diseño.
 
 ### Cuándo Invocar Este Agente
 - Crear nuevas páginas o componentes React

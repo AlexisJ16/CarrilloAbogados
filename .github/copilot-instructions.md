@@ -17,7 +17,7 @@ Plataforma legal cloud-native con **8 microservicios Spring Boot** sobre Kuberne
 | Capa                | Tecnologías                                                      |
 | ------------------- | ---------------------------------------------------------------- |
 | **Backend**         | Java 21, Spring Boot 3.3.13, Spring Cloud Kubernetes 3.1.3       |
-| **Frontend**        | Next.js 14, React 18, TypeScript 5, Tailwind CSS, TanStack Query |
+| **Frontend**        | Next.js 16, React 18, TypeScript 5, Tailwind CSS, TanStack Query |
 | **Base de Datos**   | PostgreSQL 16.2 (schemas separados por servicio)                 |
 | **Mensajería**      | NATS 2.10 (dev/staging), Google Pub/Sub (prod)                   |
 | **Infraestructura** | Docker, Minikube (WSL), Helm, GKE Autopilot                      |

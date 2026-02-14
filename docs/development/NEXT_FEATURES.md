@@ -1,14 +1,14 @@
 # 🚀 PRÓXIMOS DESARROLLOS - Carrillo Abogados Legal Tech
 
-**Última Actualización**: 14 de Enero, 2026  
-**Fase Actual**: FASE 10 - Autenticación Frontend Completa  
+**Última Actualización**: 14 de Febrero, 2026  
+**Fase Actual**: FASE 14 - Infraestructura Depurada  
 **MVP Target**: 27 de Marzo, 2026
 
 ---
 
 ## 📊 ESTADO ACTUAL DEL PROYECTO
 
-### ✅ Completado (FASE 10)
+### ✅ Completado (FASE 14)
 
 | Componente | Estado | Detalles |
 |------------|--------|----------|
@@ -17,11 +17,11 @@
 | **case-service** | ✅ 95% | CRUD, timeline, estados |
 | **n8n-integration-service** | ✅ 95% | Bridge NATS ↔ Webhooks |
 | **notification-service** | ✅ 80% | Backend completo |
-| **Docker Compose** | ✅ 100% | 11/11 contenedores healthy |
+| **Docker Compose** | ✅ 100% | 11/11 contenedores healthy (Jib) |
 | **CI/CD Pipeline** | ✅ 100% | 8 imágenes en ghcr.io |
-| **Ramas Sincronizadas** | ✅ 100% | dev = main = `9860476` |
 | **CORS + Auth Frontend** | ✅ 100% | Login/Logout funcional desde frontend |
 | **Header con Auth UI** | ✅ 100% | Botón login/menú usuario implementado |
+| **Infra Depurada** | ✅ 100% | user-service eliminado, Jib, configs limpias |
 
 ### 🔄 En Progreso
 
@@ -395,4 +395,4 @@ W1      W2      W3      W4    W1      W2      W3      W4     W1      W2      W3 
 ---
 
 *Documento creado: 3 de Enero, 2026*  
-*Última actualización: 21 de Enero, 2026*
+*Última actualización: 14 de Febrero, 2026*

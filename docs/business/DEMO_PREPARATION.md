@@ -96,7 +96,7 @@ foreach ($p in $ports) {
 > "Buenos días. Hoy les voy a presentar el estado actual de la **Plataforma Carrillo Abogados**, que hemos estado desarrollando como sistema de gestión legal cloud-native. Esta es una plataforma empresarial diseñada específicamente para las necesidades del bufete."
 
 **Arquitectura high-level** (slide o verbal):
-- **Frontend**: Next.js 14 (React + TypeScript) - Diseño moderno y responsive
+- **Frontend**: Next.js 16 (React + TypeScript) - Diseño moderno y responsive
 - **Backend**: 8 microservicios Spring Boot (Java 21)
 - **Base de Datos**: PostgreSQL 16 con schemas separados
 - **Infraestructura**: Docker + Kubernetes (preparado para GCP)

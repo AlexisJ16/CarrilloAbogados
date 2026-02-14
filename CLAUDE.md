@@ -93,7 +93,7 @@ wsl bash -c "minikube start"
 - **Google Jib 3.4.4**: Build sin Docker daemon, configurado en parent POM `pluginManagement`
 - **Formato**: Docker (NO OCI) — compatibilidad con `docker load`
 - **Base Image**: `eclipse-temurin:21-jre-alpine`
-- **JVM Flags**: `-XX:+UseG1GC -XX:MaxRAMPercentage=75.0 -XX:+UseContainerSupport`
+- **JVM Flags**: `-XX:+UseZGC -XX:MaxRAMPercentage=75.0`
 
 ### Pipeline de Build Local
 ```powershell
@@ -347,7 +347,7 @@ CarrilloAbogados/
 ├── calendar-service/       # Google Calendar
 ├── notification-service/   # Email/SMS
 ├── n8n-integration-service/# Bridge n8n
-├── frontend/               # Next.js 14
+├── frontend/               # Next.js 16
 ├── helm-charts/            # Kubernetes Helm
 ├── infrastructure/         # Terraform, K8s manifests
 ├── monitoring/             # Grafana LGTM stack

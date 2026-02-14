@@ -21,7 +21,7 @@ Este documento define el **mapeo funcional** entre los requerimientos de negocio
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                       FRONTEND (Next.js 14)                          │   │
+│  │                       FRONTEND (Next.js 16)                          │   │
 │  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────────────────────┐ │   │
 │  │  │Portal Público│ │Portal Cliente│ │     Panel Interno            │ │   │
 │  │  │(Visitantes)  │ │(Clientes)    │ │  (Abogados + Admins)         │ │   │
