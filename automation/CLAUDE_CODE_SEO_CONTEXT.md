@@ -1,8 +1,8 @@
 # CLAUDE CODE — CONTEXTO SEO PARA CARRILLO ABOGADOS
 
 **Documento de contexto y directivas para agente Claude Code**
-**Fecha:** 2026-02-06
-**Versión:** 1.0
+**Fecha:** 2026-02-09 (actualizado)
+**Versión:** 2.0
 **Propietario:** Juan José — Director de Marketing, Carrillo Abogados
 
 ---
@@ -42,7 +42,7 @@ La firma opera con dos motores estratégicos simultáneos:
 - 20% → Propiedad intelectual para startups
 - 10% → Contratación estatal
 
-### 2.3 Propuesta de Valor (Tono "Poesía de Guerra")
+### 2.3 Propuesta de Valor SEO (Tono "Poesía de Guerra")
 
 El lenguaje de la firma es directo, orientado a resultados, sin jerga legal innecesaria. Ejemplos del tono aprobado:
 
@@ -93,18 +93,31 @@ El lenguaje de la firma es directo, orientado a resultados, sin jerga legal inne
 
 ## 4. ANÁLISIS COMPETITIVO SEO
 
-### Competidores Directos
+### Hallazgo Clave: Competidores de Negocio =/= Competidores SEO
 
-| Competidor | Fortaleza | Debilidad SEO | Oportunidad para nosotros |
-|------------|-----------|---------------|---------------------------|
-| **Brigard Castro** | Infraestructura sólida, marca reconocida | No activan canales digitales, no producen contenido SEO | Superar en contenido especializado |
-| **Archila Abogados** | Excelente estrategia de backlinks | Problemas graves de rendimiento web (Core Web Vitals) | Competir con web técnicamente superior |
-| **Marcel Tangarife** | Marca personal fuerte, cápsulas informativas, networking visible | Modelo unipersonal, no es firma | Replicar su modelo de contenido a escala de firma |
-| **Arellano Jaramillo** | Base sólida | Sin presencia digital activa | Liderar el espacio digital antes de que despierten |
+El pre-screening (8 Feb 2026) reveló que firmas grandes reconocidas (PHR, Brigard, Clarke Modet) **NO dominan SEO en PI**. Las firmas medianas especializadas SÍ dominan. Esto cambia completamente el análisis competitivo.
+
+### Competidores SEO Reales (Validados con Data)
+
+| Competidor | Dominio | Fortaleza SEO | Oportunidad para nosotros |
+|------------|---------|---------------|---------------------------|
+| **Olarte Moure** | olartemoure.com | 100% organic (6.73K), rankea #6 "registro marca colombia", ya ataca PI + IA | Competidor directo Motor Futuro - replicar modelo contenido técnico SIC |
+| **Lois** | lois.com.co | Keywords transaccionales ("abogado registro de marca" 1.3K vol), target emprendedores | Replicar modelo de conversión para PyMEs tech |
+| **Cardenas Vega** | cardenasvega.com | Cluster fuerte "Marcas Registradas" (72 kw, 43K vol), SERP features | Superar con clusters mejor optimizados |
+| **Casa Santofimio** | casassantofimio.co | Algunas keywords PI valiosas (uso indebido marca, derechos autor) | Competidor secundario, referencia |
+
+### Competidores de Negocio Descartados (NO rankean en PI)
+
+| Competidor | Razón de Descarte |
+|------------|-------------------|
+| Brigard Castro | NO aparece en Top 10 para keywords de PI/Marcas |
+| Posse Herrera Ruiz | Rankea para laborales (salario mínimo), NO para PI |
+| Afirma Legal | Generalista (delitos sexuales, visas), "registro marca" en LOST |
+| Clarke Modet, Cavelier | NO aparecen en Top 10 |
 
 ### Oportunidad Clave
 
-**Ningún competidor directo tiene presencia omnicanal robusta** (Web optimizada + Contenido constante + Redes sociales activas + Backlinks de calidad). Hay un vacío de liderazgo digital en el segmento de PI para PyMEs que Carrillo puede ocupar.
+**Ningún competidor SEO real tiene presencia omnicanal robusta.** Olarte Moure lidera con contenido técnico pero no optimiza para conversión. Lois convierte bien pero no tiene autoridad de dominio. Hay un vacío para una firma que combine autoridad técnica (como Olarte) + modelo de conversión (como Lois) + contenido para PyMEs tech.
 
 ---
 
@@ -121,13 +134,14 @@ El lenguaje de la firma es directo, orientado a resultados, sin jerga legal inne
 | 1 | Kick-off | 2h | ✅ Completada | Business DNA, prioridades, recursos |
 | 2 | SEO Strategy | 2h | ✅ Completada | Tipo SEO, visión, priorización |
 | 3 | Goals + Audience | 2h | ✅ Completada (refinada 1+2) | Objetivos SMART + buyer personas |
-| 4 | Competition Analysis | 3h | 🔨 En progreso | Keyword gaps, quick wins |
-| 5 | Current Positioning | 2h | ⚪ Pendiente | Auditoría sitio, low-hanging fruit |
-| 6 | Strategic Planning | 3h | ⚪ Pendiente | URL architecture, clusters temáticos |
+| 4 | Competition Analysis | 3h | ✅ **Completada (10-13 Feb)** | **9 competidores analizados, 130+ keywords, Google Sheets poblados** |
+| 5 | Current Positioning | 2h | ⏭️ **OMITIDA** | **N/A - Sitio no está live, no hay posicionamiento actual** |
+| 6 | Strategic Planning | 3h | ⏳ **Siguiente paso** | URL architecture, clusters temáticos |
 | 7 | Content Planning | 1h | ⚪ Pendiente | Calendario editorial, briefs |
 | 8 | SEO Verification | 1h | ⚪ Pendiente | Checklist on-page, guías copywriter |
 
-**Tiempo total:** ~15 horas (setup único) + revisiones trimestrales
+**Tiempo total:** ~13 horas (Fase 5 omitida) + revisiones trimestrales
+**Estado actual:** Fases 1-4 completadas. **Fase 5 SE SALTA** (sitio no está live). **Próxima: Fase 6 (Strategic Planning)**.
 
 ### 5.3 Objetivos SMART de SEO (Estructura 1+2)
 
@@ -166,19 +180,19 @@ Carrillo Abogados tiene 3 MEGA-WORKFLOWS en n8n:
 
 | MW | Nombre | Estado | Función |
 |----|--------|--------|---------|
-| **MW#1** | Captura y Conversión | ✅ Activo (v3.0 AI Agent) | Lead → Cliente (<1 min respuesta) |
-| **MW#2** | Retención y Reactivación | ⚪ Planificado | Cliente → Recompra (Flywheel) |
-| **MW#3** | Fábrica de Contenido SEO | ⚪ Planificado | Tráfico → Lead (Content Factory) |
+| **MW#1** | Captura y Conversión | ✅ Activo (v3.0 AI Agent, 95%) | Lead → Cliente (<1 min respuesta) |
+| **MW#2** | Retención y Reactivación | ⚪ Planificado (Q2 2026) | Cliente → Recompra (Flywheel) |
+| **MW#3** | Fábrica de Contenido SEO | 🔨 En progreso (45%) | Tráfico → Lead (Content Factory) |
 
 ### 6.2 MW#3 — Componentes
 
-| Sub-workflow | Nombre | Función | Estado |
-|-------------|--------|---------|--------|
-| **C** | Content Factory Manager | Orquestador SEO | ⚪ Planificado |
-| **SUB-K** | Keyword Research (Dual Mode) | Investigación + producción keywords | ⚪ Planificado |
-| **SUB-L** | Content Writer AI | Redactor IA (Gemini) | ⚪ Planificado |
-| **SUB-M** | Content Publisher | Publicación en CMS | ⚪ Planificado |
-| **SUB-N** | SEO Performance Tracker | Monitoreo de ranking | ⚪ Planificado |
+| Sub-workflow | Nombre | Función | Estado | n8n ID |
+|-------------|--------|---------|--------|--------|
+| **Orchestrator v2.0** | Content Factory Manager | Orquestador SEO (AI Agent) | Diseñado, no implementado | - |
+| **SUB-K v2.0** | Keyword Research (Dual Mode) | Investigación MAES + producción semanal | Diseñado, no implementado (bloqueado: DataForSEO $50 USD) | - |
+| **SUB-L v2.0** | Content Writer AI | Redactor IA (Gemini) + Google Workspace | **DESPLEGADO** | `ZcaEG8VDm1IcG3LF` (16 nodos) |
+| **SUB-M** | Content Publisher | Publicación en CMS | Bloqueado (requiere blog-service) | - |
+| **SUB-N** | SEO Performance Tracker | Monitoreo de ranking | No iniciado (Q2 2026) | - |
 
 ### 6.3 SUB-K — Arquitectura Bidireccional
 
@@ -190,32 +204,42 @@ SUB-K opera en **dos modos** para maximizar el ROI de DataForSEO API:
 | **Propósito** | Enriquecer análisis estratégico | Ejecutar estrategia definida |
 | **Trigger** | Manual (ad-hoc) | Automatizado (weekly) |
 | **Input** | Seed keywords + competidores | Keywords_Master (enabled=TRUE) |
-| **Output** | MAES_RawData Sheet (200+ keywords) | Firestore + trigger SUB-L |
+| **Output** | MAES_Research Sheet (200+ keywords) | Firestore + trigger SUB-L |
 | **Filtros** | Mínimos (vol >= 50, KD <= 50) | Estrictos (solo MAES-validados) |
 | **Frecuencia** | Durante MAES + revisiones trimestrales | Continua (semanal) |
 
 ### 6.4 Keywords_Master — El Contrato entre Estrategia y Ejecución
 
-**Google Sheet** con 16 columnas que es la **única fuente de verdad**:
+**Google Sheet ID:** `15RmVB34VnwxdJ9Ne-HX4WU54yv0kUn7WOvcjWdUL6to`
+**Estructura:** 21 columnas (A-U), 6 tabs, con formulas, validaciones y color scales.
+
+**Columnas (21 total):**
 
 | Col | Campo | Propósito | Editado por |
 |-----|-------|-----------|-------------|
-| A | `keyword_id` | ID único | Sistema |
-| B | `cluster_name` | Cluster temático | Juan (MAES) |
-| C | `keyword_text` | Keyword específica | Juan / DataForSEO |
-| D | `tipo` | Head / Long-tail | Juan (MAES) |
-| E | `intencion` | Informational / Transactional / Commercial / Navigational | Juan (MAES) |
-| F | `volume` | Búsquedas mensuales | DataForSEO |
-| G | `kd` | Keyword Difficulty (0-100) | DataForSEO |
-| H | `cpc` | CPC en USD | DataForSEO |
-| **I** | **`enabled`** | **TRUE/FALSE — CONTROL HUMANO** | **Juan** |
-| J | `priority_score` | Fórmula: `=F/10-G+H*5` | Calculado |
-| K | `status` | pendiente / en_progreso / publicado | Sistema |
-| L | `url_target` | URL objetivo | Juan (MAES) |
-| M | `brief_notes` | Notas del brief | Juan (MAES) |
-| N | `content_id` | ID del draft | SUB-L |
-| O | `fecha_creacion` | Fecha creación | Sistema |
-| P | `fecha_publicacion` | Fecha publicación | SUB-M |
+| A | `keyword_id` | ID único (KW-XXX) | Sistema |
+| B | `keyword_text` | Keyword específica | Juan / DataForSEO |
+| C | `cluster_name` | Cluster temático | Juan (MAES) |
+| D | `is_main_keyword` | TRUE/FALSE | Juan (MAES) |
+| E | `intent` | Informational / Transactional / Commercial / Navigational | Juan (MAES) |
+| F | `volume` | Búsquedas mensuales | SEMrush / DataForSEO |
+| G | `kd` | Keyword Difficulty (0-100) | SEMrush / DataForSEO |
+| H | `cpc` | CPC en USD | SEMrush / DataForSEO |
+| I | `competitive_density` | Densidad competitiva (0-1) | SEMrush / DataForSEO |
+| J | `serp_features` | Featured Snippet, PAA, etc. | Análisis SERP |
+| K | `trend` | Stable / Rising / Declining | SEMrush |
+| L | `priority_score` | Fórmula automática | Calculado |
+| **M** | **`enabled`** | **TRUE/FALSE — CONTROL HUMANO** | **Juan** |
+| N | `status` | pendiente / en_progreso / publicado | Sistema |
+| O | `url_target` | URL objetivo | Juan (MAES Phase 6) |
+| P | `brief_notes` | Notas del brief | Juan (MAES Phase 7) |
+| Q | `content_id` | ID del draft | SUB-L |
+| R | `published_url` | URL publicada | SUB-M |
+| S | `source` | Origen del dato (SEMrush, DataForSEO, etc.) | Sistema |
+| T | `fecha_creacion` | Fecha creación | Sistema |
+| U | `fecha_publicacion` | Fecha publicación | SUB-M |
+
+**6 Tabs:** All_Keywords, By_Cluster, Pipeline, Briefs, Dashboard, Config
 
 **Regla crítica:** Solo las keywords con `enabled=TRUE` se procesan automáticamente. Juan controla qué se publica.
 
@@ -256,12 +280,12 @@ DIARIO — SUB-N PERFORMANCE TRACKER (Automático, futuro)
 
 | Componente | Tecnología | Estado |
 |-----------|-----------|--------|
-| **Automatización** | n8n Cloud (v1.120.4) | ✅ Activo |
+| **Automatización** | n8n Cloud (v2.33.4) | ✅ Activo |
 | **AI — Lead Processing** | Google Gemini 2.5-pro | ✅ Activo |
 | **Base de datos** | Google Cloud Firestore | ✅ Activo |
-| **Email** | Gmail (OAuth2) | ✅ Activo |
-| **SEO Intelligence** | SEMrush Pro (500 keywords tracked) | ✅ Activo |
-| **Keyword API** | DataForSEO | ⚪ Pendiente integración |
+| **Email** | Gmail (OAuth2) + Mailersend (SUB-D) | ✅ Activo |
+| **SEO Intelligence** | SEMrush Pro (pago mensual, 500 keywords tracked) | ✅ Activo |
+| **Keyword API** | DataForSEO | ⚪ Pendiente deposito $50 USD |
 | **Web/CMS** | Kubernetes (en desarrollo) | 🔨 En desarrollo |
 | **Search Console** | Google Search Console | ⚪ Pendiente verificación |
 
@@ -275,26 +299,31 @@ DIARIO — SUB-N PERFORMANCE TRACKER (Automático, futuro)
 | WordPress REST | — | ⚪ Pendiente |
 | Google Search Console | — | ⚪ Pendiente |
 
-### 7.3 Workflows n8n Activos
+### 7.3 Workflows n8n Relevantes
 
-| ID | Nombre | Estado | Webhook |
-|----|--------|--------|---------|
-| `68DDbpQzOEIweiBF` | Orquestador v3.0 (AI Agent - Gemini) | ✅ ACTIVO | `/webhook/lead-events-v3` |
-| `bva1Kc1USbbITEAw` | WORKFLOW A: Lead Lifecycle Manager (v1.0) | ⚪ INACTIVO (legacy) | `/webhook/lead-events` |
+| ID | Nombre | MW | Estado | Notas |
+|----|--------|----|--------|-------|
+| `68DDbpQzOEIweiBF` | Orquestador v3.0 (AI Agent) | MW#1 | ✅ ACTIVO | Hub principal, Gemini 2.0 Flash |
+| `RHj1TAqBazxNFriJ` | SUB-A: Lead Intake | MW#1 | INACTIVO (tool) | 17 nodos, llamado por Orquestador |
+| `PZboUEnAxm5A7Lub` | SUB-D: Nurturing Sequence | MW#1 | ✅ ACTIVO | 19 nodos, schedule cada 6h |
+| `ZcaEG8VDm1IcG3LF` | SUB-L: Content Writer v2.0 | MW#3 | ✅ ACTIVO | 16 nodos, Google Workspace |
+| `bva1Kc1USbbITEAw` | Orquestador v1.0 (Legacy) | MW#1 | ARCHIVADO + INACTIVO | Legacy, no usar |
 
 ---
 
 ## 8. PRESUPUESTO RELEVANTE PARA SEO
 
-| Componente | Monto Anual | Notas |
-|-----------|-------------|-------|
-| **SEMrush Pro** | $5,750,000 COP | 500 keywords tracked, 5 proyectos, 100K páginas rastreadas/mes |
-| **n8n Cloud (incluye MW#3)** | $3,120,000 COP | Suscripción anual, 7 ejecuciones concurrentes |
-| **APIs IA (Gemini para contenido)** | Dentro de $20,980,000 COP variable | Escalable con volumen |
-| **DataForSEO** | ~$50-100 USD/investigación | Ad-hoc para MAES + producción |
-| **Total inversión SEO directa** | ~$9,100,000 COP + APIs | 8.4% del presupuesto total |
+| Componente | Monto | Periodo | Notas |
+|-----------|-------|---------|-------|
+| **SEMrush Pro** | ~$480,000 COP/mes | Mensual | 500 keywords tracked, 5 proyectos. **NO incluye API** |
+| **n8n Cloud** | $3,120,000 COP | Anual (pagado Nov 2025) | 7 ejecuciones concurrentes |
+| **APIs IA (Gemini)** | Variable | Dentro de $24,700,000 n8n total | Escalable con volumen |
+| **DataForSEO** | ~$50-100 USD (deposito unico) | Pay-as-you-go | Para SUB-K automation. Pendiente aprobacion |
+| **Total inversión SEO directa** | ~$9,100,000 COP + APIs | - | ~13% del presupuesto total |
 
-**Presupuesto total marketing 2026:** $68,250,000 COP
+**Presupuesto total marketing 2026:** $68,250,000 COP (100% aprobado)
+
+**Nota critica sobre SEMrush:** El plan Pro es de uso manual (interfaz web). NO incluye acceso API. Para automatizacion en n8n se usa DataForSEO (pay-as-you-go, mismos datos a menor costo).
 
 ---
 
@@ -399,29 +428,43 @@ Todo artículo SEO debe seguir esta estructura:
 
 ---
 
-## 11. ROADMAP DE IMPLEMENTACIÓN SEO
+## 11. ALINEACIÓN CON ROADMAP MARKETING 2026
 
-### Fase 1: Fundamentos (Semanas 1-4)
+**Documento oficial:** `automation/docs/ROADMAP_MARKETING_2026_v2.md`
 
-1. **Completar MAES Fases 4-8** (investigación competencia, clusters, calendario editorial)
-2. **Ejecutar SUB-K Investigación** (DataForSEO → 200+ keywords raw → MAES_RawData Sheet)
-3. **Auditoría técnica web** (Core Web Vitals, indexación, arquitectura info)
-4. **Crear Keywords_Master** (50-100 keywords validadas con enabled/disabled)
+El SEO se ejecuta dentro de la estructura FASE 0-5 del roadmap general. NO tiene un roadmap separado.
 
-### Fase 2: Producción Inicial (Semanas 5-12)
+### Donde encaja SEO en cada FASE
 
-1. **Implementar MW#3 SUB-K producción + SUB-L** en n8n
-2. **Publicar 12 artículos** (3/semana revisados por Juan)
-3. **Configurar Google Search Console** + submit sitemap
-4. **Implementar FAQ Schema** en artículos clave
+| FASE | Nombre | Periodo | Actividades SEO |
+|------|--------|---------|-----------------|
+| **0** | Setup MW#3 | S1 (16-23 Ene) | Implementar sub-workflows MW#3 (~55% completado) |
+| **1** | Investigación SEO | S1-S3 (Ene-Feb) | MAES Fases 4-8, keyword research, competencia (~15% completado) |
+| **2** | Desarrollo Técnico | S3-S6 (Feb) | SEO técnico, Core Web Vitals, Schema Markup |
+| **3** | Producción Contenido | S5-S9 (Feb-Mar) | 25 artículos, 5 lead magnets, 5 landing pages |
+| **4** | Testing Pre-Launch | S9-S11 (Mar) | Test MW#3, auditoría SEO final |
+| **5** | Launch | S11-S12 (Abr) | Activar indexación, sitemap, contenido orgánico |
 
-### Fase 3: Escala (Meses 4-12)
+### Estado actual (13 Feb 2026)
 
-1. **Producción semanal automatizada** (2-3 artículos/semana)
-2. **Implementar SUB-N** (Performance Tracker con Search Console API)
-3. **Revisión trimestral MAES** (ajustar clusters, keywords, briefs)
-4. **Estrategia de backlinks** (guest posting 2 artículos/mes en sitios externos)
-5. **Evaluar SEO Programático** (template × industria × ciudad = 640 páginas potenciales)
+- **FASE 0:** ~55% (SUB-L desplegado, Sheets creados, SEMrush activo)
+- **FASE 1:** ✅ **~40% (MAES Fases 1-4 COMPLETADAS)** - Fase 5 omitida (sitio no live), Fase 6 pendiente
+- **FASE 2-5:** No iniciadas
+
+### Resultados MAES Phase 4 (Completada)
+
+1. ✅ **9 competidores analizados** (4 primarios: Olarte, Lois, Cárdenas Vega, Casa Santofimio + 5 secundarios: Brigard Castro, Archila, AJA, etc.)
+2. ✅ **130+ keywords validadas** en Keywords_Master
+3. ✅ **Google Sheets poblados** (MAES_Research + Keywords_Master)
+4. ✅ **40+ archivos generados** en research_data/ (CSVs, análisis, reportes, scripts)
+5. ✅ **Informes consolidados** (competitive landscape, gaps, oportunidades)
+
+### Prioridad inmediata
+
+1. ✅ ~~Completar MAES Phase 4~~ **COMPLETADA**
+2. ✅ ~~Poblar Keywords_Master con 100+ keywords~~ **130+ keywords cargadas**
+3. ⏳ Ejecutar MAES Phase 6 (Strategic Planning) - Arquitectura URLs, clusters
+4. ⏳ Aprobar deposito DataForSEO ($50 USD) para habilitar SUB-K automatizado
 
 ---
 
@@ -450,18 +493,17 @@ Estos documentos contienen información detallada que debes consultar según la 
 
 | Archivo | Contenido | Cuándo consultar |
 |---------|-----------|------------------|
-| `MAES_INTEGRATION.md` | Integración MAES ↔ MW#3, flujo bidireccional completo | Diseño de workflows, estructura Keywords_Master |
-| `00_ARQUITECTURA_GENERAL.md` | Visión general 3 MEGA-WORKFLOWS, Hub & Spoke | Entender la arquitectura de automatización |
-| `03_MEGA_WORKFLOW_3_SEO.md` | Specs técnicos completos de MW#3 | Implementar SUB-K, SUB-L, SUB-M, SUB-N |
-| `01_MEGA_WORKFLOW_1_CAPTURA.md` | MW#1 Lead Capture (activo) | Entender cómo SEO alimenta el funnel |
-| `ROADMAP_MARKETING_2026_v2.md` | Roadmap completo con fases y deadlines | Priorización y timeline |
-| `modelo_estimacion_registro_marcas_PI_v3.md` | Proyecciones financieras, embudos, ROI | Justificación de inversión SEO |
-| `Plan_de_marketing_abgd.pdf` | Plan de marketing base con buyer personas | Perfiles de audiencia detallados |
-| `PRESUPUESTO_MARKETING_2026_FINAL_v2.docx` | Presupuesto detallado $68.25M COP | Restricciones presupuestarias |
-| `segunda_investigacion_de_competencia` | Análisis competitivo ampliado | Benchmark SEO competidores |
-| `Análisis_Competitivo_de_Firmas_Legales_en_Cali.pdf` | Competencia local Cali | Oportunidades locales |
-| `Análisis_Externo_GPT_Mercado_de_PI.pdf` | Mercado PI Colombia | Tamaño de mercado, tendencias |
-| `Análisis_PEST_Marketing_Jurídico_Colombia.pdf` | Entorno macro Colombia | Factores externos |
+| `MAES_INTEGRATION.md` | Integración MAES ↔ MW#3 | `automation/docs/business/` |
+| `00_ARQUITECTURA_GENERAL.md` | Visión general 3 MEGA-WORKFLOWS | `automation/docs/technical/arquitectura/` |
+| `03_MEGA_WORKFLOW_3_SEO.md` | Specs técnicos MW#3 (v5.0) | `automation/docs/technical/arquitectura/` |
+| `ROADMAP_MARKETING_2026_v2.md` | **Roadmap oficial FASE 0-5** | `automation/docs/` |
+| `MW3 STATUS.md` | Estado actual MW#3 (source of truth) | `automation/workflows/MW3_SEO_CONTENT_FACTORY/` |
+| `PLAN_INVESTIGACION_COMPETENCIA_SEO_v3.md` | ✅ Plan MAES Phase 4 COMPLETADO (10-13 Feb) | `automation/workflows/MW3_SEO_CONTENT_FACTORY/02-spokes/` |
+| `MW3_GOOGLE_SHEETS_KEYWORDS_MASTER.md` | Spec completo Keywords_Master (21 cols) | `automation/docs/technical/arquitectura/` |
+| `modelo_estimacion_registro_marcas_PI_v3.md` | Proyecciones financieras, ROI | `automation/docs/business/` |
+| `Plan_de_marketing_abgd.pdf` | Plan de marketing base | `automation/docs/business/` |
+| `PRESUPUESTO_MARKETING_2026_FINAL_v2.docx` | Presupuesto $68.25M COP | `automation/docs/business/` |
+| `segunda-investigacion-compe.md` | Análisis competitivo ampliado | `automation/docs/business/` |
 
 ---
 
@@ -511,8 +553,8 @@ Sí. Tienes acceso a n8n Cloud via MCP. Consulta `docs/technical/n8n_mcp_guide.m
 A través de Juan en este chat. No tienes acceso directo a Don Omar, Alexis ni Claudia.
 
 **¿Cuál es la prioridad #1 ahora?**
-Completar las fases 4-8 de MAES y tener el Keywords_Master listo con 50-100 keywords validadas. Sin eso, no hay producción de contenido.
+✅ MAES Phase 4 completada (13 Feb 2026). **Próxima acción:** Ejecutar MAES Phase 6 (Strategic Planning) para definir arquitectura de URLs, clusters temáticos y calendario editorial. **NOTA:** Phase 5 (Current Positioning) se omite porque carrilloabgd.com no está live todavía. Sin Phase 6, no hay briefs claros para producción de contenido.
 
 ---
 
-*Documento generado el 2026-02-06 por Claude (Opus 4.6) para uso exclusivo del equipo de marketing de Carrillo Abogados.*
+*Documento generado el 2026-02-06 y actualizado el 2026-02-09 (v2.0) para alinear con ROADMAP_MARKETING_2026_v2.md y estado real del proyecto. Claude (Opus 4.6) para uso exclusivo del equipo de marketing de Carrillo Abogados.*
