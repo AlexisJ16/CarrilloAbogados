@@ -1,5 +1,7 @@
 # ADR-005: Estrategia de Base de Datos Compartida
 
+**Última Actualización**: 14 de Febrero, 2026
+
 ## Contexto
 Microservicios pueden usar DB independiente o compartida.
 

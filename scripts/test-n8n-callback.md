@@ -1,5 +1,7 @@
 # 🧪 Script de Prueba Manual - Callback n8n
 
+**Última Actualización**: 14 de Febrero, 2026
+
 **Propósito**: Simular callback de n8n Cloud al backend para verificar actualización de score.
 
 ## Test 1: Webhook Test (Verificar Conectividad)

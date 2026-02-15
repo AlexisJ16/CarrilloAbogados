@@ -1,7 +1,7 @@
 # 🔍 Guía del Stack de Observabilidad - Carrillo Abogados
 
 **Versión**: 1.0  
-**Última Actualización**: Enero 2026  
+**Última Actualización**: 14 de Febrero, 2026  
 **Stack**: Grafana LGTM (Loki + Grafana + Tempo + Mimir)
 
 ---

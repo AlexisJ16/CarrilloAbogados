@@ -11,7 +11,8 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![License](https://img.shields.io/badge/License-Proprietary-red)](LICENSE)
 
-**Plataforma cloud-native de gestión legal empresarial**
+**Plataforma cloud-native de gestión legal empresarial**  
+**Última Actualización**: 14 de Febrero, 2026 | **Fase**: FASE 14 - Infraestructura Depurada
 
 [Documentación](#-documentación) • [Arquitectura](#-arquitectura) • [Quick Start](#-quick-start) • [Estado del Proyecto](#-estado-del-proyecto)
 

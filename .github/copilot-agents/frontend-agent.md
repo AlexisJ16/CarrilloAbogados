@@ -1,9 +1,9 @@
 # 🎨 Frontend Agent - Carrillo Abogados Legal Tech
 
-**Última Actualización**: 12 de Enero, 2026 - 10:30 COT  
-**Versión**: 3.0  
+**Última Actualización**: 14 de Febrero, 2026  
+**Versión**: 4.0  
 **Estado**: ✅ Activo  
-**Fase Proyecto**: FASE 10 - Autenticación Frontend Completa
+**Fase Proyecto**: FASE 14 - Infraestructura Depurada
 
 ---
 
@@ -27,7 +27,7 @@ Este agente es el **experto en desarrollo frontend** para la plataforma web de C
 ### Core Framework
 | Tecnología | Versión | Propósito |
 |------------|---------|-----------|
-| **Next.js** | 14.2+ | Framework React con App Router, SSR, ISR |
+| **Next.js** | 16 | Framework React con App Router, SSR, ISR |
 | **React** | 18.3+ | UI Library con Server Components |
 | **TypeScript** | 5.x | Type safety en modo estricto |
 

@@ -34,7 +34,7 @@
 
 ## 🎯 FEATURES POR IMPLEMENTAR
 
-### P0: Crítico para MVP (Enero 2026)
+### P0: Crítico para MVP (Febrero-Marzo 2026)
 
 #### 1. Sync Branches + Deploy Staging
 ```

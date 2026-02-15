@@ -1,5 +1,7 @@
 # 📝 Guía para Obsidian - Carrillo Abogados
 
+**Última Actualización**: 14 de Febrero, 2026
+
 Esta carpeta `docs/` está diseñada para ser compatible con Obsidian como vault de documentación.
 
 ## 🔧 Configuración Recomendada

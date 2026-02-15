@@ -1,5 +1,6 @@
 # ===========================================
 # GitHub Repository Secrets Template
+# **Última Actualización**: 14 de Febrero, 2026
 # ===========================================
 # Copy this file and fill in the values
 # These should be configured in GitHub Settings → Secrets

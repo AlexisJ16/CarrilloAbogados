@@ -35,11 +35,6 @@ docs/
 | [MVP_ROADMAP.md](business/MVP_ROADMAP.md) | Roadmap hacia MVP (27 Marzo 2026) | ✅ |
 | [ESTRATEGIA_AUTOMATIZACION.md](business/ESTRATEGIA_AUTOMATIZACION.md) | Integración plataforma ↔ n8n (3 workflows) | ✅ |
 
-### Subcarpetas
-
-- `Marketing-N8N/` - Documentación de arquitectura de automatizaciones n8n
-- `Documentación_Proporcionada/` - Archivos originales del cliente (briefs)
-
 ---
 
 ## 🏗️ ARCHITECTURE (Arquitectura)
@@ -51,7 +46,6 @@ Decisiones de arquitectura y diseño técnico.
 | [ARCHITECTURE.md](architecture/ARCHITECTURE.md) | Arquitectura general del sistema | ✅ |
 | [ADR-005-database-strategy.md](architecture/ADR-005-database-strategy.md) | Estrategia de base de datos compartida | ✅ |
 | [ADR-006-kubernetes-local-strategy.md](architecture/ADR-006-kubernetes-local-strategy.md) | Estrategia Kubernetes local (Minikube) | ✅ |
-| [INTEGRACION_N8N.md](architecture/INTEGRACION_N8N.md) | Arquitectura de integración Portal ↔ n8n | ✅ |
 
 ---
 
@@ -61,7 +55,6 @@ Guías y estándares de desarrollo.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
-| [ROADMAP.md](development/ROADMAP.md) | Roadmap técnico hacia MVP | ✅ |
 | [NEXT_FEATURES.md](development/NEXT_FEATURES.md) | Próximos desarrollos priorizados | ✅ |
 | [TEST_USERS.md](development/TEST_USERS.md) | Usuarios de prueba E2E | ✅ |
 | [SESSION_CONTEXT.md](development/SESSION_CONTEXT.md) | Contexto entre sesiones de desarrollo | ✅ |
@@ -76,10 +69,12 @@ Guías de despliegue y operaciones.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
+| [OPS_README.md](operations/OPS_README.md) | Guía DevOps completa | ✅ |
 | [DEPLOY_GCP.md](operations/DEPLOY_GCP.md) | Guía de deploy a GCP Cloud Run | ✅ |
-| [OPERATIONS.md](operations/OPERATIONS.md) | Guía de operaciones Kubernetes | ✅ |
+| [DEPLOYMENT.md](operations/DEPLOYMENT.md) | Guía deploy HostGator + GCP | ✅ |
 | [OBSERVABILITY_GUIDE.md](operations/OBSERVABILITY_GUIDE.md) | Guía del stack Grafana LGTM | ✅ |
 | [GITHUB_SECRETS.md](operations/GITHUB_SECRETS.md) | Configuración de secrets GitHub | ✅ |
+| [GITHUB_SECRETS_TEMPLATE.md](operations/GITHUB_SECRETS_TEMPLATE.md) | Template de secrets | ✅ |
 | [DEPLOYMENT_CHECKLIST.md](operations/DEPLOYMENT_CHECKLIST.md) | Checklist de deployment | ✅ |
 
 ---
@@ -91,6 +86,7 @@ Políticas y configuraciones de seguridad.
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
 | [SECURITY_CICD.md](security/SECURITY_CICD.md) | Configuración de seguridad en CI/CD | ✅ |
+| [SECRETS_MANAGEMENT.md](security/SECRETS_MANAGEMENT.md) | Política de gestión de secrets | ✅ |
 
 ---
 

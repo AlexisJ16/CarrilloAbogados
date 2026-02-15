@@ -1,7 +1,7 @@
 # 🤖 Copilot Agents - Carrillo Abogados
 
-**Última Actualización**: 12 de Enero, 2026 - 11:00 COT  
-**Versión**: 3.0
+**Última Actualización**: 14 de Febrero, 2026  
+**Versión**: 4.0
 
 ---
 
