@@ -43,6 +43,10 @@ BOOT-INF/
 Output-CLI-DeTrabajo.txt
 *.log
 
+### AI IDE Settings (machine-specific) ###
+.claude/
+.mcp.json
+
 ### MCP Security ###
 # IMPORTANT: Never commit MCP credentials
 .n8n-mcp.env
@@ -57,6 +61,9 @@ Output-CLI-DeTrabajo.txt
 ### Jib Build Artifacts ###
 jib-*.log
 **/jib-image.tar
+
+### Architecture Diagrams (binary - use source drawio files) ###
+*.drawio.png
 
 ### System Properties (Heroku format - not used) ###
 system.properties

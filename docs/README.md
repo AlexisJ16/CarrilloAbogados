@@ -1,7 +1,7 @@
 # 📚 Índice Maestro de Documentación
 
 **Proyecto**: Carrillo Abogados Legal Tech Platform  
-**Última Actualización**: 14 de Febrero, 2026  
+**Última Actualización**: 16 de Febrero, 2026  
 **Estado**: ✅ FASE 14 - Infraestructura Depurada
 
 ---
@@ -10,13 +10,15 @@
 
 ```text
 docs/
-├── 💼 business/         → Documentación de negocio
-├── 🏗️ architecture/     → Decisiones arquitectónicas
+├── � archive/          → Documentos históricos
+├── 🏗️ architecture/     → ADRs y decisiones arquitectónicas
+├── 💼 business/         → Modelo de negocio, PDFs del cliente
 ├── 💻 development/      → Guías de desarrollo
 ├── ⚙️ operations/       → Deployment y operaciones
-└── 🔒 security/         → Políticas de seguridad
+├── 🔒 security/         → Políticas de seguridad
+└── 🚀 MIGRATION_GUIDE_ORG.md → Guía migración a org
 
-⚠️ NOTA: Documentación n8n → Ver carpeta /automation/ (fuente de verdad)
+⚠️ NOTA: Documentación n8n → /automation/ (fuente de verdad)
 ```
 
 ---
@@ -126,9 +128,9 @@ automation/
 | **Status MW1** | [/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](../automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md) | Estado actual |
 
 **Workflows Activos:**
-- ✅ **MW#1 - Lead Lifecycle**: Captura y gestión de leads (7 sub-workflows)
+- ✅ **MW#1 - Lead Lifecycle**: Captura y gestión de leads
 - 📋 **MW#2 - Retención**: Cliente a recompra (Q2 2026)
-- 📋 **MW#3 - SEO Content**: Tráfico a lead (Q2-Q3 2026)
+- 🔄 **MW#3 - SEO Content Factory**: MAES phases 1-4 completadas
 
 ---
 
@@ -166,4 +168,4 @@ automation/
 
 ---
 
-*Última actualización: 14 de Febrero, 2026*
+*Última actualización: 16 de Febrero, 2026*
