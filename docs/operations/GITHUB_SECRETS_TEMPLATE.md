@@ -38,7 +38,7 @@ CLOUD_SQL_PASSWORD=your-secure-password
 
 # JWT Secret for authentication
 # Generate with: openssl rand -base64 64
-JWT_SECRET=CarrilloAbogadosSecretKey2025PlatformasII-Cali-Colombia-SecureProduction!!
+JWT_SECRET=CarrilloAbogadosSecretKey2025-Cali-Colombia-SecureProduction!!
 
 # ===========================================
 # Security Scanning

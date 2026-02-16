@@ -8,7 +8,7 @@
 
 ## 📋 RESUMEN
 
-La plataforma Carrillo ABGD contempla **3 tipos de usuarios principales** con diferentes niveles de acceso y funcionalidades. Este documento define los roles, permisos y casos de uso para cada tipo de usuario.
+La plataforma Carrillo ABGD contempla **4 tipos de usuarios** con diferentes niveles de acceso y funcionalidades: Administrador, Abogado, Cliente y Visitante. Este documento define los roles, permisos y casos de uso para cada tipo de usuario.
 
 ---
 

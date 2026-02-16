@@ -1,7 +1,7 @@
 # 🚀 Guía de Deploy a GCP Cloud Run
 
-**Versión**: 1.0  
-**Fecha**: 3 de Enero, 2026  
+**Versión**: 1.1
+**Fecha**: 16 de Febrero, 2026
 **Estado**: ✅ Documento de Producción
 
 ---

@@ -31,7 +31,7 @@ Parámetros:
 Servicios disponibles:
   api-gateway, client-service, case-service, payment-service,
   document-service, calendar-service, notification-service,
-  n8n-integration-service, user-service
+  n8n-integration-service
 
 Ejemplos:
   .\scripts\jib-build.ps1                       # Todos los servicios
@@ -95,7 +95,7 @@ try {
         Write-Host "`nCargando imágenes al daemon Docker..." -ForegroundColor Yellow
 
         $services = if ($Service) { @($Service) } else {
-            @("api-gateway", "user-service", "client-service", "case-service",
+            @("api-gateway", "client-service", "case-service",
                 "payment-service", "document-service", "calendar-service",
                 "notification-service", "n8n-integration-service")
         }

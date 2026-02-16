@@ -8,7 +8,7 @@
 
 ## 🎯 Proyecto
 
-Plataforma legal cloud-native con **8 microservicios Spring Boot** sobre Kubernetes para bufete de 7 abogados en Cali, Colombia. Propósito dual: académico (Plataformas II) + producción real.
+Plataforma legal cloud-native con **8 microservicios Spring Boot** sobre Docker/Kubernetes para bufete de 7 abogados en Cali, Colombia. **100% Empresarial** - Sistema de producción real para el bufete Carrillo Abogados.
 
 ---
 

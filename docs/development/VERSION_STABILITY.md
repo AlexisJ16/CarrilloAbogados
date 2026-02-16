@@ -119,13 +119,12 @@ graph LR
 
 ## 📊 Estado del Build
 
-✅ **BUILD SUCCESS** - 17/12/2024
+✅ **BUILD SUCCESS** - 14/02/2026
 
 ```
 Reactor Summary:
 - carrillo-legal-tech ............ SUCCESS
 - api-gateway .................... SUCCESS
-- user-service ................... SUCCESS
 - client-service ................. SUCCESS
 - case-service ................... SUCCESS
 - payment-service ................ SUCCESS
