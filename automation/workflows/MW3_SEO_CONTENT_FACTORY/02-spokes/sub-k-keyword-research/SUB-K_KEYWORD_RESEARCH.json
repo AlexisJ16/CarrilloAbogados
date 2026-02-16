@@ -1,0 +1,400 @@
+{
+  "name": "MW3 SUB-K: Keyword Research (DataForSEO)",
+  "nodes": [
+    {
+      "id": "trigger-schedule",
+      "name": "Schedule: 1st of Month",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [100, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 1 * *"
+            }
+          ]
+        }
+      },
+      "notes": "Triggers on the 1st of each month at 7:00 AM UTC (2:00 AM COT)"
+    },
+    {
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [100, 480],
+      "parameters": {}
+    },
+    {
+      "id": "set-seed-keywords",
+      "name": "1. Define Seed Keywords",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [320, 380],
+      "parameters": {
+        "mode": "manual",
+        "duplicateItem": false,
+        "assignments": {
+          "assignments": [
+            {
+              "id": "seed_keywords",
+              "name": "seed_keywords",
+              "value": "=[\"registrar marca colombia\", \"propiedad intelectual colombia\", \"patentes colombia\", \"derechos de autor colombia\", \"registro de marca SIC\"]",
+              "type": "array"
+            },
+            {
+              "id": "location_code",
+              "name": "location_code",
+              "value": 2170,
+              "type": "number"
+            },
+            {
+              "id": "language_code",
+              "name": "language_code",
+              "value": "es",
+              "type": "string"
+            },
+            {
+              "id": "min_volume",
+              "name": "min_volume",
+              "value": 100,
+              "type": "number"
+            },
+            {
+              "id": "max_kd",
+              "name": "max_kd",
+              "value": 30,
+              "type": "number"
+            },
+            {
+              "id": "batch_id",
+              "name": "batch_id",
+              "value": "={{ 'batch_' + $now.format('yyyy-MM') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "Configure seed keywords and filter parameters for DataForSEO API"
+    },
+    {
+      "id": "http-keyword-ideas",
+      "name": "2. DataForSEO - Keyword Ideas",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [540, 380],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.dataforseo.com/v3/dataforseo_labs/google/keyword_ideas/live",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[\n  {\n    \"keywords\": {{ JSON.stringify($json.seed_keywords) }},\n    \"location_code\": {{ $json.location_code }},\n    \"language_code\": \"{{ $json.language_code }}\",\n    \"include_serp_info\": true,\n    \"limit\": 200,\n    \"filters\": [\n      [\"keyword_info.search_volume\", \">=\", {{ $json.min_volume }}],\n      \"and\",\n      [\"keyword_properties.keyword_difficulty\", \"<=\", {{ $json.max_kd }}]\n    ],\n    \"order_by\": [\"keyword_info.search_volume,desc\"]\n  }\n]",
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "fullResponse": false,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "DATAFORSEO_CREDENTIAL_ID",
+          "name": "DataForSEO API"
+        }
+      },
+      "notes": "Calls DataForSEO API to get keyword ideas. Requires Header Auth credential with Base64 encoded login:password"
+    },
+    {
+      "id": "check-api-response",
+      "name": "3. Check API Response",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [760, 380],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "status-check",
+              "leftValue": "={{ $json.status_code }}",
+              "rightValue": 20000,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true
+      },
+      "notes": "Validates that DataForSEO API returned success (status_code: 20000)"
+    },
+    {
+      "id": "code-transform-filter",
+      "name": "4. Transform & Calculate Priority",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [980, 280],
+      "parameters": {
+        "language": "javaScript",
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Transform DataForSEO response to Firestore format\n// Priority Score Formula: (volume / 10) - kd + (cpc * 5)\n\nconst response = $input.first().json;\nconst batchId = $('1. Define Seed Keywords').item.json.batch_id;\n\n// Extract items from nested response structure\nconst tasks = response.tasks || [];\nconst result = tasks[0]?.result?.[0] || {};\nconst items = result.items || [];\n\nif (items.length === 0) {\n  return [{ json: { error: 'No keywords returned from API', items_count: 0 } }];\n}\n\nconst keywords = items.map((item, index) => {\n  const volume = item.keyword_info?.search_volume || 0;\n  const kd = item.keyword_properties?.keyword_difficulty || 50;\n  const cpc = item.keyword_info?.cpc || 0;\n  const competition = item.keyword_info?.competition || 0;\n  \n  // Priority Score: (volume / 10) - kd + (cpc * 5)\n  const priority_score = Math.round((volume / 10) - kd + (cpc * 5));\n  \n  // Word count for long-tail filtering\n  const word_count = item.keyword.split(' ').length;\n  \n  return {\n    keyword_id: `kw_${Date.now()}_${index.toString().padStart(3, '0')}`,\n    keyword_text: item.keyword,\n    volume: volume,\n    kd: kd,\n    cpc: parseFloat(cpc.toFixed(2)),\n    priority_score: priority_score,\n    word_count: word_count,\n    competition: parseFloat(competition.toFixed(3)),\n    monthly_searches: item.keyword_info?.monthly_searches || [],\n    serp_features: item.serp_info?.serp_item_types || [],\n    category: 'propiedad_intelectual',\n    source: 'dataforseo',\n    status: 'pendiente',\n    batch_id: batchId,\n    created_at: new Date().toISOString()\n  };\n});\n\n// Filter: word_count >= 3 (long-tail) AND priority_score > 0\nconst filtered = keywords\n  .filter(kw => kw.word_count >= 3 && kw.priority_score > 0)\n  .sort((a, b) => b.priority_score - a.priority_score);\n\n// Return filtered keywords as individual items\nreturn filtered.map(kw => ({ json: kw }));"
+      },
+      "notes": "Filters keywords by: volume >= 100, kd <= 30, words >= 3. Calculates priority_score = (volume/10) - kd + (cpc*5)"
+    },
+    {
+      "id": "error-notification",
+      "name": "API Error - Notify",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [980, 480],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "marketing@carrilloabgd.com",
+        "subject": "[MW3 SUB-K] ERROR: DataForSEO API Failed",
+        "emailType": "text",
+        "message": "=ERROR en SUB-K Keyword Research\n\nFecha: {{ $now.format('yyyy-MM-dd HH:mm') }}\nStatus Code: {{ $json.status_code }}\nMessage: {{ $json.status_message || 'Unknown error' }}\n\nAccion requerida:\n1. Verificar credenciales DataForSEO\n2. Verificar saldo en cuenta DataForSEO\n3. Revisar parametros de la API\n\n---\nMW3 SEO Content Factory - Carrillo Abogados"
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail OAuth2"
+        }
+      },
+      "notes": "Sends error notification if DataForSEO API fails"
+    },
+    {
+      "id": "firestore-save",
+      "name": "5. Save to Firestore",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [1200, 280],
+      "parameters": {
+        "resource": "document",
+        "operation": "create",
+        "projectId": "carrillo-marketing-core",
+        "database": "(default)",
+        "collection": "keywords_pipeline",
+        "columns": "keyword_id,keyword_text,volume,kd,cpc,priority_score,word_count,competition,category,source,status,batch_id,created_at"
+      },
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "AAhdRNGzvsFnYN9O",
+          "name": "Google Firestore"
+        }
+      },
+      "notes": "Saves each keyword to Firestore keywords_pipeline collection"
+    },
+    {
+      "id": "aggregate-results",
+      "name": "6. Aggregate Results",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [1420, 280],
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "saved_keywords",
+        "include": "specifiedFields",
+        "fieldsToInclude": {
+          "fields": [
+            { "fieldName": "keyword_text" },
+            { "fieldName": "priority_score" },
+            { "fieldName": "volume" },
+            { "fieldName": "kd" }
+          ]
+        }
+      },
+      "notes": "Aggregates all saved keywords for summary notification"
+    },
+    {
+      "id": "code-summary",
+      "name": "7. Build Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1640, 280],
+      "parameters": {
+        "language": "javaScript",
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Build summary for email notification\nconst keywords = $input.first().json.saved_keywords || [];\nconst batchId = $('1. Define Seed Keywords').item.json.batch_id;\n\nconst total = keywords.length;\nconst topKeywords = keywords\n  .slice(0, 10)\n  .map((kw, i) => `${i + 1}. ${kw.keyword_text} (Score: ${kw.priority_score}, Vol: ${kw.volume}, KD: ${kw.kd})`)\n  .join('\\n');\n\nconst avgScore = total > 0 \n  ? Math.round(keywords.reduce((sum, kw) => sum + kw.priority_score, 0) / total) \n  : 0;\n\nconst avgVolume = total > 0\n  ? Math.round(keywords.reduce((sum, kw) => sum + kw.volume, 0) / total)\n  : 0;\n\nreturn [{\n  json: {\n    batch_id: batchId,\n    total_keywords: total,\n    avg_priority_score: avgScore,\n    avg_volume: avgVolume,\n    top_10_keywords: topKeywords,\n    execution_date: new Date().toISOString()\n  }\n}];"
+      },
+      "notes": "Builds summary statistics for email notification"
+    },
+    {
+      "id": "gmail-success",
+      "name": "8. Success Notification",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [1860, 280],
+      "parameters": {
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "marketing@carrilloabgd.com",
+        "subject": "=[MW3 SUB-K] {{ $json.total_keywords }} Keywords Identificadas - {{ $json.batch_id }}",
+        "emailType": "text",
+        "message": "=KEYWORD RESEARCH COMPLETADO\n\nBatch: {{ $json.batch_id }}\nFecha: {{ $now.format('yyyy-MM-dd HH:mm') }}\n\n=== RESUMEN ===\nTotal keywords guardadas: {{ $json.total_keywords }}\nPriority Score promedio: {{ $json.avg_priority_score }}\nVolumen promedio: {{ $json.avg_volume }}\n\n=== TOP 10 KEYWORDS ===\n{{ $json.top_10_keywords }}\n\n=== PROXIMO PASO ===\nEstas keywords estan listas para SUB-L (Content Writer).\nEstatus: 'pendiente' en Firestore keywords_pipeline.\n\n---\nMW3 SEO Content Factory - Carrillo Abogados"
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail OAuth2"
+        }
+      },
+      "notes": "Sends success notification with summary to marketing@carrilloabgd.com"
+    }
+  ],
+  "connections": {
+    "Schedule: 1st of Month": {
+      "main": [
+        [
+          {
+            "node": "1. Define Seed Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "1. Define Seed Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1. Define Seed Keywords": {
+      "main": [
+        [
+          {
+            "node": "2. DataForSEO - Keyword Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2. DataForSEO - Keyword Ideas": {
+      "main": [
+        [
+          {
+            "node": "3. Check API Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3. Check API Response": {
+      "main": [
+        [
+          {
+            "node": "4. Transform & Calculate Priority",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "API Error - Notify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4. Transform & Calculate Priority": {
+      "main": [
+        [
+          {
+            "node": "5. Save to Firestore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5. Save to Firestore": {
+      "main": [
+        [
+          {
+            "node": "6. Aggregate Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6. Aggregate Results": {
+      "main": [
+        [
+          {
+            "node": "7. Build Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "7. Build Summary": {
+      "main": [
+        [
+          {
+            "node": "8. Success Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "errorWorkflow": "",
+    "timezone": "America/Bogota"
+  },
+  "staticData": null,
+  "tags": [
+    { "name": "MW3" },
+    { "name": "SEO" },
+    { "name": "keyword-research" },
+    { "name": "production" }
+  ],
+  "triggerCount": 2,
+  "pinData": {},
+  "meta": {
+    "instanceId": "carrilloabgd.app.n8n.cloud",
+    "workflow_version": "1.0.0",
+    "created_date": "2026-01-23",
+    "author": "Juan Jose - Carrillo Abogados"
+  }
+}

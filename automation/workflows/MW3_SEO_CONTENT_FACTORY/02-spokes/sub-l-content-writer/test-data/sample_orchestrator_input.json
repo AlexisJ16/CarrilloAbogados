@@ -1,0 +1,45 @@
+{
+  "description": "Este es el input esperado cuando el Orchestrator v2.0 llama a SUB-L como Tool",
+  "scenarios": [
+    {
+      "name": "Escenario 1: Llamada automática (siguiente keyword pendiente)",
+      "input": {
+        "action": "generate_content",
+        "force_keyword": false
+      },
+      "expected_behavior": "SUB-L obtiene la keyword con mayor priority_score donde status=pendiente"
+    },
+    {
+      "name": "Escenario 2: Llamada con keyword específica",
+      "input": {
+        "action": "generate_content",
+        "keyword_id": "kw_001",
+        "force_keyword": false
+      },
+      "expected_behavior": "SUB-L obtiene la keyword con ID kw_001 si status=pendiente"
+    },
+    {
+      "name": "Escenario 3: Forzar regeneración de keyword en progreso",
+      "input": {
+        "action": "generate_content",
+        "keyword_id": "kw_002",
+        "force_keyword": true
+      },
+      "expected_behavior": "SUB-L obtiene kw_002 aunque status=en_progreso, útil para retry"
+    },
+    {
+      "name": "Escenario 4: No hay keywords disponibles",
+      "input": {
+        "action": "generate_content"
+      },
+      "firestore_state": {
+        "keywords_pipeline": "Todas las keywords tienen status=en_progreso o status=publicado"
+      },
+      "expected_behavior": "Workflow termina con mensaje 'No hay keywords pendientes', no genera error",
+      "expected_output": {
+        "status": "no_keywords",
+        "message": "No hay keywords pendientes para generar contenido"
+      }
+    }
+  ]
+}

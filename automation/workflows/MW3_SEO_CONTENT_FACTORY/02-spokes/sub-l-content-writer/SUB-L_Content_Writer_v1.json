@@ -1,0 +1,764 @@
+{
+  "name": "SUB-L: Content Writer AI (v1.0)",
+  "nodes": [
+    {
+      "id": "execute-workflow-trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [100, 300],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    },
+    {
+      "id": "query-next-keyword",
+      "name": "Query Next Keyword",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [320, 300],
+      "parameters": {
+        "authentication": "googleFirebaseCloudFirestoreOAuth2Api",
+        "resource": "document",
+        "operation": "query",
+        "projectId": "carrillo-marketing-core",
+        "database": "(default)",
+        "query": "={\n  \"from\": [{\"collectionId\": \"keywords_pipeline\"}],\n  \"where\": {\n    \"fieldFilter\": {\n      \"field\": {\"fieldPath\": \"status\"},\n      \"op\": \"EQUAL\",\n      \"value\": {\"stringValue\": \"pendiente\"}\n    }\n  },\n  \"orderBy\": [{\n    \"field\": {\"fieldPath\": \"priority_score\"},\n    \"direction\": \"DESCENDING\"\n  }],\n  \"limit\": 1\n}",
+        "simple": true
+      },
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "AAhdRNGzvsFnYN9O",
+          "name": "Google Firestore account"
+        }
+      }
+    },
+    {
+      "id": "check-keyword-exists",
+      "name": "Check Keyword Exists",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [540, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-keyword-exists",
+              "leftValue": "={{ $json.keyword_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      }
+    },
+    {
+      "id": "no-keywords-end",
+      "name": "No Keywords Available",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [760, 480],
+      "parameters": {}
+    },
+    {
+      "id": "set-variables",
+      "name": "Set Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [760, 300],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "var-keyword-id",
+              "name": "keyword_id",
+              "type": "string",
+              "value": "={{ $json.keyword_id }}"
+            },
+            {
+              "id": "var-keyword-text",
+              "name": "keyword_text",
+              "type": "string",
+              "value": "={{ $json.keyword_text }}"
+            },
+            {
+              "id": "var-volume",
+              "name": "volume",
+              "type": "number",
+              "value": "={{ $json.volume }}"
+            },
+            {
+              "id": "var-kd",
+              "name": "kd",
+              "type": "number",
+              "value": "={{ $json.kd }}"
+            },
+            {
+              "id": "var-category",
+              "name": "category",
+              "type": "string",
+              "value": "={{ $json.category }}"
+            },
+            {
+              "id": "var-workflow-start",
+              "name": "workflow_start",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "includeOtherFields": false
+      }
+    },
+    {
+      "id": "content-generator-agent",
+      "name": "Content Generator Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [980, 300],
+      "parameters": {
+        "promptType": "define",
+        "text": "Genera el articulo completo siguiendo EXACTAMENTE la estructura solicitada.",
+        "hasOutputParser": false,
+        "needsFallback": false,
+        "options": {
+          "systemMessage": "Eres un experto en propiedad intelectual colombiana con 15 anos de experiencia en la Superintendencia de Industria y Comercio (SIC).\n\nTu tarea: Escribe un articulo de blog optimizado para SEO sobre el siguiente tema.\n\nKEYWORD OBJETIVO: {{ $('Set Variables').item.json.keyword_text }}\nCATEGORIA: {{ $('Set Variables').item.json.category }}\nVOLUMEN DE BUSQUEDA: {{ $('Set Variables').item.json.volume }}/mes\n\nREQUISITOS DEL ARTICULO:\n\n1. ESTRUCTURA:\n   - Title (H1): Debe incluir la keyword y el ano actual (2026)\n   - Meta Description: 150-160 caracteres, incluir keyword y CTA\n   - Introduccion: 150-200 palabras\n   - Seccion \"Que es [tema] y por que importa\"\n   - Seccion \"Requisitos\" o \"Pasos a seguir\"\n   - Seccion \"Costos\" (si aplica para el tema)\n   - Seccion \"Errores comunes\"\n   - Seccion \"Preguntas Frecuentes (FAQ)\" con minimo 5 preguntas\n   - Conclusion con CTA: \"Agenda una consultoria gratuita con Carrillo Abogados\"\n\n2. LONGITUD: 2,000-2,500 palabras\n\n3. AUDIENCIA: Duenos de PyMEs tecnologicas en Colombia que necesitan proteger su propiedad intelectual\n\n4. TONO: Profesional pero accesible. Evitar jerga legal excesiva. Explicar conceptos complejos de forma simple.\n\n5. DATOS ESPECIFICOS:\n   - Incluir costos actualizados de tramites en la SIC 2026 (investiga si es necesario)\n   - Mencionar tiempos reales del proceso\n   - Dar ejemplos concretos aplicables a startups colombianas\n   - Referencias a ley colombiana especifica (Ley 23 de 1982, Decision 486, etc)\n\n6. SEO ON-PAGE:\n   - Usar keyword en title, H1, primeros 100 palabras\n   - Distribuir keyword 1-2% del contenido total\n   - Usar variaciones semanticas (registro de marca, proteccion de marca, etc)\n   - Incluir internal links: \"Para mas informacion sobre [tema], consulta nuestro articulo sobre [X]\"\n\n7. NO INCLUIR:\n   - Informacion generica que aplique a cualquier pais\n   - Promesas de resultados garantizados\n   - Lenguaje de venta agresivo\n   - Descuentos o promociones\n\nOUTPUT ESPERADO (formato markdown):\n\n---\nTITLE: [Tu title tag optimizado]\nMETA_DESCRIPTION: [Tu meta description]\nSLUG: [URL slug sin tildes, minusculas]\n---\n\n# [Title H1]\n\n[Contenido del articulo en markdown con ## para H2, ### para H3, etc]\n\n...\n\n## Preguntas Frecuentes (FAQ)\n\n**1. [Pregunta]**\n[Respuesta]\n\n...\n\n## Conclusion\n\n[Conclusion con CTA final]\n\n---\n\nIMPORTANTE:\n- El articulo posiciona a Carrillo Abogados como expertos SIN ser un \"infomercial\"\n- Provee valor real al lector ANTES de pedir accion\n- Toda informacion debe ser factual y actualizada a 2026",
+          "maxIterations": 10,
+          "returnIntermediateSteps": false,
+          "passthroughBinaryImages": true,
+          "enableStreaming": false
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "id": "gemini-chat-model",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [980, 520],
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash-exp",
+        "options": {
+          "temperature": 0.7,
+          "maxOutputTokens": 8000
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "id": "jk2FHcbAC71LuRl2",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "id": "parse-ai-output",
+      "name": "Parse AI Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300],
+      "parameters": {
+        "language": "javaScript",
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Get AI output\nconst aiOutput = $input.first().json.output;\n\n// Extract metadata (between --- markers)\nconst metaRegex = /---\\n([\\s\\S]*?)\\n---/;\nconst metaMatch = aiOutput.match(metaRegex);\nlet title = \"\";\nlet metaDescription = \"\";\nlet slug = \"\";\n\nif (metaMatch) {\n  const metaBlock = metaMatch[1];\n  const titleMatch = metaBlock.match(/TITLE:\\s*(.+)/);\n  const metaMatch2 = metaBlock.match(/META_DESCRIPTION:\\s*(.+)/);\n  const slugMatch = metaBlock.match(/SLUG:\\s*(.+)/);\n\n  title = titleMatch ? titleMatch[1].trim() : \"Sin titulo\";\n  metaDescription = metaMatch2 ? metaMatch2[1].trim() : \"Sin meta description\";\n  slug = slugMatch ? slugMatch[1].trim() : \"sin-slug\";\n}\n\n// Extract content (after metadata block)\nconst contentRegex = /---\\n[\\s\\S]*?\\n---\\n([\\s\\S]+)/;\nconst contentMatch = aiOutput.match(contentRegex);\nconst content = contentMatch ? contentMatch[1].trim() : aiOutput;\n\n// Calculate word count\nconst wordCount = content.split(/\\s+/).filter(word => word.length > 0).length;\n\n// Get keyword data from previous node\nconst keywordData = $('Set Variables').first().json;\n\nreturn [{\n  json: {\n    content_id: `draft_${Date.now()}`,\n    keyword_id: keywordData.keyword_id,\n    title: title,\n    meta_description: metaDescription,\n    slug: slug,\n    content_markdown: content,\n    word_count: wordCount,\n    status: \"pending_revision\",\n    reviewer_notes: \"\",\n    published_url: null,\n    created_at: new Date().toISOString(),\n    approved_at: null,\n    approved_by: null,\n    // Metadata for tracking\n    ai_model: \"gemini-2.0-flash-exp\",\n    generation_metadata: {\n      keyword_text: keywordData.keyword_text,\n      category: keywordData.category,\n      volume: keywordData.volume\n    }\n  }\n}];"
+      }
+    },
+    {
+      "id": "save-draft-firestore",
+      "name": "Save Draft to Firestore",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [1420, 300],
+      "parameters": {
+        "authentication": "googleFirebaseCloudFirestoreOAuth2Api",
+        "resource": "document",
+        "operation": "create",
+        "projectId": "carrillo-marketing-core",
+        "database": "(default)",
+        "collection": "content_drafts",
+        "documentId": "={{ $json.content_id }}",
+        "columns": "content_id, keyword_id, title, meta_description, slug, content_markdown, word_count, status, reviewer_notes, published_url, created_at, approved_at, approved_by, ai_model, generation_metadata",
+        "simple": true
+      },
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "AAhdRNGzvsFnYN9O",
+          "name": "Google Firestore account"
+        }
+      }
+    },
+    {
+      "id": "update-keyword-status",
+      "name": "Update Keyword Status",
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "position": [1640, 300],
+      "parameters": {
+        "authentication": "googleFirebaseCloudFirestoreOAuth2Api",
+        "resource": "document",
+        "operation": "upsert",
+        "projectId": "carrillo-marketing-core",
+        "database": "(default)",
+        "collection": "keywords_pipeline",
+        "updateKey": "keyword_id",
+        "columns": "status, content_id, updated_at"
+      },
+      "credentials": {
+        "googleFirebaseCloudFirestoreOAuth2Api": {
+          "id": "AAhdRNGzvsFnYN9O",
+          "name": "Google Firestore account"
+        }
+      }
+    },
+    {
+      "id": "prepare-update-data",
+      "name": "Prepare Update Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1640, 140],
+      "parameters": {
+        "mode": "manual",
+        "assignments": {
+          "assignments": [
+            {
+              "id": "update-keyword-id",
+              "name": "keyword_id",
+              "type": "string",
+              "value": "={{ $('Set Variables').item.json.keyword_id }}"
+            },
+            {
+              "id": "update-status",
+              "name": "status",
+              "type": "string",
+              "value": "en_progreso"
+            },
+            {
+              "id": "update-content-id",
+              "name": "content_id",
+              "type": "string",
+              "value": "={{ $('Parse AI Output').item.json.content_id }}"
+            },
+            {
+              "id": "update-updated-at",
+              "name": "updated_at",
+              "type": "string",
+              "value": "={{ $now.toISO() }}"
+            }
+          ]
+        },
+        "includeOtherFields": false
+      }
+    },
+    {
+      "id": "log-metrics-sheets",
+      "name": "Log Metrics to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1860, 300],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "mode": "id",
+          "value": "MW3_ContentWriter_Logs"
+        },
+        "sheetName": {
+          "mode": "name",
+          "value": "Logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $now.format('yyyy-MM-dd HH:mm:ss') }}",
+            "Keyword ID": "={{ $('Set Variables').item.json.keyword_id }}",
+            "Keyword Text": "={{ $('Set Variables').item.json.keyword_text }}",
+            "Content ID": "={{ $('Parse AI Output').item.json.content_id }}",
+            "Word Count": "={{ $('Parse AI Output').item.json.word_count }}",
+            "Status": "={{ $('Parse AI Output').item.json.status }}",
+            "Result": "SUCCESS",
+            "Duration (ms)": "={{ $execution.duration }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Keyword ID",
+              "displayName": "Keyword ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Keyword Text",
+              "displayName": "Keyword Text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Content ID",
+              "displayName": "Content ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Word Count",
+              "displayName": "Word Count",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Result",
+              "displayName": "Result",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Duration (ms)",
+              "displayName": "Duration (ms)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "googleSheetsOAuth2",
+          "name": "Google Sheets account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "notify-juan-gmail",
+      "name": "Notify Juan - Success",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [2080, 300],
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "marketing@carrilloabgd.com",
+        "subject": "=Nuevo borrador SEO listo: {{ $('Parse AI Output').item.json.title }}",
+        "emailType": "html",
+        "message": "<h2>Borrador de Contenido Generado</h2>\n\n<p>Hola Juan,</p>\n\n<p>Se ha generado un nuevo borrador de articulo SEO que requiere tu revision.</p>\n\n<h3>Detalles del Articulo:</h3>\n<ul>\n  <li><strong>Keyword:</strong> {{ $('Set Variables').item.json.keyword_text }}</li>\n  <li><strong>Categoria:</strong> {{ $('Set Variables').item.json.category }}</li>\n  <li><strong>Titulo:</strong> {{ $('Parse AI Output').item.json.title }}</li>\n  <li><strong>Palabras:</strong> {{ $('Parse AI Output').item.json.word_count }}</li>\n  <li><strong>Content ID:</strong> {{ $('Parse AI Output').item.json.content_id }}</li>\n</ul>\n\n<h3>Metricas de la Keyword:</h3>\n<ul>\n  <li><strong>Volumen:</strong> {{ $('Set Variables').item.json.volume }}/mes</li>\n  <li><strong>Dificultad:</strong> {{ $('Set Variables').item.json.kd }}</li>\n</ul>\n\n<p>Para revisar el borrador:</p>\n<ol>\n  <li>Abre Firebase Console: <a href=\"https://console.firebase.google.com\">https://console.firebase.google.com</a></li>\n  <li>Ve a Firestore > content_drafts</li>\n  <li>Busca el documento: <code>{{ $('Parse AI Output').item.json.content_id }}</code></li>\n  <li>Revisa el campo <code>content_markdown</code></li>\n</ol>\n\n<p><strong>Proximos pasos:</strong></p>\n<ul>\n  <li>Revisar contenido (factualidad, tono, SEO)</li>\n  <li>Editar si es necesario</li>\n  <li>Cambiar status a \"approved\" para publicar (SUB-M)</li>\n  <li>O cambiar a \"rejected\" con notas en <code>reviewer_notes</code></li>\n</ul>\n\n<p>Tiempo estimado de revision: 10-15 minutos</p>\n\n<hr>\n<p><em>Este email fue generado automaticamente por SUB-L: Content Writer AI (MW#3)</em></p>",
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail OAuth2"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "error-handler",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 520],
+      "parameters": {
+        "language": "javaScript",
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Get error from AI Agent node\nconst error = $input.first().json.error || $input.first().json;\n\n// Try to get keyword data from Set Variables node\nlet keywordData = {};\ntry {\n  keywordData = $('Set Variables').first().json || {};\n} catch (e) {\n  keywordData = {\n    keyword_id: 'unknown',\n    keyword_text: 'unknown'\n  };\n}\n\nreturn [{\n  json: {\n    timestamp: new Date().toISOString(),\n    keyword_id: keywordData.keyword_id || 'unknown',\n    keyword_text: keywordData.keyword_text || 'unknown',\n    error_type: error.name || 'UnknownError',\n    error_message: error.message || JSON.stringify(error),\n    error_stack: error.stack || '',\n    workflow_execution_id: $execution.id,\n    resolution_status: 'pending'\n  }\n}];"
+      }
+    },
+    {
+      "id": "log-error-sheets",
+      "name": "Log Error to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [1420, 520],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "mode": "id",
+          "value": "MW3_ContentWriter_Logs"
+        },
+        "sheetName": {
+          "mode": "name",
+          "value": "Errors"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $json.timestamp }}",
+            "Keyword ID": "={{ $json.keyword_id }}",
+            "Keyword Text": "={{ $json.keyword_text }}",
+            "Error Type": "={{ $json.error_type }}",
+            "Error Message": "={{ $json.error_message }}",
+            "Execution ID": "={{ $json.workflow_execution_id }}",
+            "Resolution Status": "={{ $json.resolution_status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Keyword ID",
+              "displayName": "Keyword ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Keyword Text",
+              "displayName": "Keyword Text",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Error Type",
+              "displayName": "Error Type",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Error Message",
+              "displayName": "Error Message",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Execution ID",
+              "displayName": "Execution ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Resolution Status",
+              "displayName": "Resolution Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "googleSheetsOAuth2",
+          "name": "Google Sheets account"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "id": "notify-error-gmail",
+      "name": "Notify Juan - Error",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [1640, 520],
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "message",
+        "operation": "send",
+        "sendTo": "marketing@carrilloabgd.com",
+        "subject": "=ERROR: SUB-L Content Writer - {{ $json.keyword_text }}",
+        "emailType": "html",
+        "message": "<h2 style=\"color: #d32f2f;\">ERROR EN GENERACION DE CONTENIDO</h2>\n\n<p>Hola Juan,</p>\n\n<p>Ha ocurrido un error al generar contenido para una keyword.</p>\n\n<h3>Detalles del Error:</h3>\n<ul>\n  <li><strong>Keyword:</strong> {{ $json.keyword_text }}</li>\n  <li><strong>Keyword ID:</strong> {{ $json.keyword_id }}</li>\n  <li><strong>Error Type:</strong> {{ $json.error_type }}</li>\n  <li><strong>Error Message:</strong> {{ $json.error_message }}</li>\n  <li><strong>Execution ID:</strong> {{ $json.workflow_execution_id }}</li>\n</ul>\n\n<h3>Accion Requerida:</h3>\n<ol>\n  <li>Revisar el workflow en n8n Cloud</li>\n  <li>Verificar que la keyword tenga todos los campos requeridos en Firestore</li>\n  <li>Ejecutar manualmente si es necesario</li>\n</ol>\n\n<p><a href=\"https://carrilloabgd.app.n8n.cloud\">Abrir n8n Cloud</a></p>\n\n<hr>\n<p><em>Este email fue generado automaticamente por SUB-L: Content Writer AI (MW#3)</em></p>",
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail OAuth2"
+        }
+      },
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Query Next Keyword",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Next Keyword": {
+      "main": [
+        [
+          {
+            "node": "Check Keyword Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Keyword Exists": {
+      "main": [
+        [
+          {
+            "node": "Set Variables",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Keywords Available",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variables": {
+      "main": [
+        [
+          {
+            "node": "Content Generator Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Content Generator Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Content Generator Agent": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Output",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Output": {
+      "main": [
+        [
+          {
+            "node": "Save Draft to Firestore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Draft to Firestore": {
+      "main": [
+        [
+          {
+            "node": "Prepare Update Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Update Data": {
+      "main": [
+        [
+          {
+            "node": "Update Keyword Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Keyword Status": {
+      "main": [
+        [
+          {
+            "node": "Log Metrics to Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Metrics to Sheets": {
+      "main": [
+        [
+          {
+            "node": "Notify Juan - Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Log Error to Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Error to Sheets": {
+      "main": [
+        [
+          {
+            "node": "Notify Juan - Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "executionTimeout": 300,
+    "timezone": "America/Bogota"
+  },
+  "tags": [
+    {
+      "name": "MW3",
+      "createdAt": "2026-01-23T00:00:00.000Z",
+      "updatedAt": "2026-01-23T00:00:00.000Z"
+    },
+    {
+      "name": "SEO",
+      "createdAt": "2026-01-23T00:00:00.000Z",
+      "updatedAt": "2026-01-23T00:00:00.000Z"
+    },
+    {
+      "name": "Content",
+      "createdAt": "2026-01-23T00:00:00.000Z",
+      "updatedAt": "2026-01-23T00:00:00.000Z"
+    }
+  ],
+  "meta": {
+    "templateId": "custom",
+    "templateCredsSetupCompleted": false,
+    "instanceId": "carrillo-marketing-automation"
+  },
+  "staticData": null,
+  "pinData": {}
+}
