@@ -1,6 +1,6 @@
 # Guía de Migración a Organización GitHub + Multi-AI Workflow
 
-**Última Actualización**: 16 de Febrero, 2026  
+**Última Actualización**: 16 de Febrero, 2026 - v2  
 **Fase Proyecto**: FASE 14 - Infraestructura Depurada  
 **Organización**: [github.com/Carrillo-Abogados](https://github.com/Carrillo-Abogados)  
 **Autor**: Alexis  
@@ -38,7 +38,7 @@ especializadas.
 | `backend-services` | `api-gateway/`, `*-service/`, `pom.xml` | Claude Code |
 | `frontend` | `frontend/` | Copilot |
 | `infrastructure` | `helm-charts/`, `infrastructure/`, `k8s-manifests/`, `monitoring/`, `compose.yml`, `scripts/`, `.github/workflows/` | Gemini CLI |
-| `automation` | `automation/` | Gemini CLI + Juan José |
+| `automation` | `automation/` | Sin IA asignada (Juan José) |
 
 ### 2.2 Repositorios de Soporte
 
@@ -114,8 +114,7 @@ especializadas.
 
 ### 3.3 Gemini CLI (Terminal, Pro)
 
-**Repo principal**: `infrastructure`  
-**Repo secundario**: `automation`
+**Repo principal**: `infrastructure`
 
 **Fortalezas aprovechadas:**
 
@@ -142,9 +141,28 @@ especializadas.
 
 ---
 
-### 3.4 Contexto por Repositorio
+### 3.4 Repo `automation` — Sin IA Asignada
 
-Cada repo tendrá su archivo de contexto específico:
+El repositorio `automation` es **completamente independiente** y
+**no tiene IA asignada**. Es gestionado por **Juan José Gómez**
+(Marketing Tech) quien ya tiene configurado su propio entorno de
+trabajo personalizado dentro del repositorio.
+
+**Reglas:**
+
+- No se debe incluir ningún archivo de contexto IA
+  (`CLAUDE.md`, `GEMINI.md`, `copilot-instructions.md`)
+- No se debe asignar ninguna IA para operar sobre este repo
+- Juan José tiene autonomía total sobre su estructura y herramientas
+- La sincronización con el backend se realiza vía webhooks n8n
+- Cualquier cambio que afecte la integración se comunica mediante
+  Issues en el repo `docs`
+
+---
+
+### 3.5 Contexto por Repositorio
+
+Cada repo con IA asignada tendrá su archivo de contexto específico:
 
 ```
 backend-services/
@@ -160,8 +178,7 @@ infrastructure/
 └── CLAUDE.md                        ← Backup
 
 automation/
-├── GEMINI.md                        ← Primario
-└── .claude/                         ← Ya existente
+└── (sin archivos de IA — entorno propio de Juan José)
 
 docs/
 ├── CLAUDE.md                        ← Estado maestro
@@ -170,9 +187,64 @@ docs/
 
 ---
 
-## 4. Protocolo de Sincronización
+## 4. Instrucción General: Apropiación del Repositorio por la IA
 
-### 4.1 Fuente de Verdad
+> **INSTRUCCIÓN OBLIGATORIA PARA CADA IA ASIGNADA**
+>
+> Al recibir acceso a tu repositorio asignado, debes ejecutar las
+> siguientes acciones **antes de cualquier trabajo de desarrollo**:
+>
+> ### Paso 1: Preparar tu entorno de trabajo
+>
+> 1. **Crear tu archivo de contexto primario** (`CLAUDE.md`,
+>    `GEMINI.md` o `.github/copilot-instructions.md` según
+>     corresponda) con:
+>    - Descripción del repositorio y su propósito
+>    - Stack tecnológico específico del repo
+>    - Convenciones de código y estructura de paquetes
+>    - Comandos frecuentes (build, test, deploy)
+>    - Variables de entorno requeridas
+>    - Dependencias y versiones exactas
+>
+> 2. **Crear archivos de soporte**:
+>    - `.gitignore` adaptado al stack del repo
+>    - `README.md` con guía de setup rápido
+>    - `.editorconfig` con reglas de formato
+>    - `.github/copilot-instructions.md` (backup, si no es primario)
+>
+> 3. **Configurar CI/CD**:
+>    - Pipeline de GitHub Actions (`.github/workflows/`)
+>    - Dependabot config (`.github/dependabot.yml`)
+>    - Branch protection rules documentadas
+>
+> ### Paso 2: Validar el entorno
+>
+> 1. Ejecutar build completo y verificar que pasa
+> 2. Ejecutar tests y documentar cobertura
+> 3. Verificar que el CI/CD pipeline corre exitosamente
+> 4. Documentar cualquier issue encontrado como GitHub Issue
+>
+> ### Paso 3: Declarar ownership
+>
+> 1. Crear archivo `CODEOWNERS` con el equipo responsable
+> 2. Actualizar `docs/PROYECTO_ESTADO.md` con el estado del repo
+> 3. Confirmar en un Issue del repo `docs`:
+>    `✅ Repo [nombre] configurado y validado por [IA]`
+>
+> **La IA es la responsable total de la calidad, organización y
+> mantenimiento de su repositorio. Debe tratarlo como propio y
+> mantenerlo limpio, documentado y funcional en todo momento.**
+
+> ⚠️ **EXCEPCIÓN**: El repo `automation` NO tiene IA asignada.
+> Su entorno ya está configurado por Juan José Gómez.
+> Ninguna IA debe modificar ese repositorio salvo indicación
+> explícita del administrador del proyecto.
+
+---
+
+## 5. Protocolo de Sincronización
+
+### 5.1 Fuente de Verdad
 
 ```
 ┌──────────────────────────────────────────┐
@@ -190,7 +262,7 @@ docs/
   └────────┘ └────────┘ └─────────────┘
 ```
 
-### 4.2 Antes de Trabajar con Cualquier IA
+### 5.2 Antes de Trabajar con Cualquier IA
 
 ```bash
 # 1. Actualizar repo docs primero
@@ -203,7 +275,7 @@ cat PROYECTO_ESTADO.md
 cd ../backend-services/ && git pull origin dev
 ```
 
-### 4.3 Cuando Se Modifica una Interfaz
+### 5.3 Cuando Se Modifica una Interfaz
 
 1. La IA hace el cambio en su repo
 2. Actualiza contrato OpenAPI en `docs/api-contracts/`
@@ -211,7 +283,7 @@ cd ../backend-services/ && git pull origin dev
    `Sync: endpoint X changed in backend-services`
 4. Las IAs de otros repos consumen el Issue
 
-### 4.4 Al Finalizar una Sesión
+### 5.4 Al Finalizar una Sesión
 
 1. Commit + Push en el repo de trabajo
 2. Actualizar `docs/PROYECTO_ESTADO.md`
@@ -219,7 +291,7 @@ cd ../backend-services/ && git pull origin dev
 
 ---
 
-## 5. Plan de Migración (Paso a Paso)
+## 6. Plan de Migración (Paso a Paso)
 
 ### Fase 1: Pre-Migración (Completada)
 
@@ -322,16 +394,25 @@ git remote add origin \
 git push origin --all --tags
 ```
 
-### Fase 4: Configuración Post-Migración
+### Fase 4: Apropiación por IA (Ver Sección 4)
 
-**Por cada repo:**
+**Cada IA ejecuta la instrucción de la Sección 4 en su repo:**
 
-- [ ] Crear archivo de contexto IA (CLAUDE/GEMINI.md)
-- [ ] Crear `.github/copilot-instructions.md` específico
-- [ ] Configurar CI/CD pipeline independiente
-- [ ] Configurar GitHub Container Registry
-- [ ] Configurar Dependabot
-- [ ] Crear `dev` como default branch
+- [ ] Claude Code: `backend-services` configurado y validado
+- [ ] Copilot: `frontend` configurado y validado
+- [ ] Gemini CLI: `infrastructure` configurado y validado
+- [ ] `automation`: verificar que Juan José confirma su entorno OK
+
+### Fase 5: Configuración Post-Migración
+
+**Por cada repo (excepto automation):**
+
+- [ ] Archivo de contexto IA creado y completo
+- [ ] `.github/copilot-instructions.md` específico
+- [ ] CI/CD pipeline independiente funcionando
+- [ ] GitHub Container Registry configurado
+- [ ] Dependabot habilitado
+- [ ] `dev` como default branch
 
 **A nivel de organización:**
 
@@ -340,19 +421,20 @@ git push origin --all --tags
 - [ ] Crear profile README (.github repo)
 - [ ] Configurar Snyk/SonarCloud por repo
 
-### Fase 5: Validación Post-Migración
+### Fase 6: Validación Post-Migración
 
 - [ ] `mvn clean verify` exitoso en `backend-services`
 - [ ] `npm run build` exitoso en `frontend`
 - [ ] CI/CD pipeline verde en cada repo
 - [ ] Docker Compose multi-repo funcional
-- [ ] Cada IA trabaja con su contexto
-- [ ] Issue cruzado de prueba
+- [ ] Cada IA trabaja con su contexto propio
+- [ ] `automation` funcional con entorno de Juan José
+- [ ] Issue cruzado de prueba exitoso
 - [ ] Monorepo original archivado
 
 ---
 
-## 6. Docker Compose Multi-Repo
+## 7. Docker Compose Multi-Repo
 
 Repos clonados como hermanos en carpeta local:
 
@@ -377,7 +459,7 @@ services:
 
 ---
 
-## 7. Riesgos y Mitigación
+## 8. Riesgos y Mitigación
 
 | Riesgo | Prob. | Impacto | Mitigación |
 |--------|-------|---------|------------|
@@ -390,7 +472,7 @@ services:
 
 ---
 
-## 8. Rollback Plan
+## 9. Rollback Plan
 
 1. Monorepo original NO se elimina (se archiva)
 2. Repos nuevos pueden borrarse y recrearse
@@ -399,33 +481,38 @@ services:
 
 ---
 
-## 9. Consideraciones para automation/
+## 10. Consideraciones para automation/
 
-La carpeta `automation/` es gestionada por **Juan José Gómez**
-(Marketing Tech). Reglas:
+El repositorio `automation` es **100% independiente** y gestionado
+por **Juan José Gómez** (Marketing Tech).
 
-1. **No modificar** archivos de automation en la migración
-2. El repo tendrá su propio GEMINI.md
-3. Juan José mantiene acceso directo al repo
-4. PDFs duplicados se mantienen (ref del equipo marketing)
-5. Sincronización con backend via webhooks n8n
+**Reglas inquebrantables:**
+
+1. **No incluir** archivos de contexto IA (CLAUDE.md, GEMINI.md, etc.)
+2. **No asignar** ninguna IA para operar sobre este repo
+3. **No modificar** ningún archivo durante la migración
+4. Juan José mantiene acceso directo y autonomía completa
+5. Su entorno de trabajo personalizado ya existe y se respeta
+6. Sincronización con backend exclusivamente via webhooks n8n
+7. Cambios cross-repo se comunican mediante Issues en `docs`
 
 ---
 
-## 10. Timeline Estimado
+## 11. Timeline Estimado
 
 | Fase | Duración | Prerequisito |
 |------|----------|-------------|
 | Pre-Migración | Completada | - |
 | Crear Repos | 30 min | Acceso admin org |
 | git filter-repo | 1-2 horas | Repos creados |
-| Config Post-Migración | 2-3 horas | Repos poblados |
+| Apropiación por IA | 1-2 horas | Repos poblados |
+| Config Post-Migración | 2-3 horas | IAs configuradas |
 | Validación | 1-2 horas | Config completa |
 | **Total** | **~1 día** | - |
 
 ---
 
-## 11. Referencias
+## 12. Referencias
 
 - [PROYECTO_ESTADO.md](../PROYECTO_ESTADO.md)
 - [CLAUDE.md](../CLAUDE.md)
