@@ -1,10 +1,12 @@
 # 📊 ESTADO DEL PROYECTO - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 21 de Enero, 2026 - 10:00 COT  
-**Estado General**: ✅ **FASE 12: SISTEMA 100% FUNCIONAL** | Documentación Organizada + Listo para Merge ✅  
-**Rama Actual**: `dev` (preparado para merge a `main`)  
-**Último Commit**: Documentación consolidada y organizada  
-**Siguiente Fase**: 🚀 **DESARROLLO CONTINUO - Próximas Features**
+**Última Actualización**: 14 de Febrero, 2026 - 09:00 COT  
+**Estado General**: 🚀 **FASE 14: INFRAESTRUCTURA DEPURADA** | Limpieza profunda + Docker Jib ✅  
+**Rama Actual**: `dev`  
+**Último Cambio**: Auditoría exhaustiva de código, configuraciones y Docker (14 Feb 2026)  
+**Siguiente Fase**: 🎯 **DESARROLLO DE NUEVAS FEATURES**
+
+> ⚠️ **NOTA IMPORTANTE**: Toda la documentación de n8n está en `/automation/` (fuente de verdad única)
 
 ---
 
@@ -31,17 +33,6 @@ Plataforma cloud-native de gestión legal empresarial con **8 microservicios** S
 | Clientes nuevos/año | ~15 | 100+ | 6.7x |
 
 ---
-
-## 📅 HISTORIAL DE COMMITS RECIENTES
-
-```
-9860476 Merge dev: CI/CD pipeline fully fixed (permissions + CodeQL v4)
-a3980ff fix(ci): add packages write permission for Docker push to ghcr.io
-f0f0594 fix(ci): add security-events permissions and upgrade CodeQL to v4
-4594738 fix(tests): correct XSS test assertions for REST API behavior
-1d66c29 style: fix markdown linting in GITHUB_SECRETS.md
-1501377 fix(ci): add mvnw chmod, JaCoCo coverage profile, and secrets docs
-```
 
 ---
 
@@ -115,6 +106,17 @@ f0f0594 fix(ci): add security-events permissions and upgrade CodeQL to v4
 | **Login Authentication Fixed (Password Cliente123!)** | **14 Ene 2026** | - | ✅ |
 | **3 Roles Validated (Cliente, Abogado, Admin)** | **14 Ene 2026** | - | ✅ |
 | **FASE 12: Sistema 100% Funcional para Demo** | **14 Ene 2026** | - | ✅ |
+| **FASE 13: Merge dev → main + Sincronización** | **21 Ene 2026** | `c61b3c3` | ✅ |
+| **Docker Jib Migration (8 servicios)** | **14 Feb 2026** | - | ✅ |
+| **.dockerignore + Resource Limits + JVM Tuning** | **14 Feb 2026** | - | ✅ |
+| **Security: BOOT-INF/ + Credentials Removed** | **14 Feb 2026** | - | ✅ |
+| **user-service Eliminado (deprecado)** | **14 Feb 2026** | - | ✅ |
+| **Config Consolidation (.yml/.yaml dedup)** | **14 Feb 2026** | - | ✅ |
+| **Flyway/DDL Fix (payment/doc/calendar)** | **14 Feb 2026** | - | ✅ |
+| **Springdoc → dependencyManagement** | **14 Feb 2026** | - | ✅ |
+| **notification-service: validation dep added** | **14 Feb 2026** | - | ✅ |
+| **Docs Archived (5 MDs → docs/archive/)** | **14 Feb 2026** | - | ✅ |
+| **FASE 14: Infraestructura Depurada (11/11 healthy)** | **14 Feb 2026** | - | ✅ |
 | MVP Empresarial | 27 Mar 2026 | - | 📋 Planificado |
 
 ---
@@ -409,13 +411,21 @@ CarrilloAbogados/
 
 ## 🔄 INTEGRACIÓN n8n (Marketing Automation)
 
+> ⚠️ **FUENTE DE VERDAD**: Toda la documentación de n8n está en `/automation/`
+
 ### 3 MEGA-WORKFLOWS Planificados
 
 | MEGA-WORKFLOW | Propósito | Workflows | Estado |
 |---------------|-----------|-----------|--------|
-| MW#1: Captura | Lead → Cliente (< 1 min) | 7 | 28% |
+| MW#1: Captura | Lead → Cliente (< 1 min) | 7 | ✅ 95% |
 | MW#2: Retención | Cliente → Recompra | 5 | Q2 2026 |
 | MW#3: SEO | Tráfico → Lead | 5 | Q2-Q3 2026 |
+
+### Documentación Completa
+- **README Principal**: [/automation/README.md](automation/README.md)
+- **Índice Completo**: [/automation/docs/00_INDEX.md](automation/docs/00_INDEX.md)
+- **Protocolos Agentes**: [/automation/docs/01_AGENT_PROTOCOLS.md](automation/docs/01_AGENT_PROTOCOLS.md)
+- **Status MW1**: [/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md)
 
 ### Eventos NATS Implementados
 - `lead.capturado` → Trigger MW#1 scoring
@@ -562,7 +572,7 @@ git push origin dev
 
 ---
 
-*Documento actualizado - 5 de Enero 2026*
+*Documento actualizado - 16 de Febrero 2026*
 
 - **Cliente**: Carrillo Abogados, Cali, Colombia
 - **Email Admin**: ingenieria@carrilloabgd.com

@@ -1,5 +1,7 @@
 # Helm Charts - Carrillo Abogados Legal Tech
 
+**Última Actualización**: 14 de Febrero, 2026
+
 Helm Charts para despliegue de la plataforma legal tech en Kubernetes.
 
 ## Estructura

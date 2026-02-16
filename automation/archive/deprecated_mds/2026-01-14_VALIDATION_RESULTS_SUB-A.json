@@ -1,0 +1,196 @@
+{
+  "validation_date": "2026-01-21T00:00:00Z",
+  "workflow_id": "RHj1TAqBazxNFriJ",
+  "workflow_name": "SUB-A: Lead Intake (v5 - AI POWERED - NATIVE)",
+  "tester": "QA Specialist Agent",
+  "overall_status": "REJECTED",
+  "summary": {
+    "structural_validation": "PASS",
+    "critical_bugs": 1,
+    "warnings": 0,
+    "tests_executed": 0,
+    "tests_passed": 0,
+    "tests_failed": 0,
+    "tests_blocked": 6
+  },
+  "workflow_info": {
+    "id": "RHj1TAqBazxNFriJ",
+    "name": "SUB-A: Lead Intake (v5 - AI POWERED - NATIVE)",
+    "active": false,
+    "nodes_count": 17,
+    "created_at": "2026-01-08T04:54:46.618Z",
+    "updated_at": "2026-01-14T18:23:03.752Z",
+    "invocation_type": "Tool (called by Orchestrator v3.0 AI Agent)"
+  },
+  "structural_validation": {
+    "status": "PASS",
+    "nodes_validated": 17,
+    "connections_validated": "OK",
+    "expressions_validated": "OK",
+    "credentials": [
+      {
+        "service": "Google Gemini API",
+        "credential_id": "jk2FHcbAC71LuRl2",
+        "status": "configured"
+      },
+      {
+        "service": "Gmail OAuth2",
+        "credential_id": "l2mMgEf8YUV7HHlK",
+        "status": "configured"
+      },
+      {
+        "service": "Google Firestore",
+        "credential_id": "AAhdRNGzvsFnYN9O",
+        "status": "configured"
+      }
+    ]
+  },
+  "critical_bugs": [
+    {
+      "bug_id": "BUG-001",
+      "title": "Nodo de Mapeo NO Parsea Campo query del AI Agent",
+      "severity": "CRITICAL",
+      "location": "Node: 0. Mapear Input del Orquestador1",
+      "reproducible": true,
+      "description": "El código del nodo de mapeo NO incluye caso para parsear el campo 'query' que envía el AI Agent. Esto causa que TODOS los campos del lead se extraigan vacíos.",
+      "impact": "Workflow completamente no funcional cuando se invoca desde Orquestador v3.0",
+      "current_behavior": "Todos los campos extraídos como strings vacíos: nombre='', email='', empresa=''",
+      "expected_behavior": "Debe parsear raw.query como JSON string y extraer los datos del lead",
+      "fix_available": true,
+      "fix_location": "automation/workflows/MW1_LEAD_LIFECYCLE/02-spokes/sub-a-lead-intake/FIXED_MAPEAR_INPUT.js",
+      "blocks_testing": true,
+      "affected_nodes": [
+        "0. Mapear Input del Orquestador1",
+        "Validar Email",
+        "AI: Analizar Lead + Calcular Score",
+        "Guardar Lead en Firestore",
+        "Enviar Email Respuesta",
+        "Callback: Lead Scored",
+        "Callback: Hot Lead Alert"
+      ]
+    }
+  ],
+  "warnings": [],
+  "tests_functional": {
+    "status": "BLOCKED",
+    "reason": "BUG-001 blocks all functional testing",
+    "test_cases": [
+      {
+        "id": "TC-001",
+        "name": "Lead válido HOT (score >= 70)",
+        "status": "BLOCKED",
+        "reason": "Mapeo input broken"
+      },
+      {
+        "id": "TC-002",
+        "name": "Lead válido WARM (score 40-69)",
+        "status": "BLOCKED",
+        "reason": "Mapeo input broken"
+      },
+      {
+        "id": "TC-003",
+        "name": "Lead válido COLD (score < 40)",
+        "status": "BLOCKED",
+        "reason": "Mapeo input broken"
+      },
+      {
+        "id": "TC-004",
+        "name": "Email inválido",
+        "status": "BLOCKED",
+        "reason": "Mapeo input broken"
+      },
+      {
+        "id": "TC-005",
+        "name": "Campos faltantes",
+        "status": "BLOCKED",
+        "reason": "Mapeo input broken"
+      },
+      {
+        "id": "TC-006",
+        "name": "Detección de spam",
+        "status": "BLOCKED",
+        "reason": "Mapeo input broken"
+      }
+    ]
+  },
+  "error_handling": {
+    "status": "NOT_VALIDATED",
+    "reason": "Cannot validate error handling until BUG-001 is fixed",
+    "nodes_to_validate": [
+      "Validar Email",
+      "AI: Analizar Lead + Calcular Score",
+      "Guardar Lead en Firestore",
+      "Callback: Lead Scored",
+      "Callback: Hot Lead Alert",
+      "Enviar Email Respuesta"
+    ]
+  },
+  "integrations": {
+    "status": "NOT_TESTED",
+    "reason": "Cannot test integrations until BUG-001 is fixed",
+    "configured_services": [
+      {
+        "service": "Google Gemini API",
+        "status": "configured",
+        "tested": false
+      },
+      {
+        "service": "Gmail OAuth2",
+        "status": "configured",
+        "tested": false
+      },
+      {
+        "service": "Google Firestore",
+        "status": "configured",
+        "tested": false
+      }
+    ]
+  },
+  "recent_executions": {
+    "last_execution": "2026-01-14T18:24:00Z",
+    "lead_name": "Andres Felipe Gutierrez",
+    "lead_email": "alexisj4@gmail.com",
+    "result": "FAILED",
+    "failure_reason": "Nodo mapeo extrajo campos vacíos",
+    "evidence": "Documentado en ANALISIS_ERROR_MAPEO.md"
+  },
+  "decision": {
+    "status": "REJECTED",
+    "reason": "Critical bug BUG-001 blocks all workflow functionality",
+    "priority": "P0 - IMMEDIATE",
+    "blocks_production": true
+  },
+  "next_steps": [
+    {
+      "priority": "P0",
+      "action": "Apply fix to node '0. Mapear Input del Orquestador1'",
+      "responsible": "n8n Engineer",
+      "estimated_time": "5 minutes",
+      "file": "FIXED_MAPEAR_INPUT.js"
+    },
+    {
+      "priority": "P0",
+      "action": "Manual test from Orchestrator v3.0",
+      "responsible": "n8n Engineer",
+      "estimated_time": "2 minutes",
+      "validation": "Check logs show '✅ Parseado desde campo query'"
+    },
+    {
+      "priority": "P0",
+      "action": "E2E test: Webhook → Orchestrator → SUB-A → Backend",
+      "responsible": "n8n Engineer",
+      "estimated_time": "5 minutes"
+    },
+    {
+      "priority": "P1",
+      "action": "Re-run QA validation (full test suite)",
+      "responsible": "QA Specialist Agent",
+      "estimated_time": "15 minutes"
+    }
+  ],
+  "handoff": {
+    "to": "n8n Engineer",
+    "message": "Critical bug prevents workflow from functioning. Fix available and documented. Apply fix, test, and notify QA for re-validation.",
+    "fix_guide": "automation/workflows/MW1_LEAD_LIFECYCLE/02-spokes/sub-a-lead-intake/GUIA_APLICAR_FIX.md"
+  }
+}

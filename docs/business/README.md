@@ -1,6 +1,6 @@
 # 📚 Documentación de Negocio - Carrillo Abogados
 
-**Última Actualización**: 2 de Enero, 2026  
+**Última Actualización**: 16 de Febrero, 2026  
 **Responsable**: Business Product Agent  
 **Estado**: ✅ Organizado
 
@@ -36,23 +36,7 @@ Estos documentos son la **fuente de verdad** para el desarrollo del MVP:
 
 ## 📂 Subcarpetas
 
-### 📊 Marketing-N8N/
-
-Documentación técnica de los 3 MEGA-WORKFLOWS de automatización de marketing:
-
-| Archivo | Descripción |
-|---------|-------------|
-| [00_ARQUITECTURA_GENERAL.md](./Marketing-N8N/00_ARQUITECTURA_GENERAL.md) | Visión general de los 17 workflows |
-| [01_MEGA_WORKFLOW_1_CAPTURA.md](./Marketing-N8N/01_MEGA_WORKFLOW_1_CAPTURA.md) | MW#1: Lead → Cliente (7 workflows, 108 nodos) |
-| [02_MEGA_WORKFLOW_2_RETENCION.md](./Marketing-N8N/02_MEGA_WORKFLOW_2_RETENCION.md) | MW#2: Cliente → Recompra (5 workflows) |
-| [03_MEGA_WORKFLOW_3_SEO.md](./Marketing-N8N/03_MEGA_WORKFLOW_3_SEO.md) | MW#3: Fábrica de Contenido (5 workflows) |
-
-**Archivos de referencia** (PDFs):
-- Framework estratégico ABGD
-- DOFA, Objetivos, Mercado
-- Presupuesto Marketing 2026
-
-### 📄 Documentación_Proporcionada/
+### � Documentacion_Proporcionada/
 
 Documentos originales entregados por el cliente (Carrillo ABGD):
 
@@ -63,10 +47,11 @@ Documentos originales entregados por el cliente (Carrillo ABGD):
 | Estimación de clientes... | Proyecciones financieras |
 | Importancia de la página... | Justificación del proyecto |
 | Planeación empresarial... | Contexto de la industria |
+| DOFA, OBJ, MERCADO.pdf | Análisis DOFA y mercado |
+| Framework estratégico ABGD.pdf | Marco estratégico del bufete |
+| PRESUPUESTO_MARKETING_2026... | Presupuesto marketing |
 
-### 📁 Automatizaciones/
-
-*Carpeta vacía* - Reservada para documentación de automatizaciones específicas.
+> **Nota**: La documentación detallada de n8n/marketing está en `/automation/` (fuente de verdad).
 
 ---
 
@@ -87,7 +72,7 @@ Para entender completamente el proyecto:
    │
 6. ESTRATEGIA_AUTOMATIZACION.md ← Cómo integramos con n8n
    │
-7. Marketing-N8N/*         ← Detalles de cada workflow
+7. /automation/docs/*      ← Detalles de cada workflow (ver /automation/)
 ```
 
 ---

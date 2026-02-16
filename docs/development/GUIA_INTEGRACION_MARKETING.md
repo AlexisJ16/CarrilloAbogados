@@ -1,10 +1,12 @@
 # 🔗 Guía de Integración para Desarrollador de Marketing
 
-**Versión**: 1.2  
-**Fecha**: 14 de Enero, 2026  
+**Versión**: 2.0  
+**Fecha**: 21 de Enero, 2026  
 **Autor**: Equipo de Desarrollo  
 **Para**: Juan José Gómez Agudelo (Marketing Tech)  
-**Fase Proyecto**: FASE 10 - Autenticación Frontend Completa
+**Fase Proyecto**: FASE 14 - Infraestructura Depurada
+
+> ⚠️ **ACTUALIZACIÓN IMPORTANTE**: Toda la documentación y workflows de n8n ahora se encuentran en `/automation/` (fuente de verdad única)
 
 ---
 
@@ -16,22 +18,33 @@ Este documento explica **cómo funciona la integración** entre el repositorio d
 
 ## 🏗️ Arquitectura de Repositorios
 
-### Dos Repositorios, Un Proyecto
+### Arquitectura Actual
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           FLUJO DE TRABAJO                                   │
+│                      ESTRUCTURA DEL PROYECTO                                │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
-│   MarketingTech (tu repo)          CarrilloAbogados (repo principal)       │
-│   ┌─────────────────────┐          ┌─────────────────────────────┐         │
-│   │ 🎨 Workflows n8n    │ ──────▶  │ docs/n8n-workflows/         │         │
-│   │ 📄 Documentación    │  SYNC    │ docs/business/Marketing-N8N/ │         │
-│   │ 🤖 Agentes Claude   │ ──────▶  │ .github/copilot-agents/     │         │
-│   └─────────────────────┘          └─────────────────────────────┘         │
+│   CarrilloAbogados (repo principal)                                        │
+│   ┌─────────────────────────────────────────────────────────┐              │
+│   │ /automation/ (FUENTE DE VERDAD)                        │              │
+│   │  ├── README.md               ← Punto de entrada        │              │
+│   │  ├── docs/                                             │              │
+│   │  │   ├── 00_INDEX.md         ← Índice completo         │              │
+│   │  │   ├── 01_AGENT_PROTOCOLS.md                         │              │
+│   │  │   ├── business/           ← Docs estratégicos       │              │
+│   │  │   └── technical/          ← Specs técnicas          │
+│   │  │       ├── arquitectura/   ← 3 MEGA-WORKFLOWS        │              │
+│   │  │       ├── n8n_mcp_guide.md                          │              │
+│   │  │       └── NODE_STANDARDS.md                         │              │
+│   │  └── workflows/                                        │              │
+│   │      └── MW1_LEAD_LIFECYCLE/                           │              │
+│   │          ├── STATUS.md       ← Estado actual           │              │
+│   │          ├── 01-orchestrator/                          │              │
+│   │          └── 02-spokes/                                │              │
+│   └─────────────────────────────────────────────────────────┘              │
 │          │                                     │                            │
-│          │ (rama: Alexis)                     │ (ramas: main, dev,         │
-│          │                                     │         automation)        │
+│          │ (rama: automation)                  │ (ramas: main, dev)         │
 │          ▼                                     ▼                            │
 │   ┌─────────────────────┐          ┌─────────────────────────────┐         │
 │   │ n8n Cloud           │◀──API──▶│ n8n-integration-service     │         │
@@ -41,14 +54,17 @@ Este documento explica **cómo funciona la integración** entre el repositorio d
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Dónde Está Tu Contenido en CarrilloAbogados
+### Ubicación de Workflows y Documentación
 
-| Tu Archivo en MarketingTech | Ubicación en CarrilloAbogados |
-|----------------------------|-------------------------------|
-| `02-context/technical/arquitectura/*.md` | `docs/business/Marketing-N8N/` |
-| `04-workflows/MEGA_WORKFLOW_1_LEAD_LIFECYCLE/` | `docs/n8n-workflows/mega-workflow-1/` |
-| `03-agents/AGENTS.md` | `docs/n8n-workflows/agents/` |
-| `02-context/technical/n8n_mcp_guide.md` | `docs/n8n-workflows/` |
+> **✅ TODO EN `/automation/`** - No hay más `docs/n8n-workflows/`
+
+| Tipo de Contenido | Ubicación en `/automation/` |
+|-------------------|----------------------------|
+| **Workflows JSON** | `workflows/MW#/01-orchestrator/` o `02-spokes/sub-X/` |
+| **Documentación Arquitectura** | `docs/technical/arquitectura/` |
+| **Guías Técnicas** | `docs/technical/` |
+| **Docs de Negocio** | `docs/business/` |
+| **Status y Progress** | `workflows/MW#/STATUS.md` |
 
 ---
 
@@ -65,43 +81,62 @@ Este documento explica **cómo funciona la integración** entre el repositorio d
 ### Tu Flujo de Trabajo Recomendado
 
 ```bash
-# 1. Clonar el repositorio principal
+# 1. Clonar el repositorio principal (si aún no lo has hecho)
 git clone https://github.com/AlexisJ16/CarrilloAbogados.git
 cd CarrilloAbogados
 
 # 2. Cambiar a la rama automation
 git checkout automation
 
-# 3. Sincronizar con los últimos cambios de dev
-git pull origin dev
+# 3. Sincronizar con los últimos cambios
+git pull origin automation
 
-# 4. Trabajar en tus cambios de n8n/marketing
-# ... editar archivos ...
+# 4. Trabajar SOLO en la carpeta /automation/
+# ✅ MODIFICAR: automation/workflows/
+# ✅ MODIFICAR: automation/docs/
+# ⛔ NO MODIFICAR: docs/ (documentación principal del proyecto)
 
 # 5. Hacer commit
-git add .
+git add automation/
 git commit -m "feat(n8n): descripción de tu cambio"
 
 # 6. Push a automation
 git push origin automation
 
-# 7. Crear PR: automation → dev (Alexis revisa e integra)
+# 7. Notificar a Alexis para merge automation → dev
 ```
 
 ---
 
-## 📁 Estructura de Carpetas para Marketing
+## 📁 Estructura de `/automation/` para Marketing
 
 ### Dónde Agregar Nuevos Workflows
 
 ```
-docs/n8n-workflows/
-├── README.md                          ← Documentación principal
-├── n8n_mcp_guide.md                   ← Tu guía de MCP
-├── NODE_STANDARDS.md                  ← Estándares de nodos
+automation/
+├── README.md                          ← 📖 PUNTO DE ENTRADA
+├── docs/
+│   ├── 00_INDEX.md                   ← Índice completo
+│   ├── 01_AGENT_PROTOCOLS.md         ← LECTURA OBLIGATORIA
+│   ├── business/                     ← Documentación estratégica
+│   └── technical/
+│       ├── arquitectura/             ← 3 MEGA-WORKFLOWS
+│       │   ├── 00_ARQUITECTURA_GENERAL.md
+│       │   ├── 01_MEGA_WORKFLOW_1_CAPTURA.md
+│       │   ├── 02_MEGA_WORKFLOW_2_RETENCION.md
+│       │   └── 03_MEGA_WORKFLOW_3_SEO.md
+│       ├── n8n_mcp_guide.md          ← Guía MCP
+│       └── NODE_STANDARDS.md         ← Estándares de nodos
 │
-├── agents/                            ← Agentes especializados
-│   └── AGENTS.md                      ← Índice de 5 agentes
+└── workflows/
+    └── MW1_LEAD_LIFECYCLE/           ← ⚙️ WORKFLOWS ACTIVOS
+        ├── STATUS.md                 ← Estado actual
+        ├── 01-orchestrator/          ← Workflow principal
+        │   └── ORQUESTADOR_V3.json
+        └── 02-spokes/                ← Sub-workflows
+            └── sub-a-lead-intake/
+                ├── SUB-A_Lead_Intake_v5.json
+                └── testing/
 │
 ├── mega-workflow-1/                   ← MW#1: Lead Lifecycle ✅
 │   ├── STATUS.md                      ← Estado actual
@@ -231,17 +266,24 @@ curl -X POST http://localhost:8800/n8n-integration-service/webhook/lead-scored \
 
 ---
 
-## 🔄 Sincronización de Contenido
+## 🔄 Cómo Contribuir a `/automation/`
 
-### Cuándo Sincronizar MarketingTech → CarrilloAbogados
+### Reglas de Oro
 
-1. **Nuevo workflow JSON** creado/actualizado en n8n Cloud
-2. **Nueva documentación** de arquitectura o diseño
-3. **Cambios en los agentes** Claude especializados
+1. ✅ **SÍ MODIFICAR**: Todo dentro de `/automation/`
+2. ⛔ **NO MODIFICAR**: `docs/`, `client-service/`, etc. (código principal)
+3. 📖 **LEER SIEMPRE**: `/automation/docs/01_AGENT_PROTOCOLS.md` antes de cada sesión
+4. 📝 **DOCUMENTAR**: Cada workflow debe tener STATUS.md actualizado
 
-### Cómo Sincronizar
+### Cuándo Crear/Actualizar Contenido
 
-**Opción A: Copiar manualmente**
+| Acción | Ubicación | Ejemplo |
+|--------|-----------|---------|
+| **Nuevo Workflow JSON** | `automation/workflows/MW#/02-spokes/` | SUB-B, SUB-C, etc. |
+| **Actualizar Status** | `automation/workflows/MW#/STATUS.md` | Progreso, testing, issues |
+| **Nueva Arquitectura** | `automation/docs/technical/arquitectura/` | MW2, MW3 |
+| **Guías Técnicas** | `automation/docs/technical/` | Nuevos estándares |
+| **Docs Negocio** | `automation/docs/business/` | Estrategia marketing |
 
 ```powershell
 # Desde PowerShell en Windows
@@ -344,24 +386,34 @@ $json.contact ? $json.contact.email : ''
 ### Esta Semana
 
 1. [ ] Clonar `CarrilloAbogados` y checkout `automation`
-2. [ ] Revisar `docs/n8n-workflows/` y validar que todo esté correcto
-3. [ ] Probar backend local con `docker-compose up -d`
+2. [ ] Leer `/automation/docs/01_AGENT_PROTOCOLS.md` (OBLIGATORIO)
+3. [ ] Revisar `/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md`
+4. [ ] Probar backend local con `docker-compose up -d`
 
 ### Próxima Semana
 
-4. [ ] Crear estructura para MW#2 (Retención)
+4. [ ] Crear estructura para MW#2 (Retención) en `/automation/workflows/`
 5. [ ] Documentar nuevos sub-workflows
-6. [ ] Sincronizar cambios via PR
+6. [ ] Notificar a Alexis para merge automation → dev
 
 ---
 
 ## 📚 Documentos Relacionados
 
+### En `/automation/` (tu área de trabajo)
+- [automation/README.md](../../automation/README.md) - Punto de entrada
+- [automation/docs/00_INDEX.md](../../automation/docs/00_INDEX.md) - Índice completo
+- [automation/docs/01_AGENT_PROTOCOLS.md](../../automation/docs/01_AGENT_PROTOCOLS.md) - **LECTURA OBLIGATORIA**
+- [automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](../../automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md) - Estado MW1
+
+### En el proyecto principal
 - [README Principal del Proyecto](../../README.md)
 - [CLAUDE.md - Contexto para IA](../../CLAUDE.md)
-- [Branch Sync Agent](../../.github/copilot-agents/branch-sync-agent.md)
-- [Documentación n8n Workflows](../n8n-workflows/README.md)
 - [Estrategia de Automatización](../business/ESTRATEGIA_AUTOMATIZACION.md)
+
+---
+
+**Última Actualización**: 14 de Febrero, 2026 - 09:00 COT
 
 ---
 

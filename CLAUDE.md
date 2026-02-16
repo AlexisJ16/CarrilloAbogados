@@ -1,9 +1,9 @@
 # CLAUDE.md - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 21 de Enero, 2026 - 10:00 COT  
-**Fase Actual**: FASE 12 - Sistema 100% Funcional  
-**Ramas**: `dev` (listo para merge a `main`)  
-**Último Test**: Login funcionando ✅ + Documentación organizada (21 Ene 2026)
+**Última Actualización**: 14 de Febrero, 2026 - 09:00 COT  
+**Fase Actual**: FASE 14 - Infraestructura Depurada  
+**Rama Activa**: `dev`  
+**Último Test**: 11/11 contenedores healthy + 9/9 HTTP endpoints UP (14 Feb 2026)
 
 ---
 
@@ -16,7 +16,7 @@ Plataforma cloud-native de gestión legal con **8 microservicios Spring Boot** p
 
 ### Fechas Clave
 - **MVP Empresarial**: 27 Marzo 2026
-- **Estado Actual**: CI/CD Pipeline + Autenticación Frontend funcionando
+- **Estado Actual**: CI/CD Pipeline + Docker Jib + Autenticación Frontend funcionando
 
 ---
 
@@ -81,9 +81,44 @@ wsl bash -c "minikube start"
 | notification-service | 8700 | Email/SMS notifications | ✅ 80% |
 | n8n-integration-service | 8800 | Bridge con n8n Cloud | ✅ 95% |
 
-### Servicios Deprecados
-- ~~user-service~~ → Migrado a client-service
+### Servicios Deprecados (Eliminados)
+- ~~user-service~~ → Migrado a client-service (código eliminado en FASE 14)
 - ~~order-service~~ → Nunca existió (template e-commerce)
+
+---
+
+## 🐳 DOCKER & JIB (FASE 14 - Feb 2026)
+
+### Estrategia de Build
+- **Google Jib 3.4.4**: Build sin Docker daemon, configurado en parent POM `pluginManagement`
+- **Formato**: Docker (NO OCI) — compatibilidad con `docker load`
+- **Base Image**: `eclipse-temurin:21-jre-alpine`
+- **JVM Flags**: `-XX:+UseZGC -XX:MaxRAMPercentage=75.0`
+
+### Pipeline de Build Local
+```powershell
+# 1. Build Maven + Jib tarballs
+mvn clean package jib:buildTar -DskipTests -T 1C
+
+# 2. Cargar imágenes en Docker
+$services = @("api-gateway","client-service","case-service","payment-service","document-service","calendar-service","notification-service","n8n-integration-service")
+foreach ($svc in $services) { docker load -i ".\$svc\target\jib-image.tar" }
+
+# 3. Levantar stack
+docker compose up -d --pull never
+```
+
+### Imágenes Locales
+```
+carrilloabogados/api-gateway:dev         (~428MB)
+carrilloabogados/client-service:dev      (~505MB)
+carrilloabogados/case-service:dev        (~484MB)
+carrilloabogados/payment-service:dev     (~474MB)
+carrilloabogados/document-service:dev    (~474MB)
+carrilloabogados/calendar-service:dev    (~471MB)
+carrilloabogados/notification-service:dev (~475MB)
+carrilloabogados/n8n-integration-service:dev (~499MB)
+```
 
 ---
 
@@ -99,6 +134,7 @@ wsl bash -c "minikube start"
 | **Mensajería** | NATS (dev/staging) | 2.10.22 |
 | | Google Pub/Sub (prod) | - |
 | **Container** | Docker | 29.x |
+| | Google Jib | 3.4.4 |
 | **Orquestación** | Kubernetes | 1.34.0 |
 | **Local** | Minikube | Latest |
 
@@ -239,6 +275,8 @@ docker-compose -f docker-compose.observability.yml up -d
 
 ## 🤖 INTEGRACIÓN n8n (Marketing Automation) - PRODUCTION-READY ✅
 
+> ⚠️ **FUENTE DE VERDAD**: Toda la documentación de n8n está en `/automation/`
+
 ### n8n Cloud
 | Campo | Valor |
 |-------|-------|
@@ -246,6 +284,12 @@ docker-compose -f docker-compose.observability.yml up -d
 | **Versión** | v1.120.4 |
 | **Webhook** | `/webhook-test/lead-events-v3` |
 | **Estado** | ✅ Workflow activo en producción |
+
+### Documentación Completa
+- **README Principal**: [/automation/README.md](automation/README.md)
+- **Índice Completo**: [/automation/docs/00_INDEX.md](automation/docs/00_INDEX.md)
+- **Protocolos Agentes**: [/automation/docs/01_AGENT_PROTOCOLS.md](automation/docs/01_AGENT_PROTOCOLS.md)
+- **Status MW1**: [/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md)
 
 ### Test Exitoso (14 Ene 2026 - 13:20 COT)
 - Lead ID: `61ccdfec-4d47-4cc2-9c83-787d3665c06e`
@@ -293,7 +337,7 @@ COLD: <40 pts → Respuesta genérica
 CarrilloAbogados/
 ├── .github/
 │   ├── workflows/          # CI/CD pipelines
-│   ├── copilot-agents/     # 16 agentes especializados
+│   ├── copilot-agents/     # Agentes especializados
 │   └── copilot-instructions.md
 ├── api-gateway/            # Spring Cloud Gateway
 ├── client-service/         # Lead API + Clientes
@@ -303,12 +347,18 @@ CarrilloAbogados/
 ├── calendar-service/       # Google Calendar
 ├── notification-service/   # Email/SMS
 ├── n8n-integration-service/# Bridge n8n
-├── frontend/               # Next.js 14
+├── frontend/               # Next.js 16
 ├── helm-charts/            # Kubernetes Helm
 ├── infrastructure/         # Terraform, K8s manifests
 ├── monitoring/             # Grafana LGTM stack
-├── docs/                   # Documentación
-├── scripts/                # Shell scripts
+├── automation/             # n8n workflows docs
+├── docs/
+│   ├── architecture/       # ADRs
+│   ├── business/           # Modelo de negocio
+│   ├── development/        # Guías desarrollo
+│   ├── operations/         # Guías deploy
+│   └── archive/            # Docs históricos
+├── scripts/                # Shell + PS1 scripts
 ├── compose.yml             # Docker Compose
 ├── CLAUDE.md               # Este archivo
 └── PROYECTO_ESTADO.md      # Estado detallado
@@ -327,8 +377,8 @@ main (producción) ← staging (pre-prod) ← dev (desarrollo)
 - **staging**: Pre-producción (futuro)
 
 ### Ramas Actuales
-- `dev`: commit `482de04` (desarrollo activo)
-- `main`: commit `9860476` (última sincronización)
+- `dev`: Rama activa (FASE 14 - Infraestructura Depurada)
+- `main`: Producción (pendiente merge desde dev)
 
 ---
 

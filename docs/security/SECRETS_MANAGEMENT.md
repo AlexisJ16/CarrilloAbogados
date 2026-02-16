@@ -1,6 +1,6 @@
 # 🔐 Secrets Management - Carrillo Abogados
 
-**Última Actualización**: 14 de Enero, 2026
+**Última Actualización**: 16 de Febrero, 2026
 
 ---
 

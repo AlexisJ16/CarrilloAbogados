@@ -1,5 +1,7 @@
 # Kubernetes Manifests - Carrillo Abogados
 
+**Última Actualización**: 14 de Febrero, 2026
+
 Manifiestos base de Kubernetes para la plataforma legal tech.
 
 ## Estructura

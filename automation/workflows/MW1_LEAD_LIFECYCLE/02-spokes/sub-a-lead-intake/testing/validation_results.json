@@ -1,0 +1,442 @@
+{
+  "workflow_id": "RHj1TAqBazxNFriJ",
+  "workflow_name": "SUB-A: Lead Intake (v5 - AI POWERED - NATIVE)",
+  "validation_date": "2026-01-21T00:00:00.000Z",
+  "validator": "QA Specialist Agent",
+  "version": "v5",
+  "status": "APPROVED_WITH_WARNINGS",
+
+  "summary": {
+    "total_tests": 5,
+    "tests_passed": 3,
+    "tests_failed": 2,
+    "pass_rate": "60%",
+    "critical_errors": 1,
+    "warnings": 4,
+    "suggestions": 4
+  },
+
+  "structural_validation": {
+    "nodes_count": 17,
+    "nodes_validated": true,
+    "connections_validated": true,
+    "expressions_validated": "pending_mcp",
+    "architecture": "Spoke (Event-Driven)",
+    "trigger_type": "When Executed by Another Workflow",
+    "errors": [
+      {
+        "id": "BUG-001",
+        "severity": "CRITICAL",
+        "title": "Bug Crítico en Nodo Mapear Input",
+        "node": "0. Mapear Input del Orquestador1",
+        "status": "RESOLVED",
+        "description": "Código no buscaba datos en campo 'query' del AI Agent",
+        "solution": "Agregado caso prioritario para parsear raw.query como JSON string",
+        "file_reference": "FIXED_MAPEAR_INPUT.js",
+        "requires_test": true
+      }
+    ],
+    "warnings": [
+      {
+        "id": "WARNING-004",
+        "severity": "LOW",
+        "title": "typeVersions Deprecados",
+        "affected_nodes": [
+          {"name": "If Node", "current": "2", "recommended": "2.3"},
+          {"name": "Gmail", "current": "2.1", "recommended": "2.2"},
+          {"name": "Gmail", "current": "2.1", "recommended": "2.2"},
+          {"name": "Notificar Error", "current": "2.1", "recommended": "2.2"}
+        ],
+        "action": "Click 'Update' in n8n UI banners",
+        "blocking": false
+      }
+    ]
+  },
+
+  "functional_tests": [
+    {
+      "test_id": "TEST-001",
+      "name": "Lead Válido con AI Agent (v3.0)",
+      "status": "PENDING_RETEST",
+      "description": "Validar parseo de datos desde campo 'query'",
+      "input": {
+        "query": "{\"timestamp\":\"2026-01-14T18:24:44.489Z\",\"payload\":{\"nombre\":\"Andres Felipe\",\"email\":\"alexisj4@gmail.com\"}}"
+      },
+      "expected": {
+        "status": "success",
+        "nombre": "Andres Felipe",
+        "email": "alexisj4@gmail.com",
+        "score": ">=50"
+      },
+      "actual_before_fix": {
+        "status": "error",
+        "nombre": "",
+        "email": "",
+        "reason": "Datos no parseados"
+      },
+      "actual_after_fix": "PENDING_VERIFICATION",
+      "priority": "P0"
+    },
+    {
+      "test_id": "TEST-002",
+      "name": "Lead HOT (Score >= 70)",
+      "status": "PASSED",
+      "description": "Validar scoring alto y notificación",
+      "input": {
+        "nombre": "Laura Martinez",
+        "email": "laura.martinez@innovatech.com",
+        "cargo": "CEO",
+        "servicio_interes": "Registro de marca"
+      },
+      "expected": {
+        "score": ">=70",
+        "categoria": "HOT",
+        "email_notificacion": true,
+        "callback_hot": true
+      },
+      "actual": {
+        "score": 95,
+        "categoria": "HOT",
+        "email_notificacion": true,
+        "callback_hot": true
+      },
+      "execution_date": "2026-01-11",
+      "priority": "P0"
+    },
+    {
+      "test_id": "TEST-003",
+      "name": "Email Inválido",
+      "status": "FAILED",
+      "description": "Validar manejo de emails inválidos",
+      "input": {
+        "nombre": "Test User",
+        "email": "invalid-email",
+        "empresa": "Test Corp"
+      },
+      "expected": {
+        "status": "error",
+        "error_message": "Email inválido"
+      },
+      "actual": {
+        "status": "unexpected_error",
+        "error_message": "Invalid email address (item 0)",
+        "problem": "Rechaza emails válidos como alexisj4a@gmail.com"
+      },
+      "issue_id": "BUG-002",
+      "priority": "P0"
+    },
+    {
+      "test_id": "TEST-004",
+      "name": "Campos Faltantes",
+      "status": "PENDING_TEST",
+      "description": "Validar detección de campos requeridos",
+      "input": {
+        "email": "test@example.com"
+      },
+      "expected": {
+        "status": "error",
+        "error_message": "Campo requerido: nombre"
+      },
+      "actual": "PENDING",
+      "priority": "P1"
+    },
+    {
+      "test_id": "TEST-005",
+      "name": "Callbacks Backend",
+      "status": "PASSED",
+      "description": "Validar envío de callbacks",
+      "input": {
+        "score": 95,
+        "categoria": "HOT"
+      },
+      "expected": {
+        "callback_lead_scored": true,
+        "callback_hot_lead": true
+      },
+      "actual": {
+        "callback_lead_scored": {
+          "url": "https://eoc4ipe73sd9y75.m.pipedream.net",
+          "status": "received",
+          "payload": "complete_with_ai_analysis"
+        },
+        "callback_hot_lead": {
+          "url": "https://eoyvly7sjxiim05.m.pipedream.net",
+          "status": "received",
+          "payload": "complete_with_notified_at"
+        }
+      },
+      "test_date": "2026-01-11",
+      "priority": "P0"
+    }
+  ],
+
+  "error_handling": {
+    "error_handler_configured": true,
+    "error_handler_nodes": 3,
+    "error_handler_flow": "Error Trigger -> Preparar Error -> Notificar Error",
+    "webhook_response_mode": "N/A (triggered by Orchestrator)",
+    "firestore_continue_on_fail": true,
+    "ai_scoring_error_output": true,
+    "gmail_retry_logic": "Configured in OAuth2 credentials",
+    "http_callbacks_error_handling": "onError: continueRegularOutput",
+    "tests": [
+      {
+        "name": "Email Inválido",
+        "status": "FAILED_UNEXPECTED",
+        "problem": "Validación demasiado estricta"
+      },
+      {
+        "name": "API Externa Caída (Gemini)",
+        "status": "PENDING_TEST"
+      },
+      {
+        "name": "Firestore No Disponible",
+        "status": "PENDING_TEST"
+      }
+    ]
+  },
+
+  "integrations": {
+    "google_firestore": {
+      "status": "OK",
+      "credential_id": "AAhdRNGzvsFnYN9O",
+      "collection": "leads",
+      "write_permissions": "OK",
+      "test_write_success": true,
+      "nurturing_fields_added": true,
+      "nurturing_fields": [
+        "nurturing_status",
+        "lead_captured_at",
+        "emails_sent",
+        "last_email_sent",
+        "last_email_position"
+      ]
+    },
+    "google_gemini": {
+      "status": "OK",
+      "credential_id": "jk2FHcbAC71LuRl2",
+      "model": "Google Gemini 2.5-pro",
+      "rate_limits": "15 RPM - No issues observed",
+      "test_scoring_success": true,
+      "response_time": "~2-3 seconds",
+      "response_time_severity": "ACCEPTABLE"
+    },
+    "gmail": {
+      "status": "WARNING",
+      "credential_id": "l2mMgEf8YUV7HHlK",
+      "from_address": "marketing@carrilloabgd.com",
+      "template_works": true,
+      "test_email_sent": true,
+      "issue": "Validación de email demasiado estricta"
+    }
+  },
+
+  "performance": {
+    "latency_total": "38.143 seconds",
+    "latency_breakdown": {
+      "ai_agent_orchestrator": "2-3 seconds",
+      "sub_a_processing": "35 seconds",
+      "gemini_scoring": "2-3 seconds",
+      "firestore_write": "0.5 seconds",
+      "gmail_if_hot": "1-2 seconds",
+      "callbacks": "0.5 seconds each"
+    },
+    "bottlenecks": [
+      {
+        "component": "Gemini API",
+        "latency": "2.5 seconds",
+        "severity": "LOW",
+        "justification": "Required for accurate scoring",
+        "optimization_priority": "LOW"
+      },
+      {
+        "component": "Total Latency",
+        "latency": "38 seconds",
+        "severity": "MEDIUM",
+        "problem": "User waiting for webhook response",
+        "recommendation": "Implement asynchronous processing",
+        "optimization_priority": "MEDIUM"
+      }
+    ]
+  },
+
+  "critical_issues": [
+    {
+      "id": "BUG-001",
+      "severity": "CRITICAL",
+      "status": "RESOLVED",
+      "title": "Bug Nodo Mapear Input",
+      "node": "0. Mapear Input del Orquestador1",
+      "problem": "No buscaba datos en campo 'query'",
+      "solution": "Código corregido en FIXED_MAPEAR_INPUT.js",
+      "requires_test": true
+    },
+    {
+      "id": "BUG-002",
+      "severity": "CRITICAL",
+      "status": "OPEN",
+      "title": "Validación de Email Demasiado Estricta",
+      "node": "Unknown (validation node)",
+      "problem": "Rechaza emails válidos como alexisj4a@gmail.com",
+      "impact": "Real leads fail, AI Agent exhausts iterations",
+      "evidence": "STATUS.md lines 982-994, error 'Invalid email address (item 0)'",
+      "action_required": "Identify exact node, adjust regex/validation logic",
+      "owner": "Engineer",
+      "estimated_time": "30 minutes"
+    }
+  ],
+
+  "warnings": [
+    {
+      "id": "WARNING-001",
+      "severity": "HIGH",
+      "status": "RESOLVED",
+      "title": "Bug Nodo Mapear Input (FIX APLICADO)",
+      "recommendation": "Execute E2E test to confirm fix works"
+    },
+    {
+      "id": "WARNING-002",
+      "severity": "MEDIUM",
+      "title": "Latency Alta (38 segundos)",
+      "problem": "38s is slow for webhook response",
+      "impact": "Possible timeouts in client",
+      "recommendation": "Consider asynchronous processing"
+    },
+    {
+      "id": "WARNING-003",
+      "severity": "HIGH",
+      "title": "Backend Enviando a Webhook Incorrecto",
+      "location": "Backend N8nCloudConfig.java",
+      "problem": "Sends to /webhook/lead-events (v1.0) instead of /webhook/lead-events-v3 (v3.0)",
+      "impact": "Orchestrator v3.0 doesn't receive traffic, SUB-A executes without AI Agent",
+      "status": "PENDING_CORRECTION",
+      "reference": "STATUS.md lines 666-676"
+    },
+    {
+      "id": "WARNING-004",
+      "severity": "LOW",
+      "title": "typeVersions Deprecados",
+      "affected_nodes": 4,
+      "recommendation": "Update with click in UI banners"
+    }
+  ],
+
+  "suggestions": [
+    {
+      "id": "SUGG-001",
+      "title": "Agregar logging estructurado",
+      "description": "Use console.log() with consistent prefixes, log input/output of critical nodes",
+      "priority": "MEDIUM"
+    },
+    {
+      "id": "SUGG-002",
+      "title": "Implementar idempotencia",
+      "description": "Verify if lead_id already exists in Firestore before processing",
+      "priority": "HIGH"
+    },
+    {
+      "id": "SUGG-003",
+      "title": "Mejorar observabilidad callbacks",
+      "description": "Log callback responses in Google Sheets, detect if backend doesn't respond 200 OK",
+      "priority": "MEDIUM"
+    },
+    {
+      "id": "SUGG-004",
+      "title": "Optimizar AI Scoring",
+      "description": "Cache scores of similar messages (vector similarity), reduce latency from 2.5s to <1s",
+      "priority": "LOW"
+    }
+  ],
+
+  "next_steps": {
+    "p0_critical": [
+      {
+        "step": 1,
+        "title": "Corregir Bug Validación Email",
+        "actions": [
+          "Identificar nodo exacto con validación",
+          "Ajustar regex/lógica",
+          "Test con múltiples formatos de email"
+        ],
+        "owner": "Engineer",
+        "estimated_time": "30 minutes"
+      },
+      {
+        "step": 2,
+        "title": "Corregir Webhook Backend",
+        "actions": [
+          "Actualizar N8nCloudConfig.java: /webhook/lead-events-v3",
+          "Rebuild + restart n8n-integration-service",
+          "Test E2E desde formulario web"
+        ],
+        "owner": "Backend Dev",
+        "estimated_time": "15 minutes"
+      },
+      {
+        "step": 3,
+        "title": "Test E2E Post-Fix Mapeo",
+        "actions": [
+          "Ejecutar test con payload AI Agent",
+          "Verificar logs 'Parseado desde campo query'",
+          "Validar datos extraídos correctamente"
+        ],
+        "owner": "QA Specialist",
+        "estimated_time": "15 minutes"
+      }
+    ],
+    "p1_high_priority": [
+      {
+        "step": 4,
+        "title": "Resolver Warnings typeVersions",
+        "actions": [
+          "Actualizar 4 nodos en n8n UI"
+        ],
+        "owner": "Engineer",
+        "estimated_time": "10 minutes"
+      },
+      {
+        "step": 5,
+        "title": "Configurar Variables de Entorno",
+        "actions": [
+          "BACKEND_URL en n8n Settings",
+          "Dev Tunnel para callbacks públicos"
+        ],
+        "owner": "DevOps",
+        "estimated_time": "30 minutes"
+      }
+    ],
+    "p2_improvements": [
+      {
+        "step": 6,
+        "title": "Implementar Sugerencias",
+        "actions": [
+          "Logging estructurado",
+          "Idempotencia con Firestore",
+          "Observabilidad callbacks"
+        ],
+        "owner": "Optimizer",
+        "estimated_time": "2-3 hours"
+      }
+    ]
+  },
+
+  "decision": {
+    "status": "APPROVED_WITH_WARNINGS",
+    "reasoning": "Workflow is functionally complete but has 2 critical blockers that must be resolved before production",
+    "critical_blockers": [
+      "Bug validación email (rechaza emails válidos)",
+      "Backend webhook URL (envía a v1.0 en lugar de v3.0)"
+    ],
+    "approved_aspects": [
+      "Bug nodo mapeo corregido (pending test)",
+      "Callbacks backend implementados",
+      "Error handling robusto",
+      "Integraciones funcionando (Firestore, Gemini, Gmail)",
+      "Campos nurturing agregados"
+    ],
+    "ready_for_production": false,
+    "ready_for_optimization": false,
+    "next_agent": "Engineer",
+    "signature": "QA Specialist Agent - Aprobado con blockers críticos - Requiere correcciones P0"
+  }
+}

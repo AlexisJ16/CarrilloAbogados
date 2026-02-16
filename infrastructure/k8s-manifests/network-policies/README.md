@@ -1,5 +1,7 @@
 # Network Policies
 
+**Última Actualización**: 14 de Febrero, 2026
+
 Políticas de red para segmentar comunicación entre servicios.
 
 ## Políticas
@@ -28,5 +30,5 @@ kubectl describe networkpolicy api-gateway-network-policy -n carrillo-dev
 ```bash
 # Probar conectividad desde pod
 kubectl run test-pod --rm -it --image=busybox -n carrillo-dev -- sh
-wget -O- http://user-service.carrillo-dev.svc.cluster.local:8700/actuator/health
+wget -O- http://client-service.carrillo-dev.svc.cluster.local:8200/actuator/health
 ```

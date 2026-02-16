@@ -1,8 +1,8 @@
 # 📚 Índice Maestro de Documentación
 
 **Proyecto**: Carrillo Abogados Legal Tech Platform  
-**Última Actualización**: 14 de Enero, 2026  
-**Estado**: ✅ FASE 10 - Autenticación Frontend Completa
+**Última Actualización**: 16 de Febrero, 2026  
+**Estado**: ✅ FASE 14 - Infraestructura Depurada
 
 ---
 
@@ -10,12 +10,15 @@
 
 ```text
 docs/
-├── 💼 business/         → Documentación de negocio
-├── 🏗️ architecture/     → Decisiones arquitectónicas
+├── � archive/          → Documentos históricos
+├── 🏗️ architecture/     → ADRs y decisiones arquitectónicas
+├── 💼 business/         → Modelo de negocio, PDFs del cliente
 ├── 💻 development/      → Guías de desarrollo
 ├── ⚙️ operations/       → Deployment y operaciones
 ├── 🔒 security/         → Políticas de seguridad
-└── 🔄 n8n-workflows/    → Documentación técnica n8n
+└── 🚀 MIGRATION_GUIDE_ORG.md → Guía migración a org
+
+⚠️ NOTA: Documentación n8n → /automation/ (fuente de verdad)
 ```
 
 ---
@@ -34,11 +37,6 @@ docs/
 | [MVP_ROADMAP.md](business/MVP_ROADMAP.md) | Roadmap hacia MVP (27 Marzo 2026) | ✅ |
 | [ESTRATEGIA_AUTOMATIZACION.md](business/ESTRATEGIA_AUTOMATIZACION.md) | Integración plataforma ↔ n8n (3 workflows) | ✅ |
 
-### Subcarpetas
-
-- `Marketing-N8N/` - Documentación de arquitectura de automatizaciones n8n
-- `Documentación_Proporcionada/` - Archivos originales del cliente (briefs)
-
 ---
 
 ## 🏗️ ARCHITECTURE (Arquitectura)
@@ -50,7 +48,6 @@ Decisiones de arquitectura y diseño técnico.
 | [ARCHITECTURE.md](architecture/ARCHITECTURE.md) | Arquitectura general del sistema | ✅ |
 | [ADR-005-database-strategy.md](architecture/ADR-005-database-strategy.md) | Estrategia de base de datos compartida | ✅ |
 | [ADR-006-kubernetes-local-strategy.md](architecture/ADR-006-kubernetes-local-strategy.md) | Estrategia Kubernetes local (Minikube) | ✅ |
-| [INTEGRACION_N8N.md](architecture/INTEGRACION_N8N.md) | Arquitectura de integración Portal ↔ n8n | ✅ |
 
 ---
 
@@ -60,7 +57,6 @@ Guías y estándares de desarrollo.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
-| [ROADMAP.md](development/ROADMAP.md) | Roadmap técnico hacia MVP | ✅ |
 | [NEXT_FEATURES.md](development/NEXT_FEATURES.md) | Próximos desarrollos priorizados | ✅ |
 | [TEST_USERS.md](development/TEST_USERS.md) | Usuarios de prueba E2E | ✅ |
 | [SESSION_CONTEXT.md](development/SESSION_CONTEXT.md) | Contexto entre sesiones de desarrollo | ✅ |
@@ -75,10 +71,12 @@ Guías de despliegue y operaciones.
 
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
+| [OPS_README.md](operations/OPS_README.md) | Guía DevOps completa | ✅ |
 | [DEPLOY_GCP.md](operations/DEPLOY_GCP.md) | Guía de deploy a GCP Cloud Run | ✅ |
-| [OPERATIONS.md](operations/OPERATIONS.md) | Guía de operaciones Kubernetes | ✅ |
+| [DEPLOYMENT.md](operations/DEPLOYMENT.md) | Guía deploy HostGator + GCP | ✅ |
 | [OBSERVABILITY_GUIDE.md](operations/OBSERVABILITY_GUIDE.md) | Guía del stack Grafana LGTM | ✅ |
 | [GITHUB_SECRETS.md](operations/GITHUB_SECRETS.md) | Configuración de secrets GitHub | ✅ |
+| [GITHUB_SECRETS_TEMPLATE.md](operations/GITHUB_SECRETS_TEMPLATE.md) | Template de secrets | ✅ |
 | [DEPLOYMENT_CHECKLIST.md](operations/DEPLOYMENT_CHECKLIST.md) | Checklist de deployment | ✅ |
 
 ---
@@ -90,21 +88,49 @@ Políticas y configuraciones de seguridad.
 | Documento | Descripción | Estado |
 |-----------|-------------|--------|
 | [SECURITY_CICD.md](security/SECURITY_CICD.md) | Configuración de seguridad en CI/CD | ✅ |
+| [SECRETS_MANAGEMENT.md](security/SECRETS_MANAGEMENT.md) | Política de gestión de secrets | ✅ |
 
 ---
 
-## 🔄 N8N-WORKFLOWS (Automatizaciones)
+## 🤖 AUTOMATION (Automatizaciones n8n)
 
-Documentación técnica de workflows n8n.
+> **⚠️ FUENTE DE VERDAD**: Toda la documentación y workflows de n8n se encuentran en la carpeta `/automation/` en la raíz del proyecto.
 
-| Documento | Descripción | Estado |
-|-----------|-------------|--------|
-| [README.md](n8n-workflows/README.md) | Índice de workflows n8n | ✅ |
-| [NODE_STANDARDS.md](n8n-workflows/NODE_STANDARDS.md) | Estándares de nodos n8n | ✅ |
-| [n8n_mcp_guide.md](n8n-workflows/n8n_mcp_guide.md) | Guía de Model Context Protocol | ✅ |
-| [mega-workflow-1/](n8n-workflows/mega-workflow-1/) | MW#1: Lead Lifecycle Manager | ✅ |
+**Estructura de Automation:**
 
-> **Nota**: El desarrollo activo de workflows n8n está en la carpeta `automation/` (ver PR #32)
+```text
+automation/
+├── README.md                    → Punto de entrada principal
+├── docs/
+│   ├── 00_INDEX.md             → Índice completo de documentación
+│   ├── 01_AGENT_PROTOCOLS.md   → Protocolos para agentes IA
+│   ├── business/               → Documentación estratégica
+│   └── technical/              → Especificaciones técnicas
+│       ├── arquitectura/       → Arquitectura de 3 MEGA-WORKFLOWS
+│       ├── n8n_mcp_guide.md    → Guía Model Context Protocol
+│       └── NODE_STANDARDS.md   → Estándares de nodos n8n
+├── workflows/
+│   └── MW1_LEAD_LIFECYCLE/     → Mega-Workflow #1
+│       ├── STATUS.md           → Estado actual de desarrollo
+│       ├── 01-orchestrator/    → Workflow orquestador
+│       └── 02-spokes/          → Sub-workflows especializados
+└── archive/                     → Archivos deprecados
+```
+
+**Documentos Clave:**
+
+| Documento | Ubicación | Descripción |
+|-----------|-----------|-------------|
+| **README Principal** | [/automation/README.md](../automation/README.md) | Punto de entrada |
+| **Índice Completo** | [/automation/docs/00_INDEX.md](../automation/docs/00_INDEX.md) | Navegación completa |
+| **Protocolos Agentes** | [/automation/docs/01_AGENT_PROTOCOLS.md](../automation/docs/01_AGENT_PROTOCOLS.md) | Reglas para IAs |
+| **Arquitectura MW1** | [/automation/docs/technical/arquitectura/01_MEGA_WORKFLOW_1_CAPTURA.md](../automation/docs/technical/arquitectura/01_MEGA_WORKFLOW_1_CAPTURA.md) | Lead Lifecycle |
+| **Status MW1** | [/automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md](../automation/workflows/MW1_LEAD_LIFECYCLE/STATUS.md) | Estado actual |
+
+**Workflows Activos:**
+- ✅ **MW#1 - Lead Lifecycle**: Captura y gestión de leads
+- 📋 **MW#2 - Retención**: Cliente a recompra (Q2 2026)
+- 🔄 **MW#3 - SEO Content Factory**: MAES phases 1-4 completadas
 
 ---
 
@@ -142,4 +168,4 @@ Documentación técnica de workflows n8n.
 
 ---
 
-*Última actualización: 14 de Enero, 2026*
+*Última actualización: 16 de Febrero, 2026*

@@ -1,0 +1,28 @@
+graph TD
+    Start([Execute Workflow Trigger]) --> QueryKW[1. Query Firestore<br/>Get Next Keyword]
+    QueryKW --> CheckKW{2. Keyword<br/>Found?}
+
+    CheckKW -->|No Keywords| EndNoKW([End - No Keywords Available])
+    CheckKW -->|Yes| SetVars[3. Set Variables<br/>Extract keyword data]
+
+    SetVars --> AIAgent[4. AI Agent Node<br/>Gemini 2.0 Flash<br/>Generate Article]
+
+    AIAgent -->|Success| Parse[5. Parse AI Output<br/>Extract title, meta, slug, content]
+    AIAgent -->|Error| ErrorHandler[Error Handler<br/>Capture error details]
+
+    Parse --> SaveDraft[6. Save Draft<br/>Firestore: content_drafts<br/>status=pending_revision]
+    SaveDraft --> UpdateKW[7. Update Keyword<br/>Firestore: keywords_pipeline<br/>status=en_progreso]
+    UpdateKW --> LogMetrics[8. Log Metrics<br/>Google Sheets<br/>MW3_ContentWriter_Logs]
+    LogMetrics --> SendEmail[9. Send Notification<br/>Gmail to Juan<br/>Review Request]
+    SendEmail --> EndSuccess([End - Success<br/>Draft Ready for Review])
+
+    ErrorHandler --> LogError[Log Error<br/>Google Sheets: Errors]
+    LogError --> ErrorEmail[Send Error Email<br/>to Juan]
+    ErrorEmail --> EndError([End - Error<br/>Manual Intervention Required])
+
+    style Start fill:#90EE90
+    style EndSuccess fill:#90EE90
+    style EndNoKW fill:#FFD700
+    style EndError fill:#FF6B6B
+    style AIAgent fill:#87CEEB
+    style ErrorHandler fill:#FFA07A

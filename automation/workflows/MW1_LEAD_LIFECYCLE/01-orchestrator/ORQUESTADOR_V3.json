@@ -45,7 +45,7 @@
           "value": "RHj1TAqBazxNFriJ"
         },
         "workflowInputs": {
-          "mappingMode": "defineBelow",
+          "mappingMode": "autoMapInputData",
           "value": {}
         }
       },

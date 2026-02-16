@@ -1,5 +1,7 @@
 # RBAC - Role-Based Access Control
 
+**Última Actualización**: 14 de Febrero, 2026
+
 Control de accesos para microservicios de Carrillo Abogados.
 
 ## Service Accounts

@@ -1,5 +1,7 @@
 # 📝 Guía para Obsidian - Carrillo Abogados
 
+**Última Actualización**: 14 de Febrero, 2026
+
 Esta carpeta `docs/` está diseñada para ser compatible con Obsidian como vault de documentación.
 
 ## 🔧 Configuración Recomendada
@@ -21,13 +23,13 @@ Esta carpeta `docs/` está diseñada para ser compatible con Obsidian como vault
 
 ```
 docs/
-├── ai-context/      # 🤖 Instrucciones para IAs
-├── architecture/    # 🏗️ Decisiones arquitectónicas
-├── api/             # 📡 Documentación de APIs
-├── development/     # 💻 Guías de desarrollo
-├── operations/      # ⚙️ Deployment y operaciones
+├── architecture/    # 🏗️ ADRs y decisiones arquitectónicas
+├── business/        # 💼 Modelo de negocio, requerimientos, MVP
+├── development/     # 💻 Guías de desarrollo, features, tests
+├── operations/      # ⚙️ Deployment, CI/CD, observabilidad
 ├── security/        # 🔒 Políticas de seguridad
-└── tracking/        # 📊 Trazabilidad del proyecto
+├── archive/         # 📦 Documentos históricos
+└── MIGRATION_GUIDE_ORG.md  # 🚀 Guía migración a org
 ```
 
 ## 🏷️ Tags Sugeridos

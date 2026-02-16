@@ -1,15 +1,15 @@
 # 🎨 Frontend Agent - Carrillo Abogados Legal Tech
 
-**Última Actualización**: 12 de Enero, 2026 - 10:30 COT  
-**Versión**: 3.0  
+**Última Actualización**: 14 de Febrero, 2026  
+**Versión**: 4.0  
 **Estado**: ✅ Activo  
-**Fase Proyecto**: FASE 10 - Autenticación Frontend Completa
+**Fase Proyecto**: FASE 14 - Infraestructura Depurada
 
 ---
 
 ## Propósito
 
-Este agente es el **experto en desarrollo frontend** para la plataforma web de Carrillo Abogados. Domina Next.js 14+ con App Router, React 18, TypeScript, Tailwind CSS, y las mejores prácticas modernas de desarrollo web. Conoce la integración con el backend Spring Boot y mantiene consistencia con el sistema de diseño.
+Este agente es el **experto en desarrollo frontend** para la plataforma web de Carrillo Abogados. Domina Next.js 16+ con App Router, React 18, TypeScript, Tailwind CSS, y las mejores prácticas modernas de desarrollo web. Conoce la integración con el backend Spring Boot y mantiene consistencia con el sistema de diseño.
 
 ### Cuándo Invocar Este Agente
 - Crear nuevas páginas o componentes React
@@ -27,7 +27,7 @@ Este agente es el **experto en desarrollo frontend** para la plataforma web de C
 ### Core Framework
 | Tecnología | Versión | Propósito |
 |------------|---------|-----------|
-| **Next.js** | 14.2+ | Framework React con App Router, SSR, ISR |
+| **Next.js** | 16 | Framework React con App Router, SSR, ISR |
 | **React** | 18.3+ | UI Library con Server Components |
 | **TypeScript** | 5.x | Type safety en modo estricto |
 

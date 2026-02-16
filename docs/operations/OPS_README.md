@@ -1,7 +1,7 @@
 # OPS README - Carrillo Abogados DevOps
 
-**Última Actualización**: 11 de Enero, 2026  
-**Estado**: FASE 10 - Autenticación Frontend Completa
+**Última Actualización**: 14 de Febrero, 2026  
+**Estado**: FASE 14 - Infraestructura Depurada
 
 ## 📋 Índice
 
@@ -28,13 +28,13 @@
 | notification-service | 8700 | Notificaciones (Email/SMS/Push) | ✅ Activo |
 | n8n-integration-service | 8800 | Bridge con n8n Cloud | ✅ Activo |
 
-### Servicios Deprecados (No usar)
+### Servicios Eliminados (FASE 14)
 
 | Servicio | Razón |
 |----------|-------|
-| ~~user-service~~ | Migrado a client-service |
-| ~~order-service~~ | Nunca existió (template e-commerce) |
-| ~~proxy-client~~ | Nunca existió |
+| ~~user-service~~ | Migrado a client-service (código eliminado) |
+| ~~order-service~~ | Nunca existió (template e-commerce, eliminado) |
+| ~~proxy-client~~ | Nunca existió (eliminado) |
 
 ### Infraestructura
 
@@ -329,7 +329,7 @@ kubectl describe networkpolicy <nombre> -n carrillo-dev
 
 # Probar conectividad desde un pod temporal
 kubectl run test-pod --rm -it --image=busybox -n carrillo-dev -- sh
-wget -O- http://user-service.carrillo-dev.svc.cluster.local:8700/actuator/health
+wget -O- http://client-service.carrillo-dev.svc.cluster.local:8200/actuator/health
 ```
 
 ---
@@ -463,7 +463,7 @@ gcloud config set project $PROJECT_ID
 gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION
 
 # 3. Build y push imágenes a GCR
-for service in api-gateway proxy-client user-service ...; do
+for service in api-gateway client-service case-service payment-service document-service calendar-service notification-service n8n-integration-service; do
     docker build -t gcr.io/$PROJECT_ID/$service:v0.1.0 ./$service/
     docker push gcr.io/$PROJECT_ID/$service:v0.1.0
 done
@@ -501,7 +501,7 @@ kubectl top pods -n carrillo-dev
 
 ```bash
 # Logs de todos los pods de un servicio
-kubectl logs -n carrillo-dev -l app=user-service --tail=100 -f
+kubectl logs -n carrillo-dev -l app=client-service --tail=100 -f
 
 # Logs con timestamps
 kubectl logs -n carrillo-dev <pod-name> --timestamps=true

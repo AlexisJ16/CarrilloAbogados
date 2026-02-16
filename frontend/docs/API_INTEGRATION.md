@@ -1,5 +1,7 @@
 # 🔌 Guía de Integración API - Carrillo Abogados
 
+**Última Actualización**: 14 de Febrero, 2026
+
 Esta guía explica cómo integrar el frontend con el backend de microservicios de Carrillo Abogados.
 
 ---

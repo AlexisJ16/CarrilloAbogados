@@ -1,7 +1,7 @@
 # Arquitectura - Carrillo Abogados Legal Tech Platform
 
-**Última Actualización**: 14 de Enero, 2026  
-**Estado**: FASE 10 - Autenticación Frontend Completa
+**Última Actualización**: 14 de Febrero, 2026  
+**Estado**: FASE 14 - Infraestructura Depurada
 
 ## Visión General
 
@@ -31,9 +31,9 @@ Plataforma cloud-native de gestión legal empresarial construida con microservic
 - **notification-service**: Email/SMS/Push (port 8700)
 - **n8n-integration-service**: Workflows y automatizaciones n8n Cloud (port 8800)
 
-### Servicios Deprecados
-- ~~user-service~~: Migrado a client-service (eliminar en próxima versión)
-- ~~order-service~~: Nunca existió (era template e-commerce)
+### Servicios Eliminados
+- ~~user-service~~: Migrado a client-service (código eliminado en FASE 14)
+- ~~order-service~~: Nunca existió (template e-commerce, eliminado)
 
 ## Comunicación
 
@@ -69,15 +69,23 @@ PostgreSQL compartida con schemas separados:
 - Tracing: Micrometer
 - Health checks: Spring Actuator
 
+## Contenedores
+
+### Build con Google Jib 3.4.4
+- **Base Image**: eclipse-temurin:21-jre-alpine
+- **JVM Flags**: -XX:+UseZGC -XX:MaxRAMPercentage=75.0
+- **Formato**: Docker (NO OCI)
+- **Pipeline**: Maven → Jib buildTar → docker load → compose up
+
 ## Despliegue
 
 ### Ambientes
-- **dev**: Minikube local
+- **dev**: Docker Compose local / Minikube (WSL)
 - **staging**: GKE (e2-micro)
 - **prod**: GKE Autopilot
 
 ### CI/CD
-- GitHub Actions
-- Helm Charts
+- GitHub Actions (ci-cd-pipeline.yml)
+- Google Jib → ghcr.io/alexisj16/
+- Helm Charts para Kubernetes
 - Rolling updates
-- Canary deployments (futuro)

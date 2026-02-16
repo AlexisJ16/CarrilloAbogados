@@ -1,7 +1,7 @@
 # 📋 CONTEXTO DE SESIONES - Carrillo Abogados
 
 **Propósito**: Documento para mantener contexto entre sesiones de desarrollo con IA.  
-**Última Actualización**: 21 de Enero, 2026
+**Última Actualización**: 14 de Febrero, 2026
 
 ---
 
@@ -11,10 +11,10 @@
 
 | Componente | Estado | Detalles |
 |------------|--------|----------|
-| **Docker Compose** | ✅ 18 contenedores | Todos healthy |
-| **PostgreSQL** | ✅ Operativo | 7 schemas, 3 usuarios de prueba |
+| **Docker Compose** | ✅ 11 contenedores | Todos healthy (Google Jib build) |
+| **PostgreSQL** | ✅ Operativo | 6 schemas, 3 usuarios de prueba |
 | **NATS** | ✅ Operativo | Mensajería asíncrona |
-| **Frontend** | ✅ Next.js 14 | Puerto 3000, 16 páginas |
+| **Frontend** | ✅ Next.js 16 | Puerto 3000, 16 páginas |
 | **API Gateway** | ✅ Spring Cloud Gateway | Puerto 8080, CORS corregido |
 | **Microservicios** | ✅ 8 servicios | Puertos 8200-8800 |
 | **Observabilidad** | ✅ Grafana LGTM | Prometheus, Loki, Tempo, Mimir |

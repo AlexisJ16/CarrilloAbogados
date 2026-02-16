@@ -1,6 +1,6 @@
 # 🔐 GitHub Repository Secrets Configuration
 
-**Última Actualización**: Enero 2026  
+**Última Actualización**: 14 de Febrero, 2026  
 **Propósito**: Documentar todos los secrets requeridos para los GitHub Actions workflows
 
 ---

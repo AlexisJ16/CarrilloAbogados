@@ -37,30 +37,33 @@ build/
 !.vscode/extensions.json
 !.vscode/*.http
 
+### Generated Artifacts ###
+**/dependency-tree.txt
+BOOT-INF/
 Output-CLI-DeTrabajo.txt
+*.log
 
-### Sensitive Files ###
-# MCP configuration with API keys
+### AI IDE Settings (machine-specific) ###
+.claude/
 .mcp.json
 
-# Claude/AI local settings with permissions
-.claude/settings.local.json
+### MCP Security ###
+# IMPORTANT: Never commit MCP credentials
+.n8n-mcp.env
+**/mcp-credentials.json
+**/.mcp-secrets/
 
-# Environment files with secrets
+### Docker Environment ###
 .env
 .env.local
 .env.*.local
-*.env
 
-# API Keys and credentials
-**/secrets/
-*.pem
-*.key
-*.p12
-*.jks
-credentials.json
-service-account*.json
+### Jib Build Artifacts ###
+jib-*.log
+**/jib-image.tar
 
-# Google Cloud credentials
-gcloud-*.json
-application_default_credentials.json
+### Architecture Diagrams (binary - use source drawio files) ###
+*.drawio.png
+
+### System Properties (Heroku format - not used) ###
+system.properties

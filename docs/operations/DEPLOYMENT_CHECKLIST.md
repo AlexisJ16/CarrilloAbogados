@@ -1,14 +1,16 @@
 # Deployment Checklist
 
+**Última Actualización**: 14 de Febrero, 2026
+
 ## Pre-deployment
-- [ ] 8 microservicios (no 11)
+- [ ] 8 microservicios
 - [ ] Puertos únicos sin conflictos
 - [ ] replicaCount: 1 en todos los Helm charts
 - [ ] autoscaling.enabled: false
 - [ ] Sin referencias a oauth2-credentials
-- [ ] Sin referencias a payment/order/proxy-client
-- [ ] API Gateway tiene 7 rutas (no 2)
-- [ ] ConfigMaps actualizados (sin payments)
+- [ ] Sin referencias a payment/order/proxy-client/user-service
+- [ ] API Gateway tiene 7 rutas
+- [ ] ConfigMaps actualizados
 
 ## Compilation
 - [ ] mvn clean package exitoso (8 servicios)
@@ -35,6 +37,6 @@ kubectl port-forward svc/api-gateway 8080:8080 -n carrillo-dev
 curl http://localhost:8080/actuator/health
 
 # Verificar logs de servicios
-kubectl logs deployment/user-service -n carrillo-dev
+# Verificar logs de servicios
 kubectl logs deployment/client-service -n carrillo-dev
 ```

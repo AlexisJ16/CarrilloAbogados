@@ -1,6 +1,7 @@
 # 🧪 Usuarios de Prueba E2E - Carrillo Abogados
 
-**Última Actualización**: 14 de Enero, 2026  
+**Última Actualización**: 14 de Febrero, 2026  
+**Fase Proyecto**: FASE 14 - Infraestructura Depurada  
 **Estado**: ✅ Todos los usuarios verificados y funcionando
 
 ---
@@ -8,6 +9,16 @@
 ## 📋 Usuarios de Prueba
 
 Estos usuarios están creados en la base de datos PostgreSQL para pruebas E2E y desarrollo local.
+
+### Usuarios Reales (verificados en producción local)
+
+| Rol | Email | Contraseña | Estado |
+|-----|-------|------------|--------|
+| **Cliente** | alexisj4a@gmail.com | Cliente123! | ✅ Verificado |
+| **Abogado** | abogado.test@gmail.com | Cliente123! | ✅ Verificado |
+| **Admin** | admin.test@gmail.com | Cliente123! | ✅ Verificado |
+
+### Usuarios Genéricos (plantilla para nuevas instancias)
 
 | Rol | Email | Contraseña | Estado |
 |-----|-------|------------|--------|

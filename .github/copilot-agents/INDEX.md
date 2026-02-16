@@ -1,7 +1,7 @@
 # 🤖 Copilot Agents - Carrillo Abogados
 
-**Última Actualización**: 12 de Enero, 2026 - 11:00 COT  
-**Versión**: 3.0
+**Última Actualización**: 14 de Febrero, 2026  
+**Versión**: 4.0
 
 ---
 
@@ -16,7 +16,7 @@ Este directorio contiene **4 agentes especializados** con conocimiento profundo 
 | Agente | Archivo | Especialización |
 |--------|---------|-----------------|
 | **Backend** | [backend-agent.md](./backend-agent.md) | Java 21, Spring Boot, APIs REST, JPA |
-| **Frontend** | [frontend-agent.md](./frontend-agent.md) | Next.js 14, React, TypeScript, Tailwind |
+| **Frontend** | [frontend-agent.md](./frontend-agent.md) | Next.js 16, React, TypeScript, Tailwind |
 | **DevOps** | [devops-agent.md](./devops-agent.md) | Docker, Kubernetes, CI/CD, WSL |
 | **Documentation** | [documentation-agent.md](./documentation-agent.md) | Docs, timestamps, auditoría |
 

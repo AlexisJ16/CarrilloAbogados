@@ -32,24 +32,17 @@ spec:
   - to:
     - podSelector:
         matchLabels:
-          app: user-service
-    ports:
-    - protocol: TCP
-      port: 8100
-  - to:
-    - podSelector:
-        matchLabels:
           app: client-service
     ports:
     - protocol: TCP
-      port: 8700
+      port: 8200
   - to:
     - podSelector:
         matchLabels:
           app: case-service
     ports:
     - protocol: TCP
-      port: 8600
+      port: 8300
   - to:
     - podSelector:
         matchLabels:
@@ -70,21 +63,21 @@ spec:
           app: calendar-service
     ports:
     - protocol: TCP
-      port: 8900
+      port: 8600
   - to:
     - podSelector:
         matchLabels:
           app: notification-service
     ports:
     - protocol: TCP
-      port: 9000
+      port: 8700
   - to:
     - podSelector:
         matchLabels:
           app: n8n-integration-service
     ports:
     - protocol: TCP
-      port: 9100
+      port: 8800
   - to:
     - namespaceSelector:
         matchLabels:

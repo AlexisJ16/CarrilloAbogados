@@ -1,0 +1,356 @@
+{
+  "name": "SUB-A: Lead Intake (v5 - AI POWERED - NATIVE)",
+  "nodes": [
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "cachedResultName": "models/gemini-2.5-pro",
+          "mode": "list",
+          "value": "models/gemini-2.5-pro"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ \"Analiza este lead entrante para un bufete de abogados (Carrillo Abogados - PI y Marcas).\\n\\nDatos del Lead:\\n- Nombre: \" + $(\"0. Mapear Input del Orquestador1\").item.json.nombre + \"\\n- Empresa: \" + $(\"0. Mapear Input del Orquestador1\").item.json.empresa + \"\\n- Cargo: \" + $(\"0. Mapear Input del Orquestador1\").item.json.cargo + \"\\n- Interes declarado: \" + $(\"0. Mapear Input del Orquestador1\").item.json.servicio_interes + \"\\n- Mensaje: \" + $(\"0. Mapear Input del Orquestador1\").item.json.mensaje + \"\\n\\nTareas:\\n1. Normaliza el servicio de interes a una de estas categorias: [Marcas, Patentes, Litigio, Contratos, Corporativo, Otros].\\n2. Detecta si es SPAM (true/false).\\n3. Calcula un Score (0-100) basado en la calidad de la empresa, cargo y claridad de la necesidad.\\n4. Determina la categoria (HOT si score >= 70, WARM si >= 40, COLD si < 40).\\n\\nResponde UNICAMENTE con un JSON valido con esta estructura:\\n{\\n  \\\"normalized_interest\\\": \\\"...\\\",\\n  \\\"is_spam\\\": false,\\n  \\\"analysis_reason\\\": \\\"...\\\",\\n  \\\"calculated_score\\\": 85,\\n  \\\"category\\\": \\\"HOT\\\"\\n}\" }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c01faa58-79fc-4f31-877f-134cc1fa1672",
+      "name": "0.5. Analizar Lead (IA)",
+      "position": [512, 480],
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7mPlpd3eLy4qngdl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "cachedResultName": "models/gemini-2.5-pro",
+          "mode": "list",
+          "value": "models/gemini-2.5-pro"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "58f49514-f559-45f7-b141-52173ec0244b",
+      "name": "5. Generar Respuesta (Gemini)",
+      "position": [1728, 496],
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "7mPlpd3eLy4qngdl",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parsear input que puede venir de diferentes fuentes:\n// 1. Orquestador: { event: 'lead.created', payload: { nombre: '...', ... } }\n// 2. AI Agent Tool: { input: '{\"nombre\":\"...\", ...}' } - JSON string\n// 3. Execute Workflow directo: { nombre: \"...\", email: \"...\" }\n// 4. Query string: { query: '{\"payload\": {...}}' } - JSON string\n\nconst raw = $input.first().json;\nlet data = {};\n\n// CASO NUEVO: Query string del AI Agent con payload anidado\nif (raw.query && typeof raw.query === 'string') {\n  try {\n    const parsed = JSON.parse(raw.query);\n    if (parsed.payload && typeof parsed.payload === 'object') {\n      data = parsed.payload;\n      console.log('Parseado desde query.payload');\n    } else {\n      data = parsed;\n      console.log('Parseado desde query');\n    }\n  } catch(e) {\n    console.log('Error parseando query:', e.message);\n  }\n}\n// Caso 1: Viene del Orquestador con payload\nelse if (raw.payload && typeof raw.payload === 'object') {\n  data = raw.payload;\n  console.log('Parseado desde Orquestador payload');\n}\n// Caso 2: AI Agent Tool envia 'input' como JSON string\nelse if (raw.input && typeof raw.input === 'string') {\n  try {\n    data = JSON.parse(raw.input);\n    console.log('Parseado desde AI Agent Tool input string');\n  } catch(e) {\n    console.log('Error parseando input string:', e.message);\n    data = raw;\n  }\n}\n// Caso 3: input es un objeto (ya parseado)\nelse if (raw.input && typeof raw.input === 'object') {\n  data = raw.input;\n  console.log('Usando AI Agent Tool input object');\n}\n// Caso 4: Datos vienen en body (webhook directo)\nelse if (raw.body && typeof raw.body === 'object') {\n  data = raw.body;\n  console.log('Usando body de webhook');\n}\n// Caso 5: Datos vienen directamente en el json\nelse if (raw.nombre || raw.email) {\n  data = raw;\n  console.log('Usando datos directos');\n}\n// Caso 6: Fallback - buscar en cualquier campo que sea JSON string\nelse {\n  for (const key of Object.keys(raw)) {\n    if (typeof raw[key] === 'string' && raw[key].startsWith('{')) {\n      try {\n        const parsed = JSON.parse(raw[key]);\n        if (parsed.payload) {\n          data = parsed.payload;\n        } else {\n          data = parsed;\n        }\n        console.log('Parseado desde campo:', key);\n        break;\n      } catch(e) {}\n    }\n  }\n  if (Object.keys(data).length === 0) {\n    data = raw;\n    console.log('Fallback: usando raw data');\n  }\n}\n\nreturn {\n  json: {\n    lead_id: data.lead_id || data.leadId || '',\n    nombre: data.nombre || '',\n    email: data.email || '',\n    telefono: data.telefono || '',\n    empresa: data.empresa || '',\n    cargo: data.cargo || '',\n    servicio_interes: data.servicio_interes || data.servicio || '',\n    mensaje: data.mensaje || '',\n    utm_source: data.utm_source || '',\n    utm_campaign: data.utm_campaign || '',\n    event_type: raw.event || data.event_type || 'new_lead',\n    _source: raw.payload ? 'orquestador' : (raw.input ? 'ai_agent_tool' : (raw.body ? 'webhook' : 'direct')),\n    _raw_keys: Object.keys(raw)\n  }\n};"
+      },
+      "id": "c6821dac-8c27-4b06-bafb-61fbbb28100e",
+      "name": "0. Mapear Input del Orquestador1",
+      "position": [336, 480],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// Combinar datos del lead (desde nodo 0) con análisis de Gemini\nconst lead = $(\"0. Mapear Input del Orquestador1\").item.json;\nconst geminiResponse = $input.first().json;\n\n// Extraer análisis de Gemini\nlet analysisText = '';\nif (geminiResponse.content && geminiResponse.content.parts && geminiResponse.content.parts[0]) {\n    analysisText = geminiResponse.content.parts[0].text || '';\n} else if (typeof geminiResponse.content === 'string') {\n    analysisText = geminiResponse.content;\n} else if (geminiResponse.text) {\n    analysisText = geminiResponse.text;\n}\n\nlet analysis = {};\ntry {\n    const cleanedText = analysisText.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n    const jsonMatch = cleanedText.match(/\\{[\\s\\S]*\\}/);\n    const jsonStr = jsonMatch ? jsonMatch[0] : cleanedText;\n    analysis = JSON.parse(jsonStr);\n} catch (e) {\n    analysis = {\n        normalized_interest: \"Otros\",\n        is_spam: false,\n        calculated_score: 30,\n        category: \"COLD\",\n        analysis_reason: \"Análisis no disponible\",\n        parse_error: e.message\n    };\n}\n\n// Usar score de Gemini o calcular si no está disponible\nlet score = analysis.calculated_score || 30;\nlet categoria = analysis.category || \"COLD\";\n\n// Generar lead_id único\nconst timestamp = Date.now();\nconst emailSafe = (lead.email || 'no-email').replace(/[^a-zA-Z0-9]/g, '_').substring(0, 20);\nconst lead_id = `lead_${timestamp}_${emailSafe}`;\n\nreturn [{\n  json: {\n    // Datos del lead original\n    lead_id: lead_id,\n    nombre: lead.nombre || '',\n    email: lead.email || '',\n    empresa: lead.empresa || '',\n    telefono: lead.telefono || '',\n    servicio_interes: lead.servicio_interes || '',\n    mensaje: lead.mensaje || '',\n    utm_source: lead.utm_source || '',\n    utm_campaign: lead.utm_campaign || '',\n    \n    // Análisis de IA\n    score: score,\n    categoria: categoria,\n    ai_analysis: analysis,\n    \n    // Timestamps\n    processed_at: new Date().toISOString(),\n    \n    // Campos de Nurturing para SUB-D (como strings para Firestore)\n    nurturing_status: 'active',\n    lead_captured_at: new Date().toISOString(),\n    emails_sent: '0',\n    last_email_sent: '',\n    last_email_position: '0'\n  }\n}];"
+      },
+      "id": "e627be60-cd86-40ba-8763-beac05bde7c2",
+      "name": "1. Validar y Clasificar1",
+      "position": [784, 480],
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "create",
+        "projectId": "carrillo-marketing-core",
+        "database": "leads",
+        "collection": "leads",
+        "columns": "lead_id, nombre, email, empresa, score, categoria, processed_at, nurturing_status, lead_captured_at, emails_sent, last_email_sent, last_email_position"
+      },
+      "id": "5d6463dc-d890-4a48-bbe0-c1067f520993",
+      "name": "2. Guardar en Firestore1",
+      "position": [992, 480],
+      "type": "n8n-nodes-base.googleFirebaseCloudFirestore",
+      "typeVersion": 1.1,
+      "credentials": {
+        "googleApi": {
+          "id": "AAhdRNGzvsFnYN9O",
+          "name": "tuto yt"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.categoria }}",
+              "operator": {
+                "operation": "equals",
+                "type": "string"
+              },
+              "rightValue": "HOT"
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "fd7ec1ef-d15c-491b-9e09-9a294a74c19e",
+      "name": "3. Es Lead HOT? (If)1",
+      "position": [1216, 480],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "sendTo": "marketing@carrilloabgd.com",
+        "subject": "=🔥 HOT LEAD: {{ $('1. Validar y Clasificar1').item.json.nombre }}",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%); padding: 20px; border-radius: 8px 8px 0 0;\">\n    <h1 style=\"color: white; margin: 0; font-size: 24px;\">🔥 NUEVO LEAD HOT</h1>\n    <p style=\"color: #bee3f8; margin: 5px 0 0 0;\">Score: {{ $('1. Validar y Clasificar1').item.json.score }}/100 - Requiere atención inmediata</p>\n  </div>\n  \n  <div style=\"background: #f7fafc; padding: 20px; border: 1px solid #e2e8f0;\">\n    <h2 style=\"color: #2d3748; margin-top: 0; border-bottom: 2px solid #4299e1; padding-bottom: 10px;\">📋 Datos del Contacto</h2>\n    <table style=\"width: 100%; border-collapse: collapse;\">\n      <tr>\n        <td style=\"padding: 8px 0; color: #718096; width: 140px;\">Nombre:</td>\n        <td style=\"padding: 8px 0; color: #2d3748; font-weight: bold;\">{{ $('1. Validar y Clasificar1').item.json.nombre }}</td>\n      </tr>\n      <tr>\n        <td style=\"padding: 8px 0; color: #718096;\">Email:</td>\n        <td style=\"padding: 8px 0;\"><a href=\"mailto:{{ $('1. Validar y Clasificar1').item.json.email }}\" style=\"color: #4299e1;\">{{ $('1. Validar y Clasificar1').item.json.email }}</a></td>\n      </tr>\n      <tr>\n        <td style=\"padding: 8px 0; color: #718096;\">Teléfono:</td>\n        <td style=\"padding: 8px 0; color: #2d3748;\">{{ $('1. Validar y Clasificar1').item.json.telefono || 'No proporcionado' }}</td>\n      </tr>\n      <tr>\n        <td style=\"padding: 8px 0; color: #718096;\">Empresa:</td>\n        <td style=\"padding: 8px 0; color: #2d3748; font-weight: bold;\">{{ $('1. Validar y Clasificar1').item.json.empresa || 'No especificada' }}</td>\n      </tr>\n      <tr>\n        <td style=\"padding: 8px 0; color: #718096;\">Servicio:</td>\n        <td style=\"padding: 8px 0; color: #2d3748;\">{{ $('1. Validar y Clasificar1').item.json.servicio_interes || 'General' }}</td>\n      </tr>\n    </table>\n  </div>\n  \n  <div style=\"background: white; padding: 20px; border: 1px solid #e2e8f0; border-top: none;\">\n    <h2 style=\"color: #2d3748; margin-top: 0; border-bottom: 2px solid #48bb78; padding-bottom: 10px;\">📊 Análisis IA (Gemini)</h2>\n    <table style=\"width: 100%; border-collapse: collapse; background: #f0fff4; border-radius: 4px;\">\n      <tr>\n        <td style=\"padding: 12px; border-bottom: 1px solid #c6f6d5;\">\n          <strong style=\"color: #276749;\">Score Total</strong>\n        </td>\n        <td style=\"padding: 12px; border-bottom: 1px solid #c6f6d5; text-align: right;\">\n          <span style=\"background: #48bb78; color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold;\">{{ $('1. Validar y Clasificar1').item.json.score }}/100</span>\n        </td>\n      </tr>\n      <tr>\n        <td style=\"padding: 12px; border-bottom: 1px solid #c6f6d5;\">\n          <strong style=\"color: #276749;\">Categoría</strong>\n        </td>\n        <td style=\"padding: 12px; border-bottom: 1px solid #c6f6d5; text-align: right;\">\n          <span style=\"background: #e53e3e; color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold;\">{{ $('1. Validar y Clasificar1').item.json.categoria }}</span>\n        </td>\n      </tr>\n      <tr>\n        <td style=\"padding: 12px; border-bottom: 1px solid #c6f6d5;\">\n          <strong style=\"color: #276749;\">Interés Normalizado</strong>\n        </td>\n        <td style=\"padding: 12px; border-bottom: 1px solid #c6f6d5; text-align: right; color: #2d3748;\">\n          {{ $('1. Validar y Clasificar1').item.json.ai_analysis.normalized_interest || 'N/A' }}\n        </td>\n      </tr>\n      <tr>\n        <td colspan=\"2\" style=\"padding: 12px;\">\n          <strong style=\"color: #276749;\">Razón del Score:</strong><br>\n          <span style=\"color: #4a5568; font-style: italic;\">{{ $('1. Validar y Clasificar1').item.json.ai_analysis.analysis_reason || 'Sin análisis disponible' }}</span>\n        </td>\n      </tr>\n    </table>\n  </div>\n  \n  <div style=\"background: #fffaf0; padding: 20px; border: 1px solid #e2e8f0; border-top: none;\">\n    <h2 style=\"color: #2d3748; margin-top: 0; border-bottom: 2px solid #ed8936; padding-bottom: 10px;\">💬 Mensaje del Lead</h2>\n    <div style=\"background: white; padding: 15px; border-radius: 4px; border-left: 4px solid #ed8936;\">\n      <p style=\"margin: 0; color: #4a5568; line-height: 1.6;\">{{ $('1. Validar y Clasificar1').item.json.mensaje || 'Sin mensaje' }}</p>\n    </div>\n  </div>\n  \n  <div style=\"background: #1a365d; padding: 15px; border-radius: 0 0 8px 8px; text-align: center;\">\n    <p style=\"color: #bee3f8; margin: 0; font-size: 12px;\">Lead ID: {{ $('1. Validar y Clasificar1').item.json.lead_id }}</p>\n    <p style=\"color: #718096; margin: 5px 0 0 0; font-size: 11px;\">Procesado: {{ $('1. Validar y Clasificar1').item.json.processed_at }}</p>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "d1231451-6125-4166-80a7-a94aa17209a0",
+      "name": "4. Notificar Equipo (HOT)1",
+      "position": [1424, 320],
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "webhookId": "2125e449-695c-4e68-bd52-f9de4991c2a2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('1. Validar y Clasificar1').item.json.email }}",
+        "subject": "=Gracias por contactar a Carrillo Abogados, {{ $('1. Validar y Clasificar1').item.json.nombre.split(' ')[0] }}",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;\">\n  <div style=\"background: #1a365d; padding: 25px; text-align: center;\">\n    <h1 style=\"color: white; margin: 0; font-size: 24px;\">CARRILLO ABOGADOS</h1>\n    <p style=\"color: #a0c4e8; margin: 5px 0 0 0; font-size: 11px;\">PROPIEDAD INTELECTUAL | MARCAS | PATENTES</p>\n  </div>\n  <div style=\"background: #f8f9fa; padding: 30px; border: 1px solid #e0e0e0;\">\n    <div style=\"line-height: 1.7; font-size: 15px; color: #333;\">{{ $input.first().json.content && $input.first().json.content.parts ? $input.first().json.content.parts[0].text.replace(/\\n/g, '<br>') : 'Gracias por contactarnos. Hemos recibido su mensaje y pronto nos pondremos en contacto.' }}</div>\n  </div>\n  <div style=\"background: white; padding: 25px; border: 1px solid #e0e0e0; border-top: none;\">\n    <table><tr>\n      <td style=\"vertical-align: top; padding-right: 15px;\">\n        <div style=\"width: 50px; height: 50px; background: #1a365d; border-radius: 50%; text-align: center; line-height: 50px; color: white; font-weight: bold;\">OC</div>\n      </td>\n      <td>\n        <p style=\"margin: 0; font-weight: bold; color: #1a365d;\">Dr. Omar Carrillo</p>\n        <p style=\"margin: 3px 0; color: #666; font-size: 13px;\">Socio Director | Ex-funcionario SIC</p>\n        <p style=\"margin: 3px 0; color: #888; font-size: 12px;\">15+ anos de experiencia en PI</p>\n      </td>\n    </tr></table>\n    <div style=\"margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee; font-size: 13px; color: #666;\">\n      <p style=\"margin: 0;\"><strong>Carrillo Abogados</strong></p>\n      <p style=\"margin: 3px 0;\">Torre de Cali, Piso 21 | Cali, Colombia</p>\n      <p style=\"margin: 3px 0;\">Tel: +57 (2) 660 8000 | contacto@carrilloabgd.com</p>\n    </div>\n  </div>\n  <div style=\"background: #1a365d; padding: 12px; text-align: center;\">\n    <p style=\"margin: 0; color: #a0c4e8; font-size: 10px;\">Este mensaje fue enviado en respuesta a su consulta.</p>\n  </div>\n</div>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "23df08e9-2164-4824-af6d-c21983b2f9a6",
+      "name": "6. Enviar Respuesta Lead1",
+      "position": [1920, 496],
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "webhookId": "6ba4fd43-9d8f-41ed-856b-360d2c2fdfe7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {"id": "success", "name": "success", "type": "boolean", "value": true},
+            {"id": "message", "name": "message", "type": "string", "value": "Lead procesado exitosamente por SUB-A (AI Powered)"},
+            {"id": "lead_id", "name": "lead_id", "type": "string", "value": "={{ $('1. Validar y Clasificar1').item.json.lead_id }}"},
+            {"id": "score", "name": "score", "type": "number", "value": "={{ $('1. Validar y Clasificar1').item.json.score }}"},
+            {"id": "categoria", "name": "categoria", "type": "string", "value": "={{ $('1. Validar y Clasificar1').item.json.categoria }}"},
+            {"id": "email", "name": "email", "type": "string", "value": "={{ $('1. Validar y Clasificar1').item.json.email }}"},
+            {"id": "nombre", "name": "nombre", "type": "string", "value": "={{ $('1. Validar y Clasificar1').item.json.nombre }}"},
+            {"id": "empresa", "name": "empresa", "type": "string", "value": "={{ $('1. Validar y Clasificar1').item.json.empresa }}"},
+            {"id": "ai_analysis", "name": "ai_analysis", "type": "object", "value": "={{ $('1. Validar y Clasificar1').item.json.ai_analysis }}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "ebb83788-cfb3-482d-89a8-25a53aed014b",
+      "name": "FINAL. Resultado del Sub-Workflow1",
+      "position": [2144, 496],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {"inputSource": "passthrough"},
+      "id": "5f4ec9be-0921-4db3-a81c-c06de46aa35f",
+      "name": "When Executed by Another Workflow",
+      "position": [160, 480],
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger-suba",
+      "name": "Error Handler",
+      "position": [112, 704],
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {"id": "workflow_name", "name": "workflow_name", "type": "string", "value": "={{ $workflow.name }}"},
+            {"id": "execution_id", "name": "execution_id", "type": "string", "value": "={{ $execution.id }}"},
+            {"id": "timestamp", "name": "timestamp", "type": "string", "value": "={{ $now.toISO() }}"},
+            {"id": "error_message", "name": "error_message", "type": "string", "value": "Error en SUB-A Lead Intake - revisar logs"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-error-suba",
+      "name": "Preparar Error",
+      "position": [352, 704],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "sendTo": "ingenieria@carrilloabgd.com",
+        "subject": "=[n8n ERROR] {{ $json.workflow_name }}",
+        "message": "=<h2>Error en SUB-A</h2>\n<p><strong>Workflow:</strong> {{ $json.workflow_name }}</p>\n<p><strong>Execution ID:</strong> {{ $json.execution_id }}</p>\n<p><strong>Timestamp:</strong> {{ $json.timestamp }}</p>\n<p><strong>Error:</strong> {{ $json.error_message }}</p>",
+        "options": {}
+      },
+      "id": "gmail-error-suba",
+      "name": "Notificar Error",
+      "position": [608, 704],
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "webhookId": "61815982-36bc-45d0-8c6f-2755b9c05b9f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "l2mMgEf8YUV7HHlK",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kq8wr4w1-8800.use2.devtunnels.ms/n8n-integration-service/webhook/lead-scored",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ lead_id: $('1. Validar y Clasificar1').item.json.lead_id, score: $('1. Validar y Clasificar1').item.json.score, categoria: $('1. Validar y Clasificar1').item.json.categoria, ai_analysis: $('1. Validar y Clasificar1').item.json.ai_analysis, processed_at: $('1. Validar y Clasificar1').item.json.processed_at }) }}",
+        "options": {}
+      },
+      "id": "callback_lead_scored",
+      "name": "7. Callback Lead Scored",
+      "position": [1424, 128],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kq8wr4w1-8800.use2.devtunnels.ms/n8n-integration-service/webhook/lead-hot",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ lead_id: $('1. Validar y Clasificar1').item.json.lead_id, score: $('1. Validar y Clasificar1').item.json.score, categoria: $('1. Validar y Clasificar1').item.json.categoria, notified_at: new Date().toISOString(), email_sent_to: 'marketing@carrilloabgd.com' }) }}",
+        "options": {}
+      },
+      "id": "callback_hot_lead",
+      "name": "9. Callback Hot Lead Alert",
+      "position": [1936, 112],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "b3b05f3a-801e-4976-b0ba-c248c2b5c03f",
+              "leftValue": "={{ $('1. Validar y Clasificar1').item.json.categoria }}",
+              "operator": {"operation": "equals", "type": "string"},
+              "rightValue": "HOT"
+            }
+          ],
+          "options": {"caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 1}
+        },
+        "options": {}
+      },
+      "id": "if_hot_check",
+      "name": "8. Es Lead HOT (Callback)?",
+      "position": [1680, 128],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $('1. Validar y Clasificar1').item.json;\n\nconst prompt = `Eres el asistente de Carrillo Abogados, bufete de Propiedad Intelectual en Colombia con 24 anios de trayectoria.\n\nGenera un email de respuesta profesional para este lead:\n- Nombre: ${lead.nombre}\n- Empresa: ${lead.empresa || 'No especificada'}\n- Interes: ${lead.servicio_interes || 'Consulta general'}\n- Mensaje original: ${lead.mensaje || 'Sin mensaje'}\n\nInstrucciones:\n1. Dirige el email usando el nombre real del lead (${lead.nombre})\n2. Agradece el contacto de forma profesional\n3. Confirma que recibimos su consulta\n4. Menciona nuestra especializacion en su area de interes\n5. Indica que el Dr. Omar Carrillo revisara personalmente su caso\n6. Promete respuesta detallada en 24-48 horas habiles\n7. Tono profesional pero cercano\n8. NO uses emojis\n9. Maximo 150 palabras\n\nResponde SOLO con el texto del cuerpo del email, sin asunto ni encabezados.`;\n\nreturn [{ json: { prompt: prompt, lead_data: lead } }];"
+      },
+      "id": "prepare-gemini-prompt",
+      "name": "5.0 Preparar Prompt Gemini",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1552, 496]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "0. Mapear Input del Orquestador1": {"main": [[{"index": 0, "node": "0.5. Analizar Lead (IA)", "type": "main"}]]},
+    "0.5. Analizar Lead (IA)": {"main": [[{"index": 0, "node": "1. Validar y Clasificar1", "type": "main"}]]},
+    "1. Validar y Clasificar1": {"main": [[{"index": 0, "node": "2. Guardar en Firestore1", "type": "main"}, {"index": 0, "node": "7. Callback Lead Scored", "type": "main"}]]},
+    "2. Guardar en Firestore1": {"main": [[{"index": 0, "node": "3. Es Lead HOT? (If)1", "type": "main"}]]},
+    "3. Es Lead HOT? (If)1": {"main": [[{"index": 0, "node": "4. Notificar Equipo (HOT)1", "type": "main"}, {"node": "5.0 Preparar Prompt Gemini", "type": "main", "index": 0}]]},
+    "5. Generar Respuesta (Gemini)": {"main": [[{"index": 0, "node": "6. Enviar Respuesta Lead1", "type": "main"}]]},
+    "6. Enviar Respuesta Lead1": {"main": [[{"index": 0, "node": "FINAL. Resultado del Sub-Workflow1", "type": "main"}]]},
+    "7. Callback Lead Scored": {"main": [[{"index": 0, "node": "8. Es Lead HOT (Callback)?", "type": "main"}]]},
+    "8. Es Lead HOT (Callback)?": {"main": [[{"index": 0, "node": "9. Callback Hot Lead Alert", "type": "main"}]]},
+    "Error Handler": {"main": [[{"index": 0, "node": "Preparar Error", "type": "main"}]]},
+    "Preparar Error": {"main": [[{"index": 0, "node": "Notificar Error", "type": "main"}]]},
+    "When Executed by Another Workflow": {"main": [[{"index": 0, "node": "0. Mapear Input del Orquestador1", "type": "main"}]]},
+    "4. Notificar Equipo (HOT)1": {"main": [[{"node": "5.0 Preparar Prompt Gemini", "type": "main", "index": 0}]]},
+    "5.0 Preparar Prompt Gemini": {"main": [[{"node": "5. Generar Respuesta (Gemini)", "type": "main", "index": 0}]]}
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "b43e753a-b734-49ae-b6a1-abe9175b5db5",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "RHj1TAqBazxNFriJ",
+  "tags": []
+}

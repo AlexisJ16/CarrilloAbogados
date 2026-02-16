@@ -1,5 +1,7 @@
 # ADR-006: Estrategia de Desarrollo Local Kubernetes
 
+**Última Actualización**: 14 de Febrero, 2026
+
 ## Contexto
 El equipo necesita un entorno de desarrollo local para Kubernetes. Las opciones evaluadas son:
 1. **Minikube** (en WSL2)

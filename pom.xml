@@ -28,6 +28,10 @@
         <!-- Dependency versions managed for security updates -->
         <jjwt.version>0.13.0</jjwt.version>
         <jnats.version>2.24.1</jnats.version>
+        <!-- Google Jib - Container image builder -->
+        <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
+        <docker.image.prefix>carrilloabogados</docker.image.prefix>
+        <docker.image.tag>dev</docker.image.tag>
     </properties>
 
     <dependencies>
@@ -72,11 +76,6 @@
             <!-- Jackson managed by Spring Boot BOM -->
         </dependency>
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>${springdoc.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -98,6 +97,11 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                <version>${springdoc.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
                 <version>${testcontainers.version}</version>
@@ -109,7 +113,6 @@
 
     <modules>
         <module>api-gateway</module>
-        <module>user-service</module>
         <!-- Nuevos servicios adaptados -->
         <module>client-service</module>
         <module>case-service</module>
@@ -122,6 +125,42 @@
     </modules>
 
     <build>
+        <!-- ============================== -->
+        <!-- Google Jib - Configuración centralizada -->
+        <!-- Build: mvn jib:dockerBuild (local) | mvn jib:build (registry) -->
+        <!-- ============================== -->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.google.cloud.tools</groupId>
+                    <artifactId>jib-maven-plugin</artifactId>
+                    <version>${jib-maven-plugin.version}</version>
+                    <configuration>
+                        <from>
+                            <image>eclipse-temurin:21-jre-alpine</image>
+                        </from>
+                        <to>
+                            <image>${docker.image.prefix}/${project.artifactId}:${docker.image.tag}</image>
+                        </to>
+                        <container>
+                            <jvmFlags>
+                                <jvmFlag>-XX:+UseZGC</jvmFlag>
+                                <jvmFlag>-XX:MaxRAMPercentage=75.0</jvmFlag>
+                                <jvmFlag>-XX:+UseContainerSupport</jvmFlag>
+                                <jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
+                                <jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>
+                            </jvmFlags>
+                            <environment>
+                                <TZ>America/Bogota</TZ>
+                            </environment>
+                            <user>1001</user>
+                            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                            <format>Docker</format>
+                        </container>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -137,6 +176,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

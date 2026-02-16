@@ -1,8 +1,8 @@
 # 🏗️ ARQUITECTURA FUNCIONAL - Carrillo Abogados Legal Tech Platform
 
-**Versión**: 1.1  
-**Fecha**: 11 de Enero, 2026  
-**Estado**: ✅ Documento Actualizado - FASE 10
+**Versión**: 1.2
+**Fecha**: 16 de Febrero, 2026
+**Estado**: ✅ Documento Actualizado - FASE 14
 
 ---
 
@@ -21,7 +21,7 @@ Este documento define el **mapeo funcional** entre los requerimientos de negocio
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
-│  │                       FRONTEND (Next.js 14)                          │   │
+│  │                       FRONTEND (Next.js 16)                          │   │
 │  │  ┌──────────────┐ ┌──────────────┐ ┌──────────────────────────────┐ │   │
 │  │  │Portal Público│ │Portal Cliente│ │     Panel Interno            │ │   │
 │  │  │(Visitantes)  │ │(Clientes)    │ │  (Abogados + Admins)         │ │   │
